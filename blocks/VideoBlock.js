@@ -37,6 +37,17 @@ const VideoBlock = () => {
   return (
     <div className="my-6 tablet:my-10 2xl:my-20 relative min-w-[375px] h-[660px] sm:h-[680px] md:h-[900px] flex flex-col items-center w-full tablet:h-screen tablet:min-h-[950px]">
       <Title />
+      <div
+        className="text-center mt-[18px] tablet:mt-[30px] w-[290px] md:w-[450px] tablet:w-[590px] text-[12px] md:text-[16px] tablet:text-[21px]"
+        style={{
+          color: '#fff',
+          fontStyle: 'normal',
+          fontWeight: 400,
+        }}
+      >
+        Левитация, гипноз, чтение мыслей, исчезновение предметов и превращения —
+        вы увидите то, вот что не поверят глаза.
+      </div>
     </div>
   )
 }
