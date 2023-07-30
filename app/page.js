@@ -1,9 +1,11 @@
 import TitleBlock from '@/blocks/TitleBlock'
+import VideoBlock from '@/blocks/VideoBlock'
 
 export default function Home() {
   return (
     <main className="relative flex flex-col items-center justify-between min-h-screen overflow-x-hidden">
       <TitleBlock />
+      <VideoBlock />
       {/* Фон */}
       <div
         style={{

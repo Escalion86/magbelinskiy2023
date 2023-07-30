@@ -1,6 +1,5 @@
 import React from 'react'
 import cn from 'classnames'
-import Image from 'next/image'
 
 const InfoCard = ({ className, children }) => (
   <div

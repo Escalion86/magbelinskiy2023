@@ -103,7 +103,7 @@ const BurgerIcon = () => (
 
 const Header = () => (
   <div
-    className="mt-[30px] gap-x-[10px] max-w-[1264px] w-full px-[17px] md:px-[52px] relative flex justify-between"
+    className="z-20 mt-[30px] gap-x-[10px] max-w-[1264px] w-full px-[17px] md:px-[52px] relative flex justify-between"
     style={{
       height: 60,
       // flexShrink: 0,
