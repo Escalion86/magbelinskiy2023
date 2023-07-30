@@ -4,22 +4,7 @@ import Image from 'next/image'
 import MagicanImage from './MagicanImage'
 
 const Background = () => (
-  <div
-    style={{
-      maskMode: 'alpha',
-      background:
-        'linear-gradient(180deg, #D9D9D9 83.34%, rgba(217, 217, 217, 0.00) 100%)',
-    }}
-    className="absolute top-0 w-full h-full -z-10 shrink-0"
-  >
-    {/* Фон */}
-    <div
-      className="absolute w-full h-full"
-      style={{
-        background:
-          'linear-gradient(0deg, rgba(11, 11, 21, 0.20) 0%, rgba(11, 11, 21, 0.20) 100%), linear-gradient(0deg, #0F0F1E 0%, #0F0F1E 100%), linear-gradient(180deg, #D9D9D9 83.34%, rgba(217, 217, 217, 0.00) 100%)',
-      }}
-    />
+  <div className="absolute top-0 w-full h-full">
     {/* Подсветка в центре */}
     <div
       className="absolute -translate-x-1/2 -translate-y-1/2 aspect-square top-1/2 left-1/2"
@@ -72,7 +57,7 @@ background:
 }}
 ></div> */}
     {/* Фоновый белый шум */}
-    <div
+    {/* <div
       className="absolute w-full h-full"
       style={{
         opacity: 0.3,
@@ -80,7 +65,7 @@ background:
           'url("/img/noise.png"), lightgray 0% 0% / 100px 100px repeat',
         mixBlendMode: 'soft-light',
       }}
-    />
+    /> */}
     {/* Рука слева */}
     <div
       className="absolute 2xl:opacity-100 opacity-20 left-[min(calc(5%-100px),0px)] max-h-[35%] w-[15%] min-w-[170px] z-10 top-[90px] aspect-[289/385] hidden md:block"
