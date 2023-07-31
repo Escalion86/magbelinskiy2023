@@ -87,7 +87,7 @@ const Button = ({ className }) => (
 const Title = ({ className }) => (
   <div
     className={cn(
-      'flex flex-col mt-[20px] md:mt-[40px] text-[38px] phoneH:text-[44px] sm:text-[50px] md:text-[60px] tablet:text-[84px]',
+      'flex flex-col mt-[20px] md:mt-[40px] text-[38px] phoneH:text-[42px] sm:text-[50px] md:text-[60px] tablet:text-[84px]',
       className
     )}
     style={{
@@ -283,7 +283,7 @@ const InfoCardInclusive = () => (
 const CupInfo = ({ className }) => (
   <div
     className={cn(
-      'w-[252px] md:w-[420px] tablet:w-[592px] mt-[20px] md:mt-[10px] flex-row-reverse md:flex-row flex items-center',
+      'w-[242px] md:w-[400px] tablet:w-[552px] mt-[20px] md:mt-[10px] flex-row-reverse md:flex-row flex items-center',
       className
     )}
   >
@@ -298,7 +298,7 @@ style={{
 }}
 ></div> */}
     <img
-      className="w-[80px] md:w-[100px] tablet:w-[132px] object-contain md:-ml-[22px] -mr-[8px]"
+      className="w-[56px] -rotate-12 md:rotate-0 tablet:w-[70px] object-contain md:-ml-[14px] mr-[12px]"
       alt="cup"
       src="/img/cup.png"
       // width={996}
@@ -322,7 +322,8 @@ style={{
       >
         представление телевизионного уровня
       </span>
-      , которое подарит массу эмоций и запомнится на всю жизнь.
+      , которое подарит массу эмоций
+      <br />и запомнится на всю жизнь.
     </div>
   </div>
 )
@@ -330,7 +331,7 @@ style={{
 const DiscountInfo = ({ className }) => (
   <div
     className={cn(
-      'items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[30px]',
+      'items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[26px]',
       className
     )}
   >
@@ -395,7 +396,7 @@ const Content = () => (
           backdropFilter: 'blur(3px)',
         }}
       />
-      <div className="relative flex items-center gap-x-[30px]">
+      <div className="relative flex items-center gap-x-[30px] tablet:mt-[26px]">
         <Button className="-mt-[9px]" />
         <DiscountInfo className="hidden tablet:flex w-[220px]" />
       </div>

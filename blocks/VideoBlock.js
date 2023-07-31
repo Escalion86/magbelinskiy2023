@@ -35,10 +35,10 @@ const Title = ({ className }) => (
 
 const VideoBlock = () => {
   return (
-    <div className="my-6 tablet:mt-10 2xl:mt-20 mb-10 tablet:mb-32 relative min-w-[375px] flex flex-col items-center w-full">
+    <div className="my-12 tablet:mt-10 2xl:mt-20 mb-10 tablet:mb-32 relative min-w-[375px] flex flex-col items-center w-full">
       <Title />
       <div
-        className="text-center mb-[15px] md:mb-[57px] tablet:mb-[62px] mt-[18px] tablet:mt-[30px] w-[290px] md:w-[450px] tablet:w-[590px] text-[12px] md:text-[16px] tablet:text-[21px]"
+        className="text-center mb-[16px] md:mb-[57px] tablet:mb-[62px] mt-[18px] tablet:mt-[30px] w-[290px] md:w-[450px] tablet:w-[590px] text-[12px] md:text-[16px] tablet:text-[21px]"
         style={{
           color: '#fff',
           fontStyle: 'normal',
@@ -49,7 +49,7 @@ const VideoBlock = () => {
         вы увидите то, вот что не поверят глаза.
       </div>
       <div
-        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] left-0 -translate-x-[50%] tablet:-translate-x-[30%] rotate-[105deg] aspect-[1230/690]"
+        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] top-0 tablet:top-[140px] left-0 -translate-x-[55%] rotate-[105deg] aspect-[1230/690]"
         style={{
           background: 'url("/img/smoke.png")',
           mixBlendMode: 'color-dodge',
@@ -58,7 +58,7 @@ const VideoBlock = () => {
         }}
       />
       <div
-        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] top-[320px] tablet:top-[396px] right-0 translate-x-1/3 rotate-[105deg] aspect-[1230/690]"
+        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] top-[200px] tablet:top-[396px] right-0 translate-x-1/2 rotate-[105deg] aspect-[1230/690]"
         style={{
           background: 'url("/img/smoke.png")',
           mixBlendMode: 'color-dodge',
@@ -67,7 +67,7 @@ const VideoBlock = () => {
         }}
       />
       <div
-        className="w-[192px] h-[305px] tablet:w-[384px] tablet:h-[610px] absolute bottom-0 right-0"
+        className="w-[192px] h-[305px] tablet:w-[384px] tablet:h-[610px] absolute -bottom-[150px] -right-[190px]"
         style={{
           transform: 'rotate(-30deg)',
           borderRadius: 900,
@@ -78,11 +78,13 @@ const VideoBlock = () => {
           filter: 'blur(177.5px)',
         }}
       />
-      <img
-        className="relative z-20 object-contain max-w-[1338px] w-full aspect-[1338/880]"
-        alt="video"
-        src="/img/TV.png"
-      />
+      <div className="relative z-20 w-full px-2">
+        <img
+          className="object-contain max-w-[1338px] w-full aspect-[1338/880]"
+          alt="video"
+          src="/img/TV.png"
+        />
+      </div>
     </div>
   )
 }

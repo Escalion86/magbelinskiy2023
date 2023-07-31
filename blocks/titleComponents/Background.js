@@ -81,7 +81,7 @@ background:
     />
     {/* Рука справа */}
     <div
-      className="absolute right-0 z-10 w-[74px] h-[95px] md:w-[135px] md:h-[173px] 2xl:w-[235px] 2xl:h-[303px] bottom-[4%] top-auto 2xl:bottom-auto 2xl:top-[24%] aspect-[235/303]"
+      className="absolute right-0 z-10 w-[74px] h-[95px] md:w-[135px] md:h-[173px] 2xl:w-[235px] 2xl:h-[303px] bottom-[6%] md:bottom-[4%] top-auto 2xl:bottom-auto 2xl:top-[24%] aspect-[235/303]"
       style={{
         // width: 289,
         // height: '28%',
