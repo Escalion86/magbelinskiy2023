@@ -1,3 +1,5 @@
+import GalleryBlock from '@/blocks/GalleryBlock'
+import QuizBlock from '@/blocks/QuizBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
 
@@ -6,6 +8,8 @@ export default function Home() {
     <main className="relative flex flex-col items-center justify-between min-h-screen overflow-hidden">
       <TitleBlock />
       <VideoBlock />
+      <GalleryBlock />
+      <QuizBlock />
       {/* Фон */}
       <div
         style={{
