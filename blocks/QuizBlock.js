@@ -8,6 +8,555 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 
+var progress
+
+const SvgProgressDynamyc = () => {
+  useEffect(() => {
+    progress = document.querySelector('.progress')
+    setInterval(() => {
+      if (progress.style.left === '0px') progress.style.left = '-18px'
+      else progress.style.left = parseInt(progress.style.left) + 1 + 'px'
+    }, 50)
+  }, [])
+
+  return (
+    <svg
+      style={{
+        left: '-18px',
+      }}
+      className="absolute progress"
+      width="1177"
+      height="30"
+      viewBox="0 0 1177 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g style={{ mixBlendMode: 'soft-light' }} opacity="0.3">
+        <rect
+          x="21.9084"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 21.9084 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="297.908"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 297.908 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="40.3723"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 40.3723 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="316.372"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 316.372 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="58.8362"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 58.8362 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="334.836"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 334.836 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="77.3"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 77.3 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="353.3"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 353.3 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="95.7639"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 95.7639 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="371.764"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 371.764 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="592.764"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 592.764 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="813.764"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 813.764 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="114.228"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 114.228 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="390.228"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 390.228 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="611.228"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 611.228 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="832.228"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 832.228 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="132.692"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 132.692 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="408.691"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 408.691 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="629.691"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 629.691 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="850.691"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 850.691 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="151.156"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 151.156 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="427.155"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 427.155 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="648.155"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 648.155 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="869.155"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 869.155 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1035.16"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1035.16 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="169.619"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 169.619 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="445.619"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 445.619 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="666.619"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 666.619 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="887.619"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 887.619 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1053.62"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1053.62 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="188.083"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 188.083 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="464.083"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 464.083 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="685.083"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 685.083 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="906.083"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 906.083 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1072.08"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1072.08 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="206.547"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 206.547 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="482.547"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 482.547 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="703.547"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 703.547 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="924.547"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 924.547 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1090.55"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1090.55 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="225.011"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 225.011 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="501.011"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 501.011 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="722.011"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 722.011 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="943.011"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 943.011 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1109.01"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1109.01 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="243.475"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 243.475 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="519.475"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 519.475 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="740.475"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 740.475 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="961.475"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 961.475 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1127.47"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1127.47 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="261.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 261.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="537.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 537.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="758.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 758.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="979.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 979.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1145.94"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1145.94 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="279.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 279.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="555.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 555.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="776.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 776.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="997.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 997.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1163.94"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1163.94 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="573.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 573.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="794.938"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 794.938 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1015.94"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1015.94 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1181.94"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1181.94 -42.8025)"
+          fill="white"
+        />
+        <rect
+          x="1200.39"
+          y="-42.8025"
+          width="10"
+          height="115"
+          transform="rotate(17.1489 1200.39 -42.8025)"
+          fill="white"
+        />
+      </g>
+    </svg>
+  )
+}
+
 const Title = ({ className }) => (
   <div
     className={cn(
@@ -64,7 +613,7 @@ const QuizHeader = () => (
   >
     <div className="flex flex-col gap-x-[12px] justify-between w-full sm:flex-row sm:items-center">
       <div
-        className="text-[13px] md:text-[16px] tablet:text-[19px]"
+        className="text-[13px] md:text-[16px] tablet:text-[19px] whitespace-nowrap"
         style={{
           color: '#fff',
           fontWeight: 500,
@@ -74,7 +623,7 @@ const QuizHeader = () => (
         В конце теста вас ждет <span className="md:font-bold">подарок</span>:
       </div>
       <svg
-        className="hidden sm:block md:hidden tablet:block w-[125px] xl:w-[173px] h-[14px]"
+        className="hidden tablet:block w-[120px] tablet:w-[131px] xl:w-[173px] h-[14px]"
         xmlns="http://www.w3.org/2000/svg"
         // width="175"
         // height="17"
@@ -99,7 +648,7 @@ const QuizHeader = () => (
               boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
             }}
           />
-          <div>
+          <div className="whitespace-nowrap">
             Бесплатная{' '}
             <span className="font-medium text-white">консультация</span>
           </div>
@@ -115,7 +664,7 @@ const QuizHeader = () => (
               boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
             }}
           />
-          <div>
+          <div className="whitespace-nowrap">
             Скидка <span className="font-medium text-white">-5%</span> на шоу
           </div>
         </div>
@@ -148,11 +697,14 @@ const QuizCard = ({ title, imageName }) => (
         '3px 3px 25px 0px rgba(255, 255, 255, 0.03) inset, 0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
     }}
   >
-    <img
-      className="object-cover rounded-[5px] md:rounded-[10px] w-[120px] h-[75px] md:w-[220px] md:h-[167px]"
-      alt={imageName}
-      src={'/img/quiz/' + imageName + '.png'}
-    />
+    <div className="relative">
+      <img
+        className="object-cover rounded-[5px] md:rounded-[10px] w-[120px] h-[75px] md:w-[220px] md:h-[167px]"
+        alt={imageName}
+        src={'/img/quiz/' + imageName + '.png'}
+      />
+      <I />
+    </div>
     <div
       className="font-medium text-[#0E0E1C] text-[12px] md:text-[19px] mt-[11px] mb-[11px] md:mt-[20px] md:mb-[25px]"
       // style={{
@@ -196,12 +748,93 @@ const QuizCard = ({ title, imageName }) => (
   </div>
 )
 
+const QuizProgress = ({ progress }) => (
+  <div className="h-[20px] w-full">
+    <div
+      className="relative h-[20px] md:h-[30px] only:w-full"
+      style={{
+        borderRadius: 90,
+        background:
+          'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
+        boxShadow:
+          '3px 3px 25px 0px rgba(255, 255, 255, 0.03) inset, 0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
+      }}
+    >
+      <div
+        className="absolute overflow-hidden z-10 left-0 h-full text-[#0E0E1C] flex items-center justify-center font-bold text-[12px] md:text-[17px]"
+        style={{
+          width: progress + '%',
+          fontFamily: 'Montserrat',
+          borderRadius: 90,
+          background:
+            'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%), linear-gradient(63deg, #692DC1 0%, #AC80EC 100%), #C4C4C4',
+        }}
+      >
+        <SvgProgressDynamyc />
+        <div className="z-10">{progress}%</div>
+      </div>
+    </div>
+  </div>
+)
+
+const I = ({ onClick }) => (
+  <div
+    className="absolute hidden text-white rounded-full md:flex justify-center items-center cursor-pointer top-[10px] right-[10px] w-[30px] h-[30px] text-[20px] transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#4272D1] to-[#83ACFF] hover:via-[#83ACFF] hover:to-[#4272D1]"
+    style={{
+      fontFamily: 'Montserrat',
+      boxShadow:
+        '3px 3px 8px 0px rgba(255, 255, 255, 0.25) inset, 0px 10px 25px 0px rgba(66, 114, 209, 0.55)',
+    }}
+    onClick={onClick}
+  >
+    i
+  </div>
+)
+
+const Info = ({ className }) => (
+  <div
+    className={className}
+    style={{
+      display: 'inline',
+      color: '#A8A8CA',
+    }}
+  >
+    Нажмите на{' '}
+    <span
+      className="min-w-[22px] min-h-[22px]"
+      style={{
+        display: 'inline-block',
+        width: 22,
+        height: 22,
+        borderRadius: 660,
+        opacity: '0.8',
+        background:
+          'linear-gradient(59deg, #4272D1 0%, #83ACFF 100%), linear-gradient(63deg, #692DC1 0%, #AC80EC 100%)',
+      }}
+    >
+      <div
+        style={{
+          color: '#fff',
+          display: 'flex',
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        i
+      </div>
+    </span>
+    , чтобы узнать подробнее о каждом направлении
+  </div>
+)
+
 const Quiz = () => {
   return (
     <div className="px-[18px] md:px-[52px] w-full">
       <div className="relative w-full max-w-[1360px] min-w-[339px] mt-[30px] md:[mt-60px]">
         <QuizBackground />
-        <div className="flex flex-col gap-y-[30px] md:gap-y-[40px] xl:gap-y-[57px] relative px-[10px] md:px-[40px] xl:px-[100px] pt-[10px] md:pt-[40px] pb-[70px]">
+        <div className="flex flex-col gap-y-[30px] md:gap-y-[40px] xl:gap-y-[57px] relative px-[10px] md:px-[40px] xl:px-[100px] pt-[10px] md:pt-[40px] pb-[25px] md:pb-[50px]">
           <QuizHeader />
           <div className="px-[10px] md:px-0">
             <div className="relative z-10 font-bold text-[18px] md:text-[36px]">
@@ -232,7 +865,11 @@ const Quiz = () => {
             <QuizCard title="Презентация" imageName="presentation" />
             <QuizCard title="Детский праздник" imageName="kids" />
             <QuizCard title="Другое" imageName="other" />
+            <div className="hidden md:col-span-2 tablet:col-auto 2xl:hidden md:flex flex-col justify-end w-full h-auto tablet:w-[260px] tablet:h-[330px] text-center tablet:text-left">
+              <Info />
+            </div>
           </div>
+          <QuizProgress progress={33} />
         </div>
       </div>
     </div>
@@ -241,36 +878,51 @@ const Quiz = () => {
 
 const QuizBlock = () => {
   return (
-    <div className="flex flex-col items-center">
-      <DivContent
-        noMargin
-        className="flex flex-col items-center mt-[123px] tablet:mt-[162px] xl:mt-[230px]"
-      >
-        <div className="flex flex-col items-center justify-center w-full sm:flex-row">
-          <img
-            className=" object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[2px] sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
-            alt="star"
-            src="/img/star.png"
-          />
-          <Title />
-          <img
-            className="hidden sm:block -scale-x-100 object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px]  sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
-            alt="star"
-            src="/img/star.png"
-          />
-        </div>
-        <DivText className="text-center tablet:max-w-[600px] max-w-[320px] sm:max-w-[340px] md:max-w-[460px] mt-[18px] tablet:mt-[35px]">
-          Этот тест поможет сделать представление именно под ваш праздник.{' '}
-          <span
-            style={{
-              color: '#A8A8CA',
-            }}
-          >
-            Не волнуйтесь, он проходится за 30 секунд.
-          </span>
-        </DivText>
-      </DivContent>
-      <Quiz />
+    <div className="relative flex justify-center w-full">
+      <div className="flex flex-col items-center w-fit">
+        <DivContent
+          noMargin
+          fullWidth={false}
+          className="flex flex-col items-center mt-[123px] tablet:mt-[162px] xl:mt-[230px]"
+        >
+          <div className="flex flex-col items-center justify-center w-full sm:flex-row">
+            <img
+              className=" object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[2px] sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
+              alt="star"
+              src="/img/star.png"
+            />
+            <Title />
+            <img
+              className="hidden sm:block -scale-x-100 object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px]  sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
+              alt="star"
+              src="/img/star.png"
+            />
+          </div>
+          <DivText className="text-center tablet:max-w-[600px] max-w-[320px] sm:max-w-[340px] md:max-w-[460px] mt-[18px] tablet:mt-[35px]">
+            Этот тест поможет сделать представление именно под ваш праздник.{' '}
+            <span
+              style={{
+                color: '#A8A8CA',
+              }}
+            >
+              Не волнуйтесь, он проходится за 30 секунд.
+            </span>
+          </DivText>
+        </DivContent>
+        <Quiz />
+      </div>
+      <div
+        className="absolute hidden xl:block right-0 z-10 w-[207px] h-[265px] 2xl:w-[235px] 2xl:h-[303px] top-[75px] aspect-[235/303]"
+        style={{
+          // width: 289,
+          // height: '28%',
+          flexShrink: 0,
+          background: 'url("/img/hand2.png")',
+          mixBlendMode: 'hard-light',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
     </div>
   )
 }

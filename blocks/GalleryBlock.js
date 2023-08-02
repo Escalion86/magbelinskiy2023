@@ -221,7 +221,7 @@ const Gallery = () => {
 
 const GalleryBlock = () => {
   return (
-    <>
+    <div className="relative w-full">
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex items-start xl:items-center justify-between flex-col max-w-[520px] tablet:max-w-[680px] xl:max-w-full xl:flex-row gap-x-[200px]">
           <div className="flex flex-col gap-y-[50px]">
@@ -265,7 +265,19 @@ const GalleryBlock = () => {
       <div className="w-full xl:px-[52px]">
         <Gallery />
       </div>
-    </>
+      <div
+        className="absolute hidden md:block xl:hidden right-0 z-10 w-[207px] h-[265px] 2xl:w-[235px] 2xl:h-[303px] top-[90px] aspect-[235/303]"
+        style={{
+          // width: 289,
+          // height: '28%',
+          flexShrink: 0,
+          background: 'url("/img/hand2.png")',
+          mixBlendMode: 'hard-light',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+    </div>
   )
 }
 
