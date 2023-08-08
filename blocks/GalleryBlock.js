@@ -118,14 +118,16 @@ const Gallery = () => {
     carousel.classList.add('no-transition')
     carousel.scrollLeft = oneSetImagesWidth * 2.5 - carousel.offsetWidth / 2
     carousel.classList.remove('no-transition')
-    // carousel.addEventListener('scroll', infiniteScroll)
   }, [])
 
   const leftClick = (e) => {
     e.stopPropagation()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
-    const deltaCarouselWidth = ((carousel.offsetWidth + 0) % firstCardWidth) / 2
-    const add = firstCardWidth / 2 + deltaWidth + deltaCarouselWidth
+    const deltaCarouselWidth = (carousel.offsetWidth % firstCardWidth) / 2
+    const add =
+      (carousel.offsetWidth > firstCardWidth * 2 ? firstCardWidth / 2 : 0) +
+      deltaWidth +
+      deltaCarouselWidth
     carousel.scrollLeft -= add
   }
 
@@ -133,7 +135,12 @@ const Gallery = () => {
     e.stopPropagation()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
     const deltaCarouselWidth = (carousel.offsetWidth % firstCardWidth) / 2
-    const add = firstCardWidth * 1.5 - deltaWidth - deltaCarouselWidth
+    const add =
+      (carousel.offsetWidth > firstCardWidth * 2
+        ? firstCardWidth * 1.5
+        : firstCardWidth * 2) -
+      deltaWidth -
+      deltaCarouselWidth
     carousel.scrollLeft += add
   }
 

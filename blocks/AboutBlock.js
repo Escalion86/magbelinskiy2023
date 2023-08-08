@@ -40,7 +40,7 @@ const ListItem = ({ children }) => (
       viewBox="0 0 20 20"
       fill="none"
     >
-      <g clip-path="url(#clip0_72_1965)" filter="url(#filter0_i_72_1965)">
+      <g clipPath="url(#clip0_72_1965)" filter="url(#filter0_i_72_1965)">
         <path
           d="M5.91814 16.115C7.67533 16.115 9.17702 14.8629 10.0019 14C10.8276 14.8629 12.3251 16.115 14.0823 16.115C17.1077 16.115 19.2227 14.0051 19.2227 10.9856C19.2227 7.65651 16.5975 5.50422 14.0586 3.42385C12.8598 2.44077 11.6178 1.42554 10.666 0.296946C10.5873 0.203792 10.4892 0.1289 10.3786 0.0774726C10.268 0.0260455 10.1476 -0.000682636 10.0256 -0.000854492L9.97652 -0.000854492C9.85444 -0.000578416 9.73388 0.0261919 9.62316 0.0776075C9.51244 0.129023 9.41421 0.203859 9.33523 0.296946C8.38261 1.42385 7.14149 2.43992 5.94268 3.423C3.40291 5.50338 0.776855 7.65481 0.776855 10.9848C0.777701 14.0051 2.89107 16.115 5.91814 16.115Z"
           fill="url(#paint0_linear_72_1965)"
@@ -58,9 +58,9 @@ const ListItem = ({ children }) => (
           width="22"
           height="22"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
@@ -94,8 +94,8 @@ const ListItem = ({ children }) => (
           y2="13.8771"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#692DC1" />
-          <stop offset="1" stop-color="#AC80EC" />
+          <stop stopColor="#692DC1" />
+          <stop offset="1" stopColor="#AC80EC" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_72_1965"
@@ -105,8 +105,8 @@ const ListItem = ({ children }) => (
           y2="18.6833"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#692DC1" />
-          <stop offset="1" stop-color="#AC80EC" />
+          <stop stopColor="#692DC1" />
+          <stop offset="1" stopColor="#AC80EC" />
         </linearGradient>
         <clipPath id="clip0_72_1965">
           <rect

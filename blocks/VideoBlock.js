@@ -146,9 +146,9 @@ const VideoBlock = () => {
               width="168"
               height="168"
               filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB"
+              colorInterpolationFilters="sRGB"
             >
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feFlood floodOpacity="0" result="BackgroundImageFix" />
               <feBlend
                 mode="normal"
                 in="SourceGraphic"
@@ -186,9 +186,9 @@ const VideoBlock = () => {
               width="116"
               height="116"
               filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB"
+              colorInterpolationFilters="sRGB"
             >
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feFlood floodOpacity="0" result="BackgroundImageFix" />
               <feBlend
                 mode="normal"
                 in="SourceGraphic"
@@ -227,8 +227,8 @@ const VideoBlock = () => {
               y2="140.355"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#692DC1" />
-              <stop offset="1" stop-color="#AC80EC" />
+              <stop stopColor="#692DC1" />
+              <stop offset="1" stopColor="#AC80EC" />
             </linearGradient>
             <linearGradient
               id="paint1_linear_72_4265"
@@ -238,8 +238,8 @@ const VideoBlock = () => {
               y2="121.303"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#692DC1" />
-              <stop offset="1" stop-color="#AC80EC" />
+              <stop stopColor="#692DC1" />
+              <stop offset="1" stopColor="#AC80EC" />
             </linearGradient>
           </defs>
         </svg> */}
