@@ -161,13 +161,10 @@ const Gallery = () => {
           // className="gap-[20px] auto-cols-[calc((100%-40px)/3)] md:auto-cols-[calc((100%-80px)/3)] md:gap-[40px] grid w-full overflow-x-hidden select-none scroll snap-x active:snap-none snap-mandatory active:scroll-auto scroll-smooth carousel cursor-grab active:cursor-grabbing"
           style={
             {
-              // scrollbarWidth: 0,
-              // gridAutoFlow: 'column',
-              // gridAutoColumns: 'calc((100%-80px)/3)',
-              // gap: 16,
-              // overflow: 'auto',
-              // display: 'inline-flex',
-              // whiteSpace: 'nowrap',
+              // WebkitMaskImage:
+              //   'linear-gradient(to right, transparent 0%, black 25%, black 75%,transparent 100%)',
+              // maskImage:
+              //   'linear-gradient(to right, transparent 0%, black 25%, black 75%,transparent 100%)',
             }
           }
         >
