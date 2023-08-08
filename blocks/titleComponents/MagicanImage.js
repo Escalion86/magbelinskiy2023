@@ -7,17 +7,12 @@ const MagicanImage = () => (
         className="object-contain w-full h-full"
         alt="foto"
         src="/img/magican1.png"
-        // width={996}
-        // height="75%"
+        draggable={false}
       />
       <div
         className="-z-10 absolute w-[43%] aspect-[4/6] top-[50%] -rotate-[30deg] -translate-y-1/2"
         style={{
-          // top: 'calc(22%',
           left: '35%',
-          // width: 384,
-          // height: 603.004,
-          // transform: 'rotate(-30deg)',
           flexShrink: 0,
           borderRadius: 900,
           opacity: 0.6000000238418579,
@@ -29,9 +24,6 @@ const MagicanImage = () => (
       <div
         className="absolute z-20 top-[60%] right-[40%] tablet:right-[36%] laptop:right-[20%] sm:top-[65%] w-[140px] sm:w-[264px] xl:w-[330px]"
         style={{
-          // width: 330,
-          // height: 121,
-          // flexShrink: 0,
           borderRadius: 7,
           border: '1px solid rgba(255, 255, 255, 0.05)',
           background:
@@ -45,8 +37,6 @@ const MagicanImage = () => (
           <div
             className="absolute w-[4.5px] h-[4.5px] sm:w-[11.2px] sm:h-[11.2px] xl:w-[15px] xl:h-[15px] top-[5px] right-[5px] sm:top-[12px] sm:right-[12px] xl:top-[15px] xl:right-[15px]"
             style={{
-              // width: 14,
-              // height: 14,
               flexShrink: 0,
               borderRadius: 100,
               border: '1px solid rgba(255, 255, 255, 0.05)',
@@ -58,7 +48,6 @@ const MagicanImage = () => (
             className="text-[9px] sm:text-[19.2px] xl:text-[24px]"
             style={{
               color: '#FFF',
-              // fontFamily: 'Inter Tight',
               fontStyle: 'normal',
               fontWeight: 600,
               lineHeight: '135%',
@@ -70,7 +59,6 @@ const MagicanImage = () => (
             className="text-[7px] sm:text-[12.8px] xl:text-[16px]"
             style={{
               color: '#A8A8CA',
-              // fontFamily: 'Inter Tight',
               fontStyle: 'normal',
               fontWeight: 400,
               lineHeight: '125%',

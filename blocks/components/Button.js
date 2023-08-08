@@ -56,6 +56,7 @@ const Button = ({ className }) => (
         // style={{}}
         alt="logo"
         src="/img/logo_white.png"
+        draggable={false}
         // width={996}
         // height="75%"
       />

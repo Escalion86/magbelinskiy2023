@@ -47,6 +47,7 @@ const Title = ({ className }) => (
         className="object-contain -ml-[15px] w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px] sm:-ml-[17px] sm:-mr-[6px] sm:-mt-[5px] sm:-mb-[15px] md:-ml-[22px] md:-mr-[8px] md:-mt-[5px] md:-mb-[15px] tablet:-ml-[30px] tablet:-mr-[6px] tablet:-mt-[6px] tablet:-mb-[17px]"
         alt="star"
         src="/img/star.png"
+        draggable={false}
         // width={996}
         // height="75%"
       />
@@ -242,6 +243,7 @@ style={{
       className="w-[56px] -rotate-12 md:rotate-0 tablet:w-[70px] object-contain md:-ml-[14px] mr-[12px]"
       alt="cup"
       src="/img/cup.png"
+      draggable={false}
       // width={996}
       // height="75%"
     />

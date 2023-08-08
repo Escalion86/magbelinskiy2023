@@ -69,7 +69,180 @@ const VideoBlock = () => {
           className="object-contain max-w-[1338px] w-full aspect-[1338/880]"
           alt="video"
           src="/img/TV.png"
+          draggable={false}
         />
+        <div className="absolute flex flex-col items-center top-[calc(44%)] sm:top-[calc(50%-30px)] tablet:top-[calc(50%-45px)] -translate-y-1/2">
+          <div className="relative w-[30px] h-[30px] sm:w-[88px] sm:h-[88px] tablet:w-[110px] tablet:h-[110px]">
+            <div className="absolute animate-ping w-full h-full rounded-full transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#692DC1] to-[#AC80EC] hover:via-[#AC80EC] hover:to-[#692DC1]" />
+            <div className="absolute w-full h-full rounded-full transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#692DC1] to-[#AC80EC] hover:via-[#AC80EC] hover:to-[#692DC1] cursor-pointer" />
+            <div className="flex items-center justify-center w-full h-full overflow-hidden cursor-pointer">
+              {/* <svg
+                className="z-10 min-w-[162px] min-h-[162px]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="162"
+                height="162"
+                viewBox="0 0 162 162"
+                fill="none"
+              >
+                <path
+                  d="M100.5 78.4019C102.5 79.5566 102.5 82.4434 100.5 83.5981L75 98.3205C73 99.4752 70.5 98.0318 70.5 95.7224L70.5 66.2776C70.5 63.9682 73 62.5248 75 63.6795L100.5 78.4019Z"
+                  fill="white"
+                />
+              </svg> */}
+              <svg
+                className="z-10 ml-1 sm:ml-2 tablet:ml-3 w-[12px] h-[12px] sm:w-[37px] sm:h-[37px] tablet:w-[46px] tablet:h-[46px]"
+                width="32"
+                height="36"
+                viewBox="0 0 32 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M30.5 15.4019C32.5 16.5566 32.5 19.4434 30.5 20.5981L5 35.3205C3 36.4752 0.500002 35.0318 0.500002 32.7224L0.500003 3.27757C0.500004 0.968166 3 -0.47521 5 0.679491L30.5 15.4019Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+          </div>
+          <div className="select-none mt-[12px] sm:mt-[40px] text-white text-center text-[7px] sm:text-[13px] tablet:text-[16px] font-medium">
+            Посмотрите видео-презентацию от Алексея
+          </div>
+        </div>
+        {/* <svg
+          className="absolute ping"
+          xmlns="http://www.w3.org/2000/svg"
+          width="162"
+          height="162"
+          viewBox="0 0 162 162"
+          fill="none"
+        >
+          <g opacity="0.2" filter="url(#filter0_i_72_4265)">
+            <rect
+              width="162"
+              height="162"
+              rx="81"
+              fill="url(#paint0_linear_72_4265)"
+            />
+          </g>
+          <g opacity="0.8" filter="url(#filter1_i_72_4265)">
+            <rect
+              x="26"
+              y="26"
+              width="110"
+              height="110"
+              rx="55"
+              fill="url(#paint1_linear_72_4265)"
+            />
+          </g>
+          <path
+            d="M100.5 78.4019C102.5 79.5566 102.5 82.4434 100.5 83.5981L75 98.3205C73 99.4752 70.5 98.0318 70.5 95.7224L70.5 66.2776C70.5 63.9682 73 62.5248 75 63.6795L100.5 78.4019Z"
+            fill="white"
+          />
+          <defs>
+            <filter
+              id="filter0_i_72_4265"
+              x="0"
+              y="0"
+              width="168"
+              height="168"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dx="6" dy="6" />
+              <feGaussianBlur stdDeviation="13" />
+              <feComposite
+                in2="hardAlpha"
+                operator="arithmetic"
+                k2="-1"
+                k3="1"
+              />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0"
+              />
+              <feBlend
+                mode="normal"
+                in2="shape"
+                result="effect1_innerShadow_72_4265"
+              />
+            </filter>
+            <filter
+              id="filter1_i_72_4265"
+              x="26"
+              y="26"
+              width="116"
+              height="116"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dx="6" dy="6" />
+              <feGaussianBlur stdDeviation="13" />
+              <feComposite
+                in2="hardAlpha"
+                operator="arithmetic"
+                k2="-1"
+                k3="1"
+              />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0"
+              />
+              <feBlend
+                mode="normal"
+                in2="shape"
+                result="effect1_innerShadow_72_4265"
+              />
+            </filter>
+            <linearGradient
+              id="paint0_linear_72_4265"
+              x1="1.23569e-06"
+              y1="143.1"
+              x2="157.426"
+              y2="140.355"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#692DC1" />
+              <stop offset="1" stop-color="#AC80EC" />
+            </linearGradient>
+            <linearGradient
+              id="paint1_linear_72_4265"
+              x1="26"
+              y1="123.167"
+              x2="132.894"
+              y2="121.303"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#692DC1" />
+              <stop offset="1" stop-color="#AC80EC" />
+            </linearGradient>
+          </defs>
+        </svg> */}
       </div>
     </DivContent>
   )

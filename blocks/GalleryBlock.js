@@ -221,7 +221,7 @@ const Gallery = () => {
 
 const GalleryBlock = () => {
   return (
-    <div className="relative w-full">
+    <div className="relative flex flex-col items-center w-full">
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex items-start xl:items-center justify-between flex-col max-w-[520px] tablet:max-w-[680px] xl:max-w-full xl:flex-row gap-x-[200px]">
           <div className="flex flex-col gap-y-[50px]">
@@ -262,7 +262,7 @@ const GalleryBlock = () => {
           </DivText>
         </div>
       </DivContent>
-      <div className="w-full xl:px-[52px]">
+      <div className="relative z-10 w-full xl:px-[52px]">
         <Gallery />
       </div>
       <div
@@ -275,6 +275,58 @@ const GalleryBlock = () => {
           mixBlendMode: 'hard-light',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
+        }}
+      />
+      <div
+        className="absolute left-[calc(15%-400px)] top-[150px]"
+        style={{
+          width: 320,
+          height: 509,
+          transform: 'rotate(135deg)',
+          borderRadius: 900,
+          opacity: 0.6,
+          background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
+          boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
+          filter: 'blur(177.5px)',
+        }}
+      />
+      <div
+        className="absolute left-[calc(15%-490px)] top-[100px]"
+        style={{
+          width: 258,
+          height: 410,
+          transform: 'rotate(-165deg)',
+          borderRadius: 900,
+          opacity: 0.6,
+          background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',
+          boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
+          filter: 'blur(177.5px)',
+        }}
+      />
+      <div
+        className="absolute right-[calc(15%-350px)] top-[300px] xl:top-[680px]"
+        style={{
+          width: 260,
+          height: 413,
+          transform: 'rotate(30deg)',
+          borderRadius: 900,
+          opacity: 0.6,
+          background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
+          boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
+          filter: 'blur(177.5px)',
+        }}
+      />
+      <div
+        className="absolute right-[calc(15%-340px)] top-[700px] xl:top-[1080px]"
+        style={{
+          width: 209,
+          height: 332,
+          transform: 'rotate(90deg)',
+          borderRadius: 900,
+          opacity: 0.6,
+          background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',
+          boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
+          filter: 'blur(177.5px)',
         }}
       />
     </div>

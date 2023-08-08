@@ -702,6 +702,7 @@ const QuizCard = ({ title, imageName }) => (
         className="object-cover rounded-[5px] md:rounded-[10px] w-[120px] h-[75px] md:w-[220px] md:h-[167px]"
         alt={imageName}
         src={'/img/quiz/' + imageName + '.png'}
+        draggable={false}
       />
       <I />
     </div>
@@ -890,12 +891,14 @@ const QuizBlock = () => {
               className=" object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[2px] sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
               alt="star"
               src="/img/star.png"
+              draggable={false}
             />
             <Title />
             <img
               className="hidden sm:block -scale-x-100 object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px]  sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
               alt="star"
               src="/img/star.png"
+              draggable={false}
             />
           </div>
           <DivText className="text-center tablet:max-w-[600px] max-w-[320px] sm:max-w-[340px] md:max-w-[460px] mt-[18px] tablet:mt-[35px]">
