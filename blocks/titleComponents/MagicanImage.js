@@ -1,7 +1,7 @@
 import React from 'react'
 
 const MagicanImage = () => (
-  <div className="absolute flex justify-center z-10 left-[min(calc(40%),calc(12%+260px))] bottom-[80px] phoneH:bottom-0 phoneH:top-[70px] sm:bottom-auto top-auto sm:top-0 w-[96%] sm:w-[max(300px,97%)] sm:h-full max-h-full tablet:max-h-[1035px]">
+  <div className="absolute flex justify-center z-10 left-[min(calc(40%),calc(12%+260px))] bottom-0 sm:bottom-auto top-[70px] w-[96%] sm:w-[max(300px,97%)] sm:h-full max-h-full tablet:max-h-[1035px]">
     <div className="relative z-10 h-full">
       <img
         className="object-contain w-full h-full"
