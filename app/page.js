@@ -1,5 +1,6 @@
 import AboutBlock from '@/blocks/AboutBlock'
 import GalleryBlock from '@/blocks/GalleryBlock'
+import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import QuizBlock from '@/blocks/QuizBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
@@ -12,6 +13,7 @@ export default function Home() {
       <GalleryBlock />
       <QuizBlock />
       <AboutBlock />
+      <GalleryBlock2 />
       {/* Фон */}
       <div
         style={{

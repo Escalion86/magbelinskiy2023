@@ -832,7 +832,7 @@ const Info = ({ className }) => (
 
 const Quiz = () => {
   return (
-    <div className="px-[18px] md:px-[52px] w-full">
+    <div className="px-[18px] md:px-[52px] w-full mb-[40px] md:mb-[0px] tablet:mb-[130px]">
       <div className="relative w-full max-w-[1360px] min-w-[339px] mt-[30px] md:[mt-60px]">
         <QuizBackground />
         <div className="flex flex-col gap-y-[30px] md:gap-y-[40px] xl:gap-y-[57px] relative px-[10px] md:px-[40px] xl:px-[100px] pt-[10px] md:pt-[40px] pb-[25px] md:pb-[50px]">

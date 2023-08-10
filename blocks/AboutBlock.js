@@ -174,19 +174,118 @@ const List = ({ className }) => (
   </div>
 )
 
-const ImgSpring = ({ className }) => (
-  <img
-    // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-    className={className}
+const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
+  <div className={cn('relative', imgSizeClassName, className)}>
+    {/* <img
+    className="absolute"
     alt="gif"
-    src="/img/cardsSpring.gif"
-    style={{
-      background:
-        'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
-      backgroundBlendMode: 'color-dodge, normal',
-    }}
+    src="/img/bgCardsSpring.png"
     draggable={false}
-  />
+  /> */}
+    {/* <div
+      className="top-0 left-0 absolute rounded-[20px] opacity-10 w-full h-full rotate-[5deg]"
+      style={{
+        background:
+          'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.10)',
+        backgroundBlendMode: 'color-dodge, normal',
+        boxShadow: '4px 4px 25px 0px rgba(255, 255, 255, 0.15) inset',
+      }}
+    /> */}
+    <svg
+      className={cn(
+        'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[113%] h-[113%] rotate-[5deg]'
+      )}
+      viewBox="0 0 520 729"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_i_72_1947)">
+        <g opacity="0.1">
+          <rect
+            x="30.0005"
+            y="19.3385"
+            width="460"
+            height="690"
+            rx="20"
+            fill="black"
+            fillOpacity="0.1"
+          />
+          <rect
+            x="30.0005"
+            y="19.3385"
+            width="460"
+            height="690"
+            rx="20"
+            fill="url(#paint0_linear_72_1947)"
+            fillOpacity="0.6"
+            style={{ mixBlendMode: 'color-dodge' }}
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id="filter0_i_72_1947"
+          x="0.806641"
+          y="0.605469"
+          width="522.387"
+          height="731.466"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dx="4" dy="4" />
+          <feGaussianBlur stdDeviation="12.5" />
+          <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.15 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="shape"
+            result="effect1_innerShadow_72_1947"
+          />
+        </filter>
+        <linearGradient
+          id="paint0_linear_72_1947"
+          x1="490"
+          y1="758.339"
+          x2="75.0004"
+          y2="19.3385"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#608BF7" />
+          <stop offset="0.326583" stopColor="#608BF6" stopOpacity="0" />
+          <stop offset="0.781706" stopColor="#867BFF" stopOpacity="0" />
+          <stop offset="1" stopColor="#867BFF" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <img
+      // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
+      className={cn('relative object-cover', imgClassName, imgSizeClassName)}
+      alt="gif"
+      src="/img/cardsSpring.gif"
+      style={{
+        background:
+          'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
+        backgroundBlendMode: 'color-dodge, normal',
+      }}
+      draggable={false}
+    />
+  </div>
 )
 
 const AboutBlock = () => {
@@ -195,7 +294,11 @@ const AboutBlock = () => {
       <div className="flex gap-x-[100px] flex-wrap xl:flex-nowrap justify-center gap-y-[78px]">
         <div className="flex flex-col items-center flex-1">
           <Title />
-          <ImgSpring className="mt-[35px] sm:hidden rounded-[10px] object-cover w-[240px] h-[360px]" />
+          <ImgSpring
+            imgClassName="rounded-[10px]"
+            imgSizeClassName="w-[240px] h-[360px]"
+            className="mt-[35px] sm:hidden"
+          />
           <div>
             <div className="mt-[30px] sm:mt-[60px] text-[14px] md:text-[21px] font-bold text-white">
               Меня зовут Алексей Белинский, и я иллюзионист:
@@ -203,7 +306,11 @@ const AboutBlock = () => {
             <List className="mt-[20px] sm:mt-[25px]" />
           </div>
         </div>
-        <ImgSpring className="hidden sm:block rounded-[20px] object-cover min-w-[460px] h-[690px]" />
+        <ImgSpring
+          imgClassName="rounded-[20px]"
+          imgSizeClassName="min-w-[460px] h-[690px]"
+          className="hidden sm:block rounded-[20px]"
+        />
       </div>
     </DivContent>
   )
