@@ -31,8 +31,6 @@ const ModalZakaz = () => {
   const [showModalZakaz, setShowModalZakaz] = useRecoilState(showModalZakazAtom)
   const [phone, setPhone] = useState()
 
-  console.log('phone :>> ', phone)
-
   const onSubmit = async () => {
     await postData(
       `/api/request`,
@@ -138,7 +136,7 @@ const ModalZakaz = () => {
             className="text-[18px] md:text-[20px] tablet:text-[22px] w-full py-[20px] md:py-[25px] px-[15px] md:px-[35px] outline-none bg-transparent text-[#0e0e1ce6]"
             // showMask={value == '7'}
             // showMask
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
             // keepCharPositions
             mask={[
               '+',
@@ -174,6 +172,7 @@ const ModalZakaz = () => {
             fullWidth
             className="mt-[15px] max-w-full"
             onClick={onSubmit}
+            disabled={!phone || phone.length < 11}
           >
             Перезвоните мне
           </Button>
