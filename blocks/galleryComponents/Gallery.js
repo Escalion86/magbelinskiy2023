@@ -48,7 +48,7 @@ const Gallery = ({ type = 1 }) => {
     let isDragging = false,
       startX,
       startScrollLeft
-    console.log('type :>> ', type)
+
     carousel = document.querySelector('.carousel' + type)
     firstCardWidth = carousel.querySelector('div').offsetWidth
 
