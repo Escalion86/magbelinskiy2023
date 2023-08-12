@@ -101,13 +101,13 @@ export const POST = async (req, res) => {
               customType ? ' - ' + customType + ' ' : ''
             }`
           : ''
+      }${date ? `\n<b>Дата:</b> ${formatDate(date, false, true)}` : ''}${
+        spectators ? `\n<b>Кол-во зрителей:</b> ${spectators}` : ''
+      }${town ? `\n<b>Город:</b> ${town}` : ''}${
+        address ? `\n<b>Адрес:</b> ${address}` : ''
+      }${phone ? `\n<b>Телефон:</b> +${phone}` : ''}${
+        comment ? `\n<b>Комментарий:</b> ${comment}` : ''
       }${
-        date ? `\n<b>Дата:</b> ${formatDate(date, false, true)}` : ''
-      }\n<b>Кол-во зрителей:</b> ${spectators}${
-        town ? `\n<b>Город:</b> ${town}` : ''
-      }${address ? `\n<b>Адрес:</b> ${address}` : ''}${
-        phone ? `\n<b>Телефон:</b> +${phone}` : ''
-      }${comment ? `\n<b>Комментарий:</b> ${comment}` : ''}${
         official && typeof official === 'boolean'
           ? `\n<b>Юр. лицо:</b> ${official === false ? 'Нет' : 'Да'}`
           : ''
