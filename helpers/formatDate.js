@@ -1,4 +1,4 @@
-import { DAYS_OF_WEEK } from './constants'
+const DAYS_OF_WEEK = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
 
 const formatDate = (date, forComponent = false, showWeek = false) => {
   if (!date) return undefined

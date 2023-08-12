@@ -1,3 +1,4 @@
+'use server'
 // import { postData } from '@helpers/CRUD'
 // import formatDate from '@helpers/formatDate'
 // import Requests from '@models/Requests'
@@ -50,12 +51,12 @@ const sendTelegramMassage = async (text, url, req) =>
   )
 
 export default async function handler(req, res) {
+  console.log('!!!!!')
   const { query, method, body } = req
-
+  console.log('body :>> ', body)
   // await dbConnect()
   if (method === 'POST') {
     try {
-      console.log('body :>> ', body)
       const {
         audience,
         type,
