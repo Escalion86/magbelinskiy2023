@@ -1,3 +1,5 @@
+'use client'
+
 import AboutBlock from '@/blocks/AboutBlock'
 import GalleryBlock from '@/blocks/GalleryBlock'
 import GalleryBlock2 from '@/blocks/GalleryBlock2'

@@ -2,7 +2,7 @@ import './globals.css'
 import '../fonts/InterTight.css'
 import '../fonts/Buyan.css'
 import '../fonts/Montserrat.css'
-import { RecoilRoot } from 'recoil'
+// import { RecoilRoot } from 'recoil'
 // import localFont from 'next/font/local'
 
 // const inter = localFont({ src: '../fonts/InterTight-Regular.ttf' })
