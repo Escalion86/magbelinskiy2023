@@ -192,8 +192,8 @@ const Header = () => {
     <div className="sticky xl:static z-30 flex justify-center w-full h-0 -top-[13px]">
       <nav
         className={cn(
-          'fixed overflow-hidden top-0 right-0 w-screen h-screen duration-500 flex justify-center items-center',
-          showMenu ? 'w-screen' : 'w-0'
+          'xl:hidden fixed overflow-hidden top-0 right-0 w-screen h-screen duration-500 flex justify-center items-center',
+          showMenu ? 'w-screen' : 'w-[0px]'
         )}
         style={{
           background: 'rgba(19, 19, 35, 0.95)',
@@ -201,7 +201,7 @@ const Header = () => {
         }}
       >
         <ul
-          className="min-w-fit text-white text-center text-[28px] md:text-[38px] font-bold leading-[100%]"
+          className="flex flex-col gap-y-[10px] min-w-fit text-white text-center text-[28px] md:text-[38px] font-bold leading-[100%]"
           style={{
             fontFamily: 'Buyan',
           }}

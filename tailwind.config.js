@@ -33,6 +33,9 @@ module.exports = {
         'pos-50': '2% 98%',
         'pos-100': '98% 98%',
       },
+      // width: {
+      //   0: '0px',
+      // },
     },
     screens: {
       mobile: '375px',
