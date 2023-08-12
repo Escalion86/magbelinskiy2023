@@ -77,15 +77,15 @@ const VideoBlock = () => {
         {showVideo ? (
           <div className="absolute flex flex-col items-center aspect-video max-w-[1338px] top-[2.5%] w-[96.5%]">
             <iframe
-              class="w-full h-full"
+              className="w-full h-full"
               // width="100%"
               // height="100%"
               src="https://www.youtube.com/embed/CuoufduSlXQ?autoplay=1"
               // title="YouTube video player"
-              frameborder="0"
+              // frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               // allowfullscreen
-              allowfullscreen="allowfullscreen"
+              allowFullScreen="allowfullscreen"
               mozallowfullscreen="mozallowfullscreen"
               msallowfullscreen="msallowfullscreen"
               oallowfullscreen="oallowfullscreen"
