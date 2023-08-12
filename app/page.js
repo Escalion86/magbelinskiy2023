@@ -4,16 +4,26 @@ import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import QuizBlock from '@/blocks/QuizBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
+import Header from '@/blocks/titleComponents/Header'
+
+const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 
 export default function Home() {
   return (
-    <main className="relative flex flex-col items-center justify-between min-h-screen overflow-hidden">
-      <TitleBlock />
-      <VideoBlock />
-      <GalleryBlock />
-      <QuizBlock />
-      <AboutBlock />
-      <GalleryBlock2 />
+    <div className="relative flex flex-col items-center justify-between min-h-screen">
+      <Header />
+      <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
+        <TitleBlock />
+        <Section id="video" />
+        <VideoBlock />
+        <GalleryBlock />
+        <Section id="quiz" />
+        <QuizBlock />
+        <Section id="about" />
+        <AboutBlock />
+        <Section id="fotos" />
+        <GalleryBlock2 />
+      </main>
       {/* Фон */}
       <div
         style={{
@@ -39,6 +49,6 @@ export default function Home() {
           }}
         />
       </div>
-    </main>
+    </div>
   )
 }

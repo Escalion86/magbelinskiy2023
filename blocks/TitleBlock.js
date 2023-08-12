@@ -7,7 +7,7 @@ const TitleBlock = () => {
   return (
     <div className="relative min-w-[375px] flex flex-col items-center w-full h-screen min-h-[670px] tablet:min-h-[950px] max-h-[800px] md:max-h-max">
       <Background />
-      <Header />
+      {/* <Header /> */}
       <Content />
     </div>
   )

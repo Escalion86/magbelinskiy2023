@@ -1,43 +1,54 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Image from 'next/image'
 
-const MenuItem = ({ name, active }) => (
+const MenuItem = ({ name, active, href }) => (
   <li
-    className="cursor-pointer"
+    className={cn(
+      'duration-300 cursor-pointer hover:text-[#FFCA45] text-center text-[16px] font-medium',
+      active ? 'text-white' : 'text-[#A8A8CA]'
+    )}
     style={{
-      color: active ? '#FFF' : '#A8A8CA',
-      textAlign: 'center',
-      // fontFamily: 'Inter Tight',
-      fontSize: 16,
-      fontStyle: 'normal',
-      fontWeight: 500,
       lineHeight: '125%' /* 20px */,
     }}
   >
-    {name}
+    <a href={href}>{name}</a>
   </li>
 )
 
-const ContactButton = ({ children }) => (
-  <div
-    className="transition-all duration-300 cursor-pointer bg-gradient-to-tr bg-size-200 bg-pos-0 hover:bg-pos-50 from-[#0B0B15] to-[#1A1A32] w-[36px] h-[36px] sm:w-[50px] sm:h-[50px] p-[8px] sm:p-[13px]"
-    style={{
-      display: 'flex',
-      // padding: '30px 50px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      // gap: 20,
-      // flexShrink: 0,
-      borderRadius: '7px',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
-      // background: 'linear-gradient(63deg, #0B0B15 0%, #1A1A32 100%)',
-      boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
-    }}
-  >
-    {children}
-  </div>
-)
+const ContactButton = ({ children, href, onClick }) => {
+  const Component = ({ children, ...props }) =>
+    href ? (
+      <a {...props}>{children}</a>
+    ) : (
+      <div onClick={onClick} {...props}>
+        {children}
+      </div>
+    )
+  return (
+    <Component
+      href={href}
+      target="_blank"
+      className="transition-all duration-300 cursor-pointer bg-gradient-to-tr bg-size-200 bg-pos-50 hover:bg-pos-0 from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] w-[36px] h-[36px] sm:w-[50px] sm:h-[50px] p-[8px] sm:p-[13px]"
+      style={{
+        display: 'flex',
+        // padding: '30px 50px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // gap: 20,
+        // flexShrink: 0,
+        borderRadius: '7px',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        // background: 'linear-gradient(63deg, #0B0B15 0%, #1A1A32 100%)',
+        boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
+      }}
+    >
+      {children}
+    </Component>
+  )
+}
 
 const TelegramIcon = () => (
   <svg
@@ -101,112 +112,196 @@ const BurgerIcon = () => (
   </svg>
 )
 
-const Header = () => (
-  <div
-    className="z-20 mt-[30px] gap-x-[10px] max-w-[1264px] w-full px-[17px] md:px-[52px] relative flex justify-between"
-    style={{
-      height: 60,
-      // flexShrink: 0,
-      // backgroundColor: 'transparent',
-    }}
+const CloseIcon = () => (
+  <svg
+    width="23"
+    height="23"
+    viewBox="0 0 23 23"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <div className="flex-1 flex gap-x-[19px] items-center">
-      <Image
-        className="sm:hidden"
-        alt="logo"
-        src="/img/logo.png"
-        width={46}
-        height={46}
-      />
-      <Image
-        className="hidden sm:block"
-        alt="logo"
-        src="/img/logo.png"
-        width={60}
-        height={60}
-      />
-      <div
-        className="flex-col hidden whitespace-nowrap md:flex text-[15px] tablet:text-[16px]"
+    <path
+      d="M1.7063 1.69873L21.5069 21.5001"
+      stroke="white"
+      strokeWidth="2.14689"
+      strokeLinecap="round"
+    />
+    <path
+      d="M1.7063 21.3013L21.5069 1.49986"
+      stroke="white"
+      strokeWidth="2.14689"
+      strokeLinecap="round"
+    />
+  </svg>
+)
+
+const WhatsappButton = () => (
+  <ContactButton href="https://api.whatsapp.com/send?phone=79138370020">
+    <WhatsappIcon />
+  </ContactButton>
+)
+
+const TelegramButton = () => (
+  <ContactButton href="https://t.me/escalion">
+    <TelegramIcon />
+  </ContactButton>
+)
+
+const BurgerButton = ({ opened = false, onClick }) => (
+  <ContactButton onClick={onClick}>
+    {opened ? <CloseIcon /> : <BurgerIcon />}
+  </ContactButton>
+)
+
+const Header = () => {
+  const [showMenu, setShowMenu] = useState(false)
+
+  useEffect(() => {
+    const headerComponent = document.querySelector('.header')
+    window.addEventListener('scroll', () => {
+      const scrollFromTop = window.scrollY
+      if (scrollFromTop > 60) {
+        headerComponent.classList.add('bg-opacity-90')
+        headerComponent.classList.remove('bg-opacity-0')
+      } else {
+        headerComponent.classList.add('bg-opacity-0')
+        headerComponent.classList.remove('bg-opacity-90')
+      }
+    })
+  }, [])
+
+  const BurgerMenuItem = ({ children, href }) => {
+    return (
+      <li
+        className="whitespace-nowrap duration-300 cursor-pointer bg-gradient-to-r from-[#fff] to-[#fff] hover:from-[#C17C0E] hover:via-[63.68%] hover:via-[#FFCA45] hover:to-[#FFCA45]"
         style={{
-          color: '#fff', //'#8383A7',
-          // fontFamily: 'Inter Tight',
-          // fontSize: 16,
-          fontStyle: 'normal',
-          fontWeight: 400,
-          lineHeight: '125%' /* 20px */,
+          // background: 'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
         }}
       >
-        <span>Алексей Белинский</span>
-        <span
+        <a href={href} onClick={() => setShowMenu(false)}>
+          {children}
+        </a>
+      </li>
+    )
+  }
+
+  return (
+    <div className="sticky xl:static z-30 flex justify-center w-full h-0 -top-[13px]">
+      <nav
+        className={cn(
+          'fixed overflow-hidden top-0 right-0 w-screen h-screen duration-500 flex justify-center items-center',
+          showMenu ? 'w-screen' : 'w-0'
+        )}
+        style={{
+          background: 'rgba(19, 19, 35, 0.95)',
+          backdropFilter: 'blur(7.5px)',
+        }}
+      >
+        <ul
+          className="min-w-fit text-white text-center text-[28px] md:text-[38px] font-bold leading-[100%]"
           style={{
-            color: '#A8A8CA',
+            fontFamily: 'Buyan',
           }}
         >
-          Иллюзионист
-        </span>
+          <BurgerMenuItem href="#video">Посмотреть видео</BurgerMenuItem>
+          <BurgerMenuItem href="#quiz">Пройти квиз</BurgerMenuItem>
+          <BurgerMenuItem href="#about">Об иллюзионисте</BurgerMenuItem>
+          <BurgerMenuItem href="#fotos">Фотографии</BurgerMenuItem>
+          <BurgerMenuItem href="#reviews">Отзывы</BurgerMenuItem>
+          <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
+        </ul>
+      </nav>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 right-0 max-w-[1264px] w-full mt-[13px] h-[80px] md:h-[94px] py-[10px] md:py-[17px] flex justify-between gap-x-[10px] px-[17px] md:px-[52px] header duration-500 xl:bg-opacity-0 bg-[#131323]">
+        <div className="flex-1 flex gap-x-[19px] items-center">
+          <Image
+            className="sm:hidden min-w-[46px]"
+            alt="logo"
+            src="/img/logo.png"
+            width={46}
+            height={46}
+          />
+          <Image
+            className="hidden sm:block min-w-[60px]"
+            alt="logo"
+            src="/img/logo.png"
+            width={60}
+            height={60}
+          />
+          <div
+            className="flex-col hidden whitespace-nowrap md:flex text-[15px] tablet:text-[16px]"
+            style={{
+              color: '#fff', //'#8383A7',
+              // fontFamily: 'Inter Tight',
+              // fontSize: 16,
+              fontStyle: 'normal',
+              fontWeight: 400,
+              lineHeight: '125%' /* 20px */,
+            }}
+          >
+            <span>Алексей Белинский</span>
+            <span
+              style={{
+                color: '#A8A8CA',
+              }}
+            >
+              Иллюзионист
+            </span>
+          </div>
+        </div>
+        <ol
+          className="items-center justify-center hidden xl:flex"
+          style={{
+            padding: '18px 40px',
+            gap: 40,
+            borderRadius: 900,
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+          }}
+        >
+          <MenuItem name="Об иллюзионисте" href="#about" />
+          <MenuItem name="Фотографии" href="#fotos" />
+          <MenuItem name="Отзывы" href="#reviews" />
+        </ol>
+        <div className="flex-1 flex items-center gap-x-[13px] md:gap-x-[20px] justify-end">
+          <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
+            <WhatsappButton />
+            <TelegramButton />
+          </div>
+          <div className="flex flex-col text-right justify-center whitespace-nowrap text-[15px] sm:text-[22px]">
+            <a
+              className="duration-300 cursor-pointer text-white font-medium hover:text-[#FFCA45]"
+              style={{
+                lineHeight: '125%' /* 27.5px */,
+              }}
+              href="tel:+79138370020"
+              target="_blank"
+            >
+              8(913)837-00-20
+            </a>
+            <button
+              className="border-dashed border-b border-[#a8a8cae6] duration-300 cursor-pointer text-[#A8A8CA] border-[#A8A8CA] hover:text-[#FFCA45] hover:border-[#FFCA45] font-normal w-fit text-[12px] sm:text-[15px] md:text-[16px]"
+              style={{
+                lineHeight: '125%' /* 20px */,
+                // borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
+                WebkitBackgroundClip: 'padding-box',
+                backgroundClip: 'padding-box',
+              }}
+            >
+              Заказать звонок
+            </button>
+          </div>
+          <div className="xl:hidden md:ml-[50px]">
+            <BurgerButton
+              opened={showMenu}
+              onClick={() => setShowMenu((state) => !state)}
+            />
+          </div>
+        </div>
       </div>
     </div>
-    <ol
-      className="items-center justify-center hidden xl:flex"
-      style={{
-        padding: '18px 40px',
-        gap: 40,
-        borderRadius: 900,
-        border: '1px solid rgba(255, 255, 255, 0.12)',
-      }}
-    >
-      <MenuItem name="Об иллюзионисте" active />
-      <MenuItem name="Фотографии" />
-      <MenuItem name="Отзывы" />
-    </ol>
-    <div className="flex-1 flex items-center gap-x-[13px] md:gap-x-[20px] justify-end">
-      <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
-        <ContactButton>
-          <WhatsappIcon />
-        </ContactButton>
-        <ContactButton>
-          <TelegramIcon />
-        </ContactButton>
-      </div>
-      <div className="flex flex-col justify-center whitespace-nowrap text-[15px] sm:text-[22px]">
-        <div
-          className="cursor-pointer"
-          style={{
-            color: '#FFF',
-            textAlign: 'right',
-            // fontFamily: 'Inter Tight',
-            // fontSize: 22,
-            fontStyle: 'normal',
-            fontWeight: 500,
-            lineHeight: '125%' /* 27.5px */,
-          }}
-        >
-          8(913)837-00-20
-        </div>
-        <div
-          className="cursor-pointer w-fit text-[12px] sm:text-[15px] md:text-[16px]"
-          style={{
-            color: '#A8A8CA',
-            // fontFamily: 'Inter Tight',
-            // fontSize: 16,
-            fontStyle: 'normal',
-            fontWeight: 400,
-            lineHeight: '125%' /* 20px */,
-            borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
-            WebkitBackgroundClip: 'padding-box',
-            backgroundClip: 'padding-box',
-          }}
-        >
-          Заказать звонок
-        </div>
-      </div>
-      <div className="xl:hidden md:ml-[50px]">
-        <ContactButton>
-          <BurgerIcon />
-        </ContactButton>
-      </div>
-    </div>
-  </div>
-)
+  )
+}
 
 export default Header

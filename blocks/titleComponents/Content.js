@@ -318,8 +318,12 @@ const DiscountInfo = ({ className }) => (
 )
 
 const Content = () => (
-  <DivContent noMargin className="flex-1 my-[50px] md:my-[105px] xl:my-[124px]">
-    <div className="flex flex-col justify-between h-full">
+  <DivContent
+    noMargin
+    className="flex flex-col flex-1 my-[50px] md:my-[105px] xl:my-[124px]"
+  >
+    <div className="h-[96px] md:h-[107px]" />
+    <div className="flex flex-col justify-between flex-1 gap-y-0">
       <div className="flex gap-x-[13px]">
         <InfoCardSpecial />
         <InfoCardInclusive />

@@ -6,6 +6,7 @@ const DivContent = ({
   className,
   noMargin = false,
   fullWidth = true,
+  ...props
 }) => (
   <div
     className={cn(
@@ -16,6 +17,7 @@ const DivContent = ({
       fullWidth ? 'w-full' : '',
       className
     )}
+    {...props}
   >
     {children}
   </div>

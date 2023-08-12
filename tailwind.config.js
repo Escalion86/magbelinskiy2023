@@ -26,6 +26,7 @@ module.exports = {
       },
       backgroundSize: {
         'size-200': '200% 200%',
+        'size-300': '300% 300%',
       },
       backgroundPosition: {
         'pos-0': '2% 2%',
