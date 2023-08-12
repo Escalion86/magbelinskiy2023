@@ -6,12 +6,13 @@ import QuizBlock from '@/blocks/QuizBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
 import Header from '@/blocks/titleComponents/Header'
+import { RecoilRoot } from 'recoil'
 
 const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 
 export default function Home() {
   return (
-    <>
+    <RecoilRoot>
       <div className="relative flex flex-col items-center justify-between min-h-screen">
         <Header />
         <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
@@ -54,6 +55,6 @@ export default function Home() {
         </div>
       </div>
       <ModalZakaz />
-    </>
+    </RecoilRoot>
   )
 }

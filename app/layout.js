@@ -1,5 +1,3 @@
-'use client'
-
 import './globals.css'
 import '../fonts/InterTight.css'
 import '../fonts/Buyan.css'
@@ -17,9 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ru" className="scroll-smooth">
-      <body>
-        <RecoilRoot>{children}</RecoilRoot>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
