@@ -1,6 +1,5 @@
 import React from 'react'
 import cn from 'classnames'
-import Image from 'next/image'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'

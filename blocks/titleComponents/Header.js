@@ -158,16 +158,32 @@ const Header = () => {
 
   useEffect(() => {
     const headerComponent = document.querySelector('.header')
-    window.addEventListener('scroll', () => {
+    const titleBlockComponent = document.querySelector('.titleblock')
+    const headerWrapperComponent = document.querySelector('.headerwrapper')
+    const onScrollFunc = () => {
       const scrollFromTop = window.scrollY
       if (scrollFromTop > 60) {
         headerComponent.classList.add('bg-opacity-90')
+        headerComponent.classList.add('hover:bg-opacity-100')
         headerComponent.classList.remove('bg-opacity-0')
+        if (scrollFromTop > titleBlockComponent.offsetHeight) {
+          headerWrapperComponent.classList.add('xl:-top-[13px]')
+          headerWrapperComponent.classList.remove('xl:-top-[100px]')
+          headerComponent.classList.remove('xl:bg-opacity-0')
+        } else {
+          headerWrapperComponent.classList.add('xl:-top-[100px]')
+          headerWrapperComponent.classList.remove('xl:-top-[13px]')
+          headerComponent.classList.add('xl:bg-opacity-0')
+        }
       } else {
         headerComponent.classList.add('bg-opacity-0')
+        headerComponent.classList.remove('hover:bg-opacity-100')
         headerComponent.classList.remove('bg-opacity-90')
       }
-    })
+    }
+
+    window.addEventListener('scroll', onScrollFunc)
+    onScrollFunc()
   }, [])
 
   const BurgerMenuItem = ({ children, href }) => {
@@ -189,7 +205,7 @@ const Header = () => {
   }
 
   return (
-    <div className="sticky xl:static z-30 flex justify-center w-full h-0 -top-[13px]">
+    <div className="duration-300 headerwrapper sticky z-30 flex justify-center w-full h-0 -top-[13px]">
       <nav
         className={cn(
           'xl:hidden fixed overflow-hidden top-0 right-0 w-screen h-screen duration-500 flex justify-center items-center',
@@ -214,89 +230,91 @@ const Header = () => {
           <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
         </ul>
       </nav>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 right-0 max-w-[1264px] w-full mt-[13px] h-[80px] md:h-[94px] py-[10px] md:py-[17px] flex justify-between gap-x-[10px] px-[17px] md:px-[52px] header duration-500 xl:bg-opacity-0 bg-[#131323]">
-        <div className="flex-1 flex gap-x-[19px] items-center">
-          <Image
-            className="sm:hidden min-w-[46px]"
-            alt="logo"
-            src="/img/logo.png"
-            width={46}
-            height={46}
-          />
-          <Image
-            className="hidden sm:block min-w-[60px]"
-            alt="logo"
-            src="/img/logo.png"
-            width={60}
-            height={60}
-          />
-          <div
-            className="flex-col hidden whitespace-nowrap md:flex text-[15px] tablet:text-[16px]"
+      <div className="absolute bg-opacity-0 top-0 left-1/2 -translate-x-1/2 right-0 w-full mt-[13px] h-[80px] md:h-[94px] py-[10px] md:py-[17px] px-[17px] md:px-[52px] flex justify-center header duration-500 bg-[#131323]">
+        <div className="flex justify-between gap-x-[10px] w-full max-w-[1264px]">
+          <div className="flex-1 flex gap-x-[19px] items-center">
+            <Image
+              className="sm:hidden min-w-[46px]"
+              alt="logo"
+              src="/img/logo.png"
+              width={46}
+              height={46}
+            />
+            <Image
+              className="hidden sm:block min-w-[60px]"
+              alt="logo"
+              src="/img/logo.png"
+              width={60}
+              height={60}
+            />
+            <div
+              className="flex-col hidden whitespace-nowrap md:flex text-[15px] tablet:text-[16px]"
+              style={{
+                color: '#fff', //'#8383A7',
+                // fontFamily: 'Inter Tight',
+                // fontSize: 16,
+                fontStyle: 'normal',
+                fontWeight: 400,
+                lineHeight: '125%' /* 20px */,
+              }}
+            >
+              <span>Алексей Белинский</span>
+              <span
+                style={{
+                  color: '#A8A8CA',
+                }}
+              >
+                Иллюзионист
+              </span>
+            </div>
+          </div>
+          <ol
+            className="items-center justify-center hidden xl:flex"
             style={{
-              color: '#fff', //'#8383A7',
-              // fontFamily: 'Inter Tight',
-              // fontSize: 16,
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: '125%' /* 20px */,
+              padding: '18px 40px',
+              gap: 40,
+              borderRadius: 900,
+              border: '1px solid rgba(255, 255, 255, 0.12)',
             }}
           >
-            <span>Алексей Белинский</span>
-            <span
-              style={{
-                color: '#A8A8CA',
-              }}
-            >
-              Иллюзионист
-            </span>
-          </div>
-        </div>
-        <ol
-          className="items-center justify-center hidden xl:flex"
-          style={{
-            padding: '18px 40px',
-            gap: 40,
-            borderRadius: 900,
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-          }}
-        >
-          <MenuItem name="Об иллюзионисте" href="#about" />
-          <MenuItem name="Фотографии" href="#fotos" />
-          <MenuItem name="Отзывы" href="#reviews" />
-        </ol>
-        <div className="flex-1 flex items-center gap-x-[13px] md:gap-x-[20px] justify-end">
-          <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
-            <WhatsappButton />
-            <TelegramButton />
-          </div>
-          <div className="flex flex-col text-right justify-center whitespace-nowrap text-[15px] sm:text-[22px]">
-            <a
-              className="duration-300 cursor-pointer text-white font-medium hover:text-[#FFCA45]"
-              style={{
-                lineHeight: '125%' /* 27.5px */,
-              }}
-              href="tel:+79138370020"
-              target="_blank"
-            >
-              8(913)837-00-20
-            </a>
-            <button
-              className="border-dashed border-b border-[#a8a8cae6] duration-300 cursor-pointer text-[#A8A8CA] border-[#A8A8CA] hover:text-[#FFCA45] hover:border-[#FFCA45] font-normal w-fit text-[12px] sm:text-[15px] md:text-[16px]"
-              style={{
-                lineHeight: '125%' /* 20px */,
-                // borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
-                WebkitBackgroundClip: 'padding-box',
-                backgroundClip: 'padding-box',
-              }}
-            >
-              Заказать звонок
-            </button>
-          </div>
-          <div className="xl:hidden md:ml-[50px]">
-            <BurgerButton
-              opened={showMenu}
-              onClick={() => setShowMenu((state) => !state)}
-            />
+            <MenuItem name="Об иллюзионисте" href="#about" />
+            <MenuItem name="Фотографии" href="#fotos" />
+            <MenuItem name="Отзывы" href="#reviews" />
+          </ol>
+          <div className="flex-1 flex items-center gap-x-[13px] md:gap-x-[20px] justify-end">
+            <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
+              <WhatsappButton />
+              <TelegramButton />
+            </div>
+            <div className="flex flex-col text-right justify-center whitespace-nowrap text-[15px] sm:text-[22px]">
+              <a
+                className="duration-300 cursor-pointer text-white font-medium hover:text-[#FFCA45]"
+                style={{
+                  lineHeight: '125%' /* 27.5px */,
+                }}
+                href="tel:+79138370020"
+                target="_blank"
+              >
+                8(913)837-00-20
+              </a>
+              <button
+                className="border-dashed border-b border-[#a8a8cae6] duration-300 cursor-pointer text-[#A8A8CA] border-[#A8A8CA] hover:text-[#FFCA45] hover:border-[#FFCA45] font-normal w-fit text-[12px] sm:text-[15px] md:text-[16px]"
+                style={{
+                  lineHeight: '125%' /* 20px */,
+                  // borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
+                  WebkitBackgroundClip: 'padding-box',
+                  backgroundClip: 'padding-box',
+                }}
+              >
+                Заказать звонок
+              </button>
+            </div>
+            <div className="xl:hidden md:ml-[50px]">
+              <BurgerButton
+                opened={showMenu}
+                onClick={() => setShowMenu((state) => !state)}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -7,6 +7,8 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import Gallery from './galleryComponents/Gallery'
+import { useSetRecoilState } from 'recoil'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
 
 const Title = ({ className }) => (
   <div
@@ -29,13 +31,18 @@ const Title = ({ className }) => (
 )
 
 const GalleryBlock = () => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+
   return (
     <div className="relative flex flex-col items-center w-full">
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex items-start xl:items-center justify-between flex-col max-w-[520px] tablet:max-w-[680px] xl:max-w-full xl:flex-row gap-x-[200px]">
           <div className="flex flex-col gap-y-[50px]">
             <Title />
-            <Button className="hidden xl:block" />
+            <Button
+              className="hidden xl:block"
+              onClick={() => setShowModalZakaz(true)}
+            />
           </div>
           <DivText className="tablet:max-w-[680px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] mt-[30px] xl:mt-0">
             <span

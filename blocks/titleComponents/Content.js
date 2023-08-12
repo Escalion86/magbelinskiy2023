@@ -1,8 +1,12 @@
+'use client'
+
 import React from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
 import DivContent from '../components/DivContent'
 import DivText from '../components/DivText'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
+import { useSetRecoilState } from 'recoil'
 
 const InfoCard = ({ className, children }) => (
   <div
@@ -317,55 +321,61 @@ const DiscountInfo = ({ className }) => (
   </div>
 )
 
-const Content = () => (
-  <DivContent
-    noMargin
-    className="flex flex-col flex-1 my-[50px] md:my-[105px] xl:my-[124px]"
-  >
-    <div className="h-[96px] md:h-[107px]" />
-    <div className="flex flex-col justify-between flex-1 gap-y-0">
-      <div className="flex gap-x-[13px]">
-        <InfoCardSpecial />
-        <InfoCardInclusive />
-      </div>
-      <Title />
-      <CupInfo />
-      <div className="items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[30px] flex tablet:hidden">
-        <SvgParty />
-        <div
-          className="flex flex-col text-[11px] md:text-[15px]"
-          style={{
-            color: '#FFF',
-            fontStyle: 'normal',
-            fontWeight: 400,
-            lineHeight: '115%',
-          }}
-        >
-          <span>Приеду со своим реквизитом</span>
-          <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
+const Content = () => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  return (
+    <DivContent
+      noMargin
+      className="flex flex-col flex-1 my-[50px] md:my-[105px] xl:my-[124px]"
+    >
+      <div className="h-[96px] md:h-[107px]" />
+      <div className="flex flex-col justify-between flex-1 gap-y-0">
+        <div className="flex gap-x-[13px]">
+          <InfoCardSpecial />
+          <InfoCardInclusive />
         </div>
-      </div>
-      <div className="relative h-[70px] tablet:h-[100px] w-fit pr-[20px]">
-        <div
-          className="hidden tablet:block absolute left-8 right-0 h-full mt-[9px] rounded-r-[10px] tablet:rounded-r-[15px]"
-          style={{
-            // borderRadius: 7,
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            background:
-              'linear-gradient(343deg, rgba(96, 139, 246, 0.10) 0%, rgba(96, 139, 246, 0.00) 83.72%), linear-gradient(63deg, rgba(11, 11, 21, 0.10) 0%, rgba(26, 26, 50, 0.10) 100%)',
-            backgroundBlendMode: 'color-dodge, normal',
-            boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
-            backdropFilter: 'blur(3px)',
-          }}
-        />
-        <div className="relative flex items-center gap-x-[30px]">
-          <Button className="-mt-[9px]" />
-          <DiscountInfo className="hidden tablet:flex w-[220px]" />
+        <Title />
+        <CupInfo />
+        <div className="items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[30px] flex tablet:hidden">
+          <SvgParty />
+          <div
+            className="flex flex-col text-[11px] md:text-[15px]"
+            style={{
+              color: '#FFF',
+              fontStyle: 'normal',
+              fontWeight: 400,
+              lineHeight: '115%',
+            }}
+          >
+            <span>Приеду со своим реквизитом</span>
+            <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
+          </div>
         </div>
+        <div className="relative h-[70px] tablet:h-[100px] w-fit pr-[20px]">
+          <div
+            className="hidden tablet:block absolute left-8 right-0 h-full mt-[9px] rounded-r-[10px] tablet:rounded-r-[15px]"
+            style={{
+              // borderRadius: 7,
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              background:
+                'linear-gradient(343deg, rgba(96, 139, 246, 0.10) 0%, rgba(96, 139, 246, 0.00) 83.72%), linear-gradient(63deg, rgba(11, 11, 21, 0.10) 0%, rgba(26, 26, 50, 0.10) 100%)',
+              backgroundBlendMode: 'color-dodge, normal',
+              boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
+              backdropFilter: 'blur(3px)',
+            }}
+          />
+          <div className="relative flex items-center gap-x-[30px]">
+            <Button
+              className="-mt-[9px]"
+              onClick={() => setShowModalZakaz(true)}
+            />
+            <DiscountInfo className="hidden tablet:flex w-[220px]" />
+          </div>
+        </div>
+        <DiscountInfo className="flex tablet:hidden w-[220px] md:w-[290px]" />
       </div>
-      <DiscountInfo className="flex tablet:hidden w-[220px] md:w-[290px]" />
-    </div>
-  </DivContent>
-)
+    </DivContent>
+  )
+}
 
 export default Content

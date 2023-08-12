@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
+import { useSetRecoilState } from 'recoil'
 
 const Arrow = ({ right, className, onClick }) => {
   return (
@@ -38,6 +40,8 @@ const Arrow = ({ right, className, onClick }) => {
 }
 
 const Gallery = ({ type = 1 }) => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+
   var carousel, firstCardWidth, timer, imageWidth
 
   useEffect(() => {
@@ -213,7 +217,7 @@ const Gallery = ({ type = 1 }) => {
       </div>
       {type === 1 ? (
         <div className="justify-center mt-[30px] md:mt-[60px] tablet:max-w-[680px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] flex items-center md:justify-between w-full xl:hidden">
-          <Button />
+          <Button onClick={() => setShowModalZakaz(true)} />
           <div className="hidden md:flex gap-x-[20px]">
             <Arrow onClick={leftClick} />
             <Arrow right onClick={rightClick} />
