@@ -208,8 +208,8 @@ const Header = () => {
     <div className="duration-300 headerwrapper sticky z-30 flex justify-center w-full h-0 -top-[13px]">
       <nav
         className={cn(
-          'xl:hidden fixed overflow-hidden top-0 right-0 w-screen h-screen duration-500 flex justify-center items-center',
-          showMenu ? 'w-screen' : 'w-[0px]'
+          'xl:hidden fixed overflow-hidden top-0 right-0 h-screen duration-500 flex justify-center items-center',
+          showMenu ? 'w-full' : 'w-[0px]'
         )}
         style={{
           background: 'rgba(19, 19, 35, 0.95)',

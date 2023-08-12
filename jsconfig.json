@@ -3,7 +3,9 @@
     "paths": {
       "@/*": ["./*"],
       "@components/*": ["./components/*"],
-      "@blocks/*": ["./blocks/*"]
+      "@blocks/*": ["./blocks/*"],
+      "@helpers/*": ["./helpers/*"],
+      "@state/*": ["./state/*"]
     }
   }
 }
