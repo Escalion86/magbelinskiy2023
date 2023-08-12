@@ -26,19 +26,19 @@ const sendTelegramMassage = async (text, url) =>
       chat_id: 261102161,
       text,
       parse_mode: 'html',
-      reply_markup:
-        process.env.NODE_ENV === 'production'
-          ? JSON.stringify({
-              inline_keyboard: [
-                [
-                  {
-                    text: 'Позвонить клиенту',
-                    url: url,
-                  },
-                ],
-              ],
-            })
-          : undefined,
+      // reply_markup:
+      //   process.env.NODE_ENV === 'production'
+      //     ? JSON.stringify({
+      //         inline_keyboard: [
+      //           [
+      //             {
+      //               text: 'Позвонить клиенту',
+      //               url: url,
+      //             },
+      //           ],
+      //         ],
+      //       })
+      //     : undefined,
     },
     (data) => console.log('data', data),
     (data) => console.log('error', data),
