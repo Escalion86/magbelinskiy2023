@@ -34,8 +34,8 @@ const ModalZakaz = () => {
   const onSubmit = async () => {
     await postData(
       `/api/request`,
-      { phone },
-      (data) => console.log('data :>> ', data)
+      { phone }
+      // (data) => console.log('data :>> ', data)
       // (data) => {
       //   snackbar.success(messages[itemName]?.add?.success)
       //   if (props['set' + capitalizeFirstLetter(itemName)])
