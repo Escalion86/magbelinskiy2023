@@ -5,6 +5,7 @@ import GalleryBlock from '@/blocks/GalleryBlock'
 import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import ModalZakaz from '@/blocks/ModalZakaz'
 import QuizBlock from '@/blocks/QuizBlock'
+import ReviewsBlock from '@/blocks/ReviewsBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
 import Header from '@/blocks/titleComponents/Header'
@@ -28,6 +29,8 @@ export default function Home() {
           <AboutBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
+          <Section id="rewiews" />
+          <ReviewsBlock />
         </main>
 
         {/* Фон */}
