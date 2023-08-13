@@ -11,7 +11,7 @@ import DivText from './components/DivText'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px] text-center xl:text-left',
+      'text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px] text-center md:text-left',
       className
     )}
     style={{
@@ -290,29 +290,46 @@ const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
 
 const AboutBlock = () => {
   return (
-    <DivContent className="flex flex-col items-center gap-y-[20px]">
-      <div className="flex gap-x-[100px] flex-wrap xl:flex-nowrap justify-center gap-y-[78px]">
-        <div className="flex flex-col items-center flex-1">
-          <Title />
-          <ImgSpring
-            imgClassName="rounded-[10px]"
-            imgSizeClassName="w-[240px] h-[360px]"
-            className="mt-[35px] sm:hidden"
-          />
-          <div>
-            <div className="mt-[30px] sm:mt-[60px] text-[14px] md:text-[21px] font-bold text-white">
-              Меня зовут Алексей Белинский, и я иллюзионист:
+    <div className="relative flex justify-center w-full">
+      <img
+        // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
+        className="absolute opacity-20 md:opacity-50 left-0 md:left-[min(calc(3%-60px),0px)] top-0 md:-top-[290px] object-cover w-[25%] md:w-[320px]"
+        alt="glass"
+        src="/img/broken_glass_left.png"
+        draggable={false}
+      />
+      <img
+        // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
+        className="absolute opacity-20 md:opacity-50 right-0 md:right-[min(calc(3%-60px),0px)] bottom-[350px] sm:bottom-[650px] md:bottom-[240px] xl:-bottom-[160px] object-cover w-[25%] md:w-[300px]"
+        alt="glass"
+        src="/img/broken_glass_right.png"
+        draggable={false}
+      />
+      {/* broken_glass_ */}
+      <DivContent className="flex flex-col items-center gap-y-[20px]">
+        <div className="flex gap-x-[100px] flex-wrap xl:flex-nowrap justify-center gap-y-[78px]">
+          <div className="flex flex-col items-center flex-1">
+            <Title />
+            <ImgSpring
+              imgClassName="rounded-[10px]"
+              imgSizeClassName="w-[240px] h-[360px]"
+              className="mt-[35px] sm:hidden"
+            />
+            <div>
+              <div className="mt-[30px] sm:mt-[60px] text-[14px] md:text-[21px] font-bold text-white">
+                Меня зовут Алексей Белинский, и я иллюзионист:
+              </div>
+              <List className="mt-[20px] sm:mt-[25px]" />
             </div>
-            <List className="mt-[20px] sm:mt-[25px]" />
           </div>
+          <ImgSpring
+            imgClassName="rounded-[20px]"
+            imgSizeClassName="min-w-[460px] h-[690px]"
+            className="hidden sm:block rounded-[20px]"
+          />
         </div>
-        <ImgSpring
-          imgClassName="rounded-[20px]"
-          imgSizeClassName="min-w-[460px] h-[690px]"
-          className="hidden sm:block rounded-[20px]"
-        />
-      </div>
-    </DivContent>
+      </DivContent>
+    </div>
   )
 }
 

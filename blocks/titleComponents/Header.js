@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Image from 'next/image'
+import { useSetRecoilState } from 'recoil'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
 
 const MenuItem = ({ name, active, href }) => (
   <li
@@ -154,6 +156,7 @@ const BurgerButton = ({ opened = false, onClick }) => (
 )
 
 const Header = () => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const [showMenu, setShowMenu] = useState(false)
 
   useEffect(() => {
@@ -305,6 +308,7 @@ const Header = () => {
                   WebkitBackgroundClip: 'padding-box',
                   backgroundClip: 'padding-box',
                 }}
+                onClick={() => setShowModalZakaz(true)}
               >
                 Заказать звонок
               </button>
