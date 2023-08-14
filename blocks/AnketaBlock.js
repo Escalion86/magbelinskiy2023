@@ -75,15 +75,18 @@ const AnketaBlock = () => {
   }
 
   return (
-    <div className="relative mt-[85px] flex w-full flex-col items-center md:mt-[161px] xl:mt-[185px]">
-      <DivContent className="flex flex-col items-center gap-y-[20px] xl:flex-row">
-        <div className="flex flex-col items-center justify-center xl:items-start">
+    <div className="relative mb-[40px] mt-[85px] flex w-full flex-col items-center md:mb-[100px] md:mt-[161px] xl:mt-[185px]">
+      <DivContent
+        noMargin
+        className="flex flex-col items-center gap-y-[20px] xl:flex-row"
+      >
+        <div className="flex flex-col items-start justify-center md:items-center xl:items-start">
           <Title />
-          <div className="mt-[52px] flex w-full max-w-[490px] flex-col gap-x-[30px] gap-y-[5px] xl:max-w-full xl:flex-row">
+          <div className="mt-[20px] flex w-full max-w-[490px] flex-col gap-x-[30px] gap-y-[5px] md:mt-[52px] xl:max-w-full xl:flex-row">
             <Item num="01" text="Обсудим программу" />
             <Item num="02" text="Если необходимо, договоримся о встрече" />
           </div>
-          <div className="mt-[59px] flex w-full max-w-[490px] flex-col items-center gap-y-[15px] md:items-start">
+          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[15px] md:mt-[59px] md:items-start">
             <input
               className="h-[60px] w-full rounded-[7px] bg-white px-[20px] text-[13px] font-normal leading-[125%] outline-none md:h-[85px] md:px-[35px] md:text-[19px]"
               style={{
