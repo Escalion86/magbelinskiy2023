@@ -11,18 +11,9 @@ import Gallery from './galleryComponents/Gallery'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
       className
     )}
-    style={{
-      color: '#FFF',
-      /* Title H1 -- First Block */
-      fontFamily: 'Buyan',
-      // fontSize: 84,
-      fontStyle: 'normal',
-      fontWeight: 700,
-      lineHeight: '100%' /* 84px */,
-    }}
   >
     <SpanGradientTitle>Фотографии</SpanGradientTitle> с выступлений
   </div>

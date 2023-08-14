@@ -9,12 +9,9 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 const MenuItem = ({ name, active, href }) => (
   <li
     className={cn(
-      'cursor-pointer text-center text-[16px] font-medium duration-300 hover:text-[#FFCA45]',
+      'cursor-pointer text-center text-[16px] font-medium leading-[125%] duration-300 hover:text-[#FFCA45]',
       active ? 'text-white' : 'text-[#A8A8CA]'
     )}
-    style={{
-      lineHeight: '125%' /* 20px */,
-    }}
   >
     <a href={href}>{name}</a>
   </li>
@@ -33,17 +30,9 @@ const ContactButton = ({ children, href, onClick }) => {
     <Component
       href={href}
       target="_blank"
-      className="h-[36px] w-[36px] cursor-pointer bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]"
+      className="flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]"
       style={{
-        display: 'flex',
-        // padding: '30px 50px',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // gap: 20,
-        // flexShrink: 0,
-        borderRadius: '7px',
         border: '1px solid rgba(255, 255, 255, 0.06)',
-        // background: 'linear-gradient(63deg, #0B0B15 0%, #1A1A32 100%)',
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
       }}
     >
@@ -250,17 +239,7 @@ const Header = () => {
               width={60}
               height={60}
             />
-            <div
-              className="hidden flex-col whitespace-nowrap text-[15px] md:flex tablet:text-[16px]"
-              style={{
-                color: '#fff', //'#8383A7',
-                // fontFamily: 'Inter Tight',
-                // fontSize: 16,
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: '125%' /* 20px */,
-              }}
-            >
+            <div className="hidden flex-col whitespace-nowrap text-[15px] font-normal leading-[125%] text-white md:flex tablet:text-[16px]">
               <span>Алексей Белинский</span>
               <span
                 style={{
@@ -272,11 +251,8 @@ const Header = () => {
             </div>
           </div>
           <ol
-            className="hidden items-center justify-center xl:flex"
+            className="hidden items-center justify-center gap-[40px] rounded-full px-[40px] py-[18px] xl:flex"
             style={{
-              padding: '18px 40px',
-              gap: 40,
-              borderRadius: 900,
               border: '1px solid rgba(255, 255, 255, 0.12)',
             }}
           >
@@ -291,20 +267,15 @@ const Header = () => {
             </div>
             <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
               <a
-                className="cursor-pointer font-medium text-white duration-300 hover:text-[#FFCA45]"
-                style={{
-                  lineHeight: '125%' /* 27.5px */,
-                }}
+                className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
                 href="tel:+79138370020"
                 target="_blank"
               >
                 8(913)837-00-20
               </a>
               <button
-                className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
+                className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal leading-[125%] text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
                 style={{
-                  lineHeight: '125%' /* 20px */,
-                  // borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
                   WebkitBackgroundClip: 'padding-box',
                   backgroundClip: 'padding-box',
                 }}

@@ -304,15 +304,7 @@ const DiscountInfo = ({ className }) => (
         boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
       }}
     />
-    <div
-      className="text-[11px] md:text-[15px] tablet:text-[16px]"
-      style={{
-        color: '#A8A8CA',
-        fontStyle: 'normal',
-        fontWeight: 400,
-        lineHeight: '115%',
-      }}
-    >
+    <div className="text-[11px] font-normal leading-[115%] text-[#A8A8CA] md:text-[15px] tablet:text-[16px]">
       Если закажите сейчас, получите{' '}
       <span className="tablet:font-medium" style={{ color: '#FFF' }}>
         бесплатную консультацию и скидку 5%
@@ -338,15 +330,7 @@ const Content = () => {
         <CupInfo />
         <div className="mb-[25px] mt-[30px] flex items-center gap-x-[10px] md:gap-x-[15px] tablet:hidden">
           <SvgParty />
-          <div
-            className="flex flex-col text-[11px] md:text-[15px]"
-            style={{
-              color: '#FFF',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: '115%',
-            }}
-          >
+          <div className="flex flex-col text-[11px] font-normal leading-[115%] text-white md:text-[15px]">
             <span>Приеду со своим реквизитом</span>
             <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
           </div>

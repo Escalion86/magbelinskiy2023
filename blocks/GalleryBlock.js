@@ -13,18 +13,9 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[190px] text-[29px] phoneH:w-[200px] phoneH:text-[32px] sm:w-[220px] sm:text-[36px] md:w-[260px] md:text-[42px] tablet:w-[400px] tablet:text-[64px]',
+      'w-[190px] font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:w-[200px] phoneH:text-[32px] sm:w-[220px] sm:text-[36px] md:w-[260px] md:text-[42px] tablet:w-[400px] tablet:text-[64px]',
       className
     )}
-    style={{
-      color: '#FFF',
-      /* Title H1 -- First Block */
-      fontFamily: 'Buyan',
-      // fontSize: 84,
-      fontStyle: 'normal',
-      fontWeight: 700,
-      lineHeight: '100%' /* 84px */,
-    }}
   >
     Привезу реквизит и <SpanGradientTitle>сделаю все сам</SpanGradientTitle>
   </div>
@@ -45,34 +36,18 @@ const GalleryBlock = () => {
             />
           </div>
           <DivText className="mt-[30px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] tablet:max-w-[680px] xl:mt-0">
-            <span
-              style={{
-                fontWeight: 700,
-              }}
-            >
+            <span className="font-bold">
               Я сделаю иллюзионное шоу под ключ.{' '}
             </span>
             Это значит, что вам нужно просто позвать меня, остальное я сделаю
             сам.
             <br />
             <br />
-            <span
-              style={{
-                fontWeight: 700,
-              }}
-            >
-              Я сам подберу программу номера{' '}
-            </span>
+            <span className="font-bold">Я сам подберу программу номера </span>
             под ваш праздник, привезу оборудование и реквизиты, все установлю и
             проведу шоу. <br />
             <br />
-            <span
-              style={{
-                fontWeight: 700,
-              }}
-            >
-              После такого представления{' '}
-            </span>
+            <span className="font-bold">После такого представления </span>
             гости долго будут находиться под впечатлениями и не понимать, как
             такое возможно в реальной жизни.
           </DivText>
@@ -84,9 +59,6 @@ const GalleryBlock = () => {
       <div
         className="absolute right-0 top-[90px] z-10 hidden aspect-[235/303] h-[265px] w-[207px] md:block xl:hidden 2xl:h-[303px] 2xl:w-[235px]"
         style={{
-          // width: 289,
-          // height: '28%',
-          flexShrink: 0,
           background: 'url("/img/hand2.png")',
           mixBlendMode: 'hard-light',
           backgroundSize: 'contain',
@@ -94,52 +66,36 @@ const GalleryBlock = () => {
         }}
       />
       <div
-        className="absolute left-[calc(15%-400px)] top-[150px]"
+        className="absolute left-[calc(15%-400px)] top-[150px] h-[509px] w-[320px] rounded-full opacity-60"
         style={{
-          width: 320,
-          height: 509,
           transform: 'rotate(135deg)',
-          borderRadius: 900,
-          opacity: 0.6,
           background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(177.5px)',
         }}
       />
       <div
-        className="absolute left-[calc(15%-490px)] top-[100px]"
+        className="absolute left-[calc(15%-490px)] top-[100px] h-[410px] w-[258px] rounded-full opacity-60"
         style={{
-          width: 258,
-          height: 410,
           transform: 'rotate(-165deg)',
-          borderRadius: 900,
-          opacity: 0.6,
           background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(177.5px)',
         }}
       />
       <div
-        className="absolute right-[calc(15%-350px)] top-[300px] xl:top-[680px]"
+        className="absolute right-[calc(15%-350px)] top-[300px] h-[413px] w-[260px] rounded-full opacity-60 xl:top-[680px]"
         style={{
-          width: 260,
-          height: 413,
           transform: 'rotate(30deg)',
-          borderRadius: 900,
-          opacity: 0.6,
           background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(177.5px)',
         }}
       />
       <div
-        className="absolute right-[calc(15%-340px)] top-[700px] xl:top-[1080px]"
+        className="h-332px] absolute right-[calc(15%-340px)] top-[700px] w-[209px] rounded-full opacity-60 xl:top-[1080px]"
         style={{
-          width: 209,
-          height: 332,
           transform: 'rotate(90deg)',
-          borderRadius: 900,
-          opacity: 0.6,
           background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(177.5px)',

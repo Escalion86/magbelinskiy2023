@@ -11,6 +11,7 @@ const DivText = ({
 }) => (
   <div
     className={cn(
+      'leading-[145%]',
       size === 'small' ? 'text-[11px] md:text-[15px] tablet:text-[19px]' : '',
       size === 'normal' ? 'text-[12px] md:text-[16px] tablet:text-[21px]' : '',
       size === 'big' ? 'text-[13px] md:text-[17px] tablet:text-[23px]' : '',
@@ -18,10 +19,7 @@ const DivText = ({
       textFontClass,
       className
     )}
-    style={{
-      lineHeight: '145%',
-      ...style,
-    }}
+    style={style}
   >
     {children}
   </div>

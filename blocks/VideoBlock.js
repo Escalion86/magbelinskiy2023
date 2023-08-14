@@ -9,18 +9,9 @@ import DivText from './components/DivText'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[250px] text-center text-[29px] phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
+      'w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
       className
     )}
-    style={{
-      color: '#FFF',
-      /* Title H1 -- First Block */
-      fontFamily: 'Buyan',
-      // fontSize: 84,
-      fontStyle: 'normal',
-      fontWeight: 700,
-      lineHeight: '100%' /* 84px */,
-    }}
   >
     Такое ваши гости видели только{' '}
     <SpanGradientTitle>по телевизору</SpanGradientTitle>
@@ -56,11 +47,9 @@ const VideoBlock = () => {
         }}
       />
       <div
-        className="absolute -bottom-[150px] -right-[190px] h-[305px] w-[192px] tablet:h-[610px] tablet:w-[384px]"
+        className="absolute -bottom-[150px] -right-[190px] h-[305px] w-[192px] rounded-full opacity-30 tablet:h-[610px] tablet:w-[384px]"
         style={{
           transform: 'rotate(-30deg)',
-          borderRadius: 900,
-          opacity: 0.3,
           background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
           mixBlendMode: 'exclusion',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',

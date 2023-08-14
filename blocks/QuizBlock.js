@@ -558,18 +558,9 @@ const SvgProgressDynamyc = () => {
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[240px] text-center text-[29px] text-white phoneH:w-[260px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[340px] md:text-[42px] tablet:w-[520px] tablet:text-[64px]',
+      'w-[240px] text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:w-[260px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[340px] md:text-[42px] tablet:w-[520px] tablet:text-[64px]',
       className
     )}
-    style={{
-      color: '#FFF',
-      /* Title H1 -- First Block */
-      fontFamily: 'Buyan',
-      // fontSize: 84,
-      fontStyle: 'normal',
-      fontWeight: 700,
-      lineHeight: '100%' /* 84px */,
-    }}
   >
     <SpanGradientTitle>Пройдите квиз</SpanGradientTitle>, чтобы сделать
     идеальное шоу
@@ -610,14 +601,7 @@ const QuizHeader = () => (
     }}
   >
     <div className="flex w-full flex-col justify-between gap-x-[12px] sm:flex-row sm:items-center">
-      <div
-        className="whitespace-nowrap text-[13px] md:text-[16px] tablet:text-[19px]"
-        style={{
-          color: '#fff',
-          fontWeight: 500,
-          lineHeight: '135%',
-        }}
-      >
+      <div className="whitespace-nowrap text-[13px] font-medium leading-[135%] text-white md:text-[16px] tablet:text-[19px]">
         В конце теста вас ждет <span className="md:font-bold">подарок</span>:
       </div>
       <svg
@@ -637,9 +621,8 @@ const QuizHeader = () => (
       <div className="flex flex-col gap-x-[47px] text-[12px] font-normal text-[#A8A8CA] md:text-[16px] tablet:text-[19px] 2xl:flex-row">
         <div className="flex items-center gap-x-[8px] md:gap-x-[15px]">
           <div
-            className="-mt-[4px] h-[8px] w-[8px] md:h-[14px] md:w-[14px]"
+            className="-mt-[4px] h-[8px] w-[8px] rounded-[100px] md:h-[14px] md:w-[14px]"
             style={{
-              borderRadius: 100,
               border: '1px solid rgba(14, 14, 28, 0.05)',
               background:
                 'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%), rgba(14, 14, 28, 0.04)',
@@ -653,9 +636,8 @@ const QuizHeader = () => (
         </div>
         <div className="flex items-center gap-x-[8px] md:gap-x-[15px]">
           <div
-            className="-mt-[4px] h-[8px] w-[8px] md:h-[14px] md:w-[14px]"
+            className="-mt-[4px] h-[8px] w-[8px] rounded-[100px] md:h-[14px] md:w-[14px]"
             style={{
-              borderRadius: 100,
               border: '1px solid rgba(14, 14, 28, 0.05)',
               background:
                 'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%), rgba(14, 14, 28, 0.04)',
@@ -750,9 +732,8 @@ const QuizCard = ({ title, imageName }) => (
 const QuizProgress = ({ progress }) => (
   <div className="h-[20px] w-full">
     <div
-      className="relative h-[20px] only:w-full md:h-[30px]"
+      className="relative h-[20px] rounded-[90px] only:w-full md:h-[30px]"
       style={{
-        borderRadius: 90,
         background:
           'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
         boxShadow:
@@ -760,11 +741,10 @@ const QuizProgress = ({ progress }) => (
       }}
     >
       <div
-        className="absolute left-0 z-10 flex h-full items-center justify-center overflow-hidden text-[12px] font-bold text-[#0E0E1C] md:text-[17px]"
+        className="absolute left-0 z-10 flex h-full items-center justify-center overflow-hidden rounded-[90px] text-[12px] font-bold text-[#0E0E1C] md:text-[17px]"
         style={{
           width: progress + '%',
           fontFamily: 'Montserrat',
-          borderRadius: 90,
           background:
             'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%), linear-gradient(63deg, #692DC1 0%, #AC80EC 100%), #C4C4C4',
         }}

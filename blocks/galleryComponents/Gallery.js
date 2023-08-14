@@ -197,7 +197,7 @@ const Gallery = ({ type = 1 }) => {
               <img
                 // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
                 className={cn(
-                  'inline aspect-[9/7] object-cover',
+                  'inline aspect-[9/7] rounded-[20px] object-cover',
                   type === 1
                     ? 'w-[calc((100%-80px)/3)] min-w-[270px] md:min-w-[360px]'
                     : 'w-[calc((100%-80px)/3)] min-w-[270px] md:min-w-[462px]'
@@ -206,7 +206,6 @@ const Gallery = ({ type = 1 }) => {
                 src={`/img/gallery/${name}.jpg`}
                 style={{
                   scrollSnapAlign: 'start',
-                  borderRadius: 20,
                   boxShadow: '4px 4px 25px 0px rgba(255, 255, 255, 0.15) inset',
                 }}
                 draggable={false}

@@ -13,13 +13,9 @@ import { postData } from '@/helpers/CRUD'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[250px] text-center text-[29px] font-bold text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
+      'w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
       className
     )}
-    style={{
-      fontFamily: 'Buyan',
-      lineHeight: '100%' /* 84px */,
-    }}
   >
     <SpanGradientTitle>Оставьте заявку</SpanGradientTitle>, чтобы
     <br />
@@ -91,10 +87,7 @@ const ModalZakaz = () => {
         </div>
         <Title />
         <DivText
-          className="mt-[25px] text-center"
-          style={{
-            lineHeight: '135%' /* 22.95px */,
-          }}
+          className="mt-[25px] text-center leading-[135%]"
           textColorClass="text-[#8888AB]"
           textFontClass="font-medium"
         >
@@ -107,10 +100,7 @@ const ModalZakaz = () => {
           , чтобы подробно обсудить шоу.
         </DivText>
         <DivText
-          className="mt-[15px] text-center"
-          style={{
-            lineHeight: '135%' /* 22.95px */,
-          }}
+          className="mt-[15px] text-center leading-[135%]"
           size="small"
           textColorClass="text-[#8888AB]"
         >
@@ -178,10 +168,7 @@ const ModalZakaz = () => {
           </Button>
         </div>
         <DivText
-          className="mt-[25px] text-center"
-          style={{
-            lineHeight: '135%' /* 22.95px */,
-          }}
+          className="mt-[25px] text-center leading-[135%]"
           size="small"
           textColorClass="text-[#8888AB]"
           textFontClass="font-normal"
