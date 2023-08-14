@@ -94,7 +94,12 @@ const Star = () => (
 const Rewiews = ({ className }) => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
-  var carousel, firstCardWidth, timer, padding, visibleCardsOnCarousel
+  var carousel,
+    firstCardWidth,
+    timer,
+    padding,
+    visibleCardsOnCarousel,
+    infiniteScroll
 
   useEffect(() => {
     let isDragging = false,
@@ -121,8 +126,21 @@ const Rewiews = ({ className }) => {
 
     const dragEnd = () => {
       isDragging = false
-      infiniteScroll()
+      const deltaWidth = carousel.scrollLeft % firstCardWidth
+      console.log('deltaWidth :>> ', deltaWidth)
+      if (deltaWidth > padding)
+        if (deltaWidth < firstCardWidth / 2) leftClick()
+        else rightClick()
     }
+
+    // const mouseUp = () => {
+    //   const deltaWidth = carousel.scrollLeft % firstCardWidth
+    //   console.log('deltaWidth :>> ', deltaWidth)
+    //   if (deltaWidth > padding)
+    //     if (deltaWidth < firstCardWidth / 2) leftClick()
+    //     else rightClick()
+    //   // infiniteScroll()
+    // }
 
     const draging = (e) => {
       if (!isDragging) return
@@ -131,7 +149,7 @@ const Rewiews = ({ className }) => {
 
     const oneSetImagesWidth = carousel.scrollWidth / rewiews.length
 
-    const infiniteScroll = () => {
+    infiniteScroll = () => {
       if (carousel.scrollLeft <= oneSetImagesWidth) {
         carousel.classList.add('no-transition')
         carousel.scrollLeft += firstCardWidth * rewiews.length
@@ -147,6 +165,7 @@ const Rewiews = ({ className }) => {
     }
 
     carousel.addEventListener('mousedown', dragStart)
+    // carousel.addEventListener('mouseup', mouseUp)
     document.addEventListener('mouseup', dragEnd)
     carousel.addEventListener('mousemove', draging)
     carousel.classList.add('no-transition')
@@ -155,7 +174,9 @@ const Rewiews = ({ className }) => {
   }, [])
 
   const leftClick = (e) => {
-    e.stopPropagation()
+    e?.stopPropagation()
+    console.log('leftClick :>> ')
+    infiniteScroll()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
     const add =
       (deltaWidth > padding ? 0 : firstCardWidth) + deltaWidth - padding
@@ -163,7 +184,9 @@ const Rewiews = ({ className }) => {
   }
 
   const rightClick = (e) => {
-    e.stopPropagation()
+    e?.stopPropagation()
+    console.log('rightClick :>> ')
+    infiniteScroll()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
     const add = firstCardWidth - deltaWidth + padding
     carousel.scrollLeft += add
@@ -201,8 +224,8 @@ const Rewiews = ({ className }) => {
           {[...rewiews, ...rewiews, ...rewiews].map(
             ({ imgUrl, userName, text }, index) => (
               <div
-                key={'review' + userName + imgUrl}
-                className="inline px-[10px] tablet:px-[20px]"
+                key={'review' + userName + imgUrl + index}
+                className="inline select-none px-[10px] tablet:px-[20px]"
               >
                 <div
                   className={cn(

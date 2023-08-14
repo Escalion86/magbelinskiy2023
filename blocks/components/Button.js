@@ -21,12 +21,10 @@ const Button = ({
     {!noShadow && (
       <div
         className={cn(
-          'absolute top-[25px] h-[48px] w-full bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:top-[31px] tablet:h-[78px]',
+          'absolute top-[25px] h-[48px] w-full rounded-full bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 opacity-80 transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:top-[31px] tablet:h-[78px]',
           disabled ? 'grayscale' : ''
         )}
         style={{
-          borderRadius: 900,
-          opacity: 0.8,
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(32.5px)',
         }}
@@ -40,9 +38,10 @@ const Button = ({
           : 'h-[30px] group-hover:h-[20px] group-active:h-[10px] tablet:h-[60px] tablet:group-hover:h-[45px] tablet:group-active:h-[30px]'
       )}
       style={{
-        boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
+        boxShadow: '6px 6px 26px 0px rgba(255, 255, 255,0.35) inset',
       }}
     />
+
     <div
       className={cn(
         'absolute bottom-0 z-10 flex h-[70px] w-full items-center justify-center gap-x-[20px] rounded-[10px] bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 px-[20px] py-[25px] transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:h-[100px] tablet:rounded-[15px]',
@@ -55,23 +54,15 @@ const Button = ({
           '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset, 0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
       }}
     >
-      <div
-        className="text-center text-[16px] tracking-[0.64px] tablet:text-[22px] tablet:leading-[125%] tablet:tracking-[0.88px]"
-        style={{
-          color: 'rgba(255, 255, 255, 0.90)',
-        }}
-      >
+      <div className="text-center text-[16px] tracking-[0.64px] text-[#ffffffe6] tablet:text-[22px] tablet:leading-[125%] tablet:tracking-[0.88px]">
         {children ?? 'Заказать шоу'}
       </div>
       {!children && (
         <img
           className="h-[36px] w-[36px] object-contain opacity-60 tablet:h-[50px] tablet:w-[50px]"
-          // style={{}}
           alt="logo"
           src="/img/logo_white.png"
           draggable={false}
-          // width={996}
-          // height="75%"
         />
       )}
     </div>
