@@ -320,7 +320,7 @@ const Content = () => {
       noMargin
       className="my-[50px] flex flex-1 flex-col md:my-[105px] xl:my-[124px]"
     >
-      <div className="h-[96px] md:h-[107px]" />
+      <div className="h-[76px] md:h-[107px]" />
       <div className="flex flex-1 flex-col justify-between gap-y-0">
         <div className="flex gap-x-[13px]">
           <InfoCardSpecial />

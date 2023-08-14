@@ -17,7 +17,7 @@ const MenuItem = ({ name, active, href }) => (
   </li>
 )
 
-const ContactButton = ({ children, href, onClick }) => {
+const ContactButton = ({ children, href, onClick, big }) => {
   const Component = ({ children, ...props }) =>
     href ? (
       <a {...props}>{children}</a>
@@ -30,7 +30,10 @@ const ContactButton = ({ children, href, onClick }) => {
     <Component
       href={href}
       target="_blank"
-      className="flex h-[36px] w-[36px] cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]"
+      className={cn(
+        'flex cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]',
+        big ? 'h-[40px] w-[40px]' : 'h-[36px] w-[36px]'
+      )}
       style={{
         border: '1px solid rgba(255, 255, 255, 0.06)',
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
@@ -139,7 +142,7 @@ const TelegramButton = () => (
 )
 
 const BurgerButton = ({ opened = false, onClick }) => (
-  <ContactButton onClick={onClick}>
+  <ContactButton big onClick={onClick}>
     {opened ? <CloseIcon /> : <BurgerIcon />}
   </ContactButton>
 )
