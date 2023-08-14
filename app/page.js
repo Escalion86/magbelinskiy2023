@@ -2,6 +2,7 @@
 
 import AboutBlock from '@/blocks/AboutBlock'
 import AnketaBlock from '@/blocks/AnketaBlock'
+import FooterBlock from '@/blocks/FooterBlock'
 import GalleryBlock from '@/blocks/GalleryBlock'
 import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import ModalZakaz from '@/blocks/ModalZakaz'
@@ -34,6 +35,7 @@ export default function Home() {
           <ReviewsBlock />
           <Section id="zakaz" />
           <AnketaBlock />
+          <FooterBlock />
         </main>
 
         {/* Фон */}
