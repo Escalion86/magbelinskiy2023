@@ -23,15 +23,130 @@ const Title = ({ className }) => (
   </div>
 )
 
+const OnSuccess = ({ visible }) => (
+  <div
+    className={cn(
+      'absolute bottom-0 left-0 right-0 top-0 bg-white duration-500',
+      visible ? 'z-20 opacity-100' : '-z-10 opacity-0'
+    )}
+    style={
+      {
+        // background: 'url("/img/success.png")',
+      }
+    }
+  >
+    <div className="flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] font-bold leading-[100%] phoneH:text-[32px] sm:text-[36px] md:items-start md:px-[65px] md:text-[42px] tablet:items-center tablet:text-[64px]">
+      <SpanGradientTitle className="font-buyan">
+        Спасибо за заявку!
+      </SpanGradientTitle>
+      <DivText
+        className="mt-[25px] w-full max-w-[270px] text-center leading-[135%] md:max-w-[220px] md:text-left tablet:max-w-[460px] tablet:text-center"
+        textColorClass="text-[#8888AB]"
+        textFontClass="font-medium"
+      >
+        <span className="font-bold">Уже скоро с вами свяжутся</span> для
+        консультации и обсуждения подробностей
+      </DivText>
+    </div>
+    <img
+      // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
+      className="absolute bottom-0 right-0 min-w-[107%] object-contain md:min-w-0"
+      alt="magican"
+      src="/img/success.png"
+      // style={{
+      //   filter: 'blur(0.8469998836517334px)',
+      //   // background:
+      //   //   'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
+      //   // backgroundBlendMode: 'color-dodge, normal',
+      // }}
+      draggable={false}
+    />
+  </div>
+)
+
+const Social = ({ text, href }) => (
+  <a
+    className="flex h-[40px] items-center justify-center rounded-full border border-[#0e0e1ce6] border-opacity-20 px-[40px] text-[15px] font-medium leading-[135%] text-[#0e0e1ce6] underline duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[50px] md:text-[21px] "
+    href={href}
+    target="_blank"
+  >
+    {text}
+  </a>
+)
+
+const OnUnsuccess = ({ visible }) => (
+  <div
+    className={cn(
+      'absolute bottom-0 left-0 right-0 top-0 bg-white duration-500',
+      visible ? 'z-20 opacity-100' : '-z-10 opacity-0'
+    )}
+    style={
+      {
+        // background: 'url("/img/success.png")',
+      }
+    }
+  >
+    <div className="flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] font-bold leading-[100%] phoneH:text-[32px] sm:text-[36px] md:px-[65px] md:text-[42px] tablet:text-[64px]">
+      <span
+        className="font-buyan"
+        style={{
+          background: 'linear-gradient(51deg, #ff4949 0%, #ff6c6c 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        Что-то пошло не так!
+      </span>
+      <DivText
+        className="mt-[25px] w-full max-w-[190px] text-center leading-[135%] md:max-w-[250px] tablet:max-w-[330px]"
+        textColorClass="text-[#8888AB]"
+        textFontClass="font-medium"
+      >
+        Пожалуйста <span className="font-bold">свяжитесь со мной</span> по
+        одному из контактов ниже
+      </DivText>
+      <div className="mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px] tablet:gap-y-[20px]">
+        <Social text="+7-913-837-0020" href="tel:+79138370020" />
+        <Social
+          text="Whatsapp"
+          href="https://api.whatsapp.com/send?phone=79138370020"
+        />
+        <Social text="Telegram" href="https://t.me/escalion" />
+        <Social text="Instagram" href="https://instagram.com/magbelinskiy" />
+        <Social text="VKontakte" href="https://vk.com/escalion" />
+      </div>
+    </div>
+    {/* <img
+      // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
+      className="absolute bottom-0 right-0 min-w-[107%] object-contain md:min-w-0"
+      alt="magican"
+      src="/img/success.png"
+      // style={{
+      //   filter: 'blur(0.8469998836517334px)',
+      //   // background:
+      //   //   'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
+      //   // backgroundBlendMode: 'color-dodge, normal',
+      // }}
+      draggable={false}
+    /> */}
+  </div>
+)
+
 const ModalZakaz = () => {
   const [showModalZakaz, setShowModalZakaz] = useRecoilState(showModalZakazAtom)
   const [phone, setPhone] = useState()
+  const [success, setSuccess] = useState()
 
   const onSubmit = async () => {
+    setSuccess(null)
     await postData(
       `/api/request`,
-      { phone }
-      // (data) => console.log('data :>> ', data)
+      { phone },
+      (data) => {
+        setSuccess(true)
+      },
+      (error) => setSuccess(false),
+      true
       // (data) => {
       //   snackbar.success(messages[itemName]?.add?.success)
       //   if (props['set' + capitalizeFirstLetter(itemName)])
@@ -62,11 +177,15 @@ const ModalZakaz = () => {
       onClick={() => setShowModalZakaz(false)}
     >
       <div
-        className="relative mx-[18px] flex flex-col items-center rounded-[30px] bg-white px-[18px] py-[60px] md:px-[65px]"
+        className="relative mx-[18px] flex max-w-[620px] flex-col items-center overflow-hidden rounded-[30px] bg-white px-[18px] pb-[40px] pt-[60px] md:max-w-[640px] md:px-[65px] md:pb-[60px]"
         onClick={(e) => e.stopPropagation()}
       >
+        <OnSuccess visible={showModalZakaz === 'success' || success === true} />
+        <OnUnsuccess
+          visible={showModalZakaz === 'unsuccess' || success === false}
+        />
         <div
-          className="group absolute right-[16px] top-[16px] flex h-[28px] w-[28px] cursor-pointer items-center justify-center md:right-[29px] md:top-[24px]"
+          className="group absolute right-[16px] top-[16px] z-30 flex h-[28px] w-[28px] cursor-pointer items-center justify-center md:right-[29px] md:top-[24px]"
           onClick={() => setShowModalZakaz(false)}
         >
           <svg
@@ -87,15 +206,13 @@ const ModalZakaz = () => {
         </div>
         <Title />
         <DivText
-          className="mt-[25px] text-center leading-[135%]"
+          className="mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px] tablet:max-w-full"
           textColorClass="text-[#8888AB]"
           textFontClass="font-medium"
         >
           Заполните форму и мы свяжемся с вами{' '}
           <span className="font-bold">
-            в течение
-            <br />
-            15 минут
+            в течение <span className="whitespace-nowrap">15 минут</span>
           </span>
           , чтобы подробно обсудить шоу.
         </DivText>
@@ -162,10 +279,10 @@ const ModalZakaz = () => {
             fullWidth
             className="mt-[15px] max-w-full"
             onClick={onSubmit}
-            disabled={!phone || phone.length < 11}
+            disabled={success !== undefined || !phone || phone.length < 11}
             addIcon={false}
           >
-            Перезвоните мне
+            {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
           </Button>
         </div>
         <DivText

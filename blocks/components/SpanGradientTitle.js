@@ -1,7 +1,8 @@
 import React from 'react'
 
-const SpanGradientTitle = ({ children }) => (
+const SpanGradientTitle = ({ children, className }) => (
   <span
+    className={className}
     style={{
       background: 'linear-gradient(51deg, #4986FF 0%, #A86CFF 100%)',
       // backgroundClip: 'text',

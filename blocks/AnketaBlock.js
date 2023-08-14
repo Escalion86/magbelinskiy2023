@@ -9,6 +9,8 @@ import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@/helpers/CRUD'
+import { useSetRecoilState } from 'recoil'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
 
 const Title = ({ className }) => (
   <div
@@ -45,14 +47,16 @@ const Item = ({ num, text }) => (
 )
 
 const AnketaBlock = () => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const [phone, setPhone] = useState()
   const [name, setName] = useState()
 
   const onSubmit = async () => {
     await postData(
       `/api/request`,
-      { phone, name }
-      // (data) => console.log('data :>> ', data)
+      { phone, name },
+      (data) => setShowModalZakaz('success'),
+      (error) => setShowModalZakaz('unsuccess')
       // (data) => {
       //   snackbar.success(messages[itemName]?.add?.success)
       //   if (props['set' + capitalizeFirstLetter(itemName)])
@@ -82,11 +86,11 @@ const AnketaBlock = () => {
       >
         <div className="flex flex-col items-start justify-center md:items-center xl:items-start">
           <Title />
-          <div className="mt-[20px] flex w-full max-w-[490px] flex-col gap-x-[30px] gap-y-[5px] md:mt-[52px] xl:max-w-full xl:flex-row">
+          <div className="mt-[20px] flex w-full max-w-[490px] flex-col gap-x-[30px] gap-y-[5px] md:mt-[30px] xl:mt-[52px] xl:max-w-full xl:flex-row">
             <Item num="01" text="Обсудим программу" />
             <Item num="02" text="Если необходимо, договоримся о встрече" />
           </div>
-          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[15px] md:mt-[59px] md:items-start">
+          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[15px] md:mt-[45px] md:items-start xl:mt-[59px]">
             <input
               className="h-[60px] w-full rounded-[7px] bg-white px-[20px] text-[13px] font-normal leading-[125%] outline-none md:h-[85px] md:px-[35px] md:text-[19px]"
               style={{

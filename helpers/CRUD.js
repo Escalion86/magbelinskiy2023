@@ -41,8 +41,7 @@ export const postData = async (
   url,
   form,
   callbackOnSuccess = null,
-  callbackOnError = null,
-  resJson = false
+  callbackOnError = null
 ) => {
   try {
     const res = await fetch(url, {
@@ -54,21 +53,18 @@ export const postData = async (
       body: JSON.stringify(form),
     })
 
-    // Throw error with status code in case Fetch API req failed
-    if (!res.ok) {
-      throw new Error(res.status)
-    }
-
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false)
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
-    return data
+    if (res.ok) {
+      if (callbackOnSuccess) callbackOnSuccess(json)
+    } else {
+      if (callbackOnError) callbackOnError(json)
+    }
+    return json
   } catch (error) {
     console.log('Failed to add (POST) on ' + url)
     console.log(error)
     if (callbackOnError) callbackOnError(error)
+    return error
   }
 }
 

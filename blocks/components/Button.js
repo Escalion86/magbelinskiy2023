@@ -22,12 +22,12 @@ const Button = ({
     {!noShadow && (
       <div
         className={cn(
-          'absolute top-[25px] h-[48px] w-full rounded-full bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 opacity-80 transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:top-[31px] tablet:h-[78px]',
+          'absolute top-[25px] h-[48px] w-full rounded-full bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 opacity-80 blur-[32.5px] transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:top-[31px] tablet:h-[78px]',
           disabled ? 'grayscale' : ''
         )}
         style={{
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
-          filter: 'blur(32.5px)',
+          // filter: 'blur(32.5px)',
         }}
       />
     )}

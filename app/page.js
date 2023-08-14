@@ -8,6 +8,7 @@ import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import ModalZakaz from '@/blocks/ModalZakaz'
 import QuizBlock from '@/blocks/QuizBlock'
 import ReviewsBlock from '@/blocks/ReviewsBlock'
+import SubfooterBlock from '@/blocks/SubfooterBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
 import Header from '@/blocks/titleComponents/Header'
@@ -36,6 +37,7 @@ export default function Home() {
           <Section id="zakaz" />
           <AnketaBlock />
           <FooterBlock />
+          <SubfooterBlock />
         </main>
 
         {/* Фон */}

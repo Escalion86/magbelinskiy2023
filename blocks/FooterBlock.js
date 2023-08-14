@@ -47,7 +47,7 @@ const FooterBlock = () => {
                 width={60}
                 height={60}
               />
-              <div className="flex flex-col whitespace-nowrap text-[12px] font-normal leading-[125%] text-white tablet:text-[15px]">
+              <div className="flex flex-col whitespace-nowrap text-[15px] font-normal leading-[125%] text-white">
                 <span>Алексей Белинский</span>
                 <span
                   style={{
@@ -69,13 +69,17 @@ const FooterBlock = () => {
               гостей, и насладитесь захватывающими трюками. Эмоции гостей
               гарантированы!
             </div>
-            <div className="mt-[25px] hidden cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:mt-[20px] md:block md:text-[16px] xl:mt-[45px]">
+            <a
+              href="/doc/privacy.doc"
+              download
+              className="mt-[25px] hidden cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:mt-[20px] md:block md:text-[16px] xl:mt-[45px]"
+            >
               Политика конфиденциальности
-            </div>
+            </a>
           </div>
         </div>
-        <div className="flex flex-1 justify-start md:justify-end">
-          <div className="mt-[30px] max-w-full md:mt-0 md:w-[460px] md:max-w-[460px] xl:w-[460px] xl:max-w-[460px]">
+        <div className="flex flex-1 justify-start md:justify-center tablet:justify-end">
+          <div className="mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] tablet:w-[460px] xl:w-[460px] xl:max-w-[460px]">
             <div className="font-buyan text-[29px] font-bold leading-[100%] text-white md:text-[64px]">
               Контакты
             </div>
@@ -102,7 +106,7 @@ const FooterBlock = () => {
             <div className="mt-[20px] text-[16px] font-medium leading-[135%] text-[#A8A8CA] md:mt-[30px]">
               Социальные сети:
             </div>
-            <div className="mt-[5px] flex gap-x-[20px] md:mt-[10px] md:gap-x-[30px]">
+            <div className="mt-[5px] flex flex-wrap gap-x-[20px] md:mt-[10px] md:gap-x-[30px]">
               <Social
                 text="Instagram"
                 href="https://instagram.com/magbelinskiy"
@@ -114,9 +118,13 @@ const FooterBlock = () => {
                 href="https://api.whatsapp.com/send?phone=79138370020"
               />
             </div>
-            <div className="mt-[25px] cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden">
+            <a
+              href="/doc/privacy.doc"
+              download
+              className="mt-[25px] cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
+            >
               Политика конфиденциальности
-            </div>
+            </a>
           </div>
         </div>
       </DivContent>

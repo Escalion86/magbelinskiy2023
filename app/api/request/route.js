@@ -20,8 +20,9 @@ export const EVENT_TYPES = [
 ]
 
 const sendTelegramMassage = async (text, url) =>
-  postData(
+  await postData(
     `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    // `https://api.telegram.org/bot5982479442:AAFm5dx1Kk9MQGyZI_oQ6mcKnMRUbv_ZhJ/sendMessage`,
     {
       chat_id: 261102161,
       text,
@@ -93,7 +94,7 @@ export const POST = async (req, res) => {
     //   req
     // )
 
-    await sendTelegramMassage(
+    const result = await sendTelegramMassage(
       `Заявка с ${process.env.DOMAIN}\n${
         name ? `\n<b>Имя клиента:</b> ${name}` : ''
       }${audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''}${
@@ -116,7 +117,10 @@ export const POST = async (req, res) => {
       `tel:+${phone}`
     )
 
-    return NextResponse.json({ success: true }, { status: 201 })
+    if (!result.ok)
+      return NextResponse.json({ success: false, result }, { status: 400 })
+
+    return NextResponse.json({ success: true, result }, { status: 201 })
     // return res?.status(201).json({ success: true, data })
 
     // return res?.status(201).json({ success: true, data: eventUser })
