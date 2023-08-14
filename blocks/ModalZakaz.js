@@ -13,7 +13,7 @@ import { postData } from '@/helpers/CRUD'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-black font-bold text-center w-[250px] phoneH:w-[280px] sm:w-[320px] md:w-[360px] tablet:w-[560px] text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'w-[250px] text-center text-[29px] font-bold text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
       className
     )}
     style={{
@@ -60,17 +60,17 @@ const ModalZakaz = () => {
   return (
     <div
       className={cn(
-        'transition-opacity duration-500 overflow-hidden fixed top-0 left-0 z-50 flex items-center justify-center h-screen bg-black bg-opacity-80',
-        showModalZakaz ? 'opacity-100 w-full' : 'opacity-0 w-0'
+        'fixed left-0 top-0 z-50 flex h-screen items-center justify-center overflow-hidden bg-black bg-opacity-80 transition-opacity duration-500',
+        showModalZakaz ? 'w-full opacity-100' : 'w-0 opacity-0'
       )}
       onClick={() => setShowModalZakaz(false)}
     >
       <div
-        className="relative flex flex-col items-center bg-white rounded-[30px] px-[18px] md:px-[65px] py-[60px] mx-[18px]"
+        className="relative mx-[18px] flex flex-col items-center rounded-[30px] bg-white px-[18px] py-[60px] md:px-[65px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="absolute flex items-center justify-center h-[28px] w-[28px] top-[16px] right-[16px] md:top-[24px] md:right-[29px] cursor-pointer group"
+          className="group absolute right-[16px] top-[16px] flex h-[28px] w-[28px] cursor-pointer items-center justify-center md:right-[29px] md:top-[24px]"
           onClick={() => setShowModalZakaz(false)}
         >
           <svg
@@ -91,7 +91,7 @@ const ModalZakaz = () => {
         </div>
         <Title />
         <DivText
-          className="text-center mt-[25px]"
+          className="mt-[25px] text-center"
           style={{
             lineHeight: '135%' /* 22.95px */,
           }}
@@ -107,7 +107,7 @@ const ModalZakaz = () => {
           , чтобы подробно обсудить шоу.
         </DivText>
         <DivText
-          className="text-center mt-[15px]"
+          className="mt-[15px] text-center"
           style={{
             lineHeight: '135%' /* 22.95px */,
           }}
@@ -117,7 +117,7 @@ const ModalZakaz = () => {
           При необходимости договоримся о личной встрече.
         </DivText>
         <div
-          className="mt-[20px] md:mt-[35px] flex items-center w-full rounded-[7px]"
+          className="mt-[20px] flex w-full items-center rounded-[7px] md:mt-[35px]"
           style={{
             background:
               'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), linear-gradient(0deg, #EDEDED 0%, #EDEDED 100%), #FFF',
@@ -133,7 +133,7 @@ const ModalZakaz = () => {
             placeholder="+7 ("
           /> */}
           <MaskedInput
-            className="text-[18px] md:text-[20px] tablet:text-[22px] w-full py-[20px] md:py-[25px] px-[15px] md:px-[35px] outline-none bg-transparent text-[#0e0e1ce6]"
+            className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
             // showMask={value == '7'}
             // showMask
             onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
@@ -178,7 +178,7 @@ const ModalZakaz = () => {
           </Button>
         </div>
         <DivText
-          className="text-center mt-[25px]"
+          className="mt-[25px] text-center"
           style={{
             lineHeight: '135%' /* 22.95px */,
           }}

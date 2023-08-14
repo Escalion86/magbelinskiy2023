@@ -11,7 +11,7 @@ import { useSetRecoilState } from 'recoil'
 const InfoCard = ({ className, children }) => (
   <div
     className={cn(
-      'max-w-[420px] w-full h-[32px] md:h-[70px] md:w-[310px] flex justify-center items-center gap-[10px] md:gap-[15px] pl-[10px] md:pl-[20px] pr-[9px] md:pr-[18px] py-[7px] md:py-[13px]',
+      'flex h-[32px] w-full max-w-[420px] items-center justify-center gap-[10px] py-[7px] pl-[10px] pr-[9px] md:h-[70px] md:w-[310px] md:gap-[15px] md:py-[13px] md:pl-[20px] md:pr-[18px]',
       className
     )}
     style={{
@@ -32,7 +32,7 @@ const InfoCard = ({ className, children }) => (
 const Title = ({ className }) => (
   <div
     className={cn(
-      'flex flex-col mt-[20px] md:mt-[40px] text-[38px] phoneH:text-[42px] sm:text-[50px] md:text-[60px] tablet:text-[84px]',
+      'mt-[20px] flex flex-col text-[38px] phoneH:text-[42px] sm:text-[50px] md:mt-[40px] md:text-[60px] tablet:text-[84px]',
       className
     )}
     style={{
@@ -48,7 +48,7 @@ const Title = ({ className }) => (
     <span>Закажите незабываемое</span>
     <div className="flex">
       <img
-        className="object-contain -ml-[15px] w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px] sm:-ml-[17px] sm:-mr-[6px] sm:-mt-[5px] sm:-mb-[15px] md:-ml-[22px] md:-mr-[8px] md:-mt-[5px] md:-mb-[15px] tablet:-ml-[30px] tablet:-mr-[6px] tablet:-mt-[6px] tablet:-mb-[17px]"
+        className="-mb-[12px] -ml-[15px] -mr-[5px] -mt-[4px] w-[50px] object-contain sm:-mb-[15px] sm:-ml-[17px] sm:-mr-[6px] sm:-mt-[5px] sm:w-[60px] md:-mb-[15px] md:-ml-[22px] md:-mr-[8px] md:-mt-[5px] md:w-[80px] tablet:-mb-[17px] tablet:-ml-[30px] tablet:-mr-[6px] tablet:-mt-[6px] tablet:w-[107px]"
         alt="star"
         src="/img/star.png"
         draggable={false}
@@ -73,7 +73,7 @@ const Title = ({ className }) => (
 
 const SvgParty = () => (
   <svg
-    className="w-[18px] min-w-[18px] md:min-w-[36px] md:w-[36px]"
+    className="w-[18px] min-w-[18px] md:w-[36px] md:min-w-[36px]"
     xmlns="http://www.w3.org/2000/svg"
     width="37"
     height="36"
@@ -148,7 +148,7 @@ const SvgParty = () => (
 
 const SvgDiamond = () => (
   <svg
-    className="w-[18px] min-w-[18px] md:min-w-[36px] md:w-[36px]"
+    className="w-[18px] min-w-[18px] md:w-[36px] md:min-w-[36px]"
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
@@ -229,7 +229,7 @@ const InfoCardInclusive = () => (
 const CupInfo = ({ className }) => (
   <div
     className={cn(
-      'w-[242px] md:w-[400px] tablet:w-[552px] mt-[20px] md:mt-[10px] flex-row-reverse md:flex-row flex items-center',
+      'mt-[20px] flex w-[242px] flex-row-reverse items-center md:mt-[10px] md:w-[400px] md:flex-row tablet:w-[552px]',
       className
     )}
   >
@@ -244,7 +244,7 @@ style={{
 }}
 ></div> */}
     <img
-      className="w-[56px] -rotate-12 md:rotate-0 tablet:w-[70px] object-contain md:-ml-[14px] mr-[12px]"
+      className="mr-[12px] w-[56px] -rotate-12 object-contain md:-ml-[14px] md:rotate-0 tablet:w-[70px]"
       alt="cup"
       src="/img/cup.png"
       draggable={false}
@@ -292,12 +292,12 @@ style={{
 const DiscountInfo = ({ className }) => (
   <div
     className={cn(
-      'items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[26px]',
+      'mb-[25px] mt-[26px] items-center gap-x-[10px] md:gap-x-[15px]',
       className
     )}
   >
     <div
-      className="w-[7px] h-[7px] min-w-[7px] rounded-full"
+      className="h-[7px] w-[7px] min-w-[7px] rounded-full"
       style={{
         border: '1px solid rgba(255, 255, 255, 0.05)',
         background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
@@ -326,17 +326,17 @@ const Content = () => {
   return (
     <DivContent
       noMargin
-      className="flex flex-col flex-1 my-[50px] md:my-[105px] xl:my-[124px]"
+      className="my-[50px] flex flex-1 flex-col md:my-[105px] xl:my-[124px]"
     >
       <div className="h-[96px] md:h-[107px]" />
-      <div className="flex flex-col justify-between flex-1 gap-y-0">
+      <div className="flex flex-1 flex-col justify-between gap-y-0">
         <div className="flex gap-x-[13px]">
           <InfoCardSpecial />
           <InfoCardInclusive />
         </div>
         <Title />
         <CupInfo />
-        <div className="items-center gap-x-[10px] md:gap-x-[15px] mb-[25px] mt-[30px] flex tablet:hidden">
+        <div className="mb-[25px] mt-[30px] flex items-center gap-x-[10px] md:gap-x-[15px] tablet:hidden">
           <SvgParty />
           <div
             className="flex flex-col text-[11px] md:text-[15px]"
@@ -351,9 +351,9 @@ const Content = () => {
             <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
           </div>
         </div>
-        <div className="relative h-[70px] tablet:h-[100px] w-fit pr-[20px]">
+        <div className="relative h-[70px] w-fit pr-[20px] tablet:h-[100px]">
           <div
-            className="hidden tablet:block absolute left-8 right-0 h-full mt-[9px] rounded-r-[10px] tablet:rounded-r-[15px]"
+            className="absolute left-8 right-0 mt-[9px] hidden h-full rounded-r-[10px] tablet:block tablet:rounded-r-[15px]"
             style={{
               // borderRadius: 7,
               border: '1px solid rgba(255, 255, 255, 0.05)',
@@ -369,10 +369,10 @@ const Content = () => {
               className="-mt-[9px]"
               onClick={() => setShowModalZakaz(true)}
             />
-            <DiscountInfo className="hidden tablet:flex w-[220px]" />
+            <DiscountInfo className="hidden w-[220px] tablet:flex" />
           </div>
         </div>
-        <DiscountInfo className="flex tablet:hidden w-[220px] md:w-[290px]" />
+        <DiscountInfo className="flex w-[220px] md:w-[290px] tablet:hidden" />
       </div>
     </DivContent>
   )

@@ -11,7 +11,7 @@ import DivText from './components/DivText'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px] text-center md:text-left',
+      'text-center text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-left md:text-[42px] tablet:text-[64px]',
       className
     )}
     style={{
@@ -31,7 +31,7 @@ const Title = ({ className }) => (
 )
 
 const ListItem = ({ children }) => (
-  <div className="flex gap-x-[14px] md:gap-x-[20px] items-center justify-start">
+  <div className="flex items-center justify-start gap-x-[14px] md:gap-x-[20px]">
     <svg
       className="w-[20px]"
       xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +118,7 @@ const ListItem = ({ children }) => (
         </clipPath>
       </defs>
     </svg>
-    <div className="flex-1 text-[13px] md:text-[19px] font-normal text-white">
+    <div className="flex-1 text-[13px] font-normal text-white md:text-[19px]">
       {children}
     </div>
   </div>
@@ -140,7 +140,7 @@ const SpanGold = ({ children }) => (
 const List = ({ className }) => (
   <div
     className={cn(
-      'flex flex-col gap-y-[18px] min-w-[340px] max-w-[400px] sm:min-w-[460px] md:min-w-[600px] sm:max-w-[460px] md:max-w-[600px]',
+      'flex min-w-[340px] max-w-[400px] flex-col gap-y-[18px] sm:min-w-[460px] sm:max-w-[460px] md:min-w-[600px] md:max-w-[600px]',
       className
     )}
   >
@@ -193,7 +193,7 @@ const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
     /> */}
     <svg
       className={cn(
-        'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[113%] h-[113%] rotate-[5deg]'
+        'absolute left-1/2 top-1/2 h-[113%] w-[113%] -translate-x-1/2 -translate-y-1/2 rotate-[5deg]'
       )}
       viewBox="0 0 520 729"
       fill="none"
@@ -290,25 +290,25 @@ const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
 
 const AboutBlock = () => {
   return (
-    <div className="relative flex justify-center w-full">
+    <div className="relative flex w-full justify-center">
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-        className="absolute opacity-20 md:opacity-50 left-0 md:left-[min(calc(3%-60px),0px)] top-0 md:-top-[290px] object-cover w-[25%] md:w-[320px]"
+        className="absolute left-0 top-0 w-[25%] object-cover opacity-20 md:-top-[290px] md:left-[min(calc(3%-60px),0px)] md:w-[320px] md:opacity-50"
         alt="glass"
         src="/img/broken_glass_left.png"
         draggable={false}
       />
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-        className="absolute opacity-20 md:opacity-50 right-0 md:right-[min(calc(3%-60px),0px)] bottom-[350px] sm:bottom-[650px] md:bottom-[240px] xl:-bottom-[160px] object-cover w-[25%] md:w-[300px]"
+        className="absolute bottom-[350px] right-0 w-[25%] object-cover opacity-20 sm:bottom-[650px] md:bottom-[240px] md:right-[min(calc(3%-60px),0px)] md:w-[300px] md:opacity-50 xl:-bottom-[160px]"
         alt="glass"
         src="/img/broken_glass_right.png"
         draggable={false}
       />
       {/* broken_glass_ */}
       <DivContent className="flex flex-col items-center gap-y-[20px]">
-        <div className="flex gap-x-[100px] flex-wrap xl:flex-nowrap justify-center gap-y-[78px]">
-          <div className="flex flex-col items-center flex-1">
+        <div className="flex flex-wrap justify-center gap-x-[100px] gap-y-[78px] xl:flex-nowrap">
+          <div className="flex flex-1 flex-col items-center">
             <Title />
             <ImgSpring
               imgClassName="rounded-[10px]"
@@ -316,7 +316,7 @@ const AboutBlock = () => {
               className="mt-[35px] sm:hidden"
             />
             <div>
-              <div className="mt-[30px] sm:mt-[60px] text-[14px] md:text-[21px] font-bold text-white">
+              <div className="mt-[30px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
                 Меня зовут Алексей Белинский, и я иллюзионист:
               </div>
               <List className="mt-[20px] sm:mt-[25px]" />
@@ -325,7 +325,7 @@ const AboutBlock = () => {
           <ImgSpring
             imgClassName="rounded-[20px]"
             imgSizeClassName="min-w-[460px] h-[690px]"
-            className="hidden sm:block rounded-[20px]"
+            className="hidden rounded-[20px] sm:block"
           />
         </div>
       </DivContent>

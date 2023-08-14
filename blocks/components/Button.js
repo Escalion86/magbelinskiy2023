@@ -11,7 +11,7 @@ const Button = ({
 }) => (
   <div
     className={cn(
-      'relative group select-none h-[70px] tablet:h-[100px]',
+      'group relative h-[70px] select-none tablet:h-[100px]',
       fullWidth ? 'w-full' : 'w-[250px] tablet:w-[360px]',
       disabled ? 'cursor-not-allowed' : 'cursor-pointer',
       className
@@ -21,7 +21,7 @@ const Button = ({
     {!noShadow && (
       <div
         className={cn(
-          'absolute w-full h-[48px] tablet:h-[78px] top-[25px] tablet:top-[31px] transition-all duration-300 from-[#692DC1] bg-gradient-to-r to-[#AC80EC] via-[47%] group-hover:via-[#AC80EC] group-hover:to-[#A676EC] bg-size-200 bg-pos-0 group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea]',
+          'absolute top-[25px] h-[48px] w-full bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:top-[31px] tablet:h-[78px]',
           disabled ? 'grayscale' : ''
         )}
         style={{
@@ -34,10 +34,10 @@ const Button = ({
     )}
     <div
       className={cn(
-        'absolute rounded-[35px] tablet:rounded-[35px] -bottom-[7px] tablet:-bottom-[9px] w-full transition-all duration-300 from-[#5f29ae] bg-gradient-to-r to-[#9760e7] via-[47%] group-hover:via-[#9760e7] group-hover:to-[#9257e8] bg-size-200 bg-pos-0 group-hover:bg-pos-100 group-active:from-[#5a27a5] group-active:via-[#8e52e6] group-active:to-[#8948e6]',
+        'absolute -bottom-[7px] w-full rounded-[35px] bg-gradient-to-r from-[#5f29ae] via-[47%] to-[#9760e7] bg-size-200 bg-pos-0 transition-all duration-300 group-hover:via-[#9760e7] group-hover:to-[#9257e8] group-hover:bg-pos-100 group-active:from-[#5a27a5] group-active:via-[#8e52e6] group-active:to-[#8948e6] tablet:-bottom-[9px] tablet:rounded-[35px]',
         disabled
-          ? 'grayscale brightness-150 h-[10px] tablet:h-[30px]'
-          : 'h-[30px] tablet:h-[60px] group-hover:h-[20px] group-active:h-[10px] tablet:group-hover:h-[45px] tablet:group-active:h-[30px]'
+          ? 'h-[10px] brightness-150 grayscale tablet:h-[30px]'
+          : 'h-[30px] group-hover:h-[20px] group-active:h-[10px] tablet:h-[60px] tablet:group-hover:h-[45px] tablet:group-active:h-[30px]'
       )}
       style={{
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
@@ -45,9 +45,9 @@ const Button = ({
     />
     <div
       className={cn(
-        'rounded-[10px] tablet:rounded-[15px] absolute z-10 bottom-0 w-full h-[70px] tablet:h-[100px] transition-all duration-300 flex gap-x-[20px] justify-center items-center py-[25px] px-[20px] from-[#692DC1] bg-gradient-to-r to-[#AC80EC] via-[47%] group-hover:via-[#AC80EC] group-hover:to-[#A676EC] bg-size-200 bg-pos-0 group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea]',
+        'absolute bottom-0 z-10 flex h-[70px] w-full items-center justify-center gap-x-[20px] rounded-[10px] bg-gradient-to-r from-[#692DC1] via-[47%] to-[#AC80EC] bg-size-200 bg-pos-0 px-[20px] py-[25px] transition-all duration-300 group-hover:via-[#AC80EC] group-hover:to-[#A676EC] group-hover:bg-pos-100 group-active:from-[#642bb7] group-active:via-[#a270ea] group-active:to-[#9c66ea] tablet:h-[100px] tablet:rounded-[15px]',
         disabled
-          ? 'grayscale brightness-150 -bottom-[7px] tablet:-bottom-[9px]'
+          ? '-bottom-[7px] brightness-150 grayscale tablet:-bottom-[9px]'
           : 'group-hover:-bottom-[3px] group-active:-bottom-[7px] tablet:group-hover:-bottom-[4px] tablet:group-active:-bottom-[9px]'
       )}
       style={{
@@ -56,7 +56,7 @@ const Button = ({
       }}
     >
       <div
-        className="text-[16px] text-center tablet:text-[22px] tracking-[0.64px] tablet:leading-[125%] tablet:tracking-[0.88px]"
+        className="text-center text-[16px] tracking-[0.64px] tablet:text-[22px] tablet:leading-[125%] tablet:tracking-[0.88px]"
         style={{
           color: 'rgba(255, 255, 255, 0.90)',
         }}
@@ -65,7 +65,7 @@ const Button = ({
       </div>
       {!children && (
         <img
-          className="w-[36px] h-[36px] tablet:w-[50px] tablet:h-[50px] object-contain opacity-60"
+          className="h-[36px] w-[36px] object-contain opacity-60 tablet:h-[50px] tablet:w-[50px]"
           // style={{}}
           alt="logo"
           src="/img/logo_white.png"

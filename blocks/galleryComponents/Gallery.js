@@ -10,13 +10,13 @@ const Arrow = ({ right, className, onClick }) => {
   return (
     <div
       className={cn(
-        'w-[46px] h-[46px] md:w-[76px] md:h-[76px] rounded-full transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#4272D1] to-[#83ACFF] hover:via-[#83ACFF] hover:to-[#4272D1] cursor-pointer',
+        'h-[46px] w-[46px] cursor-pointer rounded-full bg-gradient-to-r from-[#4272D1] to-[#83ACFF] bg-size-200 bg-pos-0 transition-all hover:via-[#83ACFF] hover:to-[#4272D1] hover:bg-pos-100 md:h-[76px] md:w-[76px]',
         className
       )}
       onClick={onClick}
     >
       <svg
-        className="w-[46px] h-[46px] md:w-[76px] md:h-[76px]"
+        className="h-[46px] w-[46px] md:h-[76px] md:w-[76px]"
         xmlns="http://www.w3.org/2000/svg"
         // width={small ? 76 : 126}
         // height={small ? 76 : 126}
@@ -128,18 +128,18 @@ const Gallery = ({ type = 1 }) => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex w-full flex-col items-center">
       <div
         className={cn(
-          'relative flex flex-col items-center w-full',
+          'relative flex w-full flex-col items-center',
           type === 1 ? 'max-w-[1160px]' : ''
         )}
       >
         <Arrow
           className={cn(
-            'z-10 absolute left-[20px] -translate-y-1/2 top-1/2',
+            'absolute left-[20px] top-1/2 z-10 -translate-y-1/2',
             type === 1
-              ? 'md:hidden xl:block 2xl:-left-[136px] xl:-left-[40px]'
+              ? 'md:hidden xl:-left-[40px] xl:block 2xl:-left-[136px]'
               : 'xl:left-[calc(max(100%-1700px,54px))]'
           )}
           onClick={leftClick}
@@ -147,16 +147,16 @@ const Gallery = ({ type = 1 }) => {
         <Arrow
           right
           className={cn(
-            'z-10 absolute right-[20px] -translate-y-1/2 top-1/2',
+            'absolute right-[20px] top-1/2 z-10 -translate-y-1/2',
             type === 1
-              ? 'md:hidden xl:block xl:-right-[40px] 2xl:-right-[136px]'
+              ? 'md:hidden xl:-right-[40px] xl:block 2xl:-right-[136px]'
               : 'xl:right-[calc(max(100%-1700px,54px))]'
           )}
           onClick={rightClick}
         />
         <div
           className={cn(
-            'flex justify-start max-w-full overflow-hidden overflow-x-auto cursor-pointer no-scrollbar active:scroll-auto scroll-smooth',
+            'no-scrollbar flex max-w-full cursor-pointer justify-start overflow-hidden overflow-x-auto scroll-smooth active:scroll-auto',
             'carousel' + type,
             type === 2 ? 'xl:transparentsides' : ''
           )}
@@ -197,10 +197,10 @@ const Gallery = ({ type = 1 }) => {
               <img
                 // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
                 className={cn(
-                  'object-cover inline aspect-[9/7]',
+                  'inline aspect-[9/7] object-cover',
                   type === 1
-                    ? 'min-w-[270px] md:min-w-[360px] w-[calc((100%-80px)/3)]'
-                    : 'min-w-[270px] md:min-w-[462px] w-[calc((100%-80px)/3)]'
+                    ? 'w-[calc((100%-80px)/3)] min-w-[270px] md:min-w-[360px]'
+                    : 'w-[calc((100%-80px)/3)] min-w-[270px] md:min-w-[462px]'
                 )}
                 alt={'pic' + name}
                 src={`/img/gallery/${name}.jpg`}
@@ -216,9 +216,9 @@ const Gallery = ({ type = 1 }) => {
         </div>
       </div>
       {type === 1 ? (
-        <div className="justify-center mt-[30px] md:mt-[60px] tablet:max-w-[680px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] flex items-center md:justify-between w-full xl:hidden">
+        <div className="mt-[30px] flex w-full max-w-[270px] items-center justify-center sm:max-w-[400px] md:mt-[60px] md:max-w-[520px] md:justify-between tablet:max-w-[680px] xl:hidden">
           <Button onClick={() => setShowModalZakaz(true)} />
-          <div className="hidden md:flex gap-x-[20px]">
+          <div className="hidden gap-x-[20px] md:flex">
             <Arrow onClick={leftClick} />
             <Arrow right onClick={rightClick} />
           </div>

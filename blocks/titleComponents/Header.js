@@ -9,7 +9,7 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 const MenuItem = ({ name, active, href }) => (
   <li
     className={cn(
-      'duration-300 cursor-pointer hover:text-[#FFCA45] text-center text-[16px] font-medium',
+      'cursor-pointer text-center text-[16px] font-medium duration-300 hover:text-[#FFCA45]',
       active ? 'text-white' : 'text-[#A8A8CA]'
     )}
     style={{
@@ -33,7 +33,7 @@ const ContactButton = ({ children, href, onClick }) => {
     <Component
       href={href}
       target="_blank"
-      className="transition-all duration-300 cursor-pointer bg-gradient-to-tr bg-size-200 bg-pos-50 hover:bg-pos-0 from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] w-[36px] h-[36px] sm:w-[50px] sm:h-[50px] p-[8px] sm:p-[13px]"
+      className="h-[36px] w-[36px] cursor-pointer bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]"
       style={{
         display: 'flex',
         // padding: '30px 50px',
@@ -192,7 +192,7 @@ const Header = () => {
   const BurgerMenuItem = ({ children, href }) => {
     return (
       <li
-        className="whitespace-nowrap duration-300 cursor-pointer bg-gradient-to-r from-[#fff] to-[#fff] hover:from-[#C17C0E] hover:via-[63.68%] hover:via-[#FFCA45] hover:to-[#FFCA45]"
+        className="cursor-pointer whitespace-nowrap bg-gradient-to-r from-[#fff] to-[#fff] duration-300 hover:from-[#C17C0E] hover:via-[#FFCA45] hover:via-[63.68%] hover:to-[#FFCA45]"
         style={{
           // background: 'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%)',
           backgroundClip: 'text',
@@ -208,10 +208,10 @@ const Header = () => {
   }
 
   return (
-    <div className="duration-300 headerwrapper sticky z-30 flex justify-center w-full h-0 -top-[13px]">
+    <div className="headerwrapper sticky -top-[13px] z-30 flex h-0 w-full justify-center duration-300">
       <nav
         className={cn(
-          'xl:hidden fixed overflow-hidden top-0 right-0 h-screen duration-500 flex justify-center items-center',
+          'fixed right-0 top-0 flex h-screen items-center justify-center overflow-hidden duration-500 xl:hidden',
           showMenu ? 'w-full' : 'w-[0px]'
         )}
         style={{
@@ -220,7 +220,7 @@ const Header = () => {
         }}
       >
         <ul
-          className="flex flex-col gap-y-[10px] min-w-fit text-white text-center text-[28px] md:text-[38px] font-bold leading-[100%]"
+          className="flex min-w-fit flex-col gap-y-[10px] text-center text-[28px] font-bold leading-[100%] text-white md:text-[38px]"
           style={{
             fontFamily: 'Buyan',
           }}
@@ -233,25 +233,25 @@ const Header = () => {
           <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
         </ul>
       </nav>
-      <div className="absolute bg-opacity-0 top-0 left-1/2 -translate-x-1/2 right-0 w-full mt-[13px] h-[80px] md:h-[94px] py-[10px] md:py-[17px] px-[17px] md:px-[52px] flex justify-center header duration-500 bg-[#131323]">
-        <div className="flex justify-between gap-x-[10px] w-full max-w-[1264px]">
-          <div className="flex-1 flex gap-x-[19px] items-center">
+      <div className="header absolute left-1/2 right-0 top-0 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center bg-[#131323] bg-opacity-0 px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]">
+        <div className="flex w-full max-w-[1264px] justify-between gap-x-[10px]">
+          <div className="flex flex-1 items-center gap-x-[19px]">
             <Image
-              className="sm:hidden min-w-[46px]"
+              className="min-w-[46px] sm:hidden"
               alt="logo"
               src="/img/logo.png"
               width={46}
               height={46}
             />
             <Image
-              className="hidden sm:block min-w-[60px]"
+              className="hidden min-w-[60px] sm:block"
               alt="logo"
               src="/img/logo.png"
               width={60}
               height={60}
             />
             <div
-              className="flex-col hidden whitespace-nowrap md:flex text-[15px] tablet:text-[16px]"
+              className="hidden flex-col whitespace-nowrap text-[15px] md:flex tablet:text-[16px]"
               style={{
                 color: '#fff', //'#8383A7',
                 // fontFamily: 'Inter Tight',
@@ -272,7 +272,7 @@ const Header = () => {
             </div>
           </div>
           <ol
-            className="items-center justify-center hidden xl:flex"
+            className="hidden items-center justify-center xl:flex"
             style={{
               padding: '18px 40px',
               gap: 40,
@@ -284,14 +284,14 @@ const Header = () => {
             <MenuItem name="Фотографии" href="#fotos" />
             <MenuItem name="Отзывы" href="#reviews" />
           </ol>
-          <div className="flex-1 flex items-center gap-x-[13px] md:gap-x-[20px] justify-end">
+          <div className="flex flex-1 items-center justify-end gap-x-[13px] md:gap-x-[20px]">
             <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
               <WhatsappButton />
               <TelegramButton />
             </div>
-            <div className="flex flex-col text-right justify-center whitespace-nowrap text-[15px] sm:text-[22px]">
+            <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
               <a
-                className="duration-300 cursor-pointer text-white font-medium hover:text-[#FFCA45]"
+                className="cursor-pointer font-medium text-white duration-300 hover:text-[#FFCA45]"
                 style={{
                   lineHeight: '125%' /* 27.5px */,
                 }}
@@ -301,7 +301,7 @@ const Header = () => {
                 8(913)837-00-20
               </a>
               <button
-                className="border-dashed border-b border-[#a8a8cae6] duration-300 cursor-pointer text-[#A8A8CA] border-[#A8A8CA] hover:text-[#FFCA45] hover:border-[#FFCA45] font-normal w-fit text-[12px] sm:text-[15px] md:text-[16px]"
+                className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
                 style={{
                   lineHeight: '125%' /* 20px */,
                   // borderBottom: '1px dashed rgba(168, 168, 202, 0.5)',
@@ -313,7 +313,7 @@ const Header = () => {
                 Заказать звонок
               </button>
             </div>
-            <div className="xl:hidden md:ml-[50px]">
+            <div className="md:ml-[50px] xl:hidden">
               <BurgerButton
                 opened={showMenu}
                 onClick={() => setShowMenu((state) => !state)}

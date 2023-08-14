@@ -13,7 +13,7 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[190px] phoneH:w-[200px] sm:w-[220px] md:w-[260px] tablet:w-[400px] text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'w-[190px] text-[29px] phoneH:w-[200px] phoneH:text-[32px] sm:w-[220px] sm:text-[36px] md:w-[260px] md:text-[42px] tablet:w-[400px] tablet:text-[64px]',
       className
     )}
     style={{
@@ -34,9 +34,9 @@ const GalleryBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
   return (
-    <div className="relative flex flex-col items-center w-full">
+    <div className="relative flex w-full flex-col items-center">
       <DivContent className="flex flex-col items-center gap-y-[20px]">
-        <div className="flex items-start xl:items-center justify-between flex-col max-w-[520px] tablet:max-w-[680px] xl:max-w-full xl:flex-row gap-x-[200px]">
+        <div className="flex max-w-[520px] flex-col items-start justify-between gap-x-[200px] tablet:max-w-[680px] xl:max-w-full xl:flex-row xl:items-center">
           <div className="flex flex-col gap-y-[50px]">
             <Title />
             <Button
@@ -44,7 +44,7 @@ const GalleryBlock = () => {
               onClick={() => setShowModalZakaz(true)}
             />
           </div>
-          <DivText className="tablet:max-w-[680px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] mt-[30px] xl:mt-0">
+          <DivText className="mt-[30px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] tablet:max-w-[680px] xl:mt-0">
             <span
               style={{
                 fontWeight: 700,
@@ -82,7 +82,7 @@ const GalleryBlock = () => {
         <Gallery type={1} />
       </div>
       <div
-        className="absolute hidden md:block xl:hidden right-0 z-10 w-[207px] h-[265px] 2xl:w-[235px] 2xl:h-[303px] top-[90px] aspect-[235/303]"
+        className="absolute right-0 top-[90px] z-10 hidden aspect-[235/303] h-[265px] w-[207px] md:block xl:hidden 2xl:h-[303px] 2xl:w-[235px]"
         style={{
           // width: 289,
           // height: '28%',

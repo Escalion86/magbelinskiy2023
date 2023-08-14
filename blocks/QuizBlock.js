@@ -1,10 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import cn from 'classnames'
-import Image from 'next/image'
 import SpanGradientTitle from './components/SpanGradientTitle'
-import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 
@@ -24,7 +22,7 @@ const SvgProgressDynamyc = () => {
       style={{
         left: '-18px',
       }}
-      className="absolute progress"
+      className="progress absolute"
       width="1177"
       height="30"
       viewBox="0 0 1177 30"
@@ -560,7 +558,7 @@ const SvgProgressDynamyc = () => {
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-center w-[240px] phoneH:w-[260px] sm:w-[320px] md:w-[340px] tablet:w-[520px] text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'w-[240px] text-center text-[29px] text-white phoneH:w-[260px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[340px] md:text-[42px] tablet:w-[520px] tablet:text-[64px]',
       className
     )}
     style={{
@@ -579,9 +577,9 @@ const Title = ({ className }) => (
 )
 
 const QuizBackground = () => (
-  <div className="absolute flex w-full h-full bg-white md:bg-transparent rounded-[18px] md:rounded-[30px]">
+  <div className="absolute flex h-full w-full rounded-[18px] bg-white md:rounded-[30px] md:bg-transparent">
     <div
-      className="hidden md:block flex-1 rounded-l-[30px] rounded-r-[30px] xl:rounded-r-none"
+      className="hidden flex-1 rounded-l-[30px] rounded-r-[30px] md:block xl:rounded-r-none"
       style={{
         backgroundImage:
           'radial-gradient(48px at -20px 50%, transparent 48px, #fff 49px)',
@@ -590,7 +588,7 @@ const QuizBackground = () => (
       }}
     />
     <div
-      className="flex-1 rounded-r-[30px] hidden xl:block"
+      className="hidden flex-1 rounded-r-[30px] xl:block"
       style={{
         backgroundImage:
           'radial-gradient(48px 48px at calc(100% + 20px) 50%, transparent 48px, #fff 49px)',
@@ -601,7 +599,7 @@ const QuizBackground = () => (
 
 const QuizHeader = () => (
   <div
-    className="flex justify-center rounded-[10px] md:rounded-[18px] py-[20px] h-[102px] sm:h-[87px] px-[30px] md:px-[50px]"
+    className="flex h-[102px] justify-center rounded-[10px] px-[30px] py-[20px] sm:h-[87px] md:rounded-[18px] md:px-[50px]"
     style={{
       border: '1px solid rgba(14, 14, 28, 0.05)',
       background:
@@ -611,9 +609,9 @@ const QuizHeader = () => (
       backdropFilter: 'blur(3px)',
     }}
   >
-    <div className="flex flex-col gap-x-[12px] justify-between w-full sm:flex-row sm:items-center">
+    <div className="flex w-full flex-col justify-between gap-x-[12px] sm:flex-row sm:items-center">
       <div
-        className="text-[13px] md:text-[16px] tablet:text-[19px] whitespace-nowrap"
+        className="whitespace-nowrap text-[13px] md:text-[16px] tablet:text-[19px]"
         style={{
           color: '#fff',
           fontWeight: 500,
@@ -623,7 +621,7 @@ const QuizHeader = () => (
         В конце теста вас ждет <span className="md:font-bold">подарок</span>:
       </div>
       <svg
-        className="hidden tablet:block w-[120px] tablet:w-[131px] xl:w-[173px] h-[14px]"
+        className="hidden h-[14px] w-[120px] tablet:block tablet:w-[131px] xl:w-[173px]"
         xmlns="http://www.w3.org/2000/svg"
         // width="175"
         // height="17"
@@ -636,10 +634,10 @@ const QuizHeader = () => (
           fill="#A8A8CA"
         />
       </svg>
-      <div className="flex flex-col 2xl:flex-row gap-x-[47px] text-[12px] md:text-[16px] tablet:text-[19px] font-normal text-[#A8A8CA]">
+      <div className="flex flex-col gap-x-[47px] text-[12px] font-normal text-[#A8A8CA] md:text-[16px] tablet:text-[19px] 2xl:flex-row">
         <div className="flex items-center gap-x-[8px] md:gap-x-[15px]">
           <div
-            className="-mt-[4px] w-[8px] md:w-[14px] h-[8px] md:h-[14px]"
+            className="-mt-[4px] h-[8px] w-[8px] md:h-[14px] md:w-[14px]"
             style={{
               borderRadius: 100,
               border: '1px solid rgba(14, 14, 28, 0.05)',
@@ -655,7 +653,7 @@ const QuizHeader = () => (
         </div>
         <div className="flex items-center gap-x-[8px] md:gap-x-[15px]">
           <div
-            className="-mt-[4px] w-[8px] md:w-[14px] h-[8px] md:h-[14px]"
+            className="-mt-[4px] h-[8px] w-[8px] md:h-[14px] md:w-[14px]"
             style={{
               borderRadius: 100,
               border: '1px solid rgba(14, 14, 28, 0.05)',
@@ -670,7 +668,7 @@ const QuizHeader = () => (
         </div>
       </div>
       <svg
-        className="sm:hidden absolute left-[calc(50%+30px)] top-[30px]"
+        className="absolute left-[calc(50%+30px)] top-[30px] sm:hidden"
         xmlns="http://www.w3.org/2000/svg"
         width="64"
         height="46"
@@ -689,7 +687,7 @@ const QuizHeader = () => (
 
 const QuizCard = ({ title, imageName }) => (
   <div
-    className="flex flex-col items-center px-[10px] pt-[10px] pb-[10px] md:px-[20px] md:pt-[20px] md:pb-[25px] rounded-[8px] md:rounded-[8px] w-[140px] h-[164px] md:w-[260px] md:h-[330px]"
+    className="flex h-[164px] w-[140px] flex-col items-center rounded-[8px] px-[10px] pb-[10px] pt-[10px] md:h-[330px] md:w-[260px] md:rounded-[8px] md:px-[20px] md:pb-[25px] md:pt-[20px]"
     style={{
       background:
         'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
@@ -699,7 +697,7 @@ const QuizCard = ({ title, imageName }) => (
   >
     <div className="relative">
       <img
-        className="object-cover rounded-[5px] md:rounded-[10px] w-[120px] h-[75px] md:w-[220px] md:h-[167px]"
+        className="h-[75px] w-[120px] rounded-[5px] object-cover md:h-[167px] md:w-[220px] md:rounded-[10px]"
         alt={imageName}
         src={'/img/quiz/' + imageName + '.png'}
         draggable={false}
@@ -707,15 +705,15 @@ const QuizCard = ({ title, imageName }) => (
       <I />
     </div>
     <div
-      className="font-medium text-[#0E0E1C] text-[12px] md:text-[19px] mt-[11px] mb-[11px] md:mt-[20px] md:mb-[25px]"
+      className="mb-[11px] mt-[11px] text-[12px] font-medium text-[#0E0E1C] md:mb-[25px] md:mt-[20px] md:text-[19px]"
       // style={{
       //   fontFamily: 'Montserrat',
       // }}
     >
       {title}
     </div>
-    <div className="select-none group cursor-pointer duration-300 transition-all px-[15px] bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-white to-white hover:from-[#692DC1] hover:to-[#AC80EC] h-[30px] md:h-[45px] rounded-[7px] w-full flex items-center gap-x-[12px] justify-between md:justify-center">
-      <span className="text-[#0E0E1C] group-hover:text-white text-opacity-90 font-semibold text-[11px] md:text-[17px]">
+    <div className="group flex h-[30px] w-full cursor-pointer select-none items-center justify-between gap-x-[12px] rounded-[7px] bg-gradient-to-r from-white to-white bg-size-200 bg-pos-0 px-[15px] transition-all duration-300 hover:from-[#692DC1] hover:to-[#AC80EC] hover:bg-pos-100 md:h-[45px] md:justify-center">
+      <span className="text-[11px] font-semibold text-[#0E0E1C] text-opacity-90 group-hover:text-white md:text-[17px]">
         Выбрать
       </span>
       <svg
@@ -752,7 +750,7 @@ const QuizCard = ({ title, imageName }) => (
 const QuizProgress = ({ progress }) => (
   <div className="h-[20px] w-full">
     <div
-      className="relative h-[20px] md:h-[30px] only:w-full"
+      className="relative h-[20px] only:w-full md:h-[30px]"
       style={{
         borderRadius: 90,
         background:
@@ -762,7 +760,7 @@ const QuizProgress = ({ progress }) => (
       }}
     >
       <div
-        className="absolute overflow-hidden z-10 left-0 h-full text-[#0E0E1C] flex items-center justify-center font-bold text-[12px] md:text-[17px]"
+        className="absolute left-0 z-10 flex h-full items-center justify-center overflow-hidden text-[12px] font-bold text-[#0E0E1C] md:text-[17px]"
         style={{
           width: progress + '%',
           fontFamily: 'Montserrat',
@@ -780,7 +778,7 @@ const QuizProgress = ({ progress }) => (
 
 const I = ({ onClick }) => (
   <div
-    className="absolute hidden text-white rounded-full md:flex justify-center items-center cursor-pointer top-[10px] right-[10px] w-[30px] h-[30px] text-[20px] transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#4272D1] to-[#83ACFF] hover:via-[#83ACFF] hover:to-[#4272D1]"
+    className="absolute right-[10px] top-[10px] hidden h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-[#4272D1] to-[#83ACFF] bg-size-200 bg-pos-0 text-[20px] text-white transition-all hover:via-[#83ACFF] hover:to-[#4272D1] hover:bg-pos-100 md:flex"
     style={{
       fontFamily: 'Montserrat',
       boxShadow:
@@ -802,7 +800,7 @@ const Info = ({ className }) => (
   >
     Нажмите на{' '}
     <span
-      className="min-w-[22px] min-h-[22px]"
+      className="min-h-[22px] min-w-[22px]"
       style={{
         display: 'inline-block',
         width: 22,
@@ -832,13 +830,13 @@ const Info = ({ className }) => (
 
 const Quiz = () => {
   return (
-    <div className="px-[18px] md:px-[52px] w-full mb-[40px] md:mb-[0px] tablet:mb-[130px]">
-      <div className="relative w-full max-w-[1360px] min-w-[339px] mt-[30px] md:[mt-60px]">
+    <div className="mb-[40px] w-full px-[18px] md:mb-[0px] md:px-[52px] tablet:mb-[130px]">
+      <div className="md:[mt-60px] relative mt-[30px] w-full min-w-[339px] max-w-[1360px]">
         <QuizBackground />
-        <div className="flex flex-col gap-y-[30px] md:gap-y-[40px] xl:gap-y-[57px] relative px-[10px] md:px-[40px] xl:px-[100px] pt-[10px] md:pt-[40px] pb-[25px] md:pb-[50px]">
+        <div className="relative flex flex-col gap-y-[30px] px-[10px] pb-[25px] pt-[10px] md:gap-y-[40px] md:px-[40px] md:pb-[50px] md:pt-[40px] xl:gap-y-[57px] xl:px-[100px]">
           <QuizHeader />
           <div className="px-[10px] md:px-0">
-            <div className="relative z-10 font-bold text-[18px] md:text-[36px]">
+            <div className="relative z-10 text-[18px] font-bold md:text-[36px]">
               <span
                 style={{
                   color: 'rgba(14, 14, 28, 0.17)',
@@ -856,7 +854,7 @@ const Quiz = () => {
             </div>
           </div>
           {/* grid justify-items-center grid-cols-2 sm:grid-cols-3 md:grid-cols-2 tablet:grid-cols-3 2xl:grid-cols-4 */}
-          <div className="w-full grid grid-cols-2 justify-items-center sm:grid-cols-3 md:grid-cols-2 tablet:grid-cols-3 2xl:grid-cols-4 gap-x-[20px] gap-y-[10px] md:gap-x-[30px] md:gap-y-[20px] 2xl:gap-x-[40px] 2xl:gap-y-[30px]">
+          <div className="grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] sm:grid-cols-3 md:grid-cols-2 md:gap-x-[30px] md:gap-y-[20px] tablet:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-[40px] 2xl:gap-y-[30px]">
             {/* <div className="inline-flex flex-wrap justify-evenly gap-x-[20px] gap-y-[10px] md:gap-x-[30px] md:gap-y-[20px] 2xl:gap-x-[40px] 2xl:gap-y-[30px]"> */}
             <QuizCard title="День рождения" imageName="birthday" />
             <QuizCard title="Свадьба" imageName="wedding" />
@@ -866,7 +864,7 @@ const Quiz = () => {
             <QuizCard title="Презентация" imageName="presentation" />
             <QuizCard title="Детский праздник" imageName="kids" />
             <QuizCard title="Другое" imageName="other" />
-            <div className="hidden md:col-span-2 tablet:col-auto 2xl:hidden md:flex flex-col justify-end w-full h-auto tablet:w-[260px] tablet:h-[330px] text-center tablet:text-left">
+            <div className="hidden h-auto w-full flex-col justify-end text-center md:col-span-2 md:flex tablet:col-auto tablet:h-[330px] tablet:w-[260px] tablet:text-left 2xl:hidden">
               <Info />
             </div>
           </div>
@@ -879,29 +877,29 @@ const Quiz = () => {
 
 const QuizBlock = () => {
   return (
-    <div className="relative flex justify-center w-full">
-      <div className="flex flex-col items-center w-fit">
+    <div className="relative flex w-full justify-center">
+      <div className="flex w-fit flex-col items-center">
         <DivContent
           noMargin
           fullWidth={false}
-          className="flex flex-col items-center mt-[123px] tablet:mt-[162px] xl:mt-[230px]"
+          className="mt-[123px] flex flex-col items-center tablet:mt-[162px] xl:mt-[230px]"
         >
-          <div className="flex flex-col items-center justify-center w-full sm:flex-row">
+          <div className="flex w-full flex-col items-center justify-center sm:flex-row">
             <img
-              className=" object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[2px] sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
+              className=" -mb-[2px] -mr-[5px] -mt-[4px] w-[50px] object-contain sm:-mb-[15px] sm:-mt-[5px] sm:w-[60px] md:-mb-[15px] md:-mt-[5px]  md:w-[80px] tablet:-mb-[17px] tablet:-mt-[6px] tablet:w-[107px]"
               alt="star"
               src="/img/star.png"
               draggable={false}
             />
             <Title />
             <img
-              className="hidden sm:block -scale-x-100 object-contain w-[50px] sm:w-[60px] md:w-[80px] tablet:w-[107px] -mr-[5px] -mt-[4px] -mb-[12px]  sm:-mt-[5px] sm:-mb-[15px]  md:-mt-[5px] md:-mb-[15px] tablet:-mt-[6px] tablet:-mb-[17px]"
+              className="-mb-[12px] -mr-[5px] -mt-[4px] hidden w-[50px] -scale-x-100 object-contain sm:-mb-[15px] sm:-mt-[5px] sm:block sm:w-[60px]  md:-mb-[15px] md:-mt-[5px]  md:w-[80px] tablet:-mb-[17px] tablet:-mt-[6px] tablet:w-[107px]"
               alt="star"
               src="/img/star.png"
               draggable={false}
             />
           </div>
-          <DivText className="text-center tablet:max-w-[600px] max-w-[320px] sm:max-w-[340px] md:max-w-[460px] mt-[18px] tablet:mt-[35px]">
+          <DivText className="mt-[18px] max-w-[320px] text-center sm:max-w-[340px] md:max-w-[460px] tablet:mt-[35px] tablet:max-w-[600px]">
             Этот тест поможет сделать представление именно под ваш праздник.{' '}
             <span
               style={{
@@ -915,7 +913,7 @@ const QuizBlock = () => {
         <Quiz />
       </div>
       <div
-        className="absolute hidden xl:block right-0 z-10 w-[207px] h-[265px] 2xl:w-[235px] 2xl:h-[303px] top-[75px] aspect-[235/303]"
+        className="absolute right-0 top-[75px] z-10 hidden aspect-[235/303] h-[265px] w-[207px] xl:block 2xl:h-[303px] 2xl:w-[235px]"
         style={{
           // width: 289,
           // height: '28%',

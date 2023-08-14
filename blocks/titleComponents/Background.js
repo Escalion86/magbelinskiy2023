@@ -4,10 +4,10 @@ import Image from 'next/image'
 import MagicanImage from './MagicanImage'
 
 const Background = () => (
-  <div className="absolute top-0 w-full h-full">
+  <div className="absolute top-0 h-full w-full">
     {/* Подсветка в центре */}
     <div
-      className="absolute -translate-x-1/2 -translate-y-1/2 aspect-square top-1/2 left-1/2"
+      className="absolute left-1/2 top-1/2 aspect-square -translate-x-1/2 -translate-y-1/2"
       style={{
         // width: 300,
         height: '27%',
@@ -21,7 +21,7 @@ const Background = () => (
     />
     {/* Подсветка руки справа */}
     <div
-      className="hidden 2xl:block absolute -translate-x-1/2 -translate-y-1/4 left-full top-1/2 rotate-[30deg]"
+      className="absolute left-full top-1/2 hidden -translate-x-1/2 -translate-y-1/4 rotate-[30deg] 2xl:block"
       style={{
         width: 309,
         height: 491,
@@ -36,7 +36,7 @@ const Background = () => (
     />
     {/* Подсветка руки слева */}
     <div
-      className="absolute -translate-x-1/2 -translate-y-1/2 left-[calc(25%-400px)] top-0 -rotate-[30deg]"
+      className="absolute left-[calc(25%-400px)] top-0 -translate-x-1/2 -translate-y-1/2 -rotate-[30deg]"
       style={{
         width: 384,
         height: 610,
@@ -68,7 +68,7 @@ background:
     /> */}
     {/* Рука слева */}
     <div
-      className="absolute 2xl:opacity-100 opacity-20 left-[min(calc(5%-100px),0px)] max-h-[35%] w-[15%] min-w-[170px] z-10 top-[90px] aspect-[289/385] hidden md:block"
+      className="absolute left-[min(calc(5%-100px),0px)] top-[90px] z-10 hidden aspect-[289/385] max-h-[35%] w-[15%] min-w-[170px] opacity-20 md:block 2xl:opacity-100"
       style={{
         // width: 289,
         // height: '35%',
@@ -81,7 +81,7 @@ background:
     />
     {/* Рука справа */}
     <div
-      className="absolute right-0 z-10 w-[74px] h-[95px] md:w-[135px] md:h-[173px] 2xl:w-[235px] 2xl:h-[303px] bottom-[6%] md:bottom-[4%] top-auto 2xl:bottom-auto 2xl:top-[24%] aspect-[235/303]"
+      className="absolute bottom-[6%] right-0 top-auto z-10 aspect-[235/303] h-[95px] w-[74px] md:bottom-[4%] md:h-[173px] md:w-[135px] 2xl:bottom-auto 2xl:top-[24%] 2xl:h-[303px] 2xl:w-[235px]"
       style={{
         // width: 289,
         // height: '28%',

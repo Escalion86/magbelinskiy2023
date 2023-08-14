@@ -9,7 +9,7 @@ import DivText from './components/DivText'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-center w-[250px] phoneH:w-[280px] sm:w-[320px] md:w-[360px] tablet:w-[560px] text-[29px] phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'w-[250px] text-center text-[29px] phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
       className
     )}
     style={{
@@ -33,12 +33,12 @@ const VideoBlock = () => {
   return (
     <DivContent className="flex flex-col items-center">
       <Title />
-      <DivText className="text-center mb-[16px] md:mb-[57px] tablet:mb-[62px] mt-[18px] tablet:mt-[30px] w-[290px] md:w-[450px] tablet:w-[590px]">
+      <DivText className="mb-[16px] mt-[18px] w-[290px] text-center md:mb-[57px] md:w-[450px] tablet:mb-[62px] tablet:mt-[30px] tablet:w-[590px]">
         Левитация, гипноз, чтение мыслей, исчезновение предметов и превращения —
         вы увидите то, вот что не поверят глаза.
       </DivText>
       <div
-        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] top-0 tablet:top-[140px] left-0 -translate-x-[55%] rotate-[105deg] aspect-[1230/690]"
+        className="absolute left-0 top-0 aspect-[1230/690] h-[345px] w-[615px] -translate-x-[55%] rotate-[105deg] tablet:top-[140px] tablet:h-[690px] tablet:w-[1230px]"
         style={{
           background: 'url("/img/smoke.png")',
           mixBlendMode: 'color-dodge',
@@ -47,7 +47,7 @@ const VideoBlock = () => {
         }}
       />
       <div
-        className="absolute h-[345px] w-[615px] tablet:h-[690px] tablet:w-[1230px] top-[200px] tablet:top-[396px] right-0 translate-x-1/2 rotate-[105deg] aspect-[1230/690]"
+        className="absolute right-0 top-[200px] aspect-[1230/690] h-[345px] w-[615px] translate-x-1/2 rotate-[105deg] tablet:top-[396px] tablet:h-[690px] tablet:w-[1230px]"
         style={{
           background: 'url("/img/smoke.png")',
           mixBlendMode: 'color-dodge',
@@ -56,7 +56,7 @@ const VideoBlock = () => {
         }}
       />
       <div
-        className="w-[192px] h-[305px] tablet:w-[384px] tablet:h-[610px] absolute -bottom-[150px] -right-[190px]"
+        className="absolute -bottom-[150px] -right-[190px] h-[305px] w-[192px] tablet:h-[610px] tablet:w-[384px]"
         style={{
           transform: 'rotate(-30deg)',
           borderRadius: 900,
@@ -67,17 +67,17 @@ const VideoBlock = () => {
           filter: 'blur(177.5px)',
         }}
       />
-      <div className="relative z-20 flex justify-center w-full">
+      <div className="relative z-20 flex w-full justify-center">
         <img
-          className="object-contain max-w-[1338px] w-full aspect-[1338/880]"
+          className="aspect-[1338/880] w-full max-w-[1338px] object-contain"
           alt="video"
           src="/img/TV.png"
           draggable={false}
         />
         {showVideo ? (
-          <div className="absolute flex flex-col items-center aspect-video max-w-[1338px] top-[2.5%] w-[96.5%]">
+          <div className="absolute top-[2.5%] flex aspect-video w-[96.5%] max-w-[1338px] flex-col items-center">
             <iframe
-              className="w-full h-full"
+              className="h-full w-full"
               // width="100%"
               // height="100%"
               src="https://www.youtube.com/embed/CuoufduSlXQ?autoplay=1"
@@ -93,16 +93,16 @@ const VideoBlock = () => {
             ></iframe>
           </div>
         ) : (
-          <div className="absolute flex flex-col items-center top-[calc(44%)] sm:top-[calc(50%-30px)] tablet:top-[calc(50%-45px)] -translate-y-1/2">
+          <div className="absolute top-[calc(44%)] flex -translate-y-1/2 flex-col items-center sm:top-[calc(50%-30px)] tablet:top-[calc(50%-45px)]">
             <div
-              className="group relative w-[30px] h-[30px] sm:w-[88px] sm:h-[88px] tablet:w-[110px] tablet:h-[110px]"
+              className="group relative h-[30px] w-[30px] sm:h-[88px] sm:w-[88px] tablet:h-[110px] tablet:w-[110px]"
               onClick={() => setShowVideo(true)}
             >
-              <div className="absolute animate-ping w-full h-full rounded-full transition-all bg-size-200 bg-pos-0 group-hover:bg-pos-100 bg-gradient-to-r from-[#692DC1] to-[#AC80EC] group-hover:via-[#AC80EC] group-hover:to-[#692DC1]" />
-              <div className="absolute w-full h-full rounded-full transition-all bg-size-200 bg-pos-0 group-hover:bg-pos-100 bg-gradient-to-r from-[#692DC1] to-[#AC80EC] group-hover:via-[#AC80EC] group-hover:to-[#692DC1] cursor-pointer" />
-              <div className="flex items-center justify-center w-full h-full overflow-hidden cursor-pointer">
+              <div className="absolute h-full w-full animate-ping rounded-full bg-gradient-to-r from-[#692DC1] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all group-hover:via-[#AC80EC] group-hover:to-[#692DC1] group-hover:bg-pos-100" />
+              <div className="absolute h-full w-full cursor-pointer rounded-full bg-gradient-to-r from-[#692DC1] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all group-hover:via-[#AC80EC] group-hover:to-[#692DC1] group-hover:bg-pos-100" />
+              <div className="flex h-full w-full cursor-pointer items-center justify-center overflow-hidden">
                 <svg
-                  className="z-10 ml-1 sm:ml-2 tablet:ml-3 w-[12px] h-[12px] sm:w-[37px] sm:h-[37px] tablet:w-[46px] tablet:h-[46px]"
+                  className="z-10 ml-1 h-[12px] w-[12px] sm:ml-2 sm:h-[37px] sm:w-[37px] tablet:ml-3 tablet:h-[46px] tablet:w-[46px]"
                   width="32"
                   height="36"
                   viewBox="0 0 32 36"
@@ -116,7 +116,7 @@ const VideoBlock = () => {
                 </svg>
               </div>
             </div>
-            <div className="select-none mt-[12px] sm:mt-[40px] text-white text-center text-[7px] sm:text-[13px] tablet:text-[16px] font-medium">
+            <div className="mt-[12px] select-none text-center text-[7px] font-medium text-white sm:mt-[40px] sm:text-[13px] tablet:text-[16px]">
               Посмотрите видео-презентацию от Алексея
             </div>
           </div>

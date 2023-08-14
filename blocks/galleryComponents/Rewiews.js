@@ -10,13 +10,13 @@ const Arrow = ({ right, className, onClick }) => {
   return (
     <div
       className={cn(
-        'w-[46px] h-[46px] md:w-[76px] md:h-[76px] rounded-full transition-all bg-size-200 bg-pos-0 hover:bg-pos-100 bg-gradient-to-r from-[#4272D1] to-[#83ACFF] hover:via-[#83ACFF] hover:to-[#4272D1] cursor-pointer',
+        'h-[46px] w-[46px] cursor-pointer rounded-full bg-gradient-to-r from-[#4272D1] to-[#83ACFF] bg-size-200 bg-pos-0 transition-all hover:via-[#83ACFF] hover:to-[#4272D1] hover:bg-pos-100 md:h-[76px] md:w-[76px]',
         className
       )}
       onClick={onClick}
     >
       <svg
-        className="w-[46px] h-[46px] md:w-[76px] md:h-[76px]"
+        className="h-[46px] w-[46px] md:h-[76px] md:w-[76px]"
         xmlns="http://www.w3.org/2000/svg"
         // width={small ? 76 : 126}
         // height={small ? 76 : 126}
@@ -170,16 +170,16 @@ const Rewiews = ({ className }) => {
   }
 
   return (
-    <div className={cn('flex flex-col items-center w-full', className)}>
+    <div className={cn('flex w-full flex-col items-center', className)}>
       <div
         className={cn(
-          'relative flex flex-col items-center w-full',
+          'relative flex w-full flex-col items-center',
           'max-w-[230px] sm:max-w-[480px] md:max-w-[620px] tablet:max-w-[760px] xl:max-w-[1160px]'
         )}
       >
         <Arrow
           className={cn(
-            'z-10 absolute -left-[34px] sm:-left-[60px] tablet:-left-[100px] -translate-y-1/2 top-1/2',
+            'absolute -left-[34px] top-1/2 z-10 -translate-y-1/2 sm:-left-[60px] tablet:-left-[100px]',
             'xl:-left-[50px] 2xl:-left-[110px]'
           )}
           onClick={leftClick}
@@ -187,14 +187,14 @@ const Rewiews = ({ className }) => {
         <Arrow
           right
           className={cn(
-            'z-10 absolute -right-[34px] sm:-right-[60px] tablet:-right-[100px] -translate-y-1/2 top-1/2',
+            'absolute -right-[34px] top-1/2 z-10 -translate-y-1/2 sm:-right-[60px] tablet:-right-[100px]',
             'xl:-right-[50px] 2xl:-right-[110px]'
           )}
           onClick={rightClick}
         />
         <div
           className={cn(
-            'flex justify-start max-w-full overflow-hidden overflow-x-auto cursor-pointer no-scrollbar active:scroll-auto scroll-smooth',
+            'no-scrollbar flex max-w-full cursor-pointer justify-start overflow-hidden overflow-x-auto scroll-smooth active:scroll-auto',
             'carousel-rewiews'
           )}
         >
@@ -202,16 +202,16 @@ const Rewiews = ({ className }) => {
             ({ imgUrl, userName, text }, index) => (
               <div
                 key={'review' + userName + imgUrl}
-                className="px-[10px] tablet:px-[20px] inline"
+                className="inline px-[10px] tablet:px-[20px]"
               >
                 <div
                   className={cn(
-                    'h-[293px] md:h-[400px] md:min-w-[300px] tablet:h-[460px] min-w-[230px] tablet:min-w-[360px] px-[19px] tablet:px-[30px] pt-[13px] pb-[16px] tablet:pt-[20px] tablet:pb-[25px] rounded-[20px] bg-white flex flex-col gap-y-[13px] tablet:gap-y-[20px]'
+                    'flex h-[293px] min-w-[230px] flex-col gap-y-[13px] rounded-[20px] bg-white px-[19px] pb-[16px] pt-[13px] md:h-[400px] md:min-w-[300px] tablet:h-[460px] tablet:min-w-[360px] tablet:gap-y-[20px] tablet:px-[30px] tablet:pb-[25px] tablet:pt-[20px]'
                   )}
                 >
-                  <div className="flex gap-x-[15px] items-center">
+                  <div className="flex items-center gap-x-[15px]">
                     <img
-                      className="object-contain w-[30px] h-[30px] md:w-[50px] md:h-[50px] "
+                      className="h-[30px] w-[30px] object-contain md:h-[50px] md:w-[50px] "
                       alt={'photo'}
                       src={imgUrl}
                       // style={{
@@ -222,7 +222,7 @@ const Rewiews = ({ className }) => {
                       draggable={false}
                     />
                     <div className="flex flex-col gap-y-[2px] md:gap-y-[3px]">
-                      <div className="text-[#0E0E1C] font-normal text-[12px] md:text-[17px] tablet:text-[19px]">
+                      <div className="text-[12px] font-normal text-[#0E0E1C] md:text-[17px] tablet:text-[19px]">
                         {userName}
                       </div>
                       <div className="flex">
@@ -234,8 +234,8 @@ const Rewiews = ({ className }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="border-[#0E0E1C] opacity-10 w-full border-t" />
-                  <div className="leading-[140%] font-light text-[12px] md:text-[17px] tablet:text-[19px] text-[#0E0E1C]">
+                  <div className="w-full border-t border-[#0E0E1C] opacity-10" />
+                  <div className="text-[12px] font-light leading-[140%] text-[#0E0E1C] md:text-[17px] tablet:text-[19px]">
                     {text}
                   </div>
                 </div>

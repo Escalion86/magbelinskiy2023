@@ -1,16 +1,16 @@
 import React from 'react'
 
 const MagicanImage = () => (
-  <div className="absolute flex justify-center z-10 left-[min(calc(40%),calc(12%+260px))] bottom-0 sm:bottom-auto top-[70px] w-[96%] sm:w-[max(300px,97%)] sm:h-full max-h-full tablet:max-h-[1035px]">
+  <div className="absolute bottom-0 left-[min(calc(40%),calc(12%+260px))] top-[70px] z-10 flex max-h-full w-[96%] justify-center sm:bottom-auto sm:h-full sm:w-[max(300px,97%)] tablet:max-h-[1035px]">
     <div className="relative z-10 h-full">
       <img
-        className="object-contain w-full h-full"
+        className="h-full w-full object-contain"
         alt="foto"
         src="/img/magican1.png"
         draggable={false}
       />
       <div
-        className="-z-10 absolute w-[43%] aspect-[4/6] top-[50%] -rotate-[30deg] -translate-y-1/2"
+        className="absolute top-[50%] -z-10 aspect-[4/6] w-[43%] -translate-y-1/2 -rotate-[30deg]"
         style={{
           left: '35%',
           flexShrink: 0,
@@ -22,7 +22,7 @@ const MagicanImage = () => (
         }}
       />
       <div
-        className="absolute z-20 top-[60%] right-[40%] tablet:right-[36%] laptop:right-[20%] sm:top-[65%] w-[140px] sm:w-[264px] xl:w-[330px]"
+        className="laptop:right-[20%] absolute right-[40%] top-[60%] z-20 w-[140px] sm:top-[65%] sm:w-[264px] tablet:right-[36%] xl:w-[330px]"
         style={{
           borderRadius: 7,
           border: '1px solid rgba(255, 255, 255, 0.05)',
@@ -33,9 +33,9 @@ const MagicanImage = () => (
           backdropFilter: 'blur(3px)',
         }}
       >
-        <div className="relative pb-[8px] pt-[6px] pl-[12px] pr-[20px] sm:pb-[18.4px] sm:pt-[17px] sm:pl-[32px] sm:pr-[50px] xl:pb-[23px] xl:pt-[21px] xl:pl-[40px] xl:pr-[60px]">
+        <div className="relative pb-[8px] pl-[12px] pr-[20px] pt-[6px] sm:pb-[18.4px] sm:pl-[32px] sm:pr-[50px] sm:pt-[17px] xl:pb-[23px] xl:pl-[40px] xl:pr-[60px] xl:pt-[21px]">
           <div
-            className="absolute w-[4.5px] h-[4.5px] sm:w-[11.2px] sm:h-[11.2px] xl:w-[15px] xl:h-[15px] top-[5px] right-[5px] sm:top-[12px] sm:right-[12px] xl:top-[15px] xl:right-[15px]"
+            className="absolute right-[5px] top-[5px] h-[4.5px] w-[4.5px] sm:right-[12px] sm:top-[12px] sm:h-[11.2px] sm:w-[11.2px] xl:right-[15px] xl:top-[15px] xl:h-[15px] xl:w-[15px]"
             style={{
               flexShrink: 0,
               borderRadius: 100,
