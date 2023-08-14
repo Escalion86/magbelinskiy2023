@@ -6,7 +6,7 @@ import DivContent from './components/DivContent'
 const SubfooterBlock = () => (
   <DivContent
     noMargin
-    className="flex h-[69px] flex-col items-center gap-y-[5px] md:justify-center"
+    className="flex h-[69px] flex-col items-start justify-center gap-y-[5px] md:items-center"
   >
     <a
       className="text-[11px] font-light leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:text-[15px]"
