@@ -1,6 +1,7 @@
 'use client'
 
 import AboutBlock from '@/blocks/AboutBlock'
+import AnketaBlock from '@/blocks/AnketaBlock'
 import GalleryBlock from '@/blocks/GalleryBlock'
 import GalleryBlock2 from '@/blocks/GalleryBlock2'
 import ModalZakaz from '@/blocks/ModalZakaz'
@@ -31,6 +32,8 @@ export default function Home() {
           <GalleryBlock2 />
           <Section id="rewiews" />
           <ReviewsBlock />
+          <Section id="zakaz" />
+          <AnketaBlock />
         </main>
 
         {/* Фон */}

@@ -56,6 +56,7 @@ export const POST = async (req, res) => {
   try {
     const {
       source,
+      name,
       audience,
       type,
       customType,
@@ -94,8 +95,8 @@ export const POST = async (req, res) => {
 
     await sendTelegramMassage(
       `Заявка с ${process.env.DOMAIN}\n${
-        audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''
-      }${
+        name ? `\n<b>Имя клиента:</b> ${name}` : ''
+      }${audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''}${
         typeName
           ? `\n<b>Тип:</b> ${typeName}${
               customType ? ' - ' + customType + ' ' : ''

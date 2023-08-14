@@ -163,6 +163,7 @@ const ModalZakaz = () => {
             className="mt-[15px] max-w-full"
             onClick={onSubmit}
             disabled={!phone || phone.length < 11}
+            addIcon={false}
           >
             Перезвоните мне
           </Button>

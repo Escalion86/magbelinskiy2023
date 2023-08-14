@@ -8,6 +8,7 @@ const Button = ({
   children,
   onClick,
   disabled,
+  addIcon = true,
 }) => (
   <div
     className={cn(
@@ -32,10 +33,10 @@ const Button = ({
     )}
     <div
       className={cn(
-        'absolute -bottom-[7px] w-full rounded-[35px] bg-gradient-to-r from-[#5f29ae] via-[47%] to-[#9760e7] bg-size-200 bg-pos-0 transition-all duration-300 group-hover:via-[#9760e7] group-hover:to-[#9257e8] group-hover:bg-pos-100 group-active:from-[#5a27a5] group-active:via-[#8e52e6] group-active:to-[#8948e6] tablet:-bottom-[9px] tablet:rounded-[35px]',
+        'absolute -bottom-[7px] h-[30px] w-full rounded-[35px] bg-gradient-to-r from-[#5f29ae] via-[47%] to-[#9760e7] bg-size-200 bg-pos-0 transition-all duration-300 group-hover:via-[#9760e7] group-hover:to-[#9257e8] group-hover:bg-pos-100 group-active:from-[#5a27a5] group-active:via-[#8e52e6] group-active:to-[#8948e6] tablet:-bottom-[9px] tablet:h-[60px] tablet:rounded-[35px]',
         disabled
-          ? 'h-[10px] brightness-150 grayscale tablet:h-[30px]'
-          : 'h-[30px] group-hover:h-[20px] group-active:h-[10px] tablet:h-[60px] tablet:group-hover:h-[45px] tablet:group-active:h-[30px]'
+          ? 'brightness-150 grayscale'
+          : 'group-hover:h-[20px] group-active:h-[10px] tablet:group-hover:h-[45px] tablet:group-active:h-[30px]'
       )}
       style={{
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255,0.35) inset',
@@ -57,7 +58,7 @@ const Button = ({
       <div className="text-center text-[16px] tracking-[0.64px] text-[#ffffffe6] tablet:text-[22px] tablet:leading-[125%] tablet:tracking-[0.88px]">
         {children ?? 'Заказать шоу'}
       </div>
-      {!children && (
+      {addIcon && (
         <img
           className="h-[36px] w-[36px] object-contain opacity-60 tablet:h-[50px] tablet:w-[50px]"
           alt="logo"

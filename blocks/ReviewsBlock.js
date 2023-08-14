@@ -8,6 +8,8 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import Rewiews from './galleryComponents/Rewiews'
+import { useSetRecoilState } from 'recoil'
+import showModalZakazAtom from '@/state/showModalZakazAtom'
 
 const Title = ({ className }) => (
   <div
@@ -23,11 +25,15 @@ const Title = ({ className }) => (
 )
 
 const ReviewsBlock = () => {
+  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   return (
     <div className="relative mt-[32px] flex w-full flex-col items-center md:mt-[72px]">
       <Title />
       <Rewiews className="mt-[25px] md:mt-[60px]" />
-      <Button className="mt-[35px] md:mt-[60px]" />
+      <Button
+        className="mt-[35px] md:mt-[60px]"
+        onClick={() => setShowModalZakaz(true)}
+      />
     </div>
   )
 }
