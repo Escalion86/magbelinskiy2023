@@ -15,6 +15,7 @@ const Social = ({ text, href }) => (
   <a
     className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
     href={href}
+    target="_blank"
   >
     {text}
   </a>
