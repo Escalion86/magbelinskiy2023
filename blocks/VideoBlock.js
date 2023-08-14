@@ -22,7 +22,10 @@ const VideoBlock = () => {
   const [showVideo, setShowVideo] = useState(false)
 
   return (
-    <DivContent className="flex flex-col items-center">
+    <DivContent
+      noMargin
+      className="mt-[60px] flex flex-col items-center md:mt-[100px]"
+    >
       <Title />
       <DivText className="mb-[16px] mt-[18px] w-[290px] text-center md:mb-[57px] md:w-[450px] tablet:mb-[62px] tablet:mt-[30px] tablet:w-[590px]">
         Левитация, гипноз, чтение мыслей, исчезновение предметов и превращения —

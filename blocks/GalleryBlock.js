@@ -25,8 +25,8 @@ const GalleryBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
   return (
-    <div className="relative flex w-full flex-col items-center">
-      <DivContent className="flex flex-col items-center gap-y-[20px]">
+    <div className="relative mt-[100px] flex w-full flex-col items-center md:mt-[110px] xl:mt-[150px]">
+      <DivContent noMargin className="flex flex-col items-center gap-y-[20px]">
         <div className="flex max-w-[520px] flex-col items-start justify-between gap-x-[200px] tablet:max-w-[680px] xl:max-w-full xl:flex-row xl:items-center">
           <div className="flex flex-col gap-y-[50px]">
             <Title />
@@ -53,7 +53,7 @@ const GalleryBlock = () => {
           </DivText>
         </div>
       </DivContent>
-      <div className="relative z-10 w-full xl:px-[52px]">
+      <div className="relative z-10 mt-[35px] w-full md:mt-[70px] xl:mt-[120px] xl:px-[52px]">
         <Gallery type={1} />
       </div>
       <div

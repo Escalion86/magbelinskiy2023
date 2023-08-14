@@ -291,7 +291,7 @@ const AboutBlock = () => {
       />
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-        className="absolute bottom-[350px] right-0 w-[25%] object-cover opacity-20 sm:bottom-[650px] md:bottom-[240px] md:right-[min(calc(3%-60px),0px)] md:w-[300px] md:opacity-50 xl:-bottom-[160px]"
+        className="absolute bottom-[350px] right-0 w-[25%] object-cover opacity-20 sm:bottom-[650px] md:bottom-[240px] md:right-[min(calc(3%-60px),0px)] md:w-[300px] md:opacity-50 xl:-bottom-[240px]"
         alt="glass"
         src="/img/broken_glass_right.png"
         draggable={false}

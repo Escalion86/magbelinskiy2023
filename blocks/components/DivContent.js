@@ -11,9 +11,7 @@ const DivContent = ({
   <div
     className={cn(
       'relative min-w-[375px] max-w-[1264px] px-[18px] md:px-[52px]',
-      noMargin
-        ? ''
-        : 'my-12 mb-10 md:mt-[124px] tablet:mb-32 tablet:mt-10 2xl:mt-20',
+      noMargin ? '' : 'mt-12 md:mt-[124px] tablet:mt-10 2xl:mt-20',
       fullWidth ? 'w-full' : '',
       className
     )}

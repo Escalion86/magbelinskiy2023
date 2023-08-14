@@ -21,7 +21,7 @@ const Title = ({ className }) => (
 
 const GalleryBlock2 = () => {
   return (
-    <div className="relative mb-10 mt-[15px] flex w-full flex-col items-center md:mt-[140px] tablet:mb-32">
+    <div className="relative mb-10 mt-[64px] flex w-full flex-col items-center md:mt-[137px] tablet:mb-32 xl:mt-[240px]">
       <Title />
       {/* <DivContent className="flex flex-col items-center gap-y-[20px]"> */}
       <div className="relative z-10 mt-[35px] w-full md:mt-[65px]">

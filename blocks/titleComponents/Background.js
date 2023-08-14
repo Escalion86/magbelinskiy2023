@@ -54,7 +54,7 @@ const Background = () => (
     />
     {/* Рука справа */}
     <div
-      className="absolute bottom-[6%] right-0 top-auto z-10 aspect-[235/303] h-[95px] w-[74px] md:bottom-[4%] md:h-[173px] md:w-[135px] 2xl:bottom-auto 2xl:top-[24%] 2xl:h-[303px] 2xl:w-[235px]"
+      className="absolute bottom-[6%] right-0 top-auto z-10 aspect-[235/303] h-[95px] w-[74px] sm:bottom-[10px] md:-bottom-0 md:h-[173px] md:w-[135px] 2xl:bottom-auto 2xl:top-[24%] 2xl:h-[303px] 2xl:w-[235px]"
       style={{
         background: 'url("/img/hand2.png")',
         mixBlendMode: 'hard-light',

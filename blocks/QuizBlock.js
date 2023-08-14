@@ -862,7 +862,7 @@ const QuizBlock = () => {
         <DivContent
           noMargin
           fullWidth={false}
-          className="mt-[123px] flex flex-col items-center tablet:mt-[162px] xl:mt-[230px]"
+          className="mt-[69px] flex flex-col items-center sm:mt-[100px] md:mt-[153px] xl:mt-[230px]"
         >
           <div className="flex w-full flex-col items-center justify-center sm:flex-row">
             <img
