@@ -9,6 +9,7 @@ import DivText from './components/DivText'
 import Gallery from './galleryComponents/Gallery'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
+import BackLight from './components/BackLight'
 
 const Title = ({ className }) => (
   <div
@@ -65,8 +66,12 @@ const GalleryBlock = () => {
           backgroundRepeat: 'no-repeat',
         }}
       />
-      <div
-        className="absolute left-[calc(15%-400px)] top-[150px] h-[509px] w-[320px] rounded-full opacity-60"
+      <BackLight
+        className="-top-[32px] left-0 -translate-x-[42%] scale-[79.4%] md:-top-[120px] md:-translate-x-1/3 md:scale-[100%] xl:-top-[20px] xl:-translate-x-1/2"
+        opacity={40}
+      />
+      {/* <div
+        className="absolute left-[calc(15%-400px)] top-[150px] h-[509px] w-[320px] rounded-full"
         style={{
           transform: 'rotate(135deg)',
           background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
@@ -75,16 +80,16 @@ const GalleryBlock = () => {
         }}
       />
       <div
-        className="absolute left-[calc(15%-490px)] top-[100px] h-[410px] w-[258px] rounded-full opacity-60"
+        className="absolute left-[calc(15%-490px)] top-[100px] h-[410px] w-[258px] rounded-full"
         style={{
           transform: 'rotate(-165deg)',
           background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',
           boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.35) inset',
           filter: 'blur(177.5px)',
         }}
-      />
+      /> */}
       <div
-        className="absolute right-[calc(15%-350px)] top-[300px] h-[413px] w-[260px] rounded-full opacity-60 xl:top-[680px]"
+        className="absolute -right-[90%] top-[300px] h-[413px] w-[260px] rounded-full opacity-40 md:right-[calc(15%-350px)] xl:top-[680px]"
         style={{
           transform: 'rotate(30deg)',
           background: 'linear-gradient(63deg, #4272D1 0%, #83ACFF 100%)',
@@ -93,7 +98,7 @@ const GalleryBlock = () => {
         }}
       />
       <div
-        className="h-332px] absolute right-[calc(15%-340px)] top-[700px] w-[209px] rounded-full opacity-60 xl:top-[1080px]"
+        className="h-332px] absolute -right-[90%] top-[700px] h-[332px] w-[209px] rounded-full opacity-40 md:right-[calc(15%-340px)] xl:top-[1080px]"
         style={{
           transform: 'rotate(90deg)',
           background: 'linear-gradient(64deg, #773FCA 0%, #8E42FF 71.51%)',

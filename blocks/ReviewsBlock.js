@@ -14,13 +14,12 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[64px]',
+      'w-[320px] text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:w-[420px] sm:text-[36px] md:w-[500px] md:text-[42px] tablet:w-[760px] tablet:text-[64px] xl:w-[780px]',
       className
     )}
   >
-    После выступления люди надолго
-    <br />
-    остаются <SpanGradientTitle>под впечатлениями</SpanGradientTitle>
+    После выступления люди надолго остаются{' '}
+    <SpanGradientTitle>под впечатлениями</SpanGradientTitle>
   </div>
 )
 

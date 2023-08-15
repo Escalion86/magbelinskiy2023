@@ -7,6 +7,7 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import Gallery from './galleryComponents/Gallery'
+import BackLight from './components/BackLight'
 
 const Title = ({ className }) => (
   <div
@@ -22,6 +23,7 @@ const Title = ({ className }) => (
 const GalleryBlock2 = () => {
   return (
     <div className="relative mb-10 mt-[64px] flex w-full flex-col items-center md:mt-[137px] tablet:mb-32 xl:mt-[240px]">
+      <BackLight className="-left-[10px] -top-[190px] scale-[71.58%] md:-top-[90px] md:left-auto md:scale-[100%]" />
       <Title />
       {/* <DivContent className="flex flex-col items-center gap-y-[20px]"> */}
       <div className="relative z-10 mt-[35px] w-full md:mt-[65px]">

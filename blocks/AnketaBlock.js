@@ -80,6 +80,15 @@ const AnketaBlock = () => {
 
   return (
     <div className="relative mb-[40px] mt-[85px] flex w-full flex-col items-center md:mb-[100px] md:mt-[161px] xl:mt-[185px]">
+      <div
+        className="absolute right-0 top-[11px] z-10 aspect-[235/303] w-[100px] md:hidden"
+        style={{
+          background: 'url("/img/hand2.png")',
+          mixBlendMode: 'hard-light',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
       <DivContent
         noMargin
         className="flex flex-col items-center gap-y-[20px] xl:flex-row"
@@ -158,7 +167,13 @@ const AnketaBlock = () => {
             </Button>
             <div className="mt-[10px] w-[80%] text-center text-[11px] font-normal leading-[145%] text-[#A8A8CA] md:text-left md:text-[16px]">
               Нажимая на кнопку, вы соглашаетесь на{' '}
-              <span className="underline">обработку персональных данных</span>
+              <a
+                href="/doc/privacy.doc"
+                download
+                className="cursor-pointer underline"
+              >
+                обработку персональных данных
+              </a>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import AnketaBlock from '@/blocks/AnketaBlock'
 import FooterBlock from '@/blocks/FooterBlock'
 import GalleryBlock from '@/blocks/GalleryBlock'
 import GalleryBlock2 from '@/blocks/GalleryBlock2'
+import ModalInfo from '@/blocks/ModalInfo'
 import ModalZakaz from '@/blocks/ModalZakaz'
 import QuizBlock from '@/blocks/QuizBlock'
 import ReviewsBlock from '@/blocks/ReviewsBlock'
@@ -67,6 +68,7 @@ export default function Home() {
         </div>
       </div>
       <ModalZakaz />
+      <ModalInfo />
     </RecoilRoot>
   )
 }

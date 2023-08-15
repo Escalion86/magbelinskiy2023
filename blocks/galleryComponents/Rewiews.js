@@ -127,7 +127,6 @@ const Rewiews = ({ className }) => {
     const dragEnd = () => {
       isDragging = false
       const deltaWidth = carousel.scrollLeft % firstCardWidth
-      console.log('deltaWidth :>> ', deltaWidth)
       if (deltaWidth > padding)
         if (deltaWidth < firstCardWidth / 2) leftClick()
         else rightClick()
@@ -175,7 +174,6 @@ const Rewiews = ({ className }) => {
 
   const leftClick = (e) => {
     e?.stopPropagation()
-    console.log('leftClick :>> ')
     infiniteScroll()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
     const add =
@@ -185,7 +183,6 @@ const Rewiews = ({ className }) => {
 
   const rightClick = (e) => {
     e?.stopPropagation()
-    console.log('rightClick :>> ')
     infiniteScroll()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
     const add = firstCardWidth - deltaWidth + padding

@@ -7,6 +7,7 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
+import BackLight from './components/BackLight'
 
 const Title = ({ className }) => (
   <div
@@ -296,6 +297,15 @@ const AboutBlock = () => {
         src="/img/broken_glass_right.png"
         draggable={false}
       />
+      <BackLight
+        className="-top-[80px] left-[calc(7.5%-300px)] md:-top-[90px]"
+        opacity={30}
+      />
+      <BackLight
+        className="-top-[80px] right-0 md:top-[460px] md:translate-x-1/2 xl:top-[220px]"
+        opacity={10}
+      />
+
       {/* broken_glass_ */}
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex flex-wrap justify-center gap-x-[100px] gap-y-[78px] xl:flex-nowrap">

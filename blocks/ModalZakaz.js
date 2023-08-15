@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@/helpers/CRUD'
+import Modal from './components/Modal'
 
 const Title = ({ className }) => (
   <div
@@ -40,7 +41,8 @@ const OnSuccess = ({ visible }) => (
         Спасибо за заявку!
       </SpanGradientTitle>
       <DivText
-        className="mt-[25px] w-full max-w-[270px] text-center leading-[135%] md:max-w-[220px] md:text-left tablet:max-w-[460px] tablet:text-center"
+        className="mt-[25px] w-full max-w-[270px] text-center md:max-w-[220px] md:text-left tablet:max-w-[460px] tablet:text-center"
+        leadingClass="leading-[135%]"
         textColorClass="text-[#8888AB]"
         textFontClass="font-medium"
       >
@@ -169,69 +171,39 @@ const ModalZakaz = () => {
   }
 
   return (
-    <div
-      className={cn(
-        'fixed left-0 top-0 z-50 flex h-screen items-center justify-center overflow-hidden bg-black bg-opacity-80 transition-opacity duration-500',
-        showModalZakaz ? 'w-full opacity-100' : 'w-0 opacity-0'
-      )}
-      onClick={() => setShowModalZakaz(false)}
-    >
-      <div
-        className="relative mx-[18px] flex max-w-[620px] flex-col items-center overflow-hidden rounded-[30px] bg-white px-[18px] pb-[40px] pt-[60px] md:max-w-[640px] md:px-[65px] md:pb-[60px]"
-        onClick={(e) => e.stopPropagation()}
+    <Modal show={showModalZakaz} closeFunc={() => setShowModalZakaz(false)}>
+      <OnSuccess visible={showModalZakaz === 'success' || success === true} />
+      <OnUnsuccess
+        visible={showModalZakaz === 'unsuccess' || success === false}
+      />
+      <Title />
+      <DivText
+        className="mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px] tablet:max-w-full"
+        textColorClass="text-[#8888AB]"
+        textFontClass="font-medium"
       >
-        <OnSuccess visible={showModalZakaz === 'success' || success === true} />
-        <OnUnsuccess
-          visible={showModalZakaz === 'unsuccess' || success === false}
-        />
-        <div
-          className="group absolute right-[16px] top-[16px] z-30 flex h-[28px] w-[28px] cursor-pointer items-center justify-center md:right-[29px] md:top-[24px]"
-          onClick={() => setShowModalZakaz(false)}
-        >
-          <svg
-            className="duration-300 group-hover:scale-125"
-            xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="20"
-            viewBox="0 0 19 20"
-            fill="none"
-          >
-            <g>
-              <path
-                d="M0 19.6L6.84 9.84L0.16 0H4.2L9.12 7.76L13.64 0H17.84L11.4 9.52L18.08 19.6H14.04L9.08 11.88L4.04 19.6H0Z"
-                fill="black"
-              />
-            </g>
-          </svg>
-        </div>
-        <Title />
-        <DivText
-          className="mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px] tablet:max-w-full"
-          textColorClass="text-[#8888AB]"
-          textFontClass="font-medium"
-        >
-          Заполните форму и мы свяжемся с вами{' '}
-          <span className="font-bold">
-            в течение <span className="whitespace-nowrap">15 минут</span>
-          </span>
-          , чтобы подробно обсудить шоу.
-        </DivText>
-        <DivText
-          className="mt-[15px] text-center leading-[135%]"
-          size="small"
-          textColorClass="text-[#8888AB]"
-        >
-          При необходимости договоримся о личной встрече.
-        </DivText>
-        <div
-          className="mt-[20px] flex w-full items-center rounded-[7px] md:mt-[35px]"
-          style={{
-            background:
-              'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), linear-gradient(0deg, #EDEDED 0%, #EDEDED 100%), #FFF',
-            boxShadow: '0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
-          }}
-        >
-          {/* <input
+        Заполните форму и мы свяжемся с вами{' '}
+        <span className="font-bold">
+          в течение <span className="whitespace-nowrap">15 минут</span>
+        </span>
+        , чтобы подробно обсудить шоу.
+      </DivText>
+      <DivText
+        className="mt-[15px] text-center leading-[135%]"
+        size="small"
+        textColorClass="text-[#8888AB]"
+      >
+        При необходимости договоримся о личной встрече.
+      </DivText>
+      <div
+        className="mt-[20px] flex w-full items-center rounded-[7px] md:mt-[35px]"
+        style={{
+          background:
+            'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), linear-gradient(0deg, #EDEDED 0%, #EDEDED 100%), #FFF',
+          boxShadow: '0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
+        }}
+      >
+        {/* <input
             className="w-full text-[#0e0e1ce6] py-[30px] px-[35px] text-[19px] font-medium bg-transparent outline-none"
             style={{
               lineHeight: '125%',
@@ -239,63 +211,68 @@ const ModalZakaz = () => {
             }}
             placeholder="+7 ("
           /> */}
-          <MaskedInput
-            className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
-            // showMask={value == '7'}
-            // showMask
-            onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-            // keepCharPositions
-            mask={[
-              '+',
-              '7',
-              ' ',
-              '(',
-              /[1-9]/,
-              /\d/,
-              /\d/,
-              ')',
-              ' ',
-              /\d/,
-              /\d/,
-              /\d/,
-              '-',
-              /\d/,
-              /\d/,
-              /\d/,
-              /\d/,
-            ]}
-            // value={
-            //   value
-            //     ? value.toString().substr(0, 1) == '7'
-            //       ? value.toString().substring(1)
-            //       : value.toString()
-            //     : ''
-            // }
-          />
-        </div>
-        <div className="w-full">
-          <Button
-            noShadow
-            fullWidth
-            className="mt-[15px] max-w-full"
-            onClick={onSubmit}
-            disabled={success !== undefined || !phone || phone.length < 11}
-            addIcon={false}
-          >
-            {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
-          </Button>
-        </div>
-        <DivText
-          className="mt-[25px] text-center leading-[135%]"
-          size="small"
-          textColorClass="text-[#8888AB]"
-          textFontClass="font-normal"
-        >
-          Нажимая на кнопку, вы соглашаетесь на{' '}
-          <span className="underline">обработку персональных данных</span>
-        </DivText>
+        <MaskedInput
+          className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
+          // showMask={value == '7'}
+          // showMask
+          onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+          // keepCharPositions
+          mask={[
+            '+',
+            '7',
+            ' ',
+            '(',
+            /[1-9]/,
+            /\d/,
+            /\d/,
+            ')',
+            ' ',
+            /\d/,
+            /\d/,
+            /\d/,
+            '-',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+          ]}
+          // value={
+          //   value
+          //     ? value.toString().substr(0, 1) == '7'
+          //       ? value.toString().substring(1)
+          //       : value.toString()
+          //     : ''
+          // }
+        />
       </div>
-    </div>
+      <div className="w-full">
+        <Button
+          noShadow
+          fullWidth
+          className="mt-[15px] max-w-full"
+          onClick={onSubmit}
+          disabled={success !== undefined || !phone || phone.length < 11}
+          addIcon={false}
+        >
+          {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
+        </Button>
+      </div>
+      <DivText
+        className="mt-[25px] text-center leading-[135%]"
+        size="small"
+        textColorClass="text-[#8888AB]"
+        textFontClass="font-normal"
+      >
+        Нажимая на кнопку, вы соглашаетесь на{' '}
+        <a
+          href="/doc/privacy.doc"
+          download
+          className="cursor-pointer underline"
+        >
+          обработку персональных данных
+        </a>
+      </DivText>
+    </Modal>
   )
 }
 

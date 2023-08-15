@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
+import modalInfoAtom from '@/state/modalInfoAtom'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 var progress
 
@@ -667,9 +669,14 @@ const QuizHeader = () => (
   </div>
 )
 
-const QuizCard = ({ title, imageName }) => (
+const QuizCard = ({ title, imageName, infoOpen, onChoose, big }) => (
   <div
-    className="flex h-[164px] w-[140px] flex-col items-center rounded-[8px] px-[10px] pb-[10px] pt-[10px] md:h-[330px] md:w-[260px] md:rounded-[8px] md:px-[20px] md:pb-[25px] md:pt-[20px]"
+    className={cn(
+      'flex flex-col items-center rounded-[8px] px-[10px] pb-[10px] pt-[10px] md:rounded-[8px] md:px-[20px] md:pb-[25px] md:pt-[20px]',
+      big
+        ? 'h-[164px] w-[140px] md:h-[330px] md:w-[405px]'
+        : 'h-[164px] w-[140px] md:h-[330px] md:w-[260px]'
+    )}
     style={{
       background:
         'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
@@ -677,24 +684,27 @@ const QuizCard = ({ title, imageName }) => (
         '3px 3px 25px 0px rgba(255, 255, 255, 0.03) inset, 0px 25px 36px 0px rgba(255, 255, 255, 0.20) inset',
     }}
   >
-    <div className="relative">
+    <div className="relative w-full">
       <img
-        className="h-[75px] w-[120px] rounded-[5px] object-cover md:h-[167px] md:w-[220px] md:rounded-[10px]"
+        className="h-[75px] w-full rounded-[5px] object-cover md:h-[167px] md:rounded-[10px]"
         alt={imageName}
         src={'/img/quiz/' + imageName + '.png'}
         draggable={false}
       />
-      <I />
+      {infoOpen && <I onClick={infoOpen} />}
     </div>
     <div
-      className="mb-[11px] mt-[11px] text-[12px] font-medium text-[#0E0E1C] md:mb-[25px] md:mt-[20px] md:text-[19px]"
+      className="-mx-[16px] mb-[11px] mt-[11px] text-center text-[12px] font-medium text-[#0E0E1C] md:mb-[25px] md:mt-[20px] md:text-[19px]"
       // style={{
       //   fontFamily: 'Montserrat',
       // }}
     >
       {title}
     </div>
-    <div className="group flex h-[30px] w-full cursor-pointer select-none items-center justify-between gap-x-[12px] rounded-[7px] bg-gradient-to-r from-white to-white bg-size-200 bg-pos-0 px-[15px] transition-all duration-300 hover:from-[#692DC1] hover:to-[#AC80EC] hover:bg-pos-100 md:h-[45px] md:justify-center">
+    <button
+      onClick={onChoose}
+      className="group flex h-[30px] w-full cursor-pointer select-none items-center justify-between gap-x-[12px] rounded-[7px] bg-gradient-to-r from-white to-white bg-size-200 bg-pos-0 px-[15px] transition-all duration-300 hover:from-[#692DC1] hover:to-[#AC80EC] hover:bg-pos-100 md:h-[45px] md:justify-center"
+    >
       <span className="text-[11px] font-semibold text-[#0E0E1C] text-opacity-90 group-hover:text-white md:text-[17px]">
         Выбрать
       </span>
@@ -725,7 +735,7 @@ const QuizCard = ({ title, imageName }) => (
           fill="white"
         />
       </svg>
-    </div>
+    </button>
   </div>
 )
 
@@ -741,7 +751,7 @@ const QuizProgress = ({ progress }) => (
       }}
     >
       <div
-        className="absolute left-0 z-10 flex h-full items-center justify-center overflow-hidden rounded-[90px] text-[12px] font-bold text-[#0E0E1C] md:text-[17px]"
+        className="absolute left-0 z-10 flex h-full items-center justify-center overflow-hidden rounded-[90px] text-[12px] font-bold text-[#0E0E1C] duration-500 md:text-[17px]"
         style={{
           width: progress + '%',
           fontFamily: 'Montserrat',
@@ -771,13 +781,7 @@ const I = ({ onClick }) => (
 )
 
 const Info = ({ className }) => (
-  <div
-    className={className}
-    style={{
-      display: 'inline',
-      color: '#A8A8CA',
-    }}
-  >
+  <div className={cn('text-[#A8A8CA]', className)}>
     Нажмите на{' '}
     <span
       className="min-h-[22px] min-w-[22px]"
@@ -808,9 +812,231 @@ const Info = ({ className }) => (
   </div>
 )
 
+var quiz
+
 const Quiz = () => {
+  const setModalInfo = useSetRecoilState(modalInfoAtom)
+
+  const [quizAnswers, setQuizAnswers] = useState([null, null, null, null, null])
+  // type, ages, guestsNum, dateTime, address
+  console.log('quizAnswers :>> ', quizAnswers)
+
+  const [quizQuestionNum, setQuizQuestionNum] = useState(0)
+
+  const nextQuestion = () => {
+    if (quizQuestionNum >= quizAnswers.length) return
+    setQuizQuestionNum((state) => state + 1)
+  }
+
+  const answerToQuestion = (newAnswer) => {
+    setQuizAnswers((state) =>
+      state.map((answer, index) =>
+        index === quizQuestionNum ? newAnswer : answer
+      )
+    )
+    nextQuestion()
+    const yOffset = 80
+    const y = quiz.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+    window.scrollTo({ top: y, behavior: 'smooth' })
+    // quiz.scrollIntoView({
+    //   behavior: 'smooth',
+    //   block: 'start',
+    //   inline: 'nearest',
+    // })
+  }
+
+  const answers = [
+    'Что у вас за мероприятие?',
+    'Какого возраста будут гости?',
+    'Сколько будет зрителей?',
+    'Когда планируется мероприятие?',
+    'Укажите город',
+  ]
+
+  const infos = {
+    birthday: {
+      title: 'День рождения',
+      text: () => (
+        <>
+          Увлекательный и профессиональный иллюзионист подарит вам и ваши гостям
+          зрелищное шоу. Иллюзии доставят вам незабываемые ощущения и захватят
+          за душу.
+          <br />
+          <br />
+          Удивите гостей и создайте праздник, который запомнится на всю жизнь.
+          Контактируйте со мной, чтобы узнать больше о том, как я могу оживить
+          ваш день рождения через мои фокусы и иллюзии!
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('birthday'),
+    },
+    wedding: {
+      title: 'Свадьба',
+      text: () => (
+        <>
+          Предлагаю добавить яркие моменты и незабываемые эмоции на ваше
+          свадебное торжество. Я профессиональный иллюзионист, который создаст
+          невероятное зрелище для вас и ваших гостей. Шоу моих фокусов позволит
+          сделать вашу свадьбу по-настоящему запоминающейся, оставив яркие
+          впечатления.
+          <br />
+          <br />Я сделаю все возможное, чтобы каждый гость чувствовал себя
+          особенным в этот особенный день. Свяжитесь со мной, чтобы узнать
+          больше о том, как я могу оживить вашу свадьбу!
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('wedding'),
+    },
+    corporate: {
+      title: 'Корпоратив',
+      text: () => (
+        <>
+          Удивительный и запоминающийся корпоративный ивент не может обойтись
+          без профессионального иллюзиониста. Моё элегантное и динамичное шоу
+          твёрдо впишется в программу праздника или тимбилдинга. Сотрудники
+          вашей компании будут в восторге от моих фокусов, которые придадут
+          вечеру дополнительную ноту развлечения и разнообразия.
+          <br />
+          <br />Я создаю незабываемую атмосферу, которая поможет всем гостям
+          по-настоящему расслабиться и насладиться вечером. Ваше мероприятие
+          будет запомнено как одно из лучших и незабываемых. Обратитесь ко мне в
+          любое время, чтобы узнать больше о том, как я могу внести свою часть в
+          ваш корпоративный ивент.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('corporate'),
+    },
+    opening: {
+      title: 'Открытие заведения',
+      text: () => (
+        <>
+          Первое впечатление - это всегда самое важное. Сделайте запоминающимся
+          вечер на открытии вашего нового заведения, наняв профессионального
+          иллюзиониста. Благодаря моему уникальному шоу я создам уникальную
+          атмосферу в вашем заведении, которая запомнится гостям на долгое
+          время.
+          <br />
+          <br />
+          Мои фокусы и трюки удивят и порадуют ваших гостей, а также подарят им
+          множество положительных эмоций. Разнообразьте вечер за счёт зрелищного
+          и интерактивного иллюзионного шоу. Обратитесь к моим услугам, чтобы
+          узнать, как я могу помочь сделать ваше открытие заведения незабываемым
+          и успешным.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('opening'),
+    },
+    club: {
+      title: 'Клуб',
+      text: () => (
+        <>
+          С удовольствием помогу сделать ваше выступление в клубе незабываемым
+          для всех присутствующих. Иллюзионное шоу - идеальный вариант для
+          добавления разнообразия в программу вечера. Я могу предложить
+          уникальные и оригинальные иллюзии, которые будут восхищать и
+          заставлять улыбаться ваших зрителей.
+          <br />
+          <br />В зависимости от длительности выступления и вашего бюджета, я
+          готов предложить различные варианты иллюзий, которые удивят и покорят
+          сердца вашей аудитории. Опыт и профессионализм гарантируют, что ваше
+          выступление станет ярким и неповторимым. Свяжитесь со мной, чтобы
+          обсудить детали и организовать незабываемое шоу в вашем клубе.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('club'),
+    },
+    presentation: {
+      title: 'Презентация',
+      text: () => (
+        <>
+          Презентация - это важная часть любого мероприятия, поэтому я смогу
+          предложить оригинальное и интригующее иллюзионное шоу, которое красиво
+          дополнит вашу презентацию и заставит аудиторию восхищаться и
+          удивляться во время показа. Моя задача - внести энергию и
+          дополнительную значимость в ваши корпоративные мероприятия или
+          бизнес-презентации, используя мои способности и техники иллюзии.
+          <br />
+          <br />Я могу внести некоторые мистические элементы и эффекты, которые
+          помогут заинтересовать зрителей, сделав вашу презентацию более
+          запоминающейся и приятной для всех присутствующих. Свяжитесь со мной,
+          чтобы обсудить детали и создать индивидуальное шоу-презентацию,
+          которое подойдет именно для вашего мероприятия.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('presentation'),
+    },
+    kids: {
+      title: 'Детский праздник',
+      text: () => (
+        <>
+          Для детского праздника я могу предложить интерактивно-иллюзионное шоу,
+          в котором дети смогут участвовать и взаимодействовать со мной и моими
+          магическими предметами. Я могу показать свои детские иллюзии с яркими
+          и красочными картинками, животными, цветами и всем, что связано с
+          детскими интересами.
+          <br />
+          <br />Я также могу провести игры и конкурсы, чтобы дети могли
+          попробовать себя в роли магов, раскрывая тайны иллюзии. В целом, я
+          смогу создать интересное и позитивное атмосферное во время праздника,
+          которое дети и их родители будут помнить долгое время. Буду рад
+          обсудить наши возможности и детали, свяжитесь со мной для более
+          подробной информации.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('kids'),
+    },
+    other: {
+      title: 'Другое мероприятие',
+      text: () => (
+        <>
+          Как иллюзионист, я могу выступать на различных мероприятиях, таких как
+          свадьбы, юбилеи, дни рождения, национальные праздники, фестивали и
+          конгрессы, а также на более интимных мероприятиях, таких как домашние
+          вечеринки и дни влюбленных.
+          <br />
+          <br />Я могу разработать концепцию шоу в соответствии с тематикой
+          мероприятия, чтобы создать уникальную и незабываемую атмосферу,
+          которая запомнится гостям на долгое время. Кроме того, я могу
+          настроиться на конкретные потребности и пожелания клиента, чтобы
+          предоставить индивидуальный подход к каждому мероприятию.
+          <br />
+          <br />
+          Если у вас есть какие-либо специальные запросы или требования,
+          пожалуйста, свяжитесь со мной, и мы найдем оптимальное решение для
+          вашего мероприятия.
+        </>
+      ),
+      buttonName: 'Да, мне подходит!',
+      onConfirm: () => answerToQuestion('other'),
+    },
+  }
+
+  useEffect(() => {
+    quiz = document.querySelector('.quiz')
+    // bodyRect = document.body.getBoundingClientRect(),
+    // quizRect = quiz.getBoundingClientRect(),
+    // offsetQuiz = quizRect.top - bodyRect.top
+  }, [])
+  // console.log('quiz?.scrollTop :>> ', quiz?.y)
+  // const progress =
+  //   (Object.keys(quizAnswers).reduce(
+  //     (previous, key) => previous + (quizAnswers[key] ? 1 : 0),
+  //     0
+  //   ) /
+  //     Object.keys(quizAnswers).length) *
+  //   100
+  const progress = Math.floor((quizQuestionNum / quizAnswers.length) * 100)
+
   return (
-    <div className="mb-[40px] w-full px-[18px] md:mb-[0px] md:px-[52px] tablet:mb-[130px]">
+    <div className="quiz mb-[40px] w-full px-[18px] md:mb-[0px] md:px-[52px] tablet:mb-[130px]">
       <div className="md:[mt-60px] relative mt-[30px] w-full min-w-[339px] max-w-[1360px]">
         <QuizBackground />
         <div className="relative flex flex-col gap-y-[30px] px-[10px] pb-[25px] pt-[10px] md:gap-y-[40px] md:px-[40px] md:pb-[50px] md:pt-[40px] xl:gap-y-[57px] xl:px-[100px]">
@@ -822,33 +1048,118 @@ const Quiz = () => {
                   color: 'rgba(14, 14, 28, 0.17)',
                 }}
               >
-                01/03.
+                {quizQuestionNum + 1}/{quizAnswers.length}.
               </span>{' '}
               <span
                 style={{
                   color: '#0E0E1C',
                 }}
               >
-                Что у вас за мероприятие?
+                {answers[quizQuestionNum]}
               </span>
             </div>
           </div>
           {/* grid justify-items-center grid-cols-2 sm:grid-cols-3 md:grid-cols-2 tablet:grid-cols-3 2xl:grid-cols-4 */}
-          <div className="grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] sm:grid-cols-3 md:grid-cols-2 md:gap-x-[30px] md:gap-y-[20px] tablet:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-[40px] 2xl:gap-y-[30px]">
-            {/* <div className="inline-flex flex-wrap justify-evenly gap-x-[20px] gap-y-[10px] md:gap-x-[30px] md:gap-y-[20px] 2xl:gap-x-[40px] 2xl:gap-y-[30px]"> */}
-            <QuizCard title="День рождения" imageName="birthday" />
-            <QuizCard title="Свадьба" imageName="wedding" />
-            <QuizCard title="Корпоратив" imageName="corporate" />
-            <QuizCard title="Открытие заведения" imageName="opening" />
-            <QuizCard title="Клуб" imageName="club" />
-            <QuizCard title="Презентация" imageName="presentation" />
-            <QuizCard title="Детский праздник" imageName="kids" />
-            <QuizCard title="Другое" imageName="other" />
-            <div className="hidden h-auto w-full flex-col justify-end text-center md:col-span-2 md:flex tablet:col-auto tablet:h-[330px] tablet:w-[260px] tablet:text-left 2xl:hidden">
-              <Info />
+          <div className="relative w-full">
+            <div
+              className={cn(
+                'grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] transition-all duration-500 sm:grid-cols-3 md:grid-cols-2 md:gap-x-[30px] md:gap-y-[20px] tablet:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-[40px] 2xl:gap-y-[30px]',
+                quizQuestionNum === 0
+                  ? 'relative z-10 opacity-100'
+                  : 'absolute left-0 right-0 top-0 opacity-0'
+              )}
+            >
+              {/* <div className="inline-flex flex-wrap justify-evenly gap-x-[20px] gap-y-[10px] md:gap-x-[30px] md:gap-y-[20px] 2xl:gap-x-[40px] 2xl:gap-y-[30px]"> */}
+              <QuizCard
+                title="День рождения"
+                imageName="birthday"
+                infoOpen={() => setModalInfo(infos.birthday)}
+                onChoose={() => answerToQuestion('birthday')}
+              />
+              <QuizCard
+                title="Свадьба"
+                imageName="wedding"
+                infoOpen={() => setModalInfo(infos.wedding)}
+                onChoose={() => answerToQuestion('wedding')}
+              />
+              <QuizCard
+                title="Корпоратив"
+                imageName="corporate"
+                infoOpen={() => setModalInfo(infos.corporate)}
+                onChoose={() => answerToQuestion('corporate')}
+              />
+              <QuizCard
+                title="Открытие заведения"
+                imageName="opening"
+                infoOpen={() => setModalInfo(infos.opening)}
+                onChoose={() => answerToQuestion('opening')}
+              />
+              <QuizCard
+                title="Клуб"
+                imageName="club"
+                infoOpen={() => setModalInfo(infos.club)}
+                onChoose={() => answerToQuestion('club')}
+              />
+              <QuizCard
+                title="Презентация"
+                imageName="presentation"
+                infoOpen={() => setModalInfo(infos.presentation)}
+                onChoose={() => answerToQuestion('presentation')}
+              />
+              <QuizCard
+                title="Детский праздник"
+                imageName="kids"
+                infoOpen={() => setModalInfo(infos.kids)}
+                onChoose={() => answerToQuestion('kids')}
+              />
+              <QuizCard
+                title="Другое"
+                imageName="other"
+                infoOpen={() => setModalInfo(infos.other)}
+                onChoose={() => answerToQuestion('other')}
+              />
+              <div className="hidden h-auto w-full flex-col justify-end text-center md:col-span-2 md:flex tablet:col-auto tablet:h-[330px] tablet:w-[260px] tablet:text-left 2xl:hidden">
+                <Info />
+              </div>
+            </div>
+            <div
+              className={cn(
+                'grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] transition-all duration-500 md:gap-x-[30px] md:gap-y-[20px] 2xl:grid-cols-3 2xl:gap-x-[40px] 2xl:gap-y-[30px]',
+                quizQuestionNum === 1
+                  ? 'relative z-10 opacity-100'
+                  : 'absolute left-0 right-0 top-0 opacity-0'
+              )}
+            >
+              <QuizCard
+                title="Взрослые (18-99 лет)"
+                imageName="adults"
+                onChoose={() => answerToQuestion('adult')}
+                big
+              />
+              <QuizCard
+                title="Подростки (10-18 лет)"
+                imageName="young"
+                onChoose={() => answerToQuestion('young')}
+                big
+              />
+              <QuizCard
+                title="Дети (5-12 лет)"
+                imageName="kids2"
+                onChoose={() => answerToQuestion('kids')}
+                big
+              />
+              <QuizCard
+                title="Смешанная аудитория"
+                imageName="different"
+                onChoose={() => answerToQuestion('different')}
+                big
+              />
             </div>
           </div>
-          <QuizProgress progress={33} />
+          <div className="flex items-center gap-[30px]">
+            <QuizProgress progress={progress} />
+            <Info className="hidden max-w-[260px] 2xl:block" />
+          </div>
         </div>
       </div>
     </div>
