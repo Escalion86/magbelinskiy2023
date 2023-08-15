@@ -10,6 +10,7 @@ export const AUDIENCE = [
 ]
 
 export const EVENT_TYPES = [
+  { value: 'kids', name: 'Детский праздник' },
   { value: 'birthday', name: 'День рождения' },
   { value: 'wedding', name: 'Свадьба' },
   { value: 'corporate', name: 'Корпоратив' },
@@ -57,6 +58,7 @@ export const POST = async (req, res) => {
   try {
     const {
       source,
+      contact,
       name,
       audience,
       type,
@@ -107,6 +109,8 @@ export const POST = async (req, res) => {
         spectators ? `\n<b>Кол-во зрителей:</b> ${spectators}` : ''
       }${town ? `\n<b>Город:</b> ${town}` : ''}${
         address ? `\n<b>Адрес:</b> ${address}` : ''
+      }${contact ? `\n<b>Способ связи:</b> ${contact}` : ''}${
+        comment ? `\n<b>Комментарий:</b> ${comment}` : ''
       }${phone ? `\n<b>Телефон:</b> +${phone}` : ''}${
         comment ? `\n<b>Комментарий:</b> ${comment}` : ''
       }${

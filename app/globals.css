@@ -55,3 +55,8 @@ body {
 .no-transition {
   scroll-behavior: auto;
 }
+
+.mask-bottom {
+  -webkit-wask-image: linear-gradient(rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0));
+  mask-image: linear-gradient(rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0));
+}
