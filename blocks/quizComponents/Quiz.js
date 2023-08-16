@@ -287,25 +287,13 @@ const Quiz = () => {
             className="absolute -right-[80px] bottom-[150px] hidden max-h-[57%] object-contain tablet:-right-[60px] tablet:bottom-0 tablet:block tablet:max-h-[90%] 2xl:right-0 2xl:max-h-[95%]"
             alt="magican"
             src="/img/quiz/final.png"
-            // style={{
-            //   filter: 'blur(0.8469998836517334px)',
-            //   // background:
-            //   //   'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
-            //   // backgroundBlendMode: 'color-dodge, normal',
-            // }}
             draggable={false}
           />
           <img
             // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-            className="mask-bottom absolute -right-[80px] bottom-[150px] max-h-[57%] object-contain sm:-right-[50px] sm:max-h-[65%] md:-right-[100px] md:bottom-[190px] md:max-h-[60%] tablet:hidden"
+            className="mask-bottom absolute -right-[80px] top-[135px] max-h-[57%] object-contain sm:-right-[50px] sm:top-[80px] sm:max-h-[65%] md:-right-[100px] md:top-[200px] md:max-h-[60%] tablet:hidden"
             alt="magican"
             src="/img/quiz/final.png"
-            // style={{
-            //   filter: 'blur(0.8469998836517334px)',
-            //   // background:
-            //   //   'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
-            //   // backgroundBlendMode: 'color-dodge, normal',
-            // }}
             draggable={false}
           />
         </div>

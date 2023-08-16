@@ -26,7 +26,7 @@ const FooterBlock = () => {
 
   return (
     <div
-      className="flex w-full justify-center bg-opacity-70 pb-[15px] pt-[10px] md:pb-[60px] md:pt-[60px]"
+      className="z-10 flex w-full justify-center bg-opacity-70 pb-[15px] pt-[10px] md:pb-[60px] md:pt-[60px]"
       style={{
         background:
           'linear-gradient(343deg, rgba(96, 139, 246, 0.10) 0%, rgba(96, 139, 246, 0.00) 83.72%), #191929',
@@ -90,7 +90,7 @@ const FooterBlock = () => {
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
               <a
-                className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:text-[21px]"
+                className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                 href="tel:+79138370020"
                 target="_blank"
               >
@@ -106,7 +106,7 @@ const FooterBlock = () => {
             <div className="mt-[20px] text-[16px] font-medium leading-[135%] text-[#A8A8CA] md:mt-[30px]">
               Социальные сети:
             </div>
-            <div className="mt-[5px] flex flex-wrap gap-x-[20px] md:mt-[10px] md:gap-x-[30px]">
+            <div className="mt-[5px] flex flex-wrap gap-x-[20px] gap-y-[10px] md:mt-[10px] md:gap-x-[30px]">
               <Social
                 text="Instagram"
                 href="https://instagram.com/magbelinskiy"
@@ -121,7 +121,7 @@ const FooterBlock = () => {
             <a
               href="/doc/privacy.doc"
               download
-              className="mt-[25px] cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
+              className="mt-[25px] block w-fit cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
             >
               Политика конфиденциальности
             </a>

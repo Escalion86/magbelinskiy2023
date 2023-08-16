@@ -10,6 +10,7 @@ import DivText from './components/DivText'
 import Rewiews from './galleryComponents/Rewiews'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
+import BackLight from './components/BackLight'
 
 const Title = ({ className }) => (
   <div
@@ -28,7 +29,28 @@ const ReviewsBlock = () => {
   return (
     <div className="relative mt-[32px] flex w-full flex-col items-center md:mt-[72px]">
       <Title />
-      <Rewiews className="mt-[25px] md:mt-[60px]" />
+      <div className="relative mt-[25px] md:mt-[60px]">
+        <BackLight
+          className={cn(
+            'scale-[50%]',
+            '-left-[40px] top-[60px] -translate-x-1/2 -translate-y-1/2',
+            'md:-left-[120px] md:-top-[60px] md:-translate-x-1/2 md:-translate-y-1/2 md:scale-[100%]',
+            'xl:left-[60px] xl:top-0 xl:-translate-x-1/2 xl:-translate-y-1/2'
+          )}
+          opacity={40}
+        />
+        <BackLight
+          className={cn(
+            'bottom-auto scale-[50%]',
+            '-right-[80px] top-[50%] -translate-y-1/2 translate-x-1/2',
+            'md:right-[120px] md:top-[80px] md:-translate-y-1/2 md:translate-x-1/2 md:scale-[100%]',
+            'xl:bottom-0 xl:right-[60px] xl:translate-y-[40px]'
+          )}
+          opacity={20}
+        />
+        <Rewiews className="" />
+      </div>
+
       <Button
         className="mt-[35px] md:mt-[60px]"
         onClick={() => setShowModalZakaz(true)}

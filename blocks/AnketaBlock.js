@@ -11,6 +11,8 @@ import MaskedInput from 'react-text-mask'
 import { postData } from '@/helpers/CRUD'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
+import BackLight from './components/BackLight'
+import BackLight2 from './components/BackLight2'
 
 const Title = ({ className }) => (
   <div
@@ -28,7 +30,7 @@ const Title = ({ className }) => (
 const Item = ({ num, text }) => (
   <div className="flex items-center gap-x-[15px]">
     <div
-      className="flex h-[45px] w-[45px] items-center justify-center rounded-[90px] text-[16px] font-semibold text-white"
+      className="flex h-[32px] w-[32px] items-center justify-center rounded-[90px] text-[11px] font-semibold text-white md:h-[45px] md:w-[45px] md:text-[16px]"
       style={{
         border: '1px solid rgba(255, 255, 255, 0.05)',
         background:
@@ -40,7 +42,7 @@ const Item = ({ num, text }) => (
     >
       {num}
     </div>
-    <div className="text-[12px] font-medium leading-[135%] text-white md:text-[21px] xl:max-w-[239px]">
+    <div className="text-[12px] font-normal leading-[125%] text-white md:text-[21px] md:font-medium md:leading-[135%] xl:max-w-[239px]">
       {text}
     </div>
   </div>
@@ -89,6 +91,61 @@ const AnketaBlock = () => {
           backgroundRepeat: 'no-repeat',
         }}
       />
+      <div
+        className={cn(
+          'absolute -top-[90px] left-[50px] aspect-[1230/690] h-[690px] -translate-x-[70%] rotate-[105deg] scale-[65%]',
+          'md:-top-[200px] md:-translate-x-[55%] md:scale-[100%]',
+          'tablet:-top-[220px] tablet:left-[210px] tablet:-translate-x-[55%]',
+          'xl:-top-[160px]'
+        )}
+        style={{
+          background: 'url("/img/smoke.png")',
+          mixBlendMode: 'color-dodge',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      <div
+        className={cn(
+          'absolute right-0 top-[240px] aspect-[1230/690] h-[690px] translate-x-1/2 rotate-[105deg] scale-[65%]',
+          'md:right-0 md:top-[360px] md:scale-[100%]',
+          'tablet:right-[200px] tablet:top-[400px]',
+          'xl:right-[120px] xl:top-[200px]'
+        )}
+        style={{
+          background: 'url("/img/smoke.png")',
+          mixBlendMode: 'color-dodge',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      <BackLight
+        className={cn(
+          'bottom-auto scale-[50%]',
+          '-right-[80px] top-[50%] hidden -translate-y-1/2 translate-x-1/2',
+          'md:-right-[220px] md:top-[300px] md:block md:-translate-y-1/2 md:translate-x-1/2 md:scale-[100%]',
+          'xl:bottom-0 xl:right-[calc(60%-800px)] xl:top-auto xl:-translate-y-[120px]'
+        )}
+        opacity={50}
+      />
+      <BackLight2
+        className={cn(
+          'scale-[50%]',
+          '-left-[400px] -top-[280px]',
+          'md:-left-[530px] md:-top-[380px] md:scale-[100%]',
+          'xl:-left-[290px]'
+        )}
+        opacity={30}
+      />
+      <BackLight2
+        className={cn(
+          'scale-[50%]',
+          '-right-[280px] -top-[130px]',
+          'md:hidden',
+          'border border-red-400'
+        )}
+        opacity={30}
+      />
       <DivContent
         noMargin
         className="flex flex-col items-center gap-y-[20px] xl:flex-row"
@@ -99,7 +156,7 @@ const AnketaBlock = () => {
             <Item num="01" text="Обсудим программу" />
             <Item num="02" text="Если необходимо, договоримся о встрече" />
           </div>
-          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[15px] md:mt-[45px] md:items-start xl:mt-[59px]">
+          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[10px] md:mt-[45px] md:items-start md:gap-y-[15px] xl:mt-[59px]">
             <input
               className="h-[60px] w-full rounded-[7px] bg-white px-[20px] text-[13px] font-normal leading-[125%] outline-none md:h-[85px] md:px-[35px] md:text-[19px]"
               style={{

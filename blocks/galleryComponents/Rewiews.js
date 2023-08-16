@@ -92,7 +92,7 @@ const Star = () => (
 )
 
 const Rewiews = ({ className }) => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  // const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
   var carousel,
     firstCardWidth,

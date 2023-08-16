@@ -39,10 +39,12 @@ const Arrow = ({ right, className, onClick }) => {
   )
 }
 
+const photos = ['1', '2', '3', '4', '5']
+
 const Gallery = ({ type = 1 }) => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
-  var carousel, firstCardWidth, timer, imageWidth
+  var carousel, firstCardWidth, timer, infiniteScroll
 
   useEffect(() => {
     let isDragging = false,
@@ -73,22 +75,20 @@ const Gallery = ({ type = 1 }) => {
       if (!isDragging) return
       carousel.scrollLeft = startScrollLeft - (e.pageX - startX)
     }
-    imageWidth = carousel.scrollWidth / 15
-    const oneSetImagesWidth = carousel.scrollWidth / 5
 
-    const infiniteScroll = () => {
-      // console.log('carousel.scrollLeft :>> ', carousel.scrollLeft)
-      // console.log('oneSetImagesWidth :>> ', oneSetImagesWidth)
+    const oneSetImagesWidth = carousel.scrollWidth / photos.length
+
+    infiniteScroll = () => {
       if (carousel.scrollLeft <= oneSetImagesWidth) {
         carousel.classList.add('no-transition')
-        carousel.scrollLeft += oneSetImagesWidth * 2 + 16
+        carousel.scrollLeft += firstCardWidth * photos.length
         carousel.classList.remove('no-transition')
       } else if (
         Math.ceil(carousel.scrollLeft) >=
         oneSetImagesWidth * 3 - carousel.offsetWidth
       ) {
         carousel.classList.add('no-transition')
-        carousel.scrollLeft -= oneSetImagesWidth * 2 + 16
+        carousel.scrollLeft -= firstCardWidth * photos.length
         carousel.classList.remove('no-transition')
       }
     }
@@ -161,33 +161,7 @@ const Gallery = ({ type = 1 }) => {
             type === 2 ? 'xl:transparentsides' : ''
           )}
         >
-          {[
-            '4',
-            '5',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '1',
-            '2',
-            '3',
-          ].map((name, index) => (
+          {[...photos, ...photos, ...photos].map((name, index) => (
             <div
               key={'pic' + '-' + name + '-' + type + '-' + index}
               className={cn(

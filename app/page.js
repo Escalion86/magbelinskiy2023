@@ -12,8 +12,10 @@ import ReviewsBlock from '@/blocks/ReviewsBlock'
 import SubfooterBlock from '@/blocks/SubfooterBlock'
 import TitleBlock from '@/blocks/TitleBlock'
 import VideoBlock from '@/blocks/VideoBlock'
+import StateLoader from '@/blocks/components/StateLoader'
 import Header from '@/blocks/titleComponents/Header'
 import { RecoilRoot } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
 
 const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 
@@ -69,6 +71,8 @@ export default function Home() {
       </div>
       <ModalZakaz />
       <ModalInfo />
+      <RecoilNexus />
+      <StateLoader />
     </RecoilRoot>
   )
 }
