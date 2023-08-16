@@ -35,7 +35,7 @@ export default function Home() {
           <AboutBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
-          <Section id="rewiews" />
+          <Section id="reviews" />
           <ReviewsBlock />
           <Section id="zakaz" />
           <AnketaBlock />

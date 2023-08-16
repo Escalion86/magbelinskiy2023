@@ -7,7 +7,7 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
-import Rewiews from './galleryComponents/Rewiews'
+import Reviews from './galleryComponents/Reviews'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import BackLight from './components/BackLight'
@@ -48,7 +48,7 @@ const ReviewsBlock = () => {
           )}
           opacity={20}
         />
-        <Rewiews className="" />
+        <Reviews className="" />
       </div>
 
       <Button

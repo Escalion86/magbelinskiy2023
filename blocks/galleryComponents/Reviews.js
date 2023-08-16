@@ -39,24 +39,24 @@ const Arrow = ({ right, className, onClick }) => {
   )
 }
 
-const rewiews = [
+const reviews = [
   {
-    imgUrl: `/img/rewiews/1.jpg`,
+    imgUrl: `/img/reviews/1.jpg`,
     userName: 'Наталья Еремина',
     text: 'Вы настоящий маг! Мы с мужем хотели провести необычную свадьбу и сделать ее по настоящему незабываемой. Не хотелось этой банальщины, которую обычно делают на свадьбах. Нам посоветовали пригласить вас, и мы не пожалели. Такие шоу я видела только в интернете и по телевизору. Все остались в восторге. Спасибо огромное!',
   },
   {
-    imgUrl: `/img/rewiews/2.jpg`,
+    imgUrl: `/img/reviews/2.jpg`,
     userName: 'Мансур Бурлаков',
     text: 'Владелец event-агентства. Мы раньше никогда не работали с иллюзионистами и даже подумать не могли, что они умеют делать настолько проработанные шоу. Эмоции получили не только гости, но и мы, как организаторы мероприятия. Браво, Алексей!',
   },
   {
-    imgUrl: `/img/rewiews/3.jpg`,
+    imgUrl: `/img/reviews/3.jpg`,
     userName: 'Ангелина Новикова',
     text: 'Корпоратив получился очень классным. Никогда не думала, что такие представления можно заказать под ключ. Я раньше думала, что иллюзионисты показывают простые фокусы с шариками и картами, но вы нас прямо удивили. Все гости в восторге!',
   },
   {
-    imgUrl: `/img/rewiews/4.jpg`,
+    imgUrl: `/img/reviews/4.jpg`,
     userName: 'Мирослава Арсентьева',
     text: 'Позвала иллюзиониста на Юбилей в качестве подарка и непрогадала! Именинник долго еще вспоминал про Алексея. Эмоций хватила на весь день и еще на неделю после )))',
   },
@@ -91,7 +91,7 @@ const Star = () => (
   </svg>
 )
 
-const Rewiews = ({ className }) => {
+const Reviews = ({ className }) => {
   // const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
   var carousel,
@@ -106,7 +106,7 @@ const Rewiews = ({ className }) => {
       startX,
       startScrollLeft
 
-    carousel = document.querySelector('.carousel-rewiews')
+    carousel = document.querySelector('.carousel-reviews')
     firstCardWidth = carousel.querySelector('div').offsetWidth
 
     visibleCardsOnCarousel = Math.ceil(carousel.offsetWidth / firstCardWidth)
@@ -146,19 +146,19 @@ const Rewiews = ({ className }) => {
       carousel.scrollLeft = startScrollLeft - (e.pageX - startX)
     }
 
-    const oneSetImagesWidth = carousel.scrollWidth / rewiews.length
+    const oneSetImagesWidth = carousel.scrollWidth / reviews.length
 
     infiniteScroll = () => {
       if (carousel.scrollLeft <= oneSetImagesWidth) {
         carousel.classList.add('no-transition')
-        carousel.scrollLeft += firstCardWidth * rewiews.length
+        carousel.scrollLeft += firstCardWidth * reviews.length
         carousel.classList.remove('no-transition')
       } else if (
         Math.ceil(carousel.scrollLeft) >=
         oneSetImagesWidth * 3 - carousel.offsetWidth
       ) {
         carousel.classList.add('no-transition')
-        carousel.scrollLeft -= firstCardWidth * rewiews.length
+        carousel.scrollLeft -= firstCardWidth * reviews.length
         carousel.classList.remove('no-transition')
       }
     }
@@ -168,7 +168,7 @@ const Rewiews = ({ className }) => {
     document.addEventListener('mouseup', dragEnd)
     carousel.addEventListener('mousemove', draging)
     carousel.classList.add('no-transition')
-    carousel.scrollLeft = firstCardWidth * rewiews.length + padding
+    carousel.scrollLeft = firstCardWidth * reviews.length + padding
     carousel.classList.remove('no-transition')
   }, [])
 
@@ -215,10 +215,10 @@ const Rewiews = ({ className }) => {
         <div
           className={cn(
             'no-scrollbar flex max-w-full cursor-pointer justify-start overflow-hidden overflow-x-auto scroll-smooth active:scroll-auto',
-            'carousel-rewiews'
+            'carousel-reviews'
           )}
         >
-          {[...rewiews, ...rewiews, ...rewiews].map(
+          {[...reviews, ...reviews, ...reviews].map(
             ({ imgUrl, userName, text }, index) => (
               <div
                 key={'review' + userName + imgUrl + index}
@@ -268,4 +268,4 @@ const Rewiews = ({ className }) => {
   )
 }
 
-export default Rewiews
+export default Reviews
