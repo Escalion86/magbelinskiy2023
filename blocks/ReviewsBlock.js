@@ -48,7 +48,7 @@ const ReviewsBlock = () => {
           )}
           opacity={20}
         />
-        <Reviews className="" />
+        <Reviews />
       </div>
 
       <Button
