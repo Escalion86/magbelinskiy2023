@@ -44,7 +44,12 @@ const photos = ['1', '2', '3', '4', '5']
 const Gallery = ({ type = 1 }) => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
 
-  var carousel, firstCardWidth, timer, infiniteScroll
+  var carousel,
+    firstCardWidth,
+    timer,
+    infiniteScroll,
+    visibleCardsOnCarousel,
+    padding
 
   useEffect(() => {
     let isDragging = false,
@@ -54,6 +59,9 @@ const Gallery = ({ type = 1 }) => {
     carousel = document.querySelector('.carousel' + type)
     firstCardWidth = carousel.querySelector('div').offsetWidth
 
+    visibleCardsOnCarousel = Math.floor(carousel.offsetWidth / firstCardWidth)
+    padding =
+      (firstCardWidth * visibleCardsOnCarousel - carousel.offsetWidth) / 2
     // timer = setInterval(() => {
     //   // carousel.scrollLeft += 10
     //   // infiniteScroll()
@@ -66,7 +74,7 @@ const Gallery = ({ type = 1 }) => {
       startScrollLeft = carousel.scrollLeft
     }
 
-    const dragEnd = () => {
+    const dragEnd = (e) => {
       isDragging = false
       infiniteScroll()
     }
@@ -93,6 +101,32 @@ const Gallery = ({ type = 1 }) => {
       }
     }
 
+    var touchmove = false
+    carousel.addEventListener(
+      'scroll',
+      function () {
+        // console.log('timer :>> ', timer)
+        if (touchmove) {
+          if (timer !== null) {
+            clearTimeout(timer)
+          }
+          timer = setTimeout(function () {
+            // do something
+            infiniteScroll()
+            touchmove = false
+          }, 150)
+        }
+      },
+      false
+    )
+    carousel.addEventListener(
+      'touchmove',
+      function () {
+        touchmove = true
+      },
+      false
+    )
+    carousel.addEventListener('touchstart', infiniteScroll)
     carousel.addEventListener('mousedown', dragStart)
     document.addEventListener('mouseup', dragEnd)
     carousel.addEventListener('mousemove', draging)
@@ -102,15 +136,10 @@ const Gallery = ({ type = 1 }) => {
   }, [])
 
   const leftClick = (e) => {
-    e.stopPropagation()
+    e?.stopPropagation()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
-    const deltaCarouselWidth = (carousel.offsetWidth % firstCardWidth) / 2
     const add =
-      (Math.floor(carousel.offsetWidth / firstCardWidth) % 2 === 0
-        ? firstCardWidth / 2
-        : 0) +
-      deltaWidth +
-      deltaCarouselWidth
+      (deltaWidth > padding ? 0 : firstCardWidth) + deltaWidth - padding
     carousel.scrollLeft -= add
   }
 

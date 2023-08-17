@@ -124,12 +124,19 @@ const Reviews = ({ className }) => {
       startScrollLeft = carousel.scrollLeft
     }
 
-    const dragEnd = () => {
+    const dragEnd = (e) => {
       isDragging = false
+      // e.preventDefault()
+      // e.stopPropagation()
       const deltaWidth = carousel.scrollLeft % firstCardWidth
       if (deltaWidth > padding)
         if (deltaWidth < firstCardWidth / 2) leftClick()
         else rightClick()
+      else {
+        infiniteScroll()
+        const add = -deltaWidth + padding
+        carousel.scrollLeft += add
+      }
     }
 
     // const mouseUp = () => {
@@ -163,13 +170,54 @@ const Reviews = ({ className }) => {
       }
     }
 
+    // carousel.addEventListener('touchstart', dragStart)
+    // carousel.addEventListener('touchmove', draging)
+    // carousel.addEventListener('scroll', scroll)
+    var timer = null
+    var touchmove = false
+    carousel.addEventListener(
+      'scroll',
+      function () {
+        // console.log('timer :>> ', timer)
+        if (touchmove) {
+          if (timer !== null) {
+            clearTimeout(timer)
+          }
+          timer = setTimeout(function () {
+            // do something
+            const deltaWidth = carousel.scrollLeft % firstCardWidth
+            if (deltaWidth > padding)
+              if (deltaWidth < firstCardWidth / 2) leftClick()
+              else rightClick()
+            else {
+              infiniteScroll()
+              const add = -deltaWidth + padding
+              carousel.scrollLeft += add
+            }
+            touchmove = false
+          }, 150)
+        }
+      },
+      false
+    )
+    carousel.addEventListener(
+      'touchmove',
+      function () {
+        touchmove = true
+      },
+      false
+    )
+
+    // carousel.addEventListener('touchend', infiniteScroll)
     carousel.addEventListener('mousedown', dragStart)
-    // carousel.addEventListener('mouseup', mouseUp)
     document.addEventListener('mouseup', dragEnd)
     carousel.addEventListener('mousemove', draging)
     carousel.classList.add('no-transition')
     carousel.scrollLeft = firstCardWidth * reviews.length + padding
     carousel.classList.remove('no-transition')
+    document.addEventListener('mousewheel', function (e) {
+      e.preventDefault()
+    })
   }, [])
 
   const leftClick = (e) => {
@@ -214,9 +262,18 @@ const Reviews = ({ className }) => {
         />
         <div
           className={cn(
-            'no-scrollbar flex max-w-full cursor-pointer justify-start overflow-hidden overflow-x-auto scroll-smooth active:scroll-auto',
+            'no-scrollbar flex max-w-full cursor-pointer justify-start overflow-x-auto scroll-smooth active:scroll-auto',
             'carousel-reviews'
           )}
+          style={
+            {
+              // touchAction: 'none',
+              // scrollSnapStop: 'always',
+              // scrollSnapType: 'x mandatory',
+              // WebkitOverflowScrolling: 'touch',
+              // MozOverflowScrolling: 'touch',
+            }
+          }
         >
           {[...reviews, ...reviews, ...reviews].map(
             ({ imgUrl, userName, text }, index) => (
