@@ -23,7 +23,7 @@ const SocialContact = ({
   >
     <div
       className={cn(
-        'z-10 flex h-[32px] w-[32px] items-center justify-center rounded-[4.5px] md:h-[50px] md:w-[50px] md:rounded-[7px]',
+        'z-10 mr-[10px] flex h-[32px] w-[32px] items-center justify-center rounded-[4.5px] md:h-[50px] md:w-[50px] md:rounded-[7px]',
         iconClassName
       )}
       style={{
@@ -36,11 +36,11 @@ const SocialContact = ({
     </div>
     <div
       className={cn(
-        '-ml-[10px] flex h-[32px] items-center overflow-hidden whitespace-nowrap rounded-[4.5px] bg-white text-[14px] font-normal leading-[115%] text-[#0E0E1C] duration-500 md:h-[50px] md:rounded-r-[7px]',
-        isSelected ? 'max-w-[140px]' : 'max-w-0 group-hover:max-w-[140px]'
+        '-ml-[10px] -mr-[10px] flex h-[32px] items-center overflow-hidden whitespace-nowrap rounded-[4.5px] bg-white text-[11px] font-normal leading-[115%] text-[#0E0E1C] duration-500 md:h-[50px] md:rounded-r-[7px] md:text-[14px]',
+        !isSelected ? 'max-w-[140px]' : 'max-w-0 group-hover:max-w-[140px]'
       )}
     >
-      <div className="pl-[20px] pr-[5px]">{children}</div>
+      <div className="pl-[10px] pr-[5px]">{children}</div>
     </div>
   </div>
 )
@@ -51,7 +51,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
   return (
     <div
       className={cn(
-        'flex w-full flex-col transition-all duration-500',
+        'flex w-full max-w-full flex-col transition-all duration-500',
         show
           ? 'relative z-10 opacity-100'
           : 'absolute left-0 right-0 top-0 opacity-0'
@@ -116,7 +116,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
       </div>
       {!isQuizSended ? (
         <>
-          <div className="mt-[25px] flex items-center gap-x-[10px] md:mt-[60px]">
+          <div className="mt-[25px] flex w-full max-w-full items-center gap-x-[10px] overflow-x-hidden md:mt-[60px]">
             <SocialContact
               onClick={() => setSelectedContact('whatsapp')}
               isSelected={selectedContact === 'whatsapp'}
@@ -248,7 +248,9 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
                   'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
               }}
             >
-              Перезвоните мне
+              Перезвоните
+              <br />
+              мне
             </SocialContact>
           </div>
           <div className="mt-[10px] flex w-full max-w-[490px] flex-col items-center gap-y-[10px] md:mt-[15px] md:items-start md:gap-y-[15px]">

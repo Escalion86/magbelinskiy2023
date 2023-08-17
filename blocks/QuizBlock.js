@@ -22,7 +22,7 @@ const Title = ({ className }) => (
 const QuizBlock = () => {
   return (
     <div className="relative flex w-full justify-center">
-      <div className="flex w-fit flex-col items-center">
+      <div className="flex w-full flex-col items-center">
         <DivContent
           noMargin
           fullWidth={false}

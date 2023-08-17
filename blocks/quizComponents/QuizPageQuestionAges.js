@@ -32,7 +32,7 @@ const QuizPageQuestionAges = ({ show, onChoose }) => {
       />
       <QuizCard
         title="Смешанная аудитория"
-        imageName="other"
+        imageName="different"
         onChoose={() => onChoose('other')}
         big
       />

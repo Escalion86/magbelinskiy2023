@@ -146,7 +146,7 @@ const Quiz = () => {
       )
     )
     nextQuestion()
-    const yOffset = 80
+    const yOffset = 70
     const y = quiz.getBoundingClientRect().top + window.pageYOffset + yOffset
 
     window.scrollTo({ top: y, behavior: 'smooth' })
@@ -223,10 +223,10 @@ const Quiz = () => {
   const progress = Math.floor((quizQuestionNum / quizAnswers.length) * 100)
 
   return (
-    <div className="quiz z-10 mb-[40px] w-full px-[18px] md:mb-[0px] md:px-[52px] tablet:mb-[130px]">
-      <div className="md:[mt-60px] relative mt-[30px] w-full min-w-[339px] max-w-[1360px] overflow-hidden rounded-[18px]">
+    <div className="quiz z-10 mb-[40px] flex w-full justify-center px-[18px] md:mb-[0px] md:px-[52px] tablet:mb-[130px]">
+      <div className="md:[mt-60px] relative mt-[30px] w-full min-w-[320px] max-w-full overflow-hidden rounded-[18px] xl:max-w-[1360px]">
         <QuizBackground />
-        <div className="relative z-10 flex flex-col gap-y-[30px] px-[10px] pb-[25px] pt-[10px] md:gap-y-[40px] md:px-[40px] md:pb-[50px] md:pt-[40px] xl:gap-y-[57px] xl:px-[100px]">
+        <div className="relative z-10 flex max-w-full flex-col gap-y-[30px] overflow-hidden px-[10px] pb-[25px] pt-[10px] md:gap-y-[40px] md:px-[40px] md:pb-[50px] md:pt-[40px] xl:gap-y-[57px] xl:px-[100px]">
           <QuizHeader />
           <div
             className={cn(
@@ -252,7 +252,7 @@ const Quiz = () => {
             </div>
           </div>
           {/* grid justify-items-center grid-cols-2 sm:grid-cols-3 md:grid-cols-2 tablet:grid-cols-3 2xl:grid-cols-4 */}
-          <div className="relative w-full">
+          <div className="relative w-full max-w-full">
             <QuizPageQuestionType
               show={quizQuestionNum === 0}
               onChoose={answerToQuestion}
@@ -284,14 +284,14 @@ const Quiz = () => {
         >
           <img
             // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-            className="absolute -right-[80px] bottom-[150px] hidden max-h-[57%] object-contain tablet:-right-[60px] tablet:bottom-0 tablet:block tablet:max-h-[90%] 2xl:right-0 2xl:max-h-[95%]"
+            className="absolute -right-[80px] bottom-[150px] hidden max-h-[57%] object-contain tablet:bottom-0 tablet:right-[calc(10%-117px)] tablet:block tablet:max-h-[90%] xl:right-0 2xl:max-h-[95%]"
             alt="magican"
             src="/img/quiz/final.png"
             draggable={false}
           />
           <img
             // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-            className="mask-bottom absolute -right-[80px] top-[135px] max-h-[57%] object-contain sm:-right-[50px] sm:top-[80px] sm:max-h-[65%] md:-right-[100px] md:top-[200px] md:max-h-[60%] tablet:hidden"
+            className="mask-bottom absolute right-[calc(34%-200px)] top-[135px] max-h-[57%] object-contain sm:-right-0 sm:top-[70px] sm:max-h-[70%] md:right-[calc(40%-360px)] md:top-[200px] md:max-h-[60%] tablet:hidden"
             alt="magican"
             src="/img/quiz/final.png"
             draggable={false}
