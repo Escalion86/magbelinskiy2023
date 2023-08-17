@@ -37,7 +37,7 @@ const SocialContact = ({
     <div
       className={cn(
         '-ml-[10px] -mr-[10px] flex h-[32px] items-center overflow-hidden whitespace-nowrap rounded-[4.5px] bg-white text-[11px] font-normal leading-[115%] text-[#0E0E1C] duration-500 md:h-[50px] md:rounded-r-[7px] md:text-[14px]',
-        !isSelected ? 'max-w-[140px]' : 'max-w-0 group-hover:max-w-[140px]'
+        isSelected ? 'max-w-[140px]' : 'max-w-0 group-hover:max-w-[140px]'
       )}
     >
       <div className="pl-[10px] pr-[5px]">{children}</div>
