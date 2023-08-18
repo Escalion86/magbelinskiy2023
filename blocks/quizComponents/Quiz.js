@@ -296,6 +296,15 @@ const Quiz = () => {
             src="/img/quiz/final.png"
             draggable={false}
           />
+          <img
+            className="absolute left-[450px] top-[440px] hidden aspect-[165/247] w-[130px] -rotate-[5deg] object-contain opacity-10 xl:block 2xl:left-[500px] 2xl:top-[380px] 2xl:w-[165px]"
+            style={{
+              mixBlendMode: 'luminosity',
+            }}
+            alt="cup"
+            src="/img/cup.png"
+            draggable={false}
+          />
         </div>
       </div>
     </div>
