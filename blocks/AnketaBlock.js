@@ -183,10 +183,19 @@ const AnketaBlock = () => {
                 border: '1px solid rgba(255, 255, 255, 0.30)',
                 letterSpacing: '0.76px',
               }}
-              // showMask={value == '7'}
+              showMask={phone == '7'}
               // showMask
               placeholder="Номер телефона"
-              onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, '')
+                setPhone(
+                  !value
+                    ? '7'
+                    : value == '77' || value == '78'
+                    ? '7'
+                    : Number(value)
+                )
+              }}
               // keepCharPositions
               mask={[
                 '+',
@@ -207,13 +216,13 @@ const AnketaBlock = () => {
                 /\d/,
                 /\d/,
               ]}
-              // value={
-              //   value
-              //     ? value.toString().substr(0, 1) == '7'
-              //       ? value.toString().substring(1)
-              //       : value.toString()
-              //     : ''
-              // }
+              value={
+                phone
+                  ? phone.toString().substr(0, 1) == '7'
+                    ? phone.toString().substring(1)
+                    : phone.toString()
+                  : ''
+              }
             />
             <Button
               fullWidth

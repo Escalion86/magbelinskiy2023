@@ -213,9 +213,18 @@ const ModalZakaz = () => {
           /> */}
         <MaskedInput
           className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
-          // showMask={value == '7'}
+          showMask={phone == '7'}
           // showMask
-          onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+          onChange={(e) => {
+            const value = e.target.value.replace(/[^0-9]/g, '')
+            setPhone(
+              !value
+                ? '7'
+                : value == '77' || value == '78'
+                ? '7'
+                : Number(value)
+            )
+          }}
           // keepCharPositions
           mask={[
             '+',
@@ -236,13 +245,13 @@ const ModalZakaz = () => {
             /\d/,
             /\d/,
           ]}
-          // value={
-          //   value
-          //     ? value.toString().substr(0, 1) == '7'
-          //       ? value.toString().substring(1)
-          //       : value.toString()
-          //     : ''
-          // }
+          value={
+            phone
+              ? phone.toString().substr(0, 1) == '7'
+                ? phone.toString().substring(1)
+                : phone.toString()
+              : ''
+          }
         />
       </div>
       <div className="w-full">

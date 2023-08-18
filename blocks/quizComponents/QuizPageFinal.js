@@ -46,8 +46,11 @@ const SocialContact = ({
 )
 
 const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
-  const [phone, setPhone] = useState()
+  const [phone, setPhone] = useState('')
   const [selectedContact, setSelectedContact] = useState()
+
+  console.log('phone :>> ', phone)
+
   return (
     <div
       className={cn(
@@ -261,10 +264,22 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
                 border: '2px solid rgba(14, 14, 24, 0.30)',
                 letterSpacing: '0.76px',
               }}
-              // showMask={value == '7'}
+              showMask={phone == '7'}
               // showMask
               placeholder="Номер телефона"
-              onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+              onChange={(e) => {
+                // console.log('e.target.value :>> ', e.target.value)
+                const value = e.target.value.replace(/[^0-9]/g, '')
+                setPhone(
+                  !value
+                    ? '7'
+                    : value == '77' || value == '78'
+                    ? '7'
+                    : Number(value)
+                )
+                // if (value !== '77' && value !== '78') setPhone(value)
+                // else setPhone('')
+              }}
               // keepCharPositions
               mask={[
                 '+',
@@ -285,13 +300,13 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
                 /\d/,
                 /\d/,
               ]}
-              // value={
-              //   value
-              //     ? value.toString().substr(0, 1) == '7'
-              //       ? value.toString().substring(1)
-              //       : value.toString()
-              //     : ''
-              // }
+              value={
+                phone
+                  ? phone.toString().substr(0, 1) == '7'
+                    ? phone.toString().substring(1)
+                    : phone.toString()
+                  : ''
+              }
             />
             <Button
               fullWidth
