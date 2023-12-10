@@ -15,10 +15,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <YaMetricaWrapper>
-      <html lang="ru" className="scroll-smooth">
+    <html lang="ru" className="scroll-smooth">
+      <YaMetricaWrapper>
         <body>{children}</body>
-      </html>
-    </YaMetricaWrapper>
+      </YaMetricaWrapper>
+    </html>
   )
 }
