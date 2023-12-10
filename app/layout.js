@@ -2,6 +2,7 @@ import './globals.css'
 import '../fonts/InterTight.css'
 import '../fonts/Buyan.css'
 import '../fonts/Montserrat.css'
+import YaMetricaWrapper from '@/blocks/components/YaMetrikaWrapper'
 // import { RecoilRoot } from 'recoil'
 // import localFont from 'next/font/local'
 
@@ -14,8 +15,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" className="scroll-smooth">
-      <body>{children}</body>
-    </html>
+    <YaMetricaWrapper>
+      <html lang="ru" className="scroll-smooth">
+        <body>{children}</body>
+      </html>
+    </YaMetricaWrapper>
   )
 }
