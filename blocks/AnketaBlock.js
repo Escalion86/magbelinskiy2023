@@ -57,7 +57,7 @@ const AnketaBlock = () => {
 
   const onSubmit = async () => {
     setYandexAim(null)
-    window.ym(38403125, 'reachGoal', 'poluchit_zvonok')
+    // window.ym(38403125, 'reachGoal', 'poluchit_zvonok')
     await postData(
       `/api/request`,
       { phone, name },
