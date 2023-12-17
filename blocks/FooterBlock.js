@@ -7,16 +7,21 @@ import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import Link from 'next/link'
 import yandexAimAtom from '@/state/yandexAimAtom'
+import { useMetrica } from 'next-yandex-metrica'
 
-const Social = ({ text, href, yandexAim }) => (
-  <Link
-    className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
-    href={href}
-    target="_blank"
-  >
-    {text}
-  </Link>
-)
+const Social = ({ text, href, yandexAim }) => {
+  const { reachGoal } = useMetrica()
+  return (
+    <Link
+      className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
+      href={href}
+      target="_blank"
+      onClick={yandexAim ? () => reachGoal(yandexAim) : undefined}
+    >
+      {text}
+    </Link>
+  )
+}
 
 const FooterBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
@@ -115,17 +120,17 @@ const FooterBlock = () => {
               <Social
                 text="Telegram"
                 href="https://t.me/escalion"
-                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_TG')}
+                yandexAim="klick_TG"
               />
               <Social
                 text="VKontakte"
                 href="https://vk.com/escalion"
-                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_VK')}
+                yandexAim="klick_VK"
               />
               <Social
                 text="Whatsapp"
                 href="https://api.whatsapp.com/send?phone=79138370020"
-                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_WA')}
+                yandexAim="klick_WA"
               />
             </div>
             <a

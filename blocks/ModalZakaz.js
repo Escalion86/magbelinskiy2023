@@ -11,6 +11,7 @@ import MaskedInput from 'react-text-mask'
 import { postData } from '@/helpers/CRUD'
 import Modal from './components/Modal'
 import yandexAimAtom from '@/state/yandexAimAtom'
+import { useMetrica } from 'next-yandex-metrica'
 
 const Title = ({ className }) => (
   <div
@@ -140,10 +141,10 @@ const ModalZakaz = () => {
   const yandexAim = useRecoilValue(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
+  const { reachGoal } = useMetrica()
 
   const onSubmit = async () => {
-    if (typeof yandexAim === 'string')
-      window.ym(38403125, 'reachGoal', yandexAim)
+    if (typeof yandexAim === 'string') reachGoal(yandexAim)
     setSuccess(null)
     await postData(
       `/api/request`,

@@ -13,6 +13,7 @@ import QuizInfo from './QuizInfo'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import { postData } from '@/helpers/CRUD'
 import yandexAimAtom from '@/state/yandexAimAtom'
+import { useMetrica } from 'next-yandex-metrica'
 
 var quiz
 
@@ -128,6 +129,7 @@ const Quiz = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [isQuizSended, setIsQuizSended] = useState(false)
+  const { reachGoal } = useMetrica()
 
   const [quizAnswers, setQuizAnswers] = useState(
     new Array(answers.length).fill(null)
@@ -168,7 +170,8 @@ const Quiz = () => {
 
   const onSubmit = async (phone, contact) => {
     setYandexAim(null)
-    window.ym(38403125, 'reachGoal', 'form_test')
+
+    reachGoal('form_test')
     setIsQuizSended('inProcess')
     await postData(
       `/api/request`,
