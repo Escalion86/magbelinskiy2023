@@ -5,6 +5,7 @@ import cn from 'classnames'
 import Button from '../components/Button'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import { useSetRecoilState } from 'recoil'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const Arrow = ({ right, className, onClick }) => {
   return (
@@ -43,6 +44,7 @@ const photos = ['1', '2', '3', '4', '5']
 
 const Gallery = ({ type = 1 }) => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
 
   var carousel,
     firstCardWidth,
@@ -219,7 +221,12 @@ const Gallery = ({ type = 1 }) => {
       </div>
       {type === 1 ? (
         <div className="mt-[30px] flex w-full max-w-[270px] items-center justify-center sm:max-w-[400px] md:mt-[60px] md:max-w-[520px] md:justify-between tablet:max-w-[680px] xl:hidden">
-          <Button onClick={() => setShowModalZakaz(true)} />
+          <Button
+            onClick={() => {
+              setYandexAim('zakaz_show')
+              setShowModalZakaz(true)
+            }}
+          />
           <div className="hidden gap-x-[20px] md:flex">
             <Arrow onClick={leftClick} />
             <Arrow right onClick={rightClick} />

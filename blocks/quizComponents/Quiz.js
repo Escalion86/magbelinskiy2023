@@ -12,6 +12,7 @@ import QuizPageQuestionType from './QuizPageQuestionType'
 import QuizInfo from './QuizInfo'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import { postData } from '@/helpers/CRUD'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 var quiz
 
@@ -125,6 +126,7 @@ const answers = [
 
 const Quiz = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [isQuizSended, setIsQuizSended] = useState(false)
 
   const [quizAnswers, setQuizAnswers] = useState(
@@ -165,6 +167,8 @@ const Quiz = () => {
   }, [])
 
   const onSubmit = async (phone, contact) => {
+    setYandexAim(null)
+    window.ym(38403125, 'reachGoal', 'form_test')
     setIsQuizSended('inProcess')
     await postData(
       `/api/request`,

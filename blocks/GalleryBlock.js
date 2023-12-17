@@ -10,6 +10,7 @@ import Gallery from './galleryComponents/Gallery'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import BackLight from './components/BackLight'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const Title = ({ className }) => (
   <div
@@ -24,6 +25,7 @@ const Title = ({ className }) => (
 
 const GalleryBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
 
   return (
     <div className="relative mt-[100px] flex w-full flex-col items-center md:mt-[110px] xl:mt-[150px]">
@@ -33,7 +35,10 @@ const GalleryBlock = () => {
             <Title />
             <Button
               className="hidden xl:block"
-              onClick={() => setShowModalZakaz(true)}
+              onClick={() => {
+                setYandexAim('zakaz_show')
+                setShowModalZakaz(true)
+              }}
             />
           </div>
           <DivText className="mt-[30px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] tablet:max-w-[680px] xl:mt-0">

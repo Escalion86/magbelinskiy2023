@@ -13,6 +13,7 @@ import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import BackLight2 from './components/BackLight2'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const Title = ({ className }) => (
   <div
@@ -50,10 +51,13 @@ const Item = ({ num, text }) => (
 
 const AnketaBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [name, setName] = useState()
 
   const onSubmit = async () => {
+    setYandexAim(null)
+    window.ym(38403125, 'reachGoal', 'poluchit_zvonok')
     await postData(
       `/api/request`,
       { phone, name },

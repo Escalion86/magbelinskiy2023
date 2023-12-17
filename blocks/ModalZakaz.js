@@ -10,6 +10,7 @@ import showModalZakazAtom from '@/state/showModalZakazAtom'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@/helpers/CRUD'
 import Modal from './components/Modal'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const Title = ({ className }) => (
   <div
@@ -136,10 +137,13 @@ const OnUnsuccess = ({ visible }) => (
 
 const ModalZakaz = () => {
   const [showModalZakaz, setShowModalZakaz] = useRecoilState(showModalZakazAtom)
+  const yandexAim = useRecoilValue(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
 
   const onSubmit = async () => {
+    if (typeof yandexAim === 'string')
+      window.ym(38403125, 'reachGoal', yandexAim)
     setSuccess(null)
     await postData(
       `/api/request`,

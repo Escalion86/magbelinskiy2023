@@ -7,6 +7,7 @@ import DivContent from '../components/DivContent'
 import DivText from '../components/DivText'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import { useSetRecoilState } from 'recoil'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const InfoCard = ({ className, children }) => (
   <div
@@ -315,6 +316,7 @@ const DiscountInfo = ({ className }) => (
 
 const Content = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
   return (
     <DivContent
       noMargin
@@ -351,7 +353,10 @@ const Content = () => {
           <div className="relative flex items-center gap-x-[30px]">
             <Button
               className="-mt-[9px]"
-              onClick={() => setShowModalZakaz(true)}
+              onClick={() => {
+                setYandexAim('zakaz_show')
+                setShowModalZakaz(true)
+              }}
             />
             <DiscountInfo className="hidden w-[220px] tablet:flex" />
           </div>

@@ -5,6 +5,7 @@ import cn from 'classnames'
 import Image from 'next/image'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const MenuItem = ({ name, active, href }) => (
   <li
@@ -149,6 +150,7 @@ const BurgerButton = ({ opened = false, onClick }) => (
 
 const Header = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [showMenu, setShowMenu] = useState(false)
 
   useEffect(() => {
@@ -282,7 +284,10 @@ const Header = () => {
                   WebkitBackgroundClip: 'padding-box',
                   backgroundClip: 'padding-box',
                 }}
-                onClick={() => setShowModalZakaz(true)}
+                onClick={() => {
+                  setYandexAim('zakaz_zvonok')
+                  setShowModalZakaz(true)
+                }}
               >
                 Заказать звонок
               </button>

@@ -11,6 +11,7 @@ import Reviews from './galleryComponents/Reviews'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import BackLight from './components/BackLight'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
 const Title = ({ className }) => (
   <div
@@ -26,6 +27,7 @@ const Title = ({ className }) => (
 
 const ReviewsBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
   return (
     <div className="relative mt-[32px] flex w-full flex-col items-center md:mt-[72px]">
       <Title />
@@ -53,7 +55,10 @@ const ReviewsBlock = () => {
 
       <Button
         className="mt-[35px] md:mt-[60px]"
-        onClick={() => setShowModalZakaz(true)}
+        onClick={() => {
+          setYandexAim('zakaz_show')
+          setShowModalZakaz(true)
+        }}
       />
     </div>
   )

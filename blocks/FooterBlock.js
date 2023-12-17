@@ -1,28 +1,28 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import cn from 'classnames'
+import React from 'react'
 import Image from 'next/image'
-import SpanGradientTitle from './components/SpanGradientTitle'
-import Button from './components/Button'
 import DivContent from './components/DivContent'
-import DivText from './components/DivText'
-import MaskedInput from 'react-text-mask'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
+import Link from 'next/link'
+import yandexAimAtom from '@/state/yandexAimAtom'
 
-const Social = ({ text, href }) => (
-  <a
-    className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
-    href={href}
-    target="_blank"
-  >
-    {text}
-  </a>
+const Social = ({ text, href, yandexAim }) => (
+  <Link onClick={yandexAim}>
+    <a
+      className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
+      href={href}
+      target="_blank"
+    >
+      {text}
+    </a>
+  </Link>
 )
 
 const FooterBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  const setYandexAim = useSetRecoilState(yandexAimAtom)
 
   return (
     <div
@@ -98,7 +98,10 @@ const FooterBlock = () => {
               </a>
               <button
                 className="h-[40px] cursor-pointer rounded-[10px] border border-white border-opacity-20 px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"
-                onClick={() => setShowModalZakaz(true)}
+                onClick={() => {
+                  setYandexAim('zakaz_zvonok')
+                  setShowModalZakaz(true)
+                }}
               >
                 Заказать звонок
               </button>
@@ -111,11 +114,20 @@ const FooterBlock = () => {
                 text="Instagram"
                 href="https://instagram.com/magbelinskiy"
               />
-              <Social text="Telegram" href="https://t.me/escalion" />
-              <Social text="VKontakte" href="https://vk.com/escalion" />
+              <Social
+                text="Telegram"
+                href="https://t.me/escalion"
+                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_TG')}
+              />
+              <Social
+                text="VKontakte"
+                href="https://vk.com/escalion"
+                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_VK')}
+              />
               <Social
                 text="Whatsapp"
                 href="https://api.whatsapp.com/send?phone=79138370020"
+                yandexAim={() => window.ym(38403125, 'reachGoal', 'klick_WA')}
               />
             </div>
             <a
