@@ -26,6 +26,7 @@ const Social = ({ text, href, yandexAim }) => {
 const FooterBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const { reachGoal } = useMetrica()
 
   return (
     <div
@@ -81,7 +82,7 @@ const FooterBlock = () => {
             </a>
           </div>
         </div>
-        <div className="flex flex-1 justify-start md:justify-center tablet:justify-end">
+        <div className="flex justify-start flex-1 md:justify-center tablet:justify-end">
           <div className="mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] tablet:w-[460px] xl:w-[460px] xl:max-w-[460px]">
             <div className="font-buyan text-[29px] font-bold leading-[100%] text-white md:text-[64px]">
               Контакты
@@ -92,13 +93,14 @@ const FooterBlock = () => {
               круглосуточно
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
-              <a
+              <Link
                 className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                 href="tel:+79138370020"
                 target="_blank"
+                onClick={reachGoal('klick_nomber')}
               >
                 +7-913-837-00-20
-              </a>
+              </Link>
               <button
                 className="h-[40px] cursor-pointer rounded-[10px] border border-white border-opacity-20 px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"
                 onClick={() => {
@@ -133,13 +135,13 @@ const FooterBlock = () => {
                 yandexAim="klick_WA"
               />
             </div>
-            <a
+            <Link
               href="/doc/privacy.doc"
               download
               className="mt-[25px] block w-fit cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
             >
               Политика конфиденциальности
-            </a>
+            </Д>
           </div>
         </div>
       </DivContent>
