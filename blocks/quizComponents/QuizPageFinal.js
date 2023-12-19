@@ -312,7 +312,9 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
               fullWidth
               onClick={() => onSubmit(phone, selectedContact)}
               disabled={
-                isQuizSended === 'inProcess' || !phone || phone.length < 11
+                isQuizSended === 'inProcess' ||
+                !phone ||
+                phone?.toString().length < 11
               }
               addIcon={false}
             >

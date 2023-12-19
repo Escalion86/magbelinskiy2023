@@ -230,7 +230,7 @@ const AnketaBlock = () => {
             <Button
               fullWidth
               onClick={onSubmit}
-              disabled={!phone || phone.length < 11}
+              disabled={!phone || phone?.toString().length < 11}
             >
               Получить звонок
             </Button>

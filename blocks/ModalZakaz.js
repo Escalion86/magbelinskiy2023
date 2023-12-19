@@ -265,7 +265,9 @@ const ModalZakaz = () => {
           fullWidth
           className="mt-[15px] max-w-full"
           onClick={onSubmit}
-          disabled={success !== undefined || !phone || phone.length < 11}
+          disabled={
+            success !== undefined || !phone || phone?.toString().length < 11
+          }
           addIcon={false}
         >
           {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
