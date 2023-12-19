@@ -146,11 +146,14 @@ const WhatsappButton = () => {
   )
 }
 
-const TelegramButton = () => (
-  <ContactButton href="https://t.me/escalion" onClick={reachGoal('klick_TG')}>
-    <TelegramIcon />
-  </ContactButton>
-)
+const TelegramButton = () => {
+  const { reachGoal } = useMetrica()
+  return (
+    <ContactButton href="https://t.me/escalion" onClick={reachGoal('klick_TG')}>
+      <TelegramIcon />
+    </ContactButton>
+  )
+}
 
 const BurgerButton = ({ opened = false, onClick }) => (
   <ContactButton big onClick={onClick}>
