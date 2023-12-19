@@ -23,13 +23,11 @@ const MenuItem = ({ name, active, href }) => (
 const ContactButton = ({ children, href, onClick, big }) => {
   const Component = ({ children, ...props }) =>
     href ? (
-      <Link onClick={onClick} {...props}>
-        {children}
+      <Link legacyBehavior>
+        <a {...props}>{children}</a>
       </Link>
     ) : (
-      <div onClick={onClick} {...props}>
-        {children}
-      </div>
+      <div {...props}>{children}</div>
     )
   return (
     <Component
@@ -43,6 +41,7 @@ const ContactButton = ({ children, href, onClick, big }) => {
         border: '1px solid rgba(255, 255, 255, 0.06)',
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
       }}
+      onClick={onClick}
     >
       {children}
     </Component>
@@ -287,13 +286,14 @@ const Header = () => {
               <TelegramButton />
             </div>
             <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
-              <Link
-                className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
-                href="tel:+79138370020"
-                target="_blank"
-                onClick={() => reachGoal('klick_nomber')}
-              >
-                8(913)837-00-20
+              <Link href="tel:+79138370020" legacyBehavior>
+                <a
+                  className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
+                  onClick={() => reachGoal('klick_nomber')}
+                  target="_blank"
+                >
+                  8(913)837-00-20
+                </a>
               </Link>
               <button
                 className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal leading-[125%] text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
