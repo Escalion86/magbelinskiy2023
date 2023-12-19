@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { useSetRecoilState } from 'recoil'
 import showModalZakazAtom from '@/state/showModalZakazAtom'
 import yandexAimAtom from '@/state/yandexAimAtom'
+import { useMetrica } from 'next-yandex-metrica'
+import Link from 'next/link'
 
 const MenuItem = ({ name, active, href }) => (
   <li
@@ -14,14 +16,16 @@ const MenuItem = ({ name, active, href }) => (
       active ? 'text-white' : 'text-[#A8A8CA]'
     )}
   >
-    <a href={href}>{name}</a>
+    <Link href={href}>{name}</Link>
   </li>
 )
 
 const ContactButton = ({ children, href, onClick, big }) => {
   const Component = ({ children, ...props }) =>
     href ? (
-      <a {...props}>{children}</a>
+      <Link onClick={onClick} {...props}>
+        {children}
+      </Link>
     ) : (
       <div onClick={onClick} {...props}>
         {children}
@@ -130,14 +134,20 @@ const CloseIcon = () => (
   </svg>
 )
 
-const WhatsappButton = () => (
-  <ContactButton href="https://api.whatsapp.com/send?phone=79138370020">
-    <WhatsappIcon />
-  </ContactButton>
-)
+const WhatsappButton = () => {
+  const { reachGoal } = useMetrica()
+  return (
+    <ContactButton
+      href="https://api.whatsapp.com/send?phone=79138370020"
+      onClick={reachGoal('klick_WA')}
+    >
+      <WhatsappIcon />
+    </ContactButton>
+  )
+}
 
 const TelegramButton = () => (
-  <ContactButton href="https://t.me/escalion">
+  <ContactButton href="https://t.me/escalion" onClick={reachGoal('klick_TG')}>
     <TelegramIcon />
   </ContactButton>
 )
@@ -152,6 +162,7 @@ const Header = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [showMenu, setShowMenu] = useState(false)
+  const { reachGoal } = useMetrica()
 
   useEffect(() => {
     const headerComponent = document.querySelector('.header')
@@ -271,13 +282,14 @@ const Header = () => {
               <TelegramButton />
             </div>
             <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
-              <a
+              <Link
                 className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
                 href="tel:+79138370020"
                 target="_blank"
+                onClick={reachGoal('klick_nomber')}
               >
                 8(913)837-00-20
-              </a>
+              </Link>
               <button
                 className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal leading-[125%] text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
                 style={{
