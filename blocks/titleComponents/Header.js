@@ -23,7 +23,7 @@ const MenuItem = ({ name, active, href }) => (
 const ContactButton = ({ children, href, onClick, big }) => {
   const Component = ({ children, ...props }) =>
     href ? (
-      <Link legacyBehavior>
+      <Link href={href} legacyBehavior>
         <a {...props}>{children}</a>
       </Link>
     ) : (
