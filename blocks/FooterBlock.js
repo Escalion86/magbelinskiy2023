@@ -82,7 +82,7 @@ const FooterBlock = () => {
             </a>
           </div>
         </div>
-        <div className="flex justify-start flex-1 md:justify-center tablet:justify-end">
+        <div className="flex flex-1 justify-start md:justify-center tablet:justify-end">
           <div className="mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] tablet:w-[460px] xl:w-[460px] xl:max-w-[460px]">
             <div className="font-buyan text-[29px] font-bold leading-[100%] text-white md:text-[64px]">
               Контакты
@@ -141,7 +141,7 @@ const FooterBlock = () => {
               className="mt-[25px] block w-fit cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
             >
               Политика конфиденциальности
-            </Д>
+            </Link>
           </div>
         </div>
       </DivContent>
