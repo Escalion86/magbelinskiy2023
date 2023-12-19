@@ -97,7 +97,7 @@ const FooterBlock = () => {
                 className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                 href="tel:+79138370020"
                 target="_blank"
-                onClick={reachGoal('klick_nomber')}
+                onClick={() => reachGoal('klick_nomber')}
               >
                 +7-913-837-00-20
               </Link>

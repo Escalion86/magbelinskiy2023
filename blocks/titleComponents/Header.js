@@ -139,7 +139,7 @@ const WhatsappButton = () => {
   return (
     <ContactButton
       href="https://api.whatsapp.com/send?phone=79138370020"
-      onClick={reachGoal('klick_WA')}
+      onClick={() => reachGoal('klick_WA')}
     >
       <WhatsappIcon />
     </ContactButton>
@@ -149,7 +149,10 @@ const WhatsappButton = () => {
 const TelegramButton = () => {
   const { reachGoal } = useMetrica()
   return (
-    <ContactButton href="https://t.me/escalion" onClick={reachGoal('klick_TG')}>
+    <ContactButton
+      href="https://t.me/escalion"
+      onClick={() => reachGoal('klick_TG')}
+    >
       <TelegramIcon />
     </ContactButton>
   )
@@ -288,7 +291,7 @@ const Header = () => {
                 className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
                 href="tel:+79138370020"
                 target="_blank"
-                onClick={reachGoal('klick_nomber')}
+                onClick={() => reachGoal('klick_nomber')}
               >
                 8(913)837-00-20
               </Link>
