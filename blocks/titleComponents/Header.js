@@ -192,7 +192,6 @@ const Header = () => {
         headerComponent.classList.remove('bg-opacity-90')
       }
     }
-
     window.addEventListener('scroll', onScrollFunc)
     onScrollFunc()
   }, [])

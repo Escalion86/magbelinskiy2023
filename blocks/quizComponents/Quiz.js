@@ -153,7 +153,8 @@ const Quiz = () => {
     const yOffset = 70
     const y = quiz.getBoundingClientRect().top + window.pageYOffset + yOffset
 
-    window.scrollTo({ top: y, behavior: 'smooth' })
+    if (typeof window !== 'undefined')
+      window.scrollTo({ top: y, behavior: 'smooth' })
     // quiz.scrollIntoView({
     //   behavior: 'smooth',
     //   block: 'start',
