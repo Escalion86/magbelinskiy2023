@@ -3,7 +3,7 @@
 import React from 'react'
 import cn from 'classnames'
 import QuizCard from './QuizCard'
-import modalInfoAtom from '@/state/modalInfoAtom'
+import modalInfoAtom from '@state/modalInfoAtom'
 import { useSetRecoilState } from 'recoil'
 import QuizInfo from './QuizInfo'
 

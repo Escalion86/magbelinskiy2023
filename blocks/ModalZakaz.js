@@ -5,13 +5,14 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import showModalZakazAtom from '@state/showModalZakazAtom'
 import MaskedInput from 'react-text-mask'
-import { postData } from '@/helpers/CRUD'
+import { postData } from '@helpers/CRUD'
 import Modal from './components/Modal'
-import yandexAimAtom from '@/state/yandexAimAtom'
-import { useMetrica } from 'next-yandex-metrica'
+import yandexAimAtom from '@state/yandexAimAtom'
+// import { useMetrica } from 'next-yandex-metrica'
+import { reachGoal } from 'app/components/metrika'
 
 const Title = ({ className }) => (
   <div
@@ -141,14 +142,13 @@ const ModalZakaz = () => {
   const yandexAim = useRecoilValue(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
 
   const onSubmit = async () => {
-    if (typeof yandexAim === 'string') reachGoal(yandexAim)
     setSuccess(null)
     await postData(
       `/api/request`,
-      { phone },
+      { phone, yandexAim },
       (data) => {
         setSuccess(true)
       },
@@ -173,6 +173,7 @@ const ModalZakaz = () => {
       //   console.log(data)
       // }
     )
+    if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
   return (

@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
+import showModalZakazAtom from '@state/showModalZakazAtom'
 import { useSetRecoilState } from 'recoil'
-import yandexAimAtom from '@/state/yandexAimAtom'
+import yandexAimAtom from '@state/yandexAimAtom'
 
 const Arrow = ({ right, className, onClick }) => {
   return (

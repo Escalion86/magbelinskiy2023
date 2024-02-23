@@ -3,14 +3,15 @@
 import React from 'react'
 import Image from 'next/image'
 import DivContent from './components/DivContent'
-import { useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import showModalZakazAtom from '@state/showModalZakazAtom'
 import Link from 'next/link'
-import yandexAimAtom from '@/state/yandexAimAtom'
-import { useMetrica } from 'next-yandex-metrica'
+import yandexAimAtom from '@state/yandexAimAtom'
+// import { useMetrica } from 'next-yandex-metrica'
+import { reachGoal } from 'app/components/metrika'
 
 const Social = ({ text, href, yandexAim }) => {
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
   return (
     <Link href={href} legacyBehavior>
       <a
@@ -26,8 +27,8 @@ const Social = ({ text, href, yandexAim }) => {
 
 const FooterBlock = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
-  const { reachGoal } = useMetrica()
+  const setYandexAim = useRecoilState(yandexAimAtom)
+  // const { reachGoal } = useMetrica()
 
   return (
     <div

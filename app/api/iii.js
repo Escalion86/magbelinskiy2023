@@ -4,8 +4,8 @@
 // import Requests from '@models/Requests'
 // import dbConnect from '@utils/dbConnect'
 
-import { postData } from '@/helpers/CRUD'
-import formatDate from '@/helpers/formatDate'
+import { postData } from '@helpers/CRUD'
+import formatDate from '@helpers/formatDate'
 
 export const AUDIENCE = [
   { value: 'adults', name: 'Взрослые (18-99 лет)' },

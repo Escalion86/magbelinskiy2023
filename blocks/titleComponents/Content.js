@@ -5,9 +5,9 @@ import cn from 'classnames'
 import Button from '../components/Button'
 import DivContent from '../components/DivContent'
 import DivText from '../components/DivText'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
+import showModalZakazAtom from '@state/showModalZakazAtom'
 import { useSetRecoilState } from 'recoil'
-import yandexAimAtom from '@/state/yandexAimAtom'
+import yandexAimAtom from '@state/yandexAimAtom'
 
 const InfoCard = ({ className, children }) => (
   <div

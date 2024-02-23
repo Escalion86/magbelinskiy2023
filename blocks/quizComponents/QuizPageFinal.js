@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from '../components/SpanGradientTitle'
 import Button from '../components/Button'
@@ -48,8 +48,6 @@ const SocialContact = ({
 const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
   const [phone, setPhone] = useState('')
   const [selectedContact, setSelectedContact] = useState()
-
-  console.log('phone :>> ', phone)
 
   return (
     <div

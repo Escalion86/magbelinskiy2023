@@ -1,14 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import modalInfoAtom from '@/state/modalInfoAtom'
-import MaskedInput from 'react-text-mask'
-import { postData } from '@/helpers/CRUD'
+import { useRecoilState } from 'recoil'
+import modalInfoAtom from '@state/modalInfoAtom'
 import Modal from './components/Modal'
 
 const Title = ({ children, className }) => (

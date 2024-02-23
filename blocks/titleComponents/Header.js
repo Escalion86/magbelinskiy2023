@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Image from 'next/image'
 import { useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
-import yandexAimAtom from '@/state/yandexAimAtom'
-import { useMetrica } from 'next-yandex-metrica'
+import showModalZakazAtom from '@state/showModalZakazAtom'
+import yandexAimAtom from '@state/yandexAimAtom'
+// import { useMetrica } from 'next-yandex-metrica'
 import Link from 'next/link'
+import { reachGoal } from 'app/components/metrika'
 
 const MenuItem = ({ name, active, href }) => (
   <li
@@ -134,7 +135,7 @@ const CloseIcon = () => (
 )
 
 const WhatsappButton = () => {
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
   return (
     <ContactButton
       href="https://api.whatsapp.com/send?phone=79138370020"
@@ -146,7 +147,7 @@ const WhatsappButton = () => {
 }
 
 const TelegramButton = () => {
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
   return (
     <ContactButton
       href="https://t.me/escalion"
@@ -167,7 +168,7 @@ const Header = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [showMenu, setShowMenu] = useState(false)
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
 
   useEffect(() => {
     const headerComponent = document.querySelector('.header')

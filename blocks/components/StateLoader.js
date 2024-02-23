@@ -1,4 +1,4 @@
-import { useWindowDimensionsRecoil } from '@/helpers/useWindowDimensions'
+import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
 import React from 'react'
 
 const StateLoader = ({ children }) => {

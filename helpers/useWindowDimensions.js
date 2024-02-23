@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import setRecoilFunc from './setRecoilFunc'
-import windowDimensionsAtom from '@/state/windowDimensionsAtom'
+import windowDimensionsAtom from '@state/windowDimensionsAtom'
 
 function getWindowDimensions() {
   if (typeof window !== 'undefined') {

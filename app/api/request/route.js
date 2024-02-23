@@ -1,5 +1,5 @@
-import { postData } from '@/helpers/CRUD'
-import formatDate from '@/helpers/formatDate'
+import { postData } from '@helpers/CRUD'
+import formatDate from '@helpers/formatDate'
 import { NextResponse } from 'next/server'
 
 export const AUDIENCE = [

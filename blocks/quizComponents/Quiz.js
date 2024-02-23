@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
-import modalInfoAtom from '@/state/modalInfoAtom'
 import { useSetRecoilState } from 'recoil'
 import QuizProgress from './QuizProgress'
 import QuizPageFinal from './QuizPageFinal'
@@ -10,10 +9,11 @@ import QuizPageQuestionGuests from './QuizPageQuestionGuests'
 import QuizPageQuestionAges from './QuizPageQuestionAges'
 import QuizPageQuestionType from './QuizPageQuestionType'
 import QuizInfo from './QuizInfo'
-import showModalZakazAtom from '@/state/showModalZakazAtom'
-import { postData } from '@/helpers/CRUD'
-import yandexAimAtom from '@/state/yandexAimAtom'
-import { useMetrica } from 'next-yandex-metrica'
+import showModalZakazAtom from '@state/showModalZakazAtom'
+import { postData } from '@helpers/CRUD'
+import yandexAimAtom from '@state/yandexAimAtom'
+// import { useMetrica } from 'next-yandex-metrica'
+import { reachGoal } from 'app/components/metrika'
 
 var quiz
 
@@ -129,7 +129,7 @@ const Quiz = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
   const [isQuizSended, setIsQuizSended] = useState(false)
-  const { reachGoal } = useMetrica()
+  // const { reachGoal } = useMetrica()
 
   const [quizAnswers, setQuizAnswers] = useState(
     new Array(answers.length).fill(null)
@@ -173,7 +173,6 @@ const Quiz = () => {
   const onSubmit = async (phone, contact) => {
     setYandexAim(null)
 
-    reachGoal('form_test')
     setIsQuizSended('inProcess')
     await postData(
       `/api/request`,
@@ -191,6 +190,7 @@ const Quiz = () => {
         phone,
         // official,
         // comment,
+        yandexAim: 'form_test',
       },
       (data) => {
         setIsQuizSended(true)
@@ -219,6 +219,7 @@ const Quiz = () => {
       //   console.log(data)
       // }
     )
+    return reachGoal('form_test')
   }
 
   // console.log('quiz?.scrollTop :>> ', quiz?.y)
