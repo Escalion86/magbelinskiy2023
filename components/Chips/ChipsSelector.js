@@ -3,7 +3,7 @@ import InputWrapper from '@components/InputWrapper'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { modalsFuncAtom } from '@state/atoms'
-import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+// import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import cn from 'classnames'
 import { forwardRef, useState } from 'react'
 import { Popover } from 'react-tiny-popover'
@@ -91,18 +91,18 @@ const ChipsSelector = forwardRef(
           <div className="text-disabled">{placeholder}</div>
         )}
         {!readOnly && canEditChips && (
-          <div className="flex items-center justify-end flex-1">
+          <div className="flex flex-1 items-center justify-end">
             <div
               onClick={(e) => {
                 e.stopPropagation()
                 setIsPopoverOpen(false)
                 modalsFunc.eventsTags.edit()
               }}
-              className="flex items-center justify-center p-0.5 cursor-pointer group"
+              className="group flex cursor-pointer items-center justify-center p-0.5"
             >
               <FontAwesomeIcon
                 icon={faWrench}
-                className="w-4 h-4 duration-300 text-disabled group-hover:text-gray-700 group-hover:scale-125"
+                className="text-disabled h-4 w-4 duration-300 group-hover:scale-125 group-hover:text-gray-700"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ const ChipsSelector = forwardRef(
         content={
           <div
             className={cn(
-              'z-50 grid grid-cols-2 gap-[1px] overflow-hidden bg-gray-400 border border-gray-400 rounded-md',
+              'z-50 grid grid-cols-2 gap-[1px] overflow-hidden rounded-md border border-gray-400 bg-gray-400',
               items.length <= 8
                 ? 'grid-cols-1'
                 : items.length <= 16
@@ -140,7 +140,7 @@ const ChipsSelector = forwardRef(
                 <div
                   key={'popover_chip' + item.text}
                   className={cn(
-                    'px-2 py-1 overflow-hidden uppercase cursor-pointer select-none',
+                    'cursor-pointer select-none overflow-hidden px-2 py-1 uppercase',
                     isActive ? 'text-gray-700' : 'text-disabled'
                   )}
                   style={{
@@ -171,5 +171,7 @@ const ChipsSelector = forwardRef(
     )
   }
 )
+
+ChipsSelector.displayName = 'ChipsSelector'
 
 export default ChipsSelector
