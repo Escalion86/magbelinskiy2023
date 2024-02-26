@@ -1,6 +1,6 @@
 import isObject from '@helpers/isObject'
-import Button from '../../components/Button'
-import Divider from '../../components/Divider'
+import Button from '@components/Button'
+import Divider from '@components/Divider'
 
 const ModalButtons = ({
   confirmName = 'Подтвердить',
@@ -36,7 +36,7 @@ const ModalButtons = ({
       <Divider light thin />
       <div className="flex flex-wrap justify-between px-2 tablet:px-3 tablet:pt-1">
         {children}
-        <div className="flex flex-wrap justify-end flex-1 gap-1 tablet:gap-x-2">
+        <div className="flex flex-1 flex-wrap justify-end gap-1 tablet:gap-x-2">
           {isObject(bottomLeftButton) ? (
             <div className="flex-1">{<Button {...bottomLeftButton} />}</div>
           ) : null}

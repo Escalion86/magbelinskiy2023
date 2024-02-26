@@ -6,7 +6,7 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
 import { useRecoilState } from 'recoil'
-import modalInfoAtom from '@state/modalInfoAtom'
+import modalInfoAtom from '@state/atoms/modalInfoAtom'
 import Modal from './components/Modal'
 
 const Title = ({ children, className }) => (

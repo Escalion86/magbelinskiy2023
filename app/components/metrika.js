@@ -7,7 +7,7 @@ import Script from 'next/script'
 
 export const reachGoal = (goal) => {
   console.log('goal :>> ', goal)
-  ym(38403125, 'reachGoal', '${goal}')
+  ym(38403125, 'reachGoal', goal)
   return true
 }
 

@@ -9,10 +9,9 @@ import QuizPageQuestionGuests from './QuizPageQuestionGuests'
 import QuizPageQuestionAges from './QuizPageQuestionAges'
 import QuizPageQuestionType from './QuizPageQuestionType'
 import QuizInfo from './QuizInfo'
-import showModalZakazAtom from '@state/showModalZakazAtom'
+import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import { postData } from '@helpers/CRUD'
-import yandexAimAtom from '@state/yandexAimAtom'
-// import { useMetrica } from 'next-yandex-metrica'
+import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import { reachGoal } from 'app/components/metrika'
 
 var quiz

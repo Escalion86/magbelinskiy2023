@@ -4,14 +4,12 @@ import React from 'react'
 import Image from 'next/image'
 import DivContent from './components/DivContent'
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@state/showModalZakazAtom'
+import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import Link from 'next/link'
-import yandexAimAtom from '@state/yandexAimAtom'
-// import { useMetrica } from 'next-yandex-metrica'
+import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import { reachGoal } from 'app/components/metrika'
 
 const Social = ({ text, href, yandexAim }) => {
-  // const { reachGoal } = useMetrica()
   return (
     <Link href={href} legacyBehavior>
       <a

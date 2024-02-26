@@ -1,10 +1,9 @@
-import {
-  DEFAULT_USERS_STATUS_ACCESS,
-  DEFAULT_USERS_STATUS_DISCOUNT,
-} from '@helpers/constants'
-
 const eventsSchema = {
   directionId: {
+    type: String,
+    default: null,
+  },
+  clientId: {
     type: String,
     default: null,
   },
@@ -51,6 +50,10 @@ const eventsSchema = {
   googleCalendarId: {
     type: String,
     default: null,
+  },
+  clientData: {
+    type: {},
+    default: {},
   },
 }
 

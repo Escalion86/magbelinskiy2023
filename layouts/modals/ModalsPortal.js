@@ -1,4 +1,4 @@
-import { modalsAtom } from '@state/atoms'
+import modalsAtom from '@state/atoms/modalsAtom'
 import { useRecoilValue } from 'recoil'
 import Modal from './Modal'
 

@@ -8,9 +8,9 @@ import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import Gallery from './galleryComponents/Gallery'
 import { useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@state/showModalZakazAtom'
+import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
-import yandexAimAtom from '@state/yandexAimAtom'
+import yandexAimAtom from '@state/atoms/yandexAimAtom'
 
 const Title = ({ className }) => (
   <div

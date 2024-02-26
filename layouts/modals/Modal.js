@@ -2,7 +2,8 @@ import Tooltip from '@components/Tooltip'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalButtons from '@layouts/modals/ModalButtons'
-import { modalsAtom, modalsFuncAtom } from '@state/atoms'
+import modalsAtom from '@state/atoms/modalsAtom'
+import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
@@ -177,8 +178,8 @@ const Modal = ({
     <motion.div
       className={
         cn(
-          'absolute transform duration-200 top-0 left-0 z-50 flex bg-opacity-80 tablet:items-center justify-center w-full h-screen tablet:overflow-y-auto bg-gray-800',
-          subModalText ? 'tablet:pt-10 tablet:pb-5' : 'tablet:py-5'
+          'absolute left-0 top-0 z-50 flex h-screen w-full transform justify-center bg-gray-800 bg-opacity-80 duration-200 tablet:items-center tablet:overflow-y-auto',
+          subModalText ? 'tablet:pb-5 tablet:pt-10' : 'tablet:py-5'
         )
         //  + (rendered ? ' opacity-100' : ' opacity-0')
       }
@@ -190,7 +191,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'flex flex-col real-screen-height tablet:h-auto relative min-w-84 pb-1 tablet:pb-2 w-full tablet:w-[95%] laptop:w-9/12 tablet:min-w-156 duration-300 tablet:my-auto bg-white border-l tablet:rounded-lg border-primary',
+            'real-screen-height min-w-84 laptop:w-9/12 tablet:min-w-156 border-primary relative flex w-full flex-col border-l bg-white pb-1 duration-300 tablet:my-auto tablet:h-auto tablet:w-[95%] tablet:rounded-lg tablet:pb-2',
             titleState ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')
@@ -202,8 +203,8 @@ const Modal = ({
         onMouseDown={(e) => e?.stopPropagation()}
       >
         {subModalText && (
-          <div className="absolute left-0 flex justify-center w-full -top-9">
-            <div className="px-2 py-0.5 bg-white rounded-md">
+          <div className="absolute -top-9 left-0 flex w-full justify-center">
+            <div className="rounded-md bg-white px-2 py-0.5">
               {subModalText}
             </div>
           </div>
@@ -215,7 +216,7 @@ const Modal = ({
           <Tooltip title="Закрыть">
             <div className="absolute right-2 top-2">
               <FontAwesomeIcon
-                className="w-8 h-8 text-black duration-200 transform cursor-pointer hover:scale-110"
+                className="h-8 w-8 transform cursor-pointer text-black duration-200 hover:scale-110"
                 icon={faTimes}
                 // size="1x"
                 onClick={onDeclineClick || closeModal}
@@ -224,11 +225,11 @@ const Modal = ({
           </Tooltip>
         )}
         {titleState && (
-          <div className="mx-12 mb-3 text-lg font-bold leading-6 text-center whitespace-pre-line">
+          <div className="mx-12 mb-3 whitespace-pre-line text-center text-lg font-bold leading-6">
             {titleState}
           </div>
         )}
-        {text && <div className="px-2 mb-3 leading-4 tablet:px-3">{text}</div>}
+        {text && <div className="mb-3 px-2 leading-4 tablet:px-3">{text}</div>}
         {/* {editMode && onDelete && (
           <FontAwesomeIcon
             className="absolute w-5 h-5 text-red-700 duration-200 transform cursor-pointer top-4 left-4 hover:scale-110"
@@ -256,7 +257,7 @@ const Modal = ({
         {/* {noPropsToChildren
           ? children
           : cloneElement(children, { onClose: closeModal, setBeforeCloseFunc })} */}
-        <div className="flex-1 px-2 overflow-y-auto tablet:px-3">
+        <div className="flex-1 overflow-y-auto px-2 tablet:px-3">
           {Children && (
             <Suspense fallback={<Skeleton count={12} />}>
               <Children

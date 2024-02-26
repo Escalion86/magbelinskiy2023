@@ -1,7 +1,9 @@
+'use client'
+
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import TextInRing from '@components/TextInRing'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
@@ -94,7 +96,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
           // height={48}
         />
       ) : ( */}
-      <div className="flex justify-center w-full laptop:w-auto">
+      <div className="laptop:w-auto flex w-full justify-center">
         <TextInRing text={direction.title} />
       </div>
       {/* )} */}
@@ -116,7 +118,7 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
             onDownClick={direction.index < directions.length - 1 && setDown}
           />
         </div>
-        <div className="px-2 py-1 text-sm whitespace-pre-wrap">
+        <div className="whitespace-pre-wrap px-2 py-1 text-sm">
           {direction.shortDescription}
         </div>
       </div>

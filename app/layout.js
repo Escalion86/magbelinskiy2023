@@ -2,7 +2,6 @@ import './globals.css'
 import '../fonts/InterTight.css'
 import '../fonts/Buyan.css'
 import '../fonts/Montserrat.css'
-// import YaMetricaWrapper from '@blocks/components/YaMetrikaWrapper'
 // import Provider from './providers'
 // import Head from 'next/head'
 // import { RecoilRoot } from 'recoil'
@@ -20,7 +19,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ru" className="scroll-smooth">
-      {/* <YaMetricaWrapper> */}
       <body>
         {/* <Provider> */}
         {children}
@@ -29,7 +27,6 @@ export default function RootLayout({ children }) {
           <Metrika />
         </Suspense>
       </body>
-      {/* </YaMetricaWrapper> */}
     </html>
   )
 }

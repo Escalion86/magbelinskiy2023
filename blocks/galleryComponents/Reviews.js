@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
-import showModalZakazAtom from '@state/showModalZakazAtom'
+import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import { useSetRecoilState } from 'recoil'
 
 const Arrow = ({ right, className, onClick }) => {

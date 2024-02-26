@@ -1,46 +1,24 @@
+'use client'
+
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
-import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import UserStatusIcon from '@components/UserStatusIcon'
-import ZodiacIcon from '@components/ZodiacIcon'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
-import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
-import sumOfPaymentsWithoutEventIdByUserIdSelector from '@state/selectors/sumOfPaymentsWithoutEventIdByUserIdSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue } from 'recoil'
-
-const UserSumOfPaymentsWithoutEvent = ({ userId, className }) => {
-  const sumOfPaymentsWithoutEventOfUser = useRecoilValue(
-    sumOfPaymentsWithoutEventIdByUserIdSelector(userId)
-  )
-
-  if (sumOfPaymentsWithoutEventOfUser === 0) return null
-
-  return (
-    <div
-      className={cn(
-        'flex justify-center items-center text-base tablet:text-lg font-bold uppercase text-white px-3 rounded-tl-lg',
-        sumOfPaymentsWithoutEventOfUser > 0 ? 'bg-success' : 'bg-danger',
-        className
-      )}
-    >
-      {`${sumOfPaymentsWithoutEventOfUser} ₽`}
-    </div>
-  )
-}
 
 const SignedUpCountComponent = ({ userId }) => {
   const eventsUsersSignedUpCount = useRecoilValue(
@@ -59,13 +37,13 @@ const FinishedComponent = ({ userId }) => {
 }
 
 const SignedUpCount = (props) => (
-  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+  <Suspense fallback={<Skeleton className="h-[16px] w-[8px] " />}>
     <SignedUpCountComponent {...props} />
   </Suspense>
 )
 
 const FinishedCount = (props) => (
-  <Suspense fallback={<Skeleton className="w-[8px] h-[16px] " />}>
+  <Suspense fallback={<Skeleton className="h-[16px] w-[8px] " />}>
     <FinishedComponent {...props} />
   </Suspense>
 )
@@ -76,11 +54,6 @@ const UserCard = ({ userId, hidden = false, style }) => {
   const user = useRecoilValue(userSelector(userId))
   const loading = useRecoilValue(loadingAtom('user' + userId))
   // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-
-  const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
-  const seeSumOfPaymentsWithoutEventOnCard =
-    loggedUserActiveRole?.seeSumOfPaymentsWithoutEventOnCard
   // const widthNum = useWindowDimensionsTailwindNum()
   // const itemFunc = useRecoilValue(itemsFuncAtom)
 
@@ -101,36 +74,32 @@ const UserCard = ({ userId, hidden = false, style }) => {
       <div className="flex w-full">
         <div
           className={cn(
-            'w-8 flex justify-center items-center',
+            'flex w-8 items-center justify-center',
             userGender ? 'bg-' + userGender.color : 'bg-gray-400'
           )}
         >
           <FontAwesomeIcon
-            className="w-8 h-8 text-white"
+            className="h-8 w-8 text-white"
             icon={userGender ? userGender.icon : faGenderless}
           />
         </div>
-        <div className="flex flex-col flex-1 tablet:flex-row">
+        <div className="flex flex-1 flex-col tablet:flex-row">
           <div className="flex flex-1 border-b tablet:border-b-0">
             <img
-              className="hidden object-cover w-[92px] h-[92px] tablet:block min-w-[92px] min-h-[92px]"
+              className="hidden h-[92px] min-h-[92px] w-[92px] min-w-[92px] object-cover tablet:block"
               src={getUserAvatarSrc(user)}
               alt="user"
               // width={48}
               // height={48}
             />
-            <div className="flex flex-col flex-1 text-xl font-bold">
+            <div className="flex flex-1 flex-col text-xl font-bold">
               <div className="flex flex-1">
-                <div className="flex flex-col flex-1">
-                  <div className="flex flex-nowrap items-center px-1 py-0.5 leading-6 gap-x-1">
-                    <UserRelationshipIcon
-                      relationship={user.relationship}
-                      showHavePartnerOnly
-                    />
+                <div className="flex flex-1 flex-col">
+                  <div className="flex flex-nowrap items-center gap-x-1 px-1 py-0.5 leading-6">
                     <UserStatusIcon status={user.status} />
                     <UserName
                       user={user}
-                      className="h-8 tablet:h-auto text-base font-bold tablet:text-lg -mt-0.5 tablet:mt-0"
+                      className="-mt-0.5 h-8 text-base font-bold tablet:mt-0 tablet:h-auto tablet:text-lg"
                       // noWrap
                     />
                     {/* <span>{user.firstName}</span>
@@ -149,44 +118,40 @@ const UserCard = ({ userId, hidden = false, style }) => {
                   </div>
                   <div className="flex tablet:h-full">
                     <img
-                      className="object-cover w-[60px] h-[60px] min-w-[60px] min-h-[60px] tablet:hidden"
+                      className="h-[60px] min-h-[60px] w-[60px] min-w-[60px] object-cover tablet:hidden"
                       src={getUserAvatarSrc(user)}
                       alt="user"
                       // width={48}
                       // height={48}
                     />
-                    <div className="flex flex-col justify-end h-full px-1">
-                      <div className="flex items-center flex-1">
+                    <div className="flex h-full flex-col justify-end px-1">
+                      <div className="flex flex-1 items-center">
                         <TextLinesLimiter
-                          className="text-sm italic font-normal leading-[14px] text-general"
+                          className="text-general text-sm font-normal italic leading-[14px]"
                           // textClassName="leading-5"
                           lines={2}
                         >
                           {user.personalStatus}
                         </TextLinesLimiter>
                       </div>
-                      {user.birthday &&
-                        (seeBirthday ||
-                          user.security?.showBirthday === true ||
-                          user.security?.showBirthday === 'full') && (
-                          <div className="flex text-sm leading-4 gap-x-2 ">
-                            <span className="flex items-center font-bold">
-                              Возраст:
+                      {user.birthday && (
+                        <div className="flex gap-x-2 text-sm leading-4 ">
+                          <span className="flex items-center font-bold">
+                            Возраст:
+                          </span>
+                          <div className="flex items-center gap-x-2 whitespace-nowrap text-sm font-normal">
+                            <span className="leading-4">
+                              {birthDateToAge(
+                                user.birthday,
+                                serverDate,
+                                true,
+                                false,
+                                true
+                              )}
                             </span>
-                            <div className="flex items-center text-sm font-normal whitespace-nowrap gap-x-2">
-                              <span className="leading-4">
-                                {birthDateToAge(
-                                  user.birthday,
-                                  serverDate,
-                                  true,
-                                  false,
-                                  true
-                                )}
-                              </span>
-                              <ZodiacIcon date={user.birthday} small />
-                            </div>
                           </div>
-                        )}
+                        </div>
+                      )}
 
                       {/* <div className="flex text-sm leading-4 gap-x-2 ">
                         <span className="font-bold">Зарегистрирован:</span>
@@ -194,7 +159,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           {formatDate(user.createdAt)}
                         </span>
                       </div> */}
-                      <div className="flex text-sm leading-4 gap-x-2">
+                      <div className="flex gap-x-2 text-sm leading-4">
                         <span className="font-bold">Посетил:</span>
                         <FinishedCount userId={userId} />
                         <span className="font-bold">Записан:</span>
@@ -205,9 +170,6 @@ const UserCard = ({ userId, hidden = false, style }) => {
                 </div>
                 <div className="flex flex-col items-end justify-between">
                   <CardButtons item={user} typeOfItem="user" />
-                  {seeSumOfPaymentsWithoutEventOnCard && (
-                    <UserSumOfPaymentsWithoutEvent userId={userId} />
-                  )}
                 </div>
               </div>
               {/* <div className="flex-col justify-end flex-1 hidden px-2 tablet:flex"> */}

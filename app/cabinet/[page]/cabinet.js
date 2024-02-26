@@ -4,7 +4,7 @@ import { signOut } from 'next-auth/react'
 // import Fab from '@components/Fab'
 // import FabMenu from '@components/FabMenu'
 // import LoadingSpinner from '@components/LoadingSpinner'
-// import StateLoader from '@components/StateLoader'
+import StateLoader from '@components/StateLoader'
 // import { CONTENTS } from '@helpers/constants'
 // import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 // import BurgerLayout from '@layouts/BurgerLayout'
@@ -22,6 +22,8 @@ import {
   // Suspense,
   useEffect,
 } from 'react'
+import { RecoilRoot } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
 // import { useRecoilValue } from 'recoil'
 
 // const SuspenseChild = () => (
@@ -63,9 +65,10 @@ function CabinetPage(props) {
       </Head>
       <div>sfsdf</div>
       <button onClick={() => signOut()}>SignOut</button>
-      {/* 
-      <StateLoader {...props} isCabinet>
-        {loggedUser && (
+      <RecoilRoot>
+        <RecoilNexus />
+        <StateLoader {...props}>
+          {/* {loggedUser && (
           <CabinetWrapper>
             <CabinetHeader title={title} />
             <BurgerLayout />
@@ -78,8 +81,9 @@ function CabinetPage(props) {
             </ContentWrapper>
             <FabMenu show={showFab} />
           </CabinetWrapper>
-        )}
-      </StateLoader> */}
+        )} */}
+        </StateLoader>
+      </RecoilRoot>
     </>
   )
 }

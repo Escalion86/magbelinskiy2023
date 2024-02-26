@@ -8,10 +8,10 @@ import DivContent from './components/DivContent'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@helpers/CRUD'
 import { useSetRecoilState } from 'recoil'
-import showModalZakazAtom from '@state/showModalZakazAtom'
+import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import BackLight2 from './components/BackLight2'
-import yandexAimAtom from '@state/yandexAimAtom'
+import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import { reachGoal } from 'app/components/metrika'
 
 const Title = ({ className }) => (

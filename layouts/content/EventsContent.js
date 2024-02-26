@@ -1,5 +1,7 @@
+'use client'
+
 import ContentHeader from '@components/ContentHeader'
-import Filter from '@components/Filter'
+// import Filter from '@components/Filter'
 import AddButton from '@components/IconToggleButtons/AddButton'
 import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
@@ -14,14 +16,10 @@ import isEventCanceledFunc from '@helpers/isEventCanceled'
 import isEventClosedFunc from '@helpers/isEventClosed'
 import isEventExpiredFunc from '@helpers/isEventExpired'
 import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import visibleEventsForUser from '@helpers/visibleEventsForUser'
 import EventsList from '@layouts/lists/EventsList'
-import asyncEventsUsersByUserIdAtom from '@state/asyncSelectors/asyncEventsUsersByUserIdAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import eventsAtom from '@state/atoms/eventsAtom'
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -32,19 +30,9 @@ const defaultFilterValue = {
 
 const EventsContent = () => {
   const events = useRecoilValue(eventsAtom)
-  const loggedUser = useRecoilValue(loggedUserAtom)
-  const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-
-  const seeHidden = loggedUserActiveRole?.events?.seeHidden
-  const statusFilterFull = loggedUserActiveRole?.events?.statusFilterFull
-  const seeAddButton = loggedUserActiveRole?.events?.add
+  // const loggedUser = useRecoilValue(loggedUserAtom)
 
   const modalsFunc = useRecoilValue(modalsFuncAtom)
-
-  const eventsLoggedUser = useRecoilValue(
-    asyncEventsUsersByUserIdAtom(loggedUser?._id)
-  )
 
   const [isSearching, setIsSearching] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
@@ -67,29 +55,10 @@ const EventsContent = () => {
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
 
-  const filteredEvents = useMemo(
-    () =>
-      visibleEventsForUser(
-        events,
-        eventsLoggedUser,
-        loggedUser,
-        false,
-        seeHidden,
-        loggedUserActiveStatusName
-      ),
-    [
-      events,
-      eventsLoggedUser,
-      loggedUser,
-      seeHidden,
-      loggedUserActiveStatusName,
-    ]
-  )
-
   const searchedEvents = useMemo(() => {
-    if (!searchText) return filteredEvents
-    return filterItems(filteredEvents, searchText, [], {}, ['title'])
-  }, [filteredEvents, searchText])
+    if (!searchText) return events
+    return filterItems(events, searchText, [], {}, ['title'])
+  }, [events, searchText])
 
   const visibleEvents = useMemo(
     () =>
@@ -106,20 +75,15 @@ const EventsContent = () => {
             : false
         return (
           haveEventTag &&
-          ((isEventClosed && !statusFilterFull && filter.status.finished) ||
-            (isEventClosed && statusFilterFull && filter.status.closed) ||
+          ((isEventClosed && filter.status.finished) ||
+            (isEventClosed && filter.status.closed) ||
             (isEventActive && filter.status.finished && isEventExpired) ||
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
           (!filterOptions.directions ||
             filterOptions.directions === event.directionId) &&
-          ((filter.participant?.participant &&
-            filter.participant?.notParticipant) ||
-          !!eventsLoggedUser.find(
-            (eventUser) => eventUser.eventId === event._id
-          )
-            ? filter.participant?.participant
-            : filter.participant?.notParticipant)
+          filter.participant?.participant &&
+          filter.participant?.notParticipant
         )
       }),
     [searchedEvents, filter, filterOptions]
@@ -147,8 +111,8 @@ const EventsContent = () => {
             setFilter((state) => ({ ...state, participant: value }))
           }
         />
-        <div className="flex items-center justify-end flex-1 flex-nowrap gap-x-2">
-          <div className="text-lg font-bold whitespace-nowrap">
+        <div className="flex flex-1 flex-nowrap items-center justify-end gap-x-2">
+          <div className="whitespace-nowrap text-lg font-bold">
             {getNounEvents(visibleEvents.length)}
           </div>
           <SortingButtonMenu
@@ -169,20 +133,7 @@ const EventsContent = () => {
               if (isSearching) setSearchText('')
             }}
           />
-          {seeAddButton && <AddButton onClick={() => modalsFunc.event.add()} />}
-          {/* <FormControl size="small">
-            <ToggleButton
-              size="small"
-              value="sort"
-              selected={isSorted}
-              onChange={() => {
-                setIsSorted((state) => !state)
-              }}
-              color="warning"
-            >
-              <Sort />
-            </ToggleButton>
-          </FormControl> */}
+          <AddButton onClick={() => modalsFunc.event.add()} />
         </div>
       </ContentHeader>
       <Search
@@ -191,13 +142,13 @@ const EventsContent = () => {
         onChange={setSearchText}
         className="mx-1 bg-gray-100"
       />
-      <Filter
+      {/* <Filter
         show={showFilter}
         onChange={setFilterOptions}
         filterOptions={filterOptions}
         defaultFilterValue={defaultFilterValue}
         setShowFilter={setShowFilter}
-      />
+      /> */}
       {/* <CardListWrapper> */}
       <EventsList
         events={filteredAndSortedEvents}
