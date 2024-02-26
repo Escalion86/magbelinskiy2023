@@ -110,6 +110,8 @@ const ChipsSelector = forwardRef(
       </InputWrapper>
     ))
 
+    Trigger.displayName = 'Trigger'
+
     if (readOnly) return <Trigger ref={ref} />
 
     return (
