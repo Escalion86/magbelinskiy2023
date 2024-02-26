@@ -12,6 +12,7 @@ import showModalZakazAtom from '@state/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import BackLight2 from './components/BackLight2'
 import yandexAimAtom from '@state/yandexAimAtom'
+import { reachGoal } from 'app/components/metrika'
 
 const Title = ({ className }) => (
   <div
