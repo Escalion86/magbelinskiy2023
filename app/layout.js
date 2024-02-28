@@ -16,13 +16,13 @@ export default function RootLayout({ children }) {
   const isProduction = process.env.NODE_ENV !== 'development'
   return (
     <html lang="ru" className="scroll-smooth">
-      {isProduction && (
-        <Head>
-          <Suspense>
-            <Metrika />
-          </Suspense>
-        </Head>
-      )}
+      {/* {isProduction && ( */}
+      <Head>
+        {/* <Suspense> */}
+        <Metrika />
+        {/* </Suspense> */}
+      </Head>
+      {/* )} */}
       <body>{children}</body>
     </html>
   )
