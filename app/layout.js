@@ -5,6 +5,7 @@ import '../fonts/Montserrat.css'
 
 import { Suspense } from 'react'
 import Metrika from './components/metrika'
+import Head from 'next/head'
 
 export const metadata = {
   title: 'Иллюзионист Алексей Белинский',
@@ -12,14 +13,17 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const isProduction = process.env.NODE_ENV !== 'development'
   return (
     <html lang="ru" className="scroll-smooth">
-      <body>
-        <Suspense>
-          <Metrika />
-        </Suspense>
-        {children}
-      </body>
+      {isProduction && (
+        <Head>
+          <Suspense>
+            <Metrika />
+          </Suspense>
+        </Head>
+      )}
+      <body>{children}</body>
     </html>
   )
 }
