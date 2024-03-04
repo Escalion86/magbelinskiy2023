@@ -5,6 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
+import Image from 'next/image'
 
 const Title = ({ className }) => (
   <div
@@ -59,13 +60,20 @@ const VideoBlock = () => {
           filter: 'blur(177.5px)',
         }}
       />
-      <div className="relative z-20 flex w-full justify-center">
-        <img
-          className="aspect-[1338/880] w-full max-w-[1338px] object-contain"
-          alt="video"
-          src="/img/TV.png"
-          draggable={false}
-        />
+      <div
+        className="group relative z-20 flex w-full cursor-pointer justify-center"
+        onClick={showVideo ? undefined : () => setShowVideo(true)}
+      >
+        <div className="relative aspect-[1338/880] w-full max-w-[1338px] object-contain">
+          <Image
+            className="w-full"
+            alt="video"
+            src="/img/TV.png"
+            draggable={false}
+            fill
+            sizes="1338px"
+          />
+        </div>
         {showVideo ? (
           <div className="absolute top-[2.5%] flex aspect-video w-[96.5%] max-w-[1338px] flex-col items-center">
             <iframe
@@ -86,12 +94,9 @@ const VideoBlock = () => {
           </div>
         ) : (
           <div className="absolute top-[calc(44%)] flex -translate-y-1/2 flex-col items-center sm:top-[calc(50%-30px)] tablet:top-[calc(50%-45px)]">
-            <div
-              className="group relative h-[30px] w-[30px] sm:h-[88px] sm:w-[88px] tablet:h-[110px] tablet:w-[110px]"
-              onClick={() => setShowVideo(true)}
-            >
+            <div className="relative h-[30px] w-[30px] sm:h-[88px] sm:w-[88px] tablet:h-[110px] tablet:w-[110px]">
               <div className="absolute h-full w-full animate-ping rounded-full bg-gradient-to-r from-[#692DC1] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all group-hover:via-[#AC80EC] group-hover:to-[#692DC1] group-hover:bg-pos-100" />
-              <div className="absolute h-full w-full cursor-pointer rounded-full bg-gradient-to-r from-[#692DC1] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all group-hover:via-[#AC80EC] group-hover:to-[#692DC1] group-hover:bg-pos-100" />
+              <div className="absolute h-full w-full rounded-full bg-gradient-to-r from-[#692DC1] to-[#AC80EC] bg-size-200 bg-pos-0 transition-all group-hover:via-[#AC80EC] group-hover:to-[#692DC1] group-hover:bg-pos-100" />
               <div className="flex h-full w-full cursor-pointer items-center justify-center overflow-hidden">
                 <svg
                   className="z-10 ml-1 h-[12px] w-[12px] sm:ml-2 sm:h-[37px] sm:w-[37px] tablet:ml-3 tablet:h-[46px] tablet:w-[46px]"

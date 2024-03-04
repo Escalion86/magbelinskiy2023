@@ -2,9 +2,11 @@
 
 import AboutBlock from '@blocks/AboutBlock'
 import AnketaBlock from '@blocks/AnketaBlock'
+import FocusBlock from '@blocks/FocusBlock'
 import FooterBlock from '@blocks/FooterBlock'
 import GalleryBlock from '@blocks/GalleryBlock'
 import GalleryBlock2 from '@blocks/GalleryBlock2'
+import ModalFocusResult from '@blocks/ModalFocusResult'
 import ModalInfo from '@blocks/ModalInfo'
 import ModalZakaz from '@blocks/ModalZakaz'
 import QuizBlock from '@blocks/QuizBlock'
@@ -22,12 +24,14 @@ const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 export default function Home() {
   return (
     <RecoilRoot>
-      <div className="relative flex min-h-screen flex-col items-center justify-between">
+      <div className="relative flex min-h-screen flex-col items-center justify-between scroll-smooth">
         <Header />
         <main className="relative flex w-full max-w-full flex-col items-center justify-between overflow-hidden">
           <TitleBlock />
           <Section id="video" />
           <VideoBlock />
+          <Section id="focus" />
+          <FocusBlock />
           <GalleryBlock />
           <Section id="quiz" />
           <QuizBlock />
@@ -70,6 +74,7 @@ export default function Home() {
         </div>
       </div>
       <ModalZakaz />
+      <ModalFocusResult />
       <ModalInfo />
       <RecoilNexus />
       <StateLoader />

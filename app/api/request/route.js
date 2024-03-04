@@ -1,6 +1,9 @@
 import { postData } from '@helpers/CRUD'
 import formatDate from '@helpers/formatDate'
 import { NextResponse } from 'next/server'
+import Requests from '@models/Requests'
+import Clients from '@models/Clients'
+import dbConnect from '@server/dbConnect'
 
 export const AUDIENCE = [
   { value: 'adults', name: 'Взрослые (18-99 лет)' },
@@ -123,6 +126,46 @@ export const POST = async (req, res) => {
 
     if (!result.ok)
       return NextResponse.json({ success: false, result }, { status: 400 })
+
+    // Создаем пустой календарь и получаем его id
+    // if (Schema === Events) {
+    //   clearedBody.googleCalendarId = await addBlankEventToCalendar()
+    // }
+    await dbConnect()
+    const client = await Clients.create({
+      firstName: name,
+      phone,
+      priorityContact: contact,
+    })
+    await Requests.create({
+      firstName: name,
+      date,
+      audience,
+      type,
+      customType,
+      spectators,
+      town,
+      address,
+      official,
+      comment,
+      source,
+      clientId: client._id,
+    })
+
+    // if (!data) {
+    //   return res?.status(400).json({ success: false })
+    // }
+    // const jsonData = data.toJSON()
+
+    // if (Schema === Events) {
+    //   // Вносим данные в календарь так как теперь мы имеем id мероприятия
+    //   const calendarEvent = updateEventInCalendar(jsonData, req)
+
+    //   // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
+    //   if (jsonData.showOnSite) {
+    //     notificateUsersAboutEvent(jsonData, req)
+    //   }
+    // }
 
     return NextResponse.json({ success: true, result }, { status: 201 })
     // return res?.status(201).json({ success: true, data })

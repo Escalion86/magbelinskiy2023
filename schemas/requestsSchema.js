@@ -1,4 +1,12 @@
 const requestsSchema = {
+  clientId: {
+    type: String,
+    default: null,
+  },
+  source: {
+    type: String,
+    default: null,
+  },
   date: {
     type: Date,
     default: null,
@@ -26,11 +34,6 @@ const requestsSchema = {
   address: {
     type: String,
     default: '',
-  },
-  phone: {
-    type: Number,
-    required: [true, 'Введите Телефон'],
-    default: null,
   },
   official: { type: Boolean, default: false },
   comment: {

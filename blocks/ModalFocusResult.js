@@ -6,25 +6,13 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@helpers/CRUD'
 import Modal from './components/Modal'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import { reachGoal } from 'app/components/metrika'
-
-const Title = ({ className }) => (
-  <div
-    className={cn(
-      'w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
-      className
-    )}
-  >
-    <SpanGradientTitle>Оставьте заявку</SpanGradientTitle>, чтобы
-    <br />
-    обсудить шоу для вас
-  </div>
-)
+import showModalFocusResultAtom from '@state/atoms/showModalFocusResultAtom'
+import Link from 'next/link'
 
 const OnSuccess = ({ visible }) => (
   <div
@@ -136,8 +124,10 @@ const OnUnsuccess = ({ visible }) => (
   </div>
 )
 
-const ModalZakaz = () => {
-  const [showModalZakaz, setShowModalZakaz] = useRecoilState(showModalZakazAtom)
+const ModalFocusResult = () => {
+  const [showModalFocusResult, setShowModalFocusResult] = useRecoilState(
+    showModalFocusResultAtom
+  )
   const yandexAim = useRecoilValue(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
@@ -175,30 +165,57 @@ const ModalZakaz = () => {
     if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
+  //showModalFocusResult === 'right'
+
   return (
-    <Modal show={showModalZakaz} closeFunc={() => setShowModalZakaz(false)}>
-      <OnSuccess visible={showModalZakaz === 'success' || success === true} />
-      <OnUnsuccess
-        visible={showModalZakaz === 'unsuccess' || success === false}
-      />
-      <Title />
+    <Modal
+      show={showModalFocusResult}
+      closeFunc={() => setShowModalFocusResult(false)}
+    >
+      <OnSuccess visible={success === true} />
+      <OnUnsuccess visible={success === false} />
+      <div className="w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]">
+        <SpanGradientTitle>
+          {showModalFocusResult === 'right' ? 'КРУТО!' : 'А ВЫ НЕ ТАК ПРОСТ!'}
+        </SpanGradientTitle>
+      </div>
       <DivText
-        className="mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px] tablet:max-w-full"
+        className="mt-[25px] w-full max-w-[320px] text-center leading-[135%] md:max-w-[320px] tablet:max-w-full"
         textColorClass="text-[#8888AB]"
         textFontClass="font-medium"
       >
-        Заполните форму и мы свяжемся с Вами{' '}
-        <span className="font-bold">
-          в течение <span className="whitespace-nowrap">15 минут</span>
-        </span>
-        , чтобы подробно обсудить шоу.
+        {showModalFocusResult === 'right' ? (
+          <>Поделитесь впечатлением!</>
+        ) : (
+          <>
+            Думаю Вас не просто удивить,
+            <br />
+            но такое мне даже нравится!
+          </>
+        )}
+        <br />
+        Оставьте свой номер или позвоните мне
+        <br />
+        <span className="font-bold">прямо сейчас</span>!{' '}
+        <Link href="tel:+79138370020" legacyBehavior>
+          <a
+            className="cursor-pointer font-bold underline duration-300 hover:text-[#FFCA45]"
+            onClick={() => reachGoal('after_focus_click_number')}
+            target="_blank"
+          >
+            8 (913) 837-00-20
+          </a>
+        </Link>
+        <br />
+        Расскажете о предстоящем собитии
       </DivText>
       <DivText
-        className="mt-[15px] text-center leading-[135%]"
+        className="mt-[15px] max-w-[265px] text-center leading-[135%] md:max-w-[360px] tablet:max-w-[460px]"
         size="small"
         textColorClass="text-[#8888AB]"
       >
-        При необходимости договоримся о личной встрече.
+        При необходимости договоримся о личной встрече, и я смогу поразить Вас{' '}
+        {'"в живую"'}
       </DivText>
       <div
         className="mt-[20px] flex w-full items-center rounded-[7px] md:mt-[35px]"
@@ -292,4 +309,4 @@ const ModalZakaz = () => {
   )
 }
 
-export default ModalZakaz
+export default ModalFocusResult

@@ -3,11 +3,14 @@
 
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import Script from 'next/script'
 
 export const reachGoal = (goal) => {
   console.log('goal :>> ', goal)
-  ym(38403125, 'reachGoal', goal)
+  try {
+    ym(38403125, 'reachGoal', goal)
+  } catch (e) {
+    console.log('e :>> ', e)
+  }
   return true
 }
 
