@@ -105,7 +105,7 @@ const MagicanImage = () => {
           animate={{ opacity: isCardReveal ? 1 : 0 }}
         >
           <Link href="/#focus">
-            <div className="relative flex justify-center gap-x-2 px-[8px] py-[6px] sm:px-[16px] sm:py-[12px] xl:px-[15px] xl:py-[12px]">
+            <div className="relative  flex justify-center gap-x-1 px-[8px] py-[6px] sm:gap-x-2 sm:px-[16px] sm:py-[12px] xl:px-[15px] xl:py-[12px]">
               <div className="text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]">
                 Угадал?
               </div>
@@ -113,7 +113,7 @@ const MagicanImage = () => {
                 transition={{ duration: 1, delay: 4.5 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isCardReveal ? 1 : 0 }}
-                className="text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]"
+                className="whitespace-nowrap text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]"
               >
                 Если нет, ЖМИ СЮДА
               </motion.div>
