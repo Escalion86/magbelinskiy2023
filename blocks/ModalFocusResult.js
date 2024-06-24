@@ -176,7 +176,7 @@ const ModalFocusResult = () => {
       <OnUnsuccess visible={success === false} />
       <div className="w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]">
         <SpanGradientTitle>
-          {showModalFocusResult === 'right' ? 'КРУТО!' : 'А ВЫ НЕ ТАК ПРОСТ!'}
+          {showModalFocusResult === 'right' ? 'КРУТО!' : 'А ВЫ НЕ ТАК ПРОСТЫ!'}
         </SpanGradientTitle>
       </div>
       <DivText
@@ -207,7 +207,7 @@ const ModalFocusResult = () => {
           </a>
         </Link>
         <br />
-        Расскажете о предстоящем собитии
+        Расскажете о предстоящем событии
       </DivText>
       <DivText
         className="mt-[15px] max-w-[265px] text-center leading-[135%] md:max-w-[360px] tablet:max-w-[460px]"
@@ -215,7 +215,7 @@ const ModalFocusResult = () => {
         textColorClass="text-[#8888AB]"
       >
         При необходимости договоримся о личной встрече, и я смогу поразить Вас{' '}
-        {'"в живую"'}
+        {'"вживую"'}
       </DivText>
       <div
         className="mt-[20px] flex w-full items-center rounded-[7px] md:mt-[35px]"
@@ -274,6 +274,7 @@ const ModalFocusResult = () => {
                 : phone.toString()
               : ''
           }
+          aria-label="Phone"
         />
       </div>
       <div className="w-full">
