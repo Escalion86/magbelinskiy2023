@@ -20,7 +20,7 @@ const MenuItem = ({ name, active, href }) => (
   </li>
 )
 
-const ContactButton = ({ children, href, onClick, big }) => {
+const ContactButton = ({ children, href, onClick, big, ariaLabel }) => {
   const Component = ({ children, ...props }) =>
     href ? (
       <Link href={href} legacyBehavior>
@@ -42,6 +42,7 @@ const ContactButton = ({ children, href, onClick, big }) => {
         boxShadow: '6px 6px 26px 0px rgba(255, 255, 255, 0.06) inset',
       }}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
       {children}
     </Component>
@@ -138,6 +139,7 @@ const WhatsappButton = () => {
     <ContactButton
       href="https://api.whatsapp.com/send?phone=79138370020"
       onClick={() => reachGoal('klick_WA')}
+      ariaLabel="Whatsapp"
     >
       <WhatsappIcon />
     </ContactButton>
@@ -149,6 +151,7 @@ const TelegramButton = () => {
     <ContactButton
       href="https://t.me/escalion"
       onClick={() => reachGoal('klick_TG')}
+      ariaLabel="Telegram"
     >
       <TelegramIcon />
     </ContactButton>
@@ -156,7 +159,7 @@ const TelegramButton = () => {
 }
 
 const BurgerButton = ({ opened = false, onClick }) => (
-  <ContactButton big onClick={onClick}>
+  <ContactButton big onClick={onClick} ariaLabel="Menu">
     {opened ? <CloseIcon /> : <BurgerIcon />}
   </ContactButton>
 )

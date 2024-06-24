@@ -5,6 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import BackLight from './components/BackLight'
+import Image from 'next/image'
 
 const Title = ({ className }) => (
   <div
@@ -163,7 +164,13 @@ const List = ({ className }) => (
   </div>
 )
 
-const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
+const ImgSpring = ({
+  className,
+  imgClassName,
+  imgSizeClassName,
+  width,
+  height,
+}) => (
   <div className={cn('relative', imgSizeClassName, className)}>
     {/* <img
     className="absolute"
@@ -262,7 +269,7 @@ const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
         </linearGradient>
       </defs>
     </svg>
-    <img
+    <Image
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
       className={cn('relative object-cover', imgClassName, imgSizeClassName)}
       alt="gif"
@@ -273,6 +280,8 @@ const ImgSpring = ({ className, imgClassName, imgSizeClassName }) => (
         backgroundBlendMode: 'color-dodge, normal',
       }}
       draggable={false}
+      width={width}
+      height={height}
     />
   </div>
 )
@@ -311,6 +320,8 @@ const AboutBlock = () => {
             <ImgSpring
               imgClassName="rounded-[10px]"
               imgSizeClassName="w-[240px] h-[360px]"
+              width={240}
+              height={360}
               className="mt-[35px] sm:hidden"
             />
             <div>
@@ -323,6 +334,8 @@ const AboutBlock = () => {
           <ImgSpring
             imgClassName="rounded-[20px]"
             imgSizeClassName="min-w-[460px] h-[690px]"
+            width={460}
+            height={690}
             className="hidden rounded-[20px] sm:block"
           />
         </div>

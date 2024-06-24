@@ -246,7 +246,7 @@ const Quiz = () => {
             <div className="relative z-10 text-[18px] font-bold md:text-[36px]">
               <span
                 style={{
-                  color: 'rgba(14, 14, 28, 0.17)',
+                  color: 'rgba(14, 14, 28, 0.50)',
                 }}
               >
                 {quizQuestionNum + 1}/{quizAnswers.length}.

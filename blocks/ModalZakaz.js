@@ -257,6 +257,7 @@ const ModalZakaz = () => {
                 : phone.toString()
               : ''
           }
+          aria-label="Phone"
         />
       </div>
       <div className="w-full">
