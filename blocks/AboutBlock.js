@@ -6,16 +6,26 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import BackLight from './components/BackLight'
 import Image from 'next/image'
+import { AutoplayVideo } from '@wethegit/react-autoplay-video'
 
 const Title = ({ className }) => (
   <div
     className={cn(
-      'text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:text-[36px] md:text-left md:text-[42px] tablet:text-[64px]',
+      'whitespace-nowrap text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[56px] lg:text-left',
       className
     )}
   >
-    <SpanGradientTitle>20 лет дарю эмоции</SpanGradientTitle> людям
-    <br />
+    <span className="hidden whitespace-nowrap lg:block">
+      <SpanGradientTitle>более 20 лет дарю эмоции</SpanGradientTitle> людям
+    </span>
+    <SpanGradientTitle className="lg:hidden">
+      более 20 лет
+      <br />
+    </SpanGradientTitle>
+    <span className="whitespace-nowrap lg:hidden">
+      <SpanGradientTitle>дарю эмоции</SpanGradientTitle> людям
+      <br />
+    </span>
     при помощи иллюзий
   </div>
 )
@@ -269,7 +279,34 @@ const ImgSpring = ({
         </linearGradient>
       </defs>
     </svg>
-    <Image
+
+    <div
+      className={cn('relative overflow-hidden', imgClassName, imgSizeClassName)}
+    >
+      <AutoplayVideo
+        src="/img/levitation.mp4"
+        style={{
+          background:
+            'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
+          backgroundBlendMode: 'color-dodge, normal',
+        }}
+        draggable={false}
+        className={cn('relative object-cover', imgClassName, imgSizeClassName)}
+        loop
+        controlsList="nodownload"
+        width={width}
+        height={height}
+      />
+    </div>
+    <img
+      className="absolute -left-[6px] -top-[22px] z-50 h-[calc(100%+40px)] min-w-[calc(100%+12px)] object-fill sm:-left-[8px] sm:-top-[36px] sm:h-[calc(100%+58px)] sm:min-w-[calc(100%+18px)]"
+      alt="phone"
+      src="/img/phone.png"
+      draggable={false}
+      // width={width}
+      // height={height}
+    />
+    {/* <Image
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
       className={cn('relative object-cover', imgClassName, imgSizeClassName)}
       alt="gif"
@@ -282,7 +319,7 @@ const ImgSpring = ({
       draggable={false}
       width={width}
       height={height}
-    />
+    /> */}
   </div>
 )
 
@@ -319,13 +356,13 @@ const AboutBlock = () => {
             <Title />
             <ImgSpring
               imgClassName="rounded-[10px]"
-              imgSizeClassName="w-[240px] h-[360px]"
+              imgSizeClassName="w-[220px]"
               width={240}
               height={360}
               className="mt-[35px] sm:hidden"
             />
             <div>
-              <div className="mt-[30px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
+              <div className="mt-[50px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
                 Меня зовут Алексей Белинский, и я иллюзионист:
               </div>
               <List className="mt-[20px] sm:mt-[25px]" />
@@ -333,7 +370,7 @@ const AboutBlock = () => {
           </div>
           <ImgSpring
             imgClassName="rounded-[20px]"
-            imgSizeClassName="min-w-[460px] h-[690px]"
+            imgSizeClassName="w-[380px] min-w-[380px]"
             width={460}
             height={690}
             className="hidden rounded-[20px] sm:block"
