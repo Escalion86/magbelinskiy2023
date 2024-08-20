@@ -3,7 +3,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import { selectorFamily } from 'recoil'
 
 export const eventSelector = selectorFamily({
-  key: 'eventsSelector',
+  key: 'eventSelector',
   get:
     (id) =>
     ({ get }) => {

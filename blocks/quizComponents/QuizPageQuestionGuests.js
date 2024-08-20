@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cn from 'classnames'
+import { SPECTATORS } from '@helpers/constants'
 
 const QuizChekBox = ({ children, onClick }) => (
   <div
@@ -37,17 +38,11 @@ const QuizPageQuestionGuests = ({ show, onChoose }) => {
       )}
     >
       <div className="flex flex-wrap gap-x-[10px] gap-y-[10px] md:gap-x-[40px] md:gap-y-[30px]">
-        <QuizChekBox onClick={() => onChoose('1-15')}>1-15 человек</QuizChekBox>
-        <QuizChekBox onClick={() => onChoose('15-30')}>
-          15-30 человек
-        </QuizChekBox>
-        <QuizChekBox onClick={() => onChoose('30-70')}>
-          30-70 человек
-        </QuizChekBox>
-        <QuizChekBox onClick={() => onChoose('70-200')}>
-          70-200 человек
-        </QuizChekBox>
-        <QuizChekBox onClick={() => onChoose('200+')}>200+ человек</QuizChekBox>
+        {SPECTATORS.map((value) => (
+          <QuizChekBox key={value} onClick={() => onChoose(value)}>
+            {value} человек
+          </QuizChekBox>
+        ))}
       </div>
       <div className="relative mt-[30px] h-[195px] w-full md:mt-[70px] md:h-[442px] xl:mt-[90px]">
         <div

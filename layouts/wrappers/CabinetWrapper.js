@@ -1,7 +1,7 @@
 const CabinetWrapper = ({ children }) => {
   return (
     <div
-      className="grid w-full h-screen max-h-screen overflow-hidden"
+      className="grid h-screen max-h-screen w-full overflow-hidden"
       style={{
         gridTemplateRows: 'auto 1fr',
         gridTemplateColumns: '64px 1fr',

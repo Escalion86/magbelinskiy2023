@@ -1,6 +1,6 @@
 const requestsSchema = {
-  clientId: {
-    type: String,
+  phone: {
+    type: Number,
     default: null,
   },
   source: {

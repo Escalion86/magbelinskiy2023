@@ -3,11 +3,23 @@ import SideBar from '@layouts/SideBar'
 const ContentWrapper = ({ children, page }) => {
   return (
     <div
-      className="relative flex h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] max-w-[100vw]"
-      style={{ gridArea: 'content' }}
+      className="font-futuraPT relative flex h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] max-w-[100vw]"
+      style={{
+        gridArea: 'content',
+        // gridTemplateRows: 'auto',
+        // gridTemplateColumns: 'auto 1fr',
+        // gridTemplateAreas: `
+        //   'sidebar child'
+        // `,
+      }}
     >
       <SideBar page={page} />
-      <div className="flex flex-col flex-1 max-w-[100vw]">{children}</div>
+      <div
+        className="flex max-w-[100vw] flex-1 flex-col"
+        // style={{ gridArea: 'child' }}
+      >
+        {children}
+      </div>
     </div>
   )
 }

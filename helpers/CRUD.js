@@ -1,11 +1,50 @@
+import urlQueryGenerator from './urlQueryGenerator'
+
 const contentType = 'application/json'
+
+export const getData = async (
+  url,
+  form,
+  callbackOnSuccess = null,
+  callbackOnError = null,
+  resJson = false
+) => {
+  const actualUrl = urlQueryGenerator(url, form)
+
+  try {
+    const res = await fetch(actualUrl, {
+      method: 'GET',
+      headers: {
+        Accept: contentType,
+        'Content-Type': contentType,
+      },
+    })
+    // Throw error with status code in case Fetch API req failed
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+
+    const json = await res.json()
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
+  } catch (error) {
+    console.log('Failed to update (GET) on ' + actualUrl)
+    console.log(error)
+    if (callbackOnError) callbackOnError(error)
+    return null
+  }
+}
 
 export const putData = async (
   url,
   form,
   callbackOnSuccess = null,
   callbackOnError = null,
-  resJson = false
+  resJson = false,
+  userId,
+  dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -14,7 +53,9 @@ export const putData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify(form),
+      body: dontAddUserId
+        ? JSON.stringify(form)
+        : JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -23,10 +64,10 @@ export const putData = async (
     }
 
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
     return data
   } catch (error) {
     console.log('Failed to update (PUT) on ' + url)
@@ -41,7 +82,10 @@ export const postData = async (
   url,
   form,
   callbackOnSuccess = null,
-  callbackOnError = null
+  callbackOnError = null,
+  resJson = false,
+  userId,
+  dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -50,21 +94,24 @@ export const postData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify(form),
+      body: dontAddUserId
+        ? JSON.stringify(form)
+        : JSON.stringify({ data: form, userId }),
     })
 
-    const json = await res.json()
-    if (res.ok) {
-      if (callbackOnSuccess) callbackOnSuccess(json)
-    } else {
-      if (callbackOnError) callbackOnError(json)
+    // Throw error with status code in case Fetch API req failed
+    if (!res.ok) {
+      throw new Error(res.status)
     }
-    return json
+    const json = await res.json()
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
   } catch (error) {
     console.log('Failed to add (POST) on ' + url)
     console.log(error)
     if (callbackOnError) callbackOnError(error)
-    return error
   }
 }
 
@@ -73,7 +120,9 @@ export const deleteData = async (
   callbackOnSuccess = null,
   callbackOnError = null,
   params = {},
-  resJson = false
+  resJson = false,
+  userId
+  // dontAddUserId = false
 ) => {
   try {
     const res = await fetch(url, {
@@ -82,7 +131,10 @@ export const deleteData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ params }),
+      body: JSON.stringify({ params, userId }),
+      // body: dontAddUserId
+      //   ? JSON.stringify(form)
+      //   : JSON.stringify({ data: form, userId }),
     })
 
     // Throw error with status code in case Fetch API req failed
@@ -90,10 +142,10 @@ export const deleteData = async (
       throw new Error(res.status)
     }
     const json = await res.json()
-    const { data } = json
-
-    // mutate(url, data, false) // Update the local data without a revalidation
-    if (callbackOnSuccess) callbackOnSuccess(resJson ? json : data)
+    const result = resJson ? json : json.data
+    // mutate(url, data, false)
+    if (callbackOnSuccess) callbackOnSuccess(result)
+    return result
   } catch (error) {
     console.log('Failed to delete on ' + url)
     console.log(error)

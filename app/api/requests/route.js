@@ -4,24 +4,7 @@ import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
-
-export const AUDIENCE = [
-  { value: 'adults', name: 'Взрослые (18-99 лет)' },
-  { value: 'teenagers', name: 'Подростки (10-18 лет)' },
-  { value: 'kids', name: 'Дети (5-12 лет)' },
-  { value: 'other', name: 'Смешанная аудитория' },
-]
-
-export const EVENT_TYPES = [
-  { value: 'kids', name: 'Детский праздник' },
-  { value: 'birthday', name: 'День рождения' },
-  { value: 'wedding', name: 'Свадьба' },
-  { value: 'corporate', name: 'Корпоратив' },
-  { value: 'presentation', name: 'Презентация' },
-  { value: 'opening', name: 'Открытие заведения' },
-  { value: 'club', name: 'Клуб' },
-  { value: 'other', name: 'Другое' },
-]
+import { AUDIENCE, EVENT_TYPES } from '@helpers/constants'
 
 const sendTelegramMassage = async (text, url) =>
   await postData(

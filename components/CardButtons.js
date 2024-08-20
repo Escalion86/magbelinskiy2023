@@ -16,6 +16,7 @@ import { useRecoilValue } from 'recoil'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
+import { useEffect } from 'react'
 
 const MenuItem = ({ active, icon, onClick, color = 'red', tooltipText }) => (
   <div
@@ -82,9 +83,8 @@ const CardButtons = ({
     statusBtn: true,
     deleteBtn: showDeleteButton && item.status !== 'closed',
     paymentsUsersBtn: true,
-    userEvents: true,
+    userEvents: typeOfItem === 'client',
     userPaymentsBtn: true,
-    loginHistory: typeOfItem === 'user',
   }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -221,7 +221,7 @@ const CardButtons = ({
   return isCompact ? (
     <DropDown
       trigger={
-        <div className="text-general flex h-9 w-9 cursor-pointer flex-col items-center justify-center">
+        <div className="flex h-9 w-9 cursor-pointer flex-col items-center justify-center text-general">
           <FontAwesomeIcon icon={faEllipsisV} className="h-7 w-7" />
         </div>
       }

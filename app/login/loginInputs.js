@@ -18,7 +18,6 @@ function validate_login(event) {
     redirect: false,
   })
     .then((result) => {
-      console.log('result :>> ', result)
       if (result?.error) alert('Invalid Credentials!')
       else window.location.replace('/cabinet')
     })
@@ -39,18 +38,31 @@ const LoginInputs = () => {
       <div className="flex flex-col gap-y-1 text-black">
         <form onSubmit={validate_login}>
           <label>Username</label>
-          <input type="text" id="username" />
+          <input
+            className="ml-2 rounded border border-gray-700"
+            type="text"
+            id="username"
+          />
 
           <br />
           <br />
 
           <label>Password</label>
-          <input type="password" id="password" />
+          <input
+            className="ml-2 rounded border border-gray-700"
+            type="password"
+            id="password"
+          />
 
           <br />
           <br />
 
-          <input id="submit_btn" type="submit" value="Submit"></input>
+          <input
+            className="w-full rounded border border-gray-700 bg-gray-100 px-4"
+            id="submit_btn"
+            type="submit"
+            value="Submit"
+          />
         </form>
       </div>
     </div>

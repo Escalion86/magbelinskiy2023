@@ -1,12 +1,16 @@
 import {
   faBan,
+  faBriefcase,
+  faCalendarAlt,
   faCertificate,
   faCheck,
   faClock,
   faGenderless,
+  faHome,
   faLock,
   faMars,
   faPlay,
+  faShoppingBag,
   faSignInAlt,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +22,8 @@ import {
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
 import {
-  faCalendarAlt,
+  faCalendar,
+  faCalendarCheck,
   faCreditCard,
 } from '@fortawesome/free-regular-svg-icons'
 
@@ -26,6 +31,7 @@ import {
 import EventsContent from '@layouts/content/EventsContent'
 // import DevContent from '@layouts/content/DevContent'
 import ClientsContent from '@layouts/content/ClientsContent'
+import RequestsContent from '@layouts/content/RequestsContent'
 
 import {
   faInstagram,
@@ -318,6 +324,61 @@ export const DAYS_OF_WEEK_FULL = [
   'суббота',
 ]
 
+export const SECTORS = [
+  {
+    name: 'Мероприятие',
+    value: 'event',
+    icon: faCalendarAlt,
+    color: 'orange-400',
+  },
+  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
+  { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
+  {
+    name: 'Внутренние',
+    value: 'internal',
+    icon: faBriefcase,
+    color: 'general',
+  },
+]
+
+export const SECTORS2 = [
+  {
+    name: 'Главная страница',
+    value: 'home',
+    icon: faHome,
+    color: 'general',
+  },
+  {
+    name: 'Мероприятие',
+    value: 'event',
+    icon: faCalendarAlt,
+    color: 'orange-400',
+  },
+  { name: 'Пользователь', value: 'user', icon: faUser, color: 'blue-400' },
+  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
+  // { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
+]
+
+export const AUDIENCE = [
+  { value: 'adults', name: 'Взрослые (18-99 лет)' },
+  { value: 'teenagers', name: 'Подростки (10-18 лет)' },
+  { value: 'kids', name: 'Дети (5-12 лет)' },
+  { value: 'other', name: 'Смешанная аудитория' },
+]
+
+export const EVENT_TYPES = [
+  { value: 'kids', name: 'Детский праздник' },
+  { value: 'birthday', name: 'День рождения' },
+  { value: 'wedding', name: 'Свадьба' },
+  { value: 'corporate', name: 'Корпоратив' },
+  { value: 'presentation', name: 'Презентация' },
+  { value: 'opening', name: 'Открытие заведения' },
+  { value: 'club', name: 'Клуб' },
+  { value: 'other', name: 'Другое' },
+]
+
+export const SPECTATORS = ['1-15', '15-30', '30-70', '70-200', '200+']
+
 export const DEFAULT_USERS_SECURITY = Object.freeze({
   fullSecondName: true,
   fullThirdName: true,
@@ -385,6 +446,20 @@ export const DEFAULT_EVENT = Object.freeze({
   warning: false,
   likes: false,
   likesProcessActive: true,
+})
+
+export const DEFAULT_REQUEST = Object.freeze({
+  clientId: null,
+  source: '',
+  date: null,
+  audience: null,
+  type: null,
+  customType: null,
+  spectators: null,
+  town: null,
+  address: null,
+  official: null,
+  comment: '',
 })
 
 export const DEFAULT_SUBEVENT = Object.freeze({
@@ -595,6 +670,10 @@ export const CONTENTS = Object.freeze({
   //   Component: DirectionsContent,
   //   name: 'Сайт / Направления',
   // },
+  requests: {
+    Component: RequestsContent,
+    name: 'Заявки',
+  },
   events: {
     Component: EventsContent,
     name: 'Мероприятия',
@@ -624,11 +703,18 @@ export const pages = [
   //   roleAccess: CONTENTS['userStatistics'].roleAccess,
   // },
   {
+    id: 3,
+    group: 1,
+    name: 'Заявки',
+    href: 'requests',
+    icon: faCalendar,
+  },
+  {
     id: 4,
     group: 2,
     name: 'Мероприятия',
     href: 'events',
-    icon: faCalendarAlt,
+    icon: faCalendarCheck,
   },
   // {
   //   id: 5,
@@ -667,9 +753,14 @@ export const pagesGroups = [
   //   icon: faTrophy,
   // },
   {
+    id: 1,
+    name: 'Заявки',
+    icon: faCalendar,
+  },
+  {
     id: 2,
     name: 'Мероприятия',
-    icon: faCalendarAlt,
+    icon: faCalendarCheck,
   },
   {
     id: 4,

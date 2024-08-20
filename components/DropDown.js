@@ -1,3 +1,4 @@
+import PrelineScript from 'app/components/PrelineScript'
 import cn from 'classnames'
 
 const DropDown = ({
@@ -49,14 +50,15 @@ const DropDown = ({
       )}
       data-prevent-parent-click
     >
-      <div id="hs-dropdown" className="w-full hs-dropdown-toggle">
+      <PrelineScript />
+      <div id="hs-dropdown" className="hs-dropdown-toggle w-full">
         {trigger}
       </div>
       <div
         className={cn(
-          'z-50 rounded-lg hs-dropdown-open:flex items-center justify-center hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 hidden opacity-0 bg-white shadow-md dark:bg-gray-800 border border-gray-400 dark:border-gray-700 dark:divide-gray-700',
+          'hs-dropdown-menu duration z-50 hidden items-center justify-center rounded-lg border border-gray-400 bg-white opacity-0 shadow-md transition-[opacity,margin] hs-dropdown-open:flex hs-dropdown-open:opacity-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800',
           strategyAbsolute
-            ? 'after:h-4 after:absolute after:-bottom-4 after:left-0 after:w-full before:h-4 before:absolute before:-top-4 before:left-0 before:w-full'
+            ? 'before:absolute before:-top-4 before:left-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:left-0 after:h-4 after:w-full'
             : '',
           padding,
           placementVal,

@@ -57,7 +57,7 @@ const AnketaBlock = () => {
   const onSubmit = async () => {
     setYandexAim(null)
     await postData(
-      `/api/request`,
+      `/api/requests`,
       { phone, name },
       (data) => setShowModalZakaz('success'),
       (error) => setShowModalZakaz('unsuccess')

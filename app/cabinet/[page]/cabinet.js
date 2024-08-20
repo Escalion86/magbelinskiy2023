@@ -5,12 +5,12 @@ import { signOut } from 'next-auth/react'
 // import FabMenu from '@components/FabMenu'
 // import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
-// import { CONTENTS } from '@helpers/constants'
+import { CONTENTS } from '@helpers/constants'
 // import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
-// import BurgerLayout from '@layouts/BurgerLayout'
-// import CabinetHeader from '@layouts/CabinetHeader'
-// import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
-// import ContentWrapper from '@layouts/wrappers/ContentWrapper'
+import BurgerLayout from '@layouts/BurgerLayout'
+import CabinetHeader from '@layouts/CabinetHeader'
+import CabinetWrapper from '@layouts/wrappers/CabinetWrapper'
+import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 // import fetchProps from '@server/fetchProps'
 // import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 // import loggedUserAtom from '@state/atoms/loggedUserAtom'
@@ -18,10 +18,6 @@ import StateLoader from '@components/StateLoader'
 // import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 // import { useRouter } from 'next/router'
-import {
-  // Suspense,
-  useEffect,
-} from 'react'
 import { RecoilRoot } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
 // import { useRecoilValue } from 'recoil'
@@ -33,6 +29,7 @@ import RecoilNexus from 'recoil-nexus'
 // )
 
 function CabinetPage(props) {
+  const { page } = props
   // const router = useRouter()
   // const page = router.asPath.replace('/cabinet/', '').split('?')[0]
   // const loggedUser = useRecoilValue(loggedUserAtom)
@@ -50,9 +47,9 @@ function CabinetPage(props) {
 
   // if (redirect) return null
 
-  // const Component = CONTENTS[page]
-  //   ? CONTENTS[page].Component
-  //   : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
+  const Component = CONTENTS[page]
+    ? CONTENTS[page].Component
+    : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
 
   // const title = CONTENTS[page] ? CONTENTS[page].name : ''
   const title = 'test'
@@ -63,25 +60,25 @@ function CabinetPage(props) {
         <title>{`Cigam.ru - Кабинет${title ? ' / ' + title : ''}`}</title>
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
-      <div>sfsdf</div>
-      <button onClick={() => signOut()}>SignOut</button>
+      {/* <button onClick={() => signOut()}>SignOut</button> */}
       <RecoilRoot>
         <RecoilNexus />
         <StateLoader {...props}>
-          {/* {loggedUser && (
+          {/* {loggedUser && ( */}
           <CabinetWrapper>
             <CabinetHeader title={title} />
             <BurgerLayout />
             <ContentWrapper page={page}>
-              {!redirect && (
+              <Component {...props} />
+              {/* {!redirect && (
                 <Suspense fallback={<SuspenseChild />}>
                   <Component {...props} />
                 </Suspense>
-              )}
+              )} */}
             </ContentWrapper>
-            <FabMenu show={showFab} />
+            {/* <FabMenu show={showFab} /> */}
           </CabinetWrapper>
-        )} */}
+          {/* )} */}
         </StateLoader>
       </RecoilRoot>
     </>

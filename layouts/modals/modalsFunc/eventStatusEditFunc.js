@@ -1,10 +1,10 @@
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import { DEFAULT_EVENT } from '@helpers/constants'
-import isEventExpiredFunc from '@helpers/isEventExpired'
+// import isEventExpiredFunc from '@helpers/isEventExpired'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import eventSelector from '@state/selectors/eventSelector'
-import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
-import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
+// import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
+// import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
@@ -20,19 +20,19 @@ const eventStatusEditFunc = (eventId) => {
   }) => {
     const event = useRecoilValue(eventSelector(eventId))
     const setEvent = useRecoilValue(itemsFuncAtom).event.set
-    const isEventExpired = isEventExpiredFunc(event)
+    // const isEventExpired = isEventExpiredFunc(event)
 
-    const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
-    const expectedIncome = useRecoilValue(
-      expectedIncomeOfEventSelector(eventId)
-    )
-    const canSetClosed = totalIncome >= expectedIncome && isEventExpired
+    // const totalIncome = useRecoilValue(totalIncomeOfEventSelector(eventId))
+    // const expectedIncome = useRecoilValue(
+    //   expectedIncomeOfEventSelector(eventId)
+    // )
+    // const canSetClosed = totalIncome >= expectedIncome && isEventExpired
 
     const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
 
     if (!event || !eventId)
       return (
-        <div className="flex justify-center w-full text-lg ">
+        <div className="flex w-full justify-center text-lg ">
           ОШИБКА! Мероприятие не найдено!
         </div>
       )
@@ -57,9 +57,9 @@ const eventStatusEditFunc = (eventId) => {
           required
           status={status}
           onChange={setStatus}
-          disabledValues={canSetClosed ? [] : ['closed']}
+          // disabledValues={canSetClosed ? [] : ['closed']}
         />
-        {!canSetClosed && (
+        {/* {!canSetClosed && (
           <>
             <div className="text-red-500">
               Закрытие мероприятия не доступно так как:
@@ -75,7 +75,7 @@ const eventStatusEditFunc = (eventId) => {
               )}
             </ul>
           </>
-        )}
+        )} */}
       </div>
     )
   }

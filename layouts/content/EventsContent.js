@@ -3,7 +3,6 @@
 import ContentHeader from '@components/ContentHeader'
 // import Filter from '@components/Filter'
 import AddButton from '@components/IconToggleButtons/AddButton'
-import EventParticipantToggleButtons from '@components/IconToggleButtons/EventParticipantToggleButtons'
 import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
 import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
 import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
@@ -43,10 +42,6 @@ const EventsContent = () => {
       closed: false,
       canceled: false,
     },
-    participant: {
-      participant: true,
-      notParticipant: true,
-    },
   })
   const [searchText, setSearchText] = useState('')
 
@@ -81,9 +76,7 @@ const EventsContent = () => {
             (isEventActive && filter.status.active && !isEventExpired) ||
             (isEventCanceled && filter.status.canceled)) &&
           (!filterOptions.directions ||
-            filterOptions.directions === event.directionId) &&
-          filter.participant?.participant &&
-          filter.participant?.notParticipant
+            filterOptions.directions === event.directionId)
         )
       }),
     [searchedEvents, filter, filterOptions]
@@ -99,18 +92,12 @@ const EventsContent = () => {
   return (
     <>
       <ContentHeader>
-        <EventStatusToggleButtons
+        {/* <EventStatusToggleButtons
           value={filter.status}
           onChange={(value) =>
             setFilter((state) => ({ ...state, status: value }))
           }
-        />
-        <EventParticipantToggleButtons
-          value={filter.participant}
-          onChange={(value) =>
-            setFilter((state) => ({ ...state, participant: value }))
-          }
-        />
+        /> */}
         <div className="flex flex-1 flex-nowrap items-center justify-end gap-x-2">
           <div className="whitespace-nowrap text-lg font-bold">
             {getNounEvents(visibleEvents.length)}

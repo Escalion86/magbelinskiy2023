@@ -174,7 +174,7 @@ const Quiz = () => {
 
     setIsQuizSended('inProcess')
     await postData(
-      `/api/request`,
+      `/api/requests`,
       {
         source: 'Квиз',
         contact,

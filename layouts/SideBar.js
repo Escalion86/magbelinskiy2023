@@ -5,22 +5,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
-import loggedUserActiveStatusAtom from '@state/atoms/loggedUserActiveStatusAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
-import badgesSelector from '@state/selectors/badgesSelector'
-import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
+// import badgesSelector from '@state/selectors/badgesSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-const menuCfg = (
-  userActiveRole,
-  userActiveStatusName
-  // disabledGroupsIds
-) => {
+const menuCfg = () => {
   // const visiblePages = pages.filter((page) => )
 
   const result = pagesGroups
@@ -36,8 +30,9 @@ const menuCfg = (
     .reduce((totalGroups, group) => {
       const pagesItems = pages.reduce((totalPages, page) => {
         if (
-          page.group === group.id &&
-          page.roleAccess(userActiveRole, userActiveStatusName)
+          page.group === group.id
+          //  &&
+          // page.roleAccess(userActiveRole, userActiveStatusName)
           // page.accessRoles.includes(userActiveRole) &&
           // (!page.accessStatuses ||
           //   page.accessStatuses.includes(userActiveStatus))
@@ -73,23 +68,23 @@ const MenuItem = ({ item, active = false, badge }) => {
       <a
         onClick={() => setMenuOpen(false)}
         className={cn(
-          'flex items-center justify-between mb-1 rounded-lg cursor-pointer flex-nowrap ',
+          'mb-1 flex cursor-pointer flex-nowrap items-center justify-between rounded-lg ',
           active ? 'bg-general text-white' : '',
           'hover:bg-general hover:text-white'
         )}
       >
-        <div className={cn('flex items-center w-full px-3 py-1 gap-x-2 ')}>
-          <FontAwesomeIcon icon={item.icon} className="w-5 h-5 min-w-5" />
-          <span className={'text-sm font-medium whitespace-nowrap'}>
+        <div className={cn('flex w-full items-center gap-x-2 px-3 py-1 ')}>
+          <FontAwesomeIcon icon={item.icon} className="min-w-5 h-5 w-5" />
+          <span className={'whitespace-nowrap text-sm font-medium'}>
             {item.name}
           </span>
           {item.num !== null && (
-            <span className="text-xs font-semibold text-general">
+            <span className="text-general text-xs font-semibold">
               {item.num}
             </span>
           )}
           {typeof badge === 'number' && badge > 0 && (
-            <div className="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger">
+            <div className="min-w-5 min-h-5 bg-danger flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
               {badge <= 99 ? badge : '!'}
             </div>
           )}
@@ -103,7 +98,7 @@ const Menu = ({ menuCfg, activePage }) => {
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
-  const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
+  // const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
 
   const variants = {
     show: { height: 'auto' },
@@ -118,7 +113,7 @@ const Menu = ({ menuCfg, activePage }) => {
     item.items.find((item) => item.href === activePage)
   )
   return (
-    <nav className="flex flex-col w-full h-full px-2 py-3 mt-1 gap-y-2">
+    <nav className="mt-1 flex h-full w-full flex-col gap-y-2 px-2 py-3">
       {menuCfg &&
         menuCfg.length > 0 &&
         menuCfg
@@ -144,16 +139,16 @@ const Menu = ({ menuCfg, activePage }) => {
                 )}
                 <div
                   className={cn(
-                    'duration-300 rounded-lg group',
+                    'group rounded-lg duration-300',
                     groupIsActive
-                      ? 'bg-white text-general'
-                      : 'hover:bg-white hover:text-general text-white'
+                      ? 'text-general bg-white'
+                      : 'hover:text-general text-white hover:bg-white'
                   )}
                   key={'groupMenu' + index}
                 >
                   <Component
                     className={cn(
-                      'flex gap-x-2 items-center w-full px-2 py-2 min-w-12 min-h-12 overflow-hidden'
+                      'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
                       // groupIsActive ? 'text-ganeral' : 'text-white'
                     )}
                     href={item.items[0].href}
@@ -171,28 +166,28 @@ const Menu = ({ menuCfg, activePage }) => {
                   >
                     <div
                       className={cn(
-                        'relative flex justify-center min-w-8 max-w-8 min-h-8 max-h-8'
+                        'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
                         // groupIsActive ? 'text-ganeral' : 'text-white'
                       )}
                     >
                       <FontAwesomeIcon icon={item.icon} size="2x" />
-                      {item.items.length > 1 &&
+                      {/* {item.items.length > 1 &&
                         typeof groupsBadges[item.id] === 'number' &&
                         groupsBadges[item.id] > 0 && (
-                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full -top-1 -right-2 min-w-5 min-h-5 bg-danger">
+                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
                             {groupsBadges[item.id] <= 99
                               ? groupsBadges[item.id]
                               : '!'}
                           </div>
-                        )}
+                        )} */}
                     </div>
-                    <h3 className="flex-1 ml-3 font-semibold tracking-wide text-left uppercase whitespace-nowrap">
+                    <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
                       {item.items.length === 1 ? item.items[0].name : item.name}
                     </h3>
 
                     {item.items.length > 1 && (
                       <div
-                        className={cn('w-4 duration-300 transition-transform', {
+                        className={cn('w-4 transition-transform duration-300', {
                           'rotate-180': openedMenuIndex === index,
                         })}
                       >
@@ -212,7 +207,7 @@ const Menu = ({ menuCfg, activePage }) => {
                           key={'menu' + subitem.id}
                           item={subitem}
                           active={activePage === subitem.href}
-                          badge={itemsBadges[subitem.id]}
+                          // badge={itemsBadges[subitem.id]}
                         />
                       ))}
                     </motion.div>
@@ -231,13 +226,12 @@ const variants = {
 }
 
 const SideBar = ({ page }) => {
+  console.log('page :>> ', page)
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
   const [scrollPos, setScrollPos] = useState(0)
   const [scrollable, setScrollable] = useState(false)
-  const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  const loggedUserActiveStatus = useRecoilValue(loggedUserActiveStatusAtom)
   const { height } = useRecoilValue(windowDimensionsAtom)
 
   const handleScrollPosition = (scrollAmount) => {
@@ -286,14 +280,15 @@ const SideBar = ({ page }) => {
 
   return (
     <div
-      className="relative top-0 bottom-0 z-50 flex flex-col w-0 max-h-full tablet:min-w-16 tablet:w-16 bg-general"
-      style={{ gridArea: 'sidebar' }}
+      className="min-w-16 tablet:min-w-16 relative bottom-0 top-0 z-50 flex max-h-full w-0 flex-col bg-blue-200 tablet:w-16"
+      // style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
+      // style={{ width: 64 }}
     >
       <motion.div
         ref={menuRef}
         className={
-          'absolute top-0 items-start z-10 max-h-full overflow-y-hidden'
+          'absolute top-0 z-10 max-h-full items-start overflow-y-hidden'
           // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
           // (!menuOpen
           //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'
@@ -306,11 +301,8 @@ const SideBar = ({ page }) => {
         initial={'min'}
         layout
       >
-        <div className="flex flex-col w-full overflow-x-hidden">
-          <Menu
-            menuCfg={menuCfg(loggedUserActiveRole, loggedUserActiveStatus)}
-            activePage={page}
-          />
+        <div className="flex w-full flex-col overflow-x-hidden">
+          <Menu menuCfg={menuCfg()} activePage={page} />
         </div>
       </motion.div>
       <motion.div
@@ -319,19 +311,19 @@ const SideBar = ({ page }) => {
         transition={{ duration: 0.5, type: 'tween' }}
         initial={'min'}
         layout
-        className="absolute top-0 bottom-0 bg-general"
+        className="bg-general absolute bottom-0 top-0"
       />
       {scrollable && (
         <>
           {scrollPos > 0 && (
             <div
               onClick={() => handleScrollPosition(-120)}
-              className="absolute top-0 left-0 right-0 z-50 w-full h-10 border-t cursor-pointer bg-general rounded-b-2xl"
+              className="bg-general absolute left-0 right-0 top-0 z-50 h-10 w-full cursor-pointer rounded-b-2xl border-t"
             >
-              <div className="flex items-center justify-center w-full h-full border-b border-white rounded-2xl">
+              <div className="flex h-full w-full items-center justify-center rounded-2xl border-b border-white">
                 <FontAwesomeIcon
                   icon={faAngleUp}
-                  className="w-6 h-6 text-white"
+                  className="h-6 w-6 text-white"
                 />
               </div>
             </div>
@@ -341,12 +333,12 @@ const SideBar = ({ page }) => {
             scrollPos && (
             <div
               onClick={() => handleScrollPosition(120)}
-              className="absolute bottom-0 left-0 right-0 z-50 w-full h-10 border-b cursor-pointer bg-general rounded-t-2xl"
+              className="bg-general absolute bottom-0 left-0 right-0 z-50 h-10 w-full cursor-pointer rounded-t-2xl border-b"
             >
-              <div className="flex items-center justify-center w-full h-full border-t border-white rounded-2xl">
+              <div className="flex h-full w-full items-center justify-center rounded-2xl border-t border-white">
                 <FontAwesomeIcon
                   icon={faAngleDown}
-                  className="w-6 h-6 text-white"
+                  className="h-6 w-6 text-white"
                 />
               </div>
             </div>

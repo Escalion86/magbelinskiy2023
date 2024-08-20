@@ -6,7 +6,7 @@ import modalsAtom from '@state/atoms/modalsAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -191,7 +191,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'real-screen-height min-w-84 laptop:w-9/12 tablet:min-w-156 border-primary relative flex w-full flex-col border-l bg-white pb-1 duration-300 tablet:my-auto tablet:h-auto tablet:w-[95%] tablet:rounded-lg tablet:pb-2',
+            'real-screen-height laptop:w-9/12 border-primary relative flex w-full min-w-84 flex-col border-l bg-white pb-1 duration-300 tablet:my-auto tablet:h-auto tablet:w-[95%] tablet:min-w-156 tablet:rounded-lg tablet:pb-2',
             titleState ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')

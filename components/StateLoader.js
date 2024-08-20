@@ -11,18 +11,23 @@ import LoadingSpinner from '@components/LoadingSpinner'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
 import isSiteLoadingAtom from '@state/atoms/isSiteLoadingAtom'
 import cn from 'classnames'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useWindowDimensionsRecoil } from '@helpers/useWindowDimensions'
+import { modalsFuncAtom } from '@state/atoms'
+import modalsFuncGenerator from '@layouts/modals/modalsFuncGenerator'
+import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import itemsFuncGenerator from '@state/itemsFuncGenerator'
+import useSnackbar from '@helpers/useSnackbar'
 
 const StateLoader = (props) => {
   if (props.error && Object.keys(props.error).length > 0)
     console.log('props.error', props.error)
 
-  // const snackbar = useSnackbar()
+  const snackbar = useSnackbar()
 
-  // const router = useRouter()
+  const router = useRouter()
 
-  // const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
+  const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
 
   const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
 
@@ -48,24 +53,22 @@ const StateLoader = (props) => {
   // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
   // const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
 
-  // const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
 
   useWindowDimensionsRecoil()
 
-  // useEffect(() => {
-  //   // const itemsFunc = itemsFuncGenerator(snackbar, loggedUser)
-  //   // setItemsFunc(itemsFunc)
-  //   setModalsFunc(
-  //     modalsFuncGenerator(
-  //       router,
-  //       // itemsFunc,
-  //       loggedUser,
-  //       siteSettingsState,
-  //     )
-  //   )
-  // }, [loggedUser, siteSettingsState])
-
-  console.log('props :>> ', props)
+  useEffect(() => {
+    const itemsFunc = itemsFuncGenerator(snackbar, loggedUser)
+    setItemsFunc(itemsFunc)
+    setModalsFunc(
+      modalsFuncGenerator(
+        router,
+        itemsFunc
+        // loggedUser,
+        // siteSettingsState,
+      )
+    )
+  }, [router, setModalsFunc])
 
   useEffect(() => {
     setLoggedUser(props.loggedUser)

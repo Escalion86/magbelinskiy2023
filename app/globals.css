@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
+/* @layer components {
   .transparentsides {
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%);
   }
-}
+} */
 
-:root {
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -21,13 +21,15 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
+} */
 
 body {
-  color: rgb(var(--foreground-rgb));
+  background: #F5F6F8;
+  color: #1C1D1F;
+  /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb)); */
   font-family: 'Inter Tight', sans-serif;
 }
 

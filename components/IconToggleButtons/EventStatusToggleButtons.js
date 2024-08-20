@@ -3,7 +3,7 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import { useRecoilValue } from 'recoil'
 
-const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
+const EventStatusToggleButtons = ({ value, onChange }) => {
   const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
@@ -43,29 +43,24 @@ const EventStatusToggleButtons = ({ value, onChange, noClosed }) => {
       >
         Завершены
       </Button>
-      {!noClosed && (
-        <Button
-          onClick={() =>
-            onChange({
-              active:
-                value.active ||
-                value.finished ||
-                value.canceled ||
-                !value.closed
-                  ? value.active
-                  : true,
-              finished: value.finished,
-              closed: !value.closed,
-              canceled: value.canceled,
-            })
-          }
-          variant={value.closed ? 'contained' : 'outlined'}
-          color="green"
-          className={value.closed ? 'text-white' : 'text-green-400'}
-        >
-          Закрыты
-        </Button>
-      )}
+      <Button
+        onClick={() =>
+          onChange({
+            active:
+              value.active || value.finished || value.canceled || !value.closed
+                ? value.active
+                : true,
+            finished: value.finished,
+            closed: !value.closed,
+            canceled: value.canceled,
+          })
+        }
+        variant={value.closed ? 'contained' : 'outlined'}
+        color="green"
+        className={value.closed ? 'text-white' : 'text-green-400'}
+      >
+        Закрыты
+      </Button>
       <Button
         onClick={() =>
           onChange({

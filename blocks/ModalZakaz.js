@@ -146,7 +146,7 @@ const ModalZakaz = () => {
   const onSubmit = async () => {
     setSuccess(null)
     await postData(
-      `/api/request`,
+      `/api/requests`,
       { phone, yandexAim },
       (data) => {
         setSuccess(true)
