@@ -41,23 +41,23 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex items-stretch h-fit',
+          'relative flex h-fit items-stretch',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
-          noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
+          noMargin ? '' : smallMargin ? 'mt-3' : 'mb-1 mt-3.5',
           noBorder
             ? 'min-h-[36px] tablet:min-h-[40px]'
-            : `min-h-[40px] tablet:min-h-[44px] border-2 rounded focus-within:border-general hover:border-general [&:not(:focus-within)]:hover:border-opacity-50 ${
+            : `min-h-[40px] rounded border-2 focus-within:border-general hover:border-general tablet:min-h-[44px] [&:not(:focus-within)]:hover:border-opacity-50 ${
                 error ? 'border-danger' : 'border-gray-300'
               }`,
           fullWidth ? 'w-full' : '',
           fitWidth ? 'w-fit' : '',
           paddingY === 'small'
-            ? 'pt-1.5 pb-1'
+            ? 'pb-1 pt-1.5'
             : paddingY === 'big'
-              ? 'pt-2.5 pb-2'
-              : paddingY
-                ? 'pt-2 pb-1.5'
-                : '',
+            ? 'pb-2 pt-2.5'
+            : paddingY
+            ? 'pb-1.5 pt-2'
+            : '',
           disabled ? 'cursor-not-allowed' : '',
           hidden ? 'hidden' : '',
           (error && showErrorText) || comment ? 'mb-4' : '',
@@ -68,7 +68,7 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'flex items-center w-full min-h-[24px] tablet:min-h-[28px]',
+            'flex min-h-[24px] w-full items-center tablet:min-h-[28px]',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -76,7 +76,7 @@ const InputWrapper = forwardRef(
           {prefix && (
             <div
               className={cn(
-                'text-disabled pl-1 flex items-center',
+                'flex items-center pl-1 text-disabled',
                 prefixClassName
               )}
             >
@@ -87,14 +87,14 @@ const InputWrapper = forwardRef(
           {(postfix || disabled) && (
             <div
               className={cn(
-                'text-disabled pr-1 flex items-center gap-x-1',
+                'flex items-center gap-x-1 pr-1 text-disabled',
                 postfixClassName
               )}
             >
               {postfix}
               {disabled && showDisabledIcon && (
                 <FontAwesomeIcon
-                  className="w-4 h-4 text-disabled"
+                  className="h-4 w-4 text-disabled"
                   icon={faBan}
                   size="1x"
                 />
@@ -104,15 +104,15 @@ const InputWrapper = forwardRef(
           {label && (
             <div
               className={cn(
-                'pointer-events-none select-none absolute rounded px-1 text-sm peer-focus:text-general peer-focus:leading-[12px] transition-all bg-white text-general',
+                'pointer-events-none absolute select-none rounded bg-white px-1 text-sm text-general transition-all peer-focus:leading-[12px] peer-focus:text-general',
                 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
                 'flex items-center',
                 required
-                  ? 'max-w-[calc(100%-16px)] peer-focus:max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full'
+                  ? 'max-w-[calc(100%-16px)] peer-placeholder-shown:max-w-full peer-focus:max-w-[calc(100%-16px)]'
                   : '',
                 centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-focus:-top-[12px] peer-focus:text-sm peer-placeholder-shown:text-disabled peer-placeholder-shown:text-base peer-placeholder-shown:top-[calc(50%-10px)]`
+                  ? `-top-[12px] peer-placeholder-shown:top-[calc(50%-10px)] peer-placeholder-shown:text-base peer-placeholder-shown:text-disabled peer-focus:-top-[12px] peer-focus:text-sm`
                   : '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
@@ -125,7 +125,7 @@ const InputWrapper = forwardRef(
         {required && (
           <div
             className={cn(
-              'flex h-4 items-center absolute px-1 text-xs bg-white right-1 -top-[9px]',
+              'absolute -top-[9px] right-1 flex h-4 items-center bg-white px-1 text-xs',
               (value !== null &&
                 typeof value === 'object' &&
                 value.length > 0) ||
@@ -135,7 +135,7 @@ const InputWrapper = forwardRef(
             )}
           >
             <FontAwesomeIcon
-              className={cn('w-2.5 h-2.5')}
+              className={cn('h-2.5 w-2.5')}
               icon={faAsterisk}
               size="1x"
             />
@@ -144,7 +144,7 @@ const InputWrapper = forwardRef(
         {error && showErrorText && (
           <div
             className={cn(
-              'absolute px-1 leading-[12px] text-xs bg-white left-1 -bottom-[15px] text-danger whitespace-nowrap'
+              'absolute -bottom-[15px] left-1 whitespace-nowrap bg-white px-1 text-xs leading-[12px] text-danger'
             )}
           >
             {error}
@@ -153,7 +153,7 @@ const InputWrapper = forwardRef(
         {comment && (
           <div
             className={cn(
-              'absolute px-1 leading-[12px] text-xs bg-white right-1 -bottom-[15px] whitespace-nowrap',
+              'absolute -bottom-[15px] right-1 whitespace-nowrap bg-white px-1 text-xs leading-[12px]',
               commentClassName
             )}
           >
@@ -164,5 +164,7 @@ const InputWrapper = forwardRef(
     )
   }
 )
+
+InputWrapper.displayName = 'InputWrapper'
 
 export default InputWrapper

@@ -75,7 +75,7 @@ const Input = forwardRef(
             className={cn(
               'p-1 duration-300',
               typeof min === 'number' && value <= min
-                ? 'text-disabled cursor-not-allowed'
+                ? 'cursor-not-allowed text-disabled'
                 : 'cursor-pointer text-general hover:text-success'
             )}
             onClick={() => {
@@ -84,7 +84,7 @@ const Input = forwardRef(
               else onChange(Math.max(Number(value) - Number(step), min))
             }}
           >
-            <FontAwesomeIcon icon={faArrowDown} className="w-5 h-5" />
+            <FontAwesomeIcon icon={faArrowDown} className="h-5 w-5" />
           </div>
         )}
 
@@ -92,8 +92,8 @@ const Input = forwardRef(
           type={type}
           step={step}
           className={cn(
-            'flex-1 px-1 text-black placeholder-transparent h-7 peer focus:outline-none bg-transparent',
-            disabled ? 'text-disabled cursor-not-allowed' : '',
+            'peer h-7 flex-1 bg-transparent px-1 text-black placeholder-transparent focus:outline-none',
+            disabled ? 'cursor-not-allowed text-disabled' : '',
             inputClassName
           )}
           onWheel={(e) => e.target.blur()}
@@ -104,8 +104,8 @@ const Input = forwardRef(
             value === null
               ? ''
               : typeof value === 'number'
-                ? String(value)
-                : value
+              ? String(value)
+              : value
           }
           defaultValue={defaultValue}
           onChange={(e) => {
@@ -141,7 +141,7 @@ const Input = forwardRef(
             className={cn(
               'p-1 duration-300',
               typeof max === 'number' && value >= max
-                ? 'text-disabled cursor-not-allowed'
+                ? 'cursor-not-allowed text-disabled'
                 : 'cursor-pointer text-general hover:text-success'
             )}
             onClick={() => {
@@ -150,12 +150,14 @@ const Input = forwardRef(
               else onChange(Math.min(Number(value) + Number(step), max))
             }}
           >
-            <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
+            <FontAwesomeIcon icon={faArrowUp} className="h-5 w-5" />
           </div>
         )}
       </InputWrapper>
     )
   }
 )
+
+Input.displayName = 'Input'
 
 export default Input
