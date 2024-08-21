@@ -94,7 +94,8 @@ const QuizHeader = () => (
             }}
           />
           <div className="whitespace-nowrap">
-            Скидка <span className="font-medium text-white">-5%</span> на шоу
+            Доп.{' '}
+            <span className="font-medium text-white">индивидуальный номер</span>
           </div>
         </div>
       </div>
@@ -282,7 +283,9 @@ const Quiz = () => {
           </div>
           <div className="flex items-center gap-[30px]">
             <QuizProgress progress={progress} />
-            <QuizInfo className="hidden max-w-[260px] 2xl:block" />
+            {quizQuestionNum === 0 && (
+              <QuizInfo className="hidden max-w-[260px] 2xl:block" />
+            )}
           </div>
         </div>
         <div

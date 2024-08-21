@@ -112,7 +112,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
           }}
         />
         <div className="text-[12px] font-semibold leading-[125%] text-[#0E0E1C] md:text-[21px]">
-          Скидка 5% на шоу
+          Дополнительный индивидуальный номер
         </div>
       </div>
       {!isQuizSended ? (

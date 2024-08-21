@@ -24,19 +24,20 @@ const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 export default function Home() {
   return (
     <RecoilRoot>
-      <div className="relative flex min-h-screen flex-col items-center justify-between scroll-smooth">
+      <div className="relative flex flex-col items-center justify-between min-h-screen scroll-smooth">
         <Header />
-        <main className="relative flex w-full max-w-full flex-col items-center justify-between overflow-hidden">
+        <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
           <TitleBlock />
           <Section id="video" />
           <VideoBlock />
+          <Section id="about" />
+          <AboutBlock />
           <Section id="focus" />
           <FocusBlock />
+          <Section id="why" />
           <GalleryBlock />
           <Section id="quiz" />
           <QuizBlock />
-          <Section id="about" />
-          <AboutBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
           <Section id="reviews" />
@@ -54,16 +55,16 @@ export default function Home() {
             background:
               'linear-gradient(180deg, #D9D9D9 83.34%, rgba(217, 217, 217, 0.00) 100%)',
           }}
-          className="absolute top-0 -z-20 h-full w-full shrink-0 overflow-hidden"
+          className="absolute top-0 w-full h-full overflow-hidden -z-20 shrink-0"
         >
           <div
-            className="h-full w-full"
+            className="w-full h-full"
             style={{
               background: '#0E0E1C',
             }}
           />
           <div
-            className="absolute h-full w-full"
+            className="absolute w-full h-full"
             style={{
               opacity: 0.3,
               background:

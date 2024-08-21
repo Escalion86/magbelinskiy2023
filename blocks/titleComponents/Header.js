@@ -235,8 +235,9 @@ const Header = () => {
           }}
         >
           <BurgerMenuItem href="#video">Посмотреть видео</BurgerMenuItem>
-          <BurgerMenuItem href="#quiz">Пройти квиз</BurgerMenuItem>
           <BurgerMenuItem href="#about">Об иллюзионисте</BurgerMenuItem>
+          <BurgerMenuItem href="#why">Где уместно?</BurgerMenuItem>
+          <BurgerMenuItem href="#quiz">Пройти квиз</BurgerMenuItem>
           <BurgerMenuItem href="#fotos">Фотографии</BurgerMenuItem>
           <BurgerMenuItem href="#reviews">Отзывы</BurgerMenuItem>
           <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
@@ -277,7 +278,7 @@ const Header = () => {
             }}
           >
             <MenuItem name="Об иллюзионисте" href="#about" />
-            <MenuItem name="Фотографии" href="#fotos" />
+            <MenuItem name="Где уместно?" href="#why" />
             <MenuItem name="Отзывы" href="#reviews" />
           </ol>
           <div className="flex flex-1 items-center justify-end gap-x-[13px] md:gap-x-[20px]">

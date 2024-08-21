@@ -47,7 +47,7 @@ const Title = ({ className }) => (
       lineHeight: '100%' /* 84px */,
     }}
   >
-    <span>Закажите незабываемое</span>
+    <span>Иллюзионист</span>
     <div className="flex">
       <img
         className="-mb-[12px] -ml-[15px] -mr-[5px] -mt-[4px] w-[50px] object-contain sm:-mb-[15px] sm:-ml-[17px] sm:-mr-[6px] sm:-mt-[5px] sm:w-[60px] md:-mb-[15px] md:-ml-[22px] md:-mr-[8px] md:-mt-[5px] md:w-[80px] tablet:-mb-[17px] tablet:-ml-[30px] tablet:-mr-[6px] tablet:-mt-[6px] tablet:w-[107px]"
@@ -66,10 +66,10 @@ const Title = ({ className }) => (
           // color: '#0B2349',
         }}
       >
-        шоу иллюзиониста
+        Алексей Белинский
       </span>
     </div>
-    <span>на свой праздник</span>
+    <span>на Вашем мероприятии</span>
   </div>
 )
 
@@ -188,6 +188,10 @@ const SvgDiamond = () => (
   </svg>
 )
 
+const GraySpan = ({ children }) => (
+  <span style={{ color: '#A8A8CA' }}>{children}</span>
+)
+
 const InfoCardSpecial = () => (
   <InfoCard>
     <SvgDiamond />
@@ -202,8 +206,7 @@ const InfoCardSpecial = () => (
         lineHeight: '135%' /* 21.6px */,
       }}
     >
-      Продумаю шоу{' '}
-      <span style={{ color: '#A8A8CA' }}>специально под ваше мероприятие</span>
+      Профессиональное шоу <GraySpan>специально под ваше мероприятие</GraySpan>
     </div>
   </InfoCard>
 )
@@ -222,8 +225,7 @@ const InfoCardInclusive = () => (
         lineHeight: '135%' /* 21.6px */,
       }}
     >
-      Приеду со своим реквизитом{' '}
-      <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
+      Эмоции гостей от увиденного <GraySpan>гарантированы</GraySpan>
     </div>
   </InfoCard>
 )
@@ -262,31 +264,20 @@ style={{
         // lineHeight: '145%' /* 30.45px */,
       }}
     >
-      <span
-        style={{
-          color: '#A8A8CA',
-          // fontWeight: 600,
-        }}
-      >
-        Вы получите{' '}
-      </span>
+      {/* <GraySpan>Вы получите </GraySpan> */}
       <span
         style={{
           // color: '#FFF',
           fontWeight: 600,
         }}
       >
-        представление телевизионного уровня
+        Представление телевизионного уровня
       </span>
-      <span
-        style={{
-          color: '#A8A8CA',
-          // fontWeight: 600,
-        }}
-      >
-        , которое подарит массу эмоций
+      <GraySpan>
+        ,<br />
+        которое подарит массу эмоций
         <br />и запомнится на всю жизнь.
-      </span>
+      </GraySpan>
     </DivText>
   </div>
 )
@@ -307,9 +298,9 @@ const DiscountInfo = ({ className }) => (
       }}
     />
     <div className="text-[11px] font-normal leading-[115%] text-[#A8A8CA] md:text-[15px] tablet:text-[16px]">
-      Если закажите сейчас, получите{' '}
+      Закажите сейчас и получите{' '}
       <span className="tablet:font-medium" style={{ color: '#FFF' }}>
-        бесплатную консультацию и скидку 5%
+        бесплатно дополнительный индивидуальный номер на свое мероприятие
       </span>
     </div>
   </div>
@@ -319,7 +310,6 @@ const Content = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
   const widthTailwind = useRecoilValue(windowDimensionsTailwindSelector)
-  console.log('widthTailwind :>> ', widthTailwind)
 
   return (
     <DivContent
@@ -337,8 +327,7 @@ const Content = () => {
         <div className="mb-[25px] mt-[30px] flex items-center gap-x-[10px] md:gap-x-[15px] tablet:hidden">
           <SvgParty />
           <div className="flex flex-col text-[11px] font-normal leading-[115%] text-white md:text-[15px]">
-            <span>Приеду со своим реквизитом</span>
-            <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
+            Эмоции гостей от увиденного <GraySpan>гарантированы</GraySpan>
           </div>
         </div>
         <div className="relative h-[70px] w-fit pr-[200px] tablet:h-[100px]">
@@ -363,10 +352,10 @@ const Content = () => {
               }}
               small={widthTailwind === 'phoneV'}
             />
-            <DiscountInfo className="hidden w-[220px] tablet:flex" />
+            <DiscountInfo className="hidden w-[240px] tablet:flex" />
           </div>
         </div>
-        <DiscountInfo className="flex w-[220px] md:w-[290px] tablet:hidden" />
+        <DiscountInfo className="flex w-[240px] md:w-[300px] tablet:hidden" />
       </div>
     </DivContent>
   )

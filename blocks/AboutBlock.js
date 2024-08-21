@@ -5,7 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import BackLight from './components/BackLight'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { AutoplayVideo } from '@wethegit/react-autoplay-video'
 
 const Title = ({ className }) => (
@@ -16,14 +16,14 @@ const Title = ({ className }) => (
     )}
   >
     <span className="hidden whitespace-nowrap lg:block">
-      <SpanGradientTitle>более 20 лет дарю эмоции</SpanGradientTitle> людям
+      <SpanGradientTitle>более 20 лет дарит эмоции</SpanGradientTitle> людям
     </span>
     <SpanGradientTitle className="lg:hidden">
       более 20 лет
       <br />
     </SpanGradientTitle>
     <span className="whitespace-nowrap lg:hidden">
-      <SpanGradientTitle>дарю эмоции</SpanGradientTitle> людям
+      <SpanGradientTitle>дарит эмоции</SpanGradientTitle> людям
       <br />
     </span>
     при помощи иллюзий
@@ -145,6 +145,10 @@ const List = ({ className }) => (
     )}
   >
     <ListItem>
+      Участник <SpanGold>телевизионного шоу</SpanGold> «Все, кроме обычного» на
+      <SpanGold>ТНТ</SpanGold>.
+    </ListItem>
+    <ListItem>
       Обладатель <SpanGold>Высшей международной награды</SpanGold> в области
       иллюзионного искусства — кубка Мерлина.
     </ListItem>
@@ -158,11 +162,7 @@ const List = ({ className }) => (
       Micromagic.
     </ListItem>
     <ListItem>
-      Участник <SpanGold>телевизионного шоу</SpanGold> «Все, кроме обычного» на
-      ТНТ.
-    </ListItem>
-    <ListItem>
-      Выступаю и провожу <SpanGold>шоу за границей</SpanGold>: Болгария,
+      Выступает и проводит <SpanGold>шоу за границей</SpanGold>: Болгария,
       Вьетнам, Казахстан, Абхазия.
     </ListItem>
     <ListItem>
@@ -175,7 +175,7 @@ const List = ({ className }) => (
   </div>
 )
 
-const ImgSpring = ({
+const ImgPhone = ({
   className,
   imgClassName,
   imgSizeClassName,
@@ -379,22 +379,23 @@ const AboutBlock = () => {
         <div className="flex flex-wrap justify-center gap-x-[100px] gap-y-[78px] xl:flex-nowrap">
           <div className="flex flex-col items-center flex-1">
             <Title />
-            <ImgSpring
+
+            {/* <div>
+              <div className="mt-[50px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
+                Илллюзионист Алексей Белинский не нуждается в представлении, так
+                как:
+              </div> */}
+            <List className="mt-[20px] sm:mt-16" />
+            {/* </div> */}
+            <ImgPhone
               imgClassName="rounded-[10px]"
               imgSizeClassName="w-[220px]"
               width={240}
               height={360}
-              className="mt-[35px] sm:hidden"
+              className="my-20 sm:hidden md:my-28"
             />
-            <div>
-              <div className="mt-[50px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
-                Илллюзионист Алексей Белинский не нуждается в представлении, так
-                как:
-              </div>
-              <List className="mt-[20px] sm:mt-[25px]" />
-            </div>
           </div>
-          <ImgSpring
+          <ImgPhone
             imgClassName="rounded-[20px]"
             imgSizeClassName="w-[380px] min-w-[380px]"
             width={460}

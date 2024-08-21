@@ -12,14 +12,27 @@ import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 
+const SpanStar = ({ children }) => (
+  <span className="font-bold">
+    <img
+      className="-ml-4 inline w-4 object-contain sm:-ml-[30px] sm:w-[30px] md:-ml-[40px] md:w-[40px] tablet:-ml-[50px] tablet:w-[50px]"
+      alt="star"
+      src="/img/star.png"
+      draggable={false}
+    />
+    {children}
+  </span>
+)
+
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[190px] font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:w-[200px] phoneH:text-[32px] sm:w-[220px] sm:text-[36px] md:w-[260px] md:text-[42px] tablet:w-[400px] tablet:text-[64px]',
+      'w-[200px] font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:w-[220px] phoneH:text-[32px] sm:w-[240px] sm:text-[36px] md:w-[500px] md:text-[42px] tablet:text-[64px]',
       className
     )}
   >
-    Привезу реквизит и <SpanGradientTitle>сделаю все сам</SpanGradientTitle>
+    Почему иллюзионист и<br />
+    <SpanGradientTitle>где это уместно?</SpanGradientTitle>
   </div>
 )
 
@@ -30,7 +43,7 @@ const GalleryBlock = () => {
   return (
     <div className="relative mt-[100px] flex w-full flex-col items-center md:mt-[110px] xl:mt-[150px]">
       <DivContent noMargin className="flex flex-col items-center gap-y-[20px]">
-        <div className="flex max-w-[520px] flex-col items-start justify-between gap-x-[200px] tablet:max-w-[680px] xl:max-w-full xl:flex-row xl:items-center">
+        <div className="flex max-w-[600px] flex-col items-start justify-between gap-x-[100px] tablet:max-w-[720px] xl:max-w-full xl:flex-row xl:items-center">
           <div className="flex flex-col gap-y-[50px]">
             <Title />
             <Button
@@ -41,21 +54,32 @@ const GalleryBlock = () => {
               }}
             />
           </div>
-          <DivText className="mt-[30px] max-w-[270px] sm:max-w-[400px] md:max-w-[520px] tablet:max-w-[680px] xl:mt-0">
-            <span className="font-bold">
-              Я сделаю иллюзионное шоу под ключ.{' '}
-            </span>
-            Это значит, что вам нужно просто позвать меня, остальное я сделаю
-            сам.
+          <DivText className="laptop:max-w-[720px] mt-[30px] w-full max-w-[270px] sm:max-w-[480px] md:max-w-[500px] tablet:max-w-[600px] xl:mt-0">
+            <SpanStar>На любом событии это уместно!</SpanStar>
+            <br />
+            Корпоратив, Свадьба, Юбилей или День Рождения, открытие заведения и
+            любое другое мероприятие
             <br />
             <br />
-            <span className="font-bold">Я сам подберу программу номера </span>
-            под ваш праздник, привезу оборудование и реквизиты, все установлю и
-            проведу шоу. <br />
+            <SpanStar>Место, обстановка и время не имеют значения!</SpanStar>
             <br />
-            <span className="font-bold">После такого представления </span>
-            гости долго будут находиться под впечатлениями и не понимать, как
-            такое возможно в реальной жизни.
+            Алексей имеет опыт выступлений в самых разных обстановках, в том
+            числе: на борту самолёта в воздухе, на корабле, в поле (без
+            элетричества) и даже в пещере!
+            <br />
+            <br />
+            <SpanStar>Чтобы мероприятие запомнилось - нужны эмоции!</SpanStar>
+            <br />
+            Только искренние сильные эмоции запоминаются надолго, именно поэтому
+            выступление профессионального шоумена-иллюзиониста гарантирует успех
+            за счёт своей уникальности и индивидуальности
+            <br />
+            <br />
+            <SpanStar>Индивидуальный подход!</SpanStar>
+            <br />
+            Сценарий шоу программы подбирается индивидуально, с учетом всех
+            нюансов аудитории, сцены и тематики мероприятия, для достижения
+            максимального эффекта
           </DivText>
         </div>
       </DivContent>
