@@ -7,7 +7,7 @@ import { useState } from 'react'
 const MagicanImage = () => {
   const [isCardReveal, setIsCardRevial] = useState(false)
   return (
-    <div className="absolute bottom-0 left-[min(calc(40%),calc(12%+260px))] top-[70px] z-10 flex max-h-full w-[96%] justify-center phoneH:left-[37%] sm:bottom-auto sm:h-full sm:w-[max(300px,97%)] tablet:max-h-[1035px]">
+    <div className="absolute bottom-0 left-[min(calc(40%),calc(12%+260px))] top-[70px] z-10 flex max-h-full w-[96%] justify-center phoneH:left-[37%] sm:bottom-auto sm:h-full sm:w-[max(300px,97%)] tablet:left-[calc(12%+260px)] tablet:max-h-[1035px]">
       <div className="relative z-10 h-full">
         <div className="relative mt-32 aspect-[996/1035] h-[65%] w-full sm:mt-0 sm:h-[90%] md:h-[95%] tablet:h-full">
           <Image
@@ -35,7 +35,7 @@ const MagicanImage = () => {
             />
           </motion.div> */}
           <motion.div
-            className="absolute h-full w-full"
+            className="absolute w-full h-full"
             transition={{ duration: 1, delay: 0.3 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isCardReveal ? 1 : 0 }}

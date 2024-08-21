@@ -6,8 +6,9 @@ import Button from '../components/Button'
 import DivContent from '../components/DivContent'
 import DivText from '../components/DivText'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 
 const InfoCard = ({ className, children }) => (
   <div
@@ -317,13 +318,16 @@ const DiscountInfo = ({ className }) => (
 const Content = () => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const widthTailwind = useRecoilValue(windowDimensionsTailwindSelector)
+  console.log('widthTailwind :>> ', widthTailwind)
+
   return (
     <DivContent
       noMargin
       className="my-[50px] flex flex-1 flex-col md:my-[105px] xl:my-[124px]"
     >
       <div className="h-[76px] md:h-[107px]" />
-      <div className="flex flex-1 flex-col justify-between gap-y-0">
+      <div className="flex flex-col justify-between flex-1 gap-y-0">
         <div className="flex gap-x-[13px]">
           <InfoCardSpecial />
           <InfoCardInclusive />
@@ -337,7 +341,7 @@ const Content = () => {
             <span style={{ color: '#A8A8CA' }}>и сделаю все сам</span>
           </div>
         </div>
-        <div className="relative h-[70px] w-fit pr-[20px] tablet:h-[100px]">
+        <div className="relative h-[70px] w-fit pr-[200px] tablet:h-[100px]">
           <div
             className="absolute left-8 right-0 mt-[9px] hidden h-full rounded-r-[10px] tablet:block tablet:rounded-r-[15px]"
             style={{
@@ -357,6 +361,7 @@ const Content = () => {
                 setYandexAim('zakaz_show')
                 setShowModalZakaz(true)
               }}
+              small={widthTailwind === 'phoneV'}
             />
             <DiscountInfo className="hidden w-[220px] tablet:flex" />
           </div>
