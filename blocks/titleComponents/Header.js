@@ -217,7 +217,7 @@ const Header = () => {
   }
 
   return (
-    <div className="headerwrapper sticky -top-[13px] z-30 flex h-0 w-full justify-center duration-300">
+    <div className="headerwrapper sticky -top-[13px] z-50 flex h-0 w-full justify-center duration-300">
       <nav
         className={cn(
           'fixed right-0 top-0 flex h-screen items-center justify-center overflow-hidden duration-500 xl:hidden',

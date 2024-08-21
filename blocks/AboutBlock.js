@@ -149,6 +149,7 @@ const List = ({ className }) => (
       иллюзионного искусства — кубка Мерлина.
     </ListItem>
     <ListItem>
+      <SpanGold>Более 20 лет работы</SpanGold> и{' '}
       <SpanGold>2000+ выступлений</SpanGold> разного масштаба: от семейного
       формата до больших шоу-программ.
     </ListItem>
@@ -281,7 +282,11 @@ const ImgSpring = ({
     </svg>
 
     <div
-      className={cn('relative overflow-hidden', imgClassName, imgSizeClassName)}
+      className={cn(
+        'relative aspect-[232/428] min-w-[calc(100%+12px)] overflow-hidden sm:min-w-[calc(100%+18px)] ',
+        imgClassName,
+        imgSizeClassName
+      )}
     >
       <AutoplayVideo
         src="/img/levitation.mp4"
@@ -291,20 +296,40 @@ const ImgSpring = ({
           backgroundBlendMode: 'color-dodge, normal',
         }}
         draggable={false}
-        className={cn('relative object-cover', imgClassName, imgSizeClassName)}
+        className={cn(
+          'relative z-10 object-cover',
+          imgClassName,
+          imgSizeClassName
+        )}
         loop
         controlsList="nodownload"
         width={width}
         height={height}
       />
+      <img
+        className={cn(
+          'absolute left-0 top-0 object-cover',
+          imgClassName,
+          imgSizeClassName
+        )}
+        // className="absolute -left-[6px] -top-[22px] z-50 object-fill sm:-left-[8px] sm:-top-[36px]"
+        // style={{ width: width - 8, minWidth: width - 8, height: height + 68 }}
+        alt="levitation_pic"
+        src="/img/levitation_pic.png"
+        draggable={false}
+        width={width}
+        height={height}
+      />
     </div>
     <img
-      className="absolute -left-[6px] -top-[22px] z-50 h-[calc(100%+40px)] min-w-[calc(100%+12px)] object-fill sm:-left-[8px] sm:-top-[36px] sm:h-[calc(100%+58px)] sm:min-w-[calc(100%+18px)]"
+      className="absolute -left-[6px] -top-[22px] z-30 aspect-[232/428] min-w-[calc(100%+12px)] object-fill sm:-left-[8px] sm:-top-[36px] sm:min-w-[calc(100%+18px)]"
+      // className="absolute -left-[6px] -top-[22px] z-50 object-fill sm:-left-[8px] sm:-top-[36px]"
+      // style={{ width: width - 8, minWidth: width - 8, height: height + 68 }}
       alt="phone"
       src="/img/phone.png"
       draggable={false}
-      // width={width}
-      // height={height}
+      // width={width + 100}
+      // height={height + 200}
     />
     {/* <Image
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
@@ -325,7 +350,7 @@ const ImgSpring = ({
 
 const AboutBlock = () => {
   return (
-    <div className="relative flex w-full justify-center">
+    <div className="relative flex justify-center w-full">
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
         className="absolute left-0 top-0 w-[25%] object-cover opacity-20 md:-top-[290px] md:left-[min(calc(3%-60px),0px)] md:w-[320px] md:opacity-50"
@@ -352,7 +377,7 @@ const AboutBlock = () => {
       {/* broken_glass_ */}
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex flex-wrap justify-center gap-x-[100px] gap-y-[78px] xl:flex-nowrap">
-          <div className="flex flex-1 flex-col items-center">
+          <div className="flex flex-col items-center flex-1">
             <Title />
             <ImgSpring
               imgClassName="rounded-[10px]"
@@ -363,7 +388,8 @@ const AboutBlock = () => {
             />
             <div>
               <div className="mt-[50px] text-[14px] font-bold text-white sm:mt-[60px] md:text-[21px]">
-                Меня зовут Алексей Белинский, и я иллюзионист:
+                Илллюзионист Алексей Белинский не нуждается в представлении, так
+                как:
               </div>
               <List className="mt-[20px] sm:mt-[25px]" />
             </div>
