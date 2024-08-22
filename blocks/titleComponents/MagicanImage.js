@@ -9,7 +9,7 @@ const MagicanImage = () => {
   return (
     <div className="absolute bottom-0 left-[min(calc(40%),calc(12%+260px))] top-[70px] z-10 flex max-h-full w-[96%] justify-center phoneH:left-[37%] sm:bottom-auto sm:h-full sm:w-[max(300px,97%)] tablet:left-[calc(12%+260px)] tablet:max-h-[1035px]">
       <div className="relative z-10 h-full">
-        <div className="relative mt-32 aspect-[996/1035] h-[65%] w-full sm:mt-0 sm:h-[90%] md:h-[95%] tablet:h-full">
+        <div className="relative mt-20 aspect-[996/1035] h-[55%] w-full sm:mt-0 sm:h-[90%] md:mt-12 md:h-[95%] tablet:h-full">
           <Image
             className="object-contain"
             alt="foto"
@@ -58,7 +58,7 @@ const MagicanImage = () => {
           }}
         />
         <motion.div
-          className="laptop:right-[20%] absolute right-[45%] top-[61%] z-20 w-[130px] rounded-[20px] sm:right-[40%] sm:top-[62%] sm:w-[240px] tablet:right-[36%] xl:w-[290px]"
+          className="laptop:right-[20%] absolute right-[38%] top-[48%] z-20 w-[130px] rounded-[20px] sm:right-[40%] sm:top-[62%] sm:w-[240px] tablet:right-[36%] xl:w-[290px]"
           style={{
             border: '1px solid rgba(255, 255, 255, 0.05)',
             background:
@@ -122,7 +122,7 @@ const MagicanImage = () => {
         </motion.div>
 
         <div
-          className="laptop:right-[20%] absolute right-[40%] top-[72%] z-20 w-[140px] rounded-[7px] sm:top-[75%] sm:w-[264px] tablet:right-[36%] xl:w-[330px]"
+          className="laptop:right-[20%] absolute right-[38%] top-[62%] z-20 w-[140px] rounded-[7px] sm:top-[75%] sm:w-[264px] tablet:right-[36%] xl:w-[330px]"
           // className="laptop:right-[20%] absolute right-[40%] top-[60%] z-20 w-[140px] rounded-[7px] sm:top-[65%] sm:w-[264px] tablet:right-[36%] xl:w-[330px]"
           style={{
             border: '1px solid rgba(255, 255, 255, 0.05)',

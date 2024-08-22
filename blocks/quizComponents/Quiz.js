@@ -96,11 +96,12 @@ const QuizHeader = () => (
           <div className="whitespace-nowrap">
             Доп.{' '}
             <span className="font-medium text-white">индивидуальный номер</span>
+            {/* <br />с вашей фотографией или логотипом компании */}
           </div>
         </div>
       </div>
       <svg
-        className="absolute left-[calc(50%+30px)] top-[30px] sm:hidden"
+        className="absolute left-[calc(50%+64px)] top-[30px] sm:hidden"
         xmlns="http://www.w3.org/2000/svg"
         width="64"
         height="46"

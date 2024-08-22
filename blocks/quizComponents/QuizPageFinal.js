@@ -94,7 +94,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
         Мы также закрепили за вами подарок:
       </div>
       <div
-        className="mt-[20px] flex w-fit items-center gap-x-[13px] rounded-[10px] px-[15px] py-[10px] md:px-[40px] md:py-[17px]"
+        className="mt-[10px] flex w-fit items-center gap-x-[13px] rounded-[10px] px-[15px] py-[10px] md:px-[40px] md:py-[17px]"
         style={{
           background:
             'linear-gradient(341deg, rgba(96, 139, 246, 0.16) 0%, rgba(96, 139, 246, 0.00) 100%), #EDEDED',
@@ -111,13 +111,16 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
             boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
           }}
         />
-        <div className="text-[12px] font-semibold leading-[125%] text-[#0E0E1C] md:text-[21px]">
-          Дополнительный индивидуальный номер
+        <div className="text-[12px] font-semibold leading-[125%] text-[#0E0E1C] md:text-[18px]">
+          Индивидуальный номер
+          <br />с вашей фотографией
+          <br />
+          или логотипом компании
         </div>
       </div>
       {!isQuizSended ? (
         <>
-          <div className="mt-[25px] flex w-full max-w-full items-center gap-x-[10px] overflow-x-hidden md:mt-[60px]">
+          <div className="mt-[15px] flex w-full max-w-full items-center gap-x-[10px] overflow-x-hidden md:mt-[50px]">
             <SocialContact
               onClick={() => setSelectedContact('whatsapp')}
               isSelected={selectedContact === 'whatsapp'}
@@ -325,7 +328,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
               <a
                 href="/doc/privacy.doc"
                 download
-                className="cursor-pointer underline"
+                className="underline cursor-pointer"
               >
                 обработку персональных данных
               </a>

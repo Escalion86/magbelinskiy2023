@@ -219,6 +219,7 @@ const ModalZakaz = () => {
         <MaskedInput
           className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
           showMask={phone == '7'}
+          placeholder="Номер телефона"
           // showMask
           onChange={(e) => {
             const value = e.target.value.replace(/[^0-9]/g, '')
@@ -284,7 +285,7 @@ const ModalZakaz = () => {
         <a
           href="/doc/privacy.doc"
           download
-          className="cursor-pointer underline"
+          className="underline cursor-pointer"
         >
           обработку персональных данных
         </a>

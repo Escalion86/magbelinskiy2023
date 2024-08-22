@@ -34,7 +34,7 @@ const InfoCard = ({ className, children }) => (
 const Title = ({ className }) => (
   <div
     className={cn(
-      'mt-[20px] flex flex-col text-[38px] phoneH:text-[42px] sm:text-[50px] md:mt-[40px] md:text-[60px] tablet:text-[84px]',
+      'mt-[20px] flex flex-col text-[34px] phoneH:text-[36px] sm:text-[50px] md:mt-[46px] md:text-[60px] tablet:text-[84px]',
       className
     )}
     style={{
@@ -233,7 +233,7 @@ const InfoCardInclusive = () => (
 const CupInfo = ({ className }) => (
   <div
     className={cn(
-      'mt-[20px] flex w-[242px] flex-row-reverse items-center md:mt-[10px] md:w-[400px] md:flex-row tablet:w-[552px]',
+      'mt-0 flex w-[290px] items-center phoneH:w-[242px] phoneH:flex-row-reverse md:mt-[10px] md:w-[400px] md:flex-row tablet:w-[552px]',
       className
     )}
   >
@@ -248,7 +248,7 @@ style={{
 }}
 ></div> */}
     <img
-      className="mr-[12px] w-[56px] -rotate-12 object-contain md:-ml-[14px] md:rotate-0 tablet:w-[70px]"
+      className="mr-[10px] hidden w-[56px] -rotate-12 object-contain phoneH:block md:-ml-[14px] md:rotate-0 tablet:w-[70px]"
       alt="cup"
       src="/img/cup.png"
       draggable={false}
@@ -300,7 +300,8 @@ const DiscountInfo = ({ className }) => (
     <div className="text-[11px] font-normal leading-[115%] text-[#A8A8CA] md:text-[15px] tablet:text-[16px]">
       Закажите сейчас и получите{' '}
       <span className="tablet:font-medium" style={{ color: '#FFF' }}>
-        бесплатно дополнительный индивидуальный номер на свое мероприятие
+        бесплатно дополнительный индивидуальный номер с вашей фотографией или
+        логотипом компании
       </span>
     </div>
   </div>

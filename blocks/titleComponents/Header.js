@@ -234,9 +234,9 @@ const Header = () => {
             fontFamily: 'Buyan',
           }}
         >
-          <BurgerMenuItem href="#video">Посмотреть видео</BurgerMenuItem>
           <BurgerMenuItem href="#about">Об иллюзионисте</BurgerMenuItem>
           <BurgerMenuItem href="#why">Где уместно?</BurgerMenuItem>
+          <BurgerMenuItem href="#video">Посмотреть видео</BurgerMenuItem>
           <BurgerMenuItem href="#quiz">Пройти квиз</BurgerMenuItem>
           <BurgerMenuItem href="#fotos">Фотографии</BurgerMenuItem>
           <BurgerMenuItem href="#reviews">Отзывы</BurgerMenuItem>

@@ -28,16 +28,17 @@ export default function Home() {
         <Header />
         <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
           <TitleBlock />
-          <Section id="video" />
-          <VideoBlock />
+
           <Section id="about" />
           <AboutBlock />
-          <Section id="focus" />
-          <FocusBlock />
+          <Section id="video" />
+          <VideoBlock />
           <Section id="why" />
           <GalleryBlock />
           <Section id="quiz" />
           <QuizBlock />
+          <Section id="focus" />
+          <FocusBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
           <Section id="reviews" />
