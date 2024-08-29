@@ -318,22 +318,22 @@ const Content = () => {
       className="my-[50px] flex flex-1 flex-col md:my-[105px] xl:my-[124px]"
     >
       <div className="h-[76px] md:h-[107px]" />
-      <div className="flex flex-col justify-between flex-1 gap-y-0">
+      <div className="flex flex-1 flex-col justify-between gap-y-0">
         <div className="flex gap-x-[13px]">
           <InfoCardSpecial />
           <InfoCardInclusive />
         </div>
         <Title />
         <CupInfo />
-        <div className="mb-[25px] mt-[30px] flex items-center gap-x-[10px] md:gap-x-[15px] tablet:hidden">
+        <div className="laptop:hidden mb-[25px] mt-[30px] flex items-center gap-x-[10px] md:gap-x-[15px]">
           <SvgParty />
           <div className="flex flex-col text-[11px] font-normal leading-[115%] text-white md:text-[15px]">
             Эмоции гостей от увиденного <GraySpan>гарантированы</GraySpan>
           </div>
         </div>
-        <div className="relative h-[70px] w-fit pr-[200px] tablet:h-[100px]">
+        <div className="laptop:h-[100px] relative mb-10 h-[70px] w-fit pr-[200px]">
           <div
-            className="absolute left-8 right-0 mt-[9px] hidden h-full rounded-r-[10px] tablet:block tablet:rounded-r-[15px]"
+            className="laptop:block laptop:rounded-r-[15px] absolute left-8 right-0 mt-[9px] hidden h-full rounded-r-[10px]"
             style={{
               // borderRadius: 7,
               border: '1px solid rgba(255, 255, 255, 0.05)',
@@ -353,10 +353,10 @@ const Content = () => {
               }}
               small={widthTailwind === 'phoneV'}
             />
-            <DiscountInfo className="hidden w-[240px] tablet:flex" />
+            <DiscountInfo className="laptop:flex hidden w-[320px]" />
           </div>
         </div>
-        <DiscountInfo className="flex w-[240px] md:w-[300px] tablet:hidden" />
+        <DiscountInfo className="laptop:hidden flex w-[240px] tablet:w-[420px]" />
       </div>
     </DivContent>
   )
