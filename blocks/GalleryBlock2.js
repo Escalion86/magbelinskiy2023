@@ -24,7 +24,7 @@ const GalleryBlock2 = () => {
       <Title />
       {/* <DivContent className="flex flex-col items-center gap-y-[20px]"> */}
       <div className="relative z-10 mt-[35px] w-full md:mt-[65px]">
-        <Gallery type={2} />
+        <Gallery type={2} folder="gallery2" imagesCount={5} />
       </div>
       {/* </DivContent> */}
     </div>

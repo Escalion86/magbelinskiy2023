@@ -84,7 +84,21 @@ const GalleryBlock = () => {
         </div>
       </DivContent>
       <div className="relative z-10 mt-[35px] w-full md:mt-[70px] xl:mt-[120px] xl:px-[52px]">
-        <Gallery type={1} />
+        <Gallery
+          type={1}
+          folder="gallery"
+          imagesCount={7}
+          signs={[
+            'Левитация именинницы',
+            'Корпоративы и свадьбы',
+            'Искренние эмоции',
+            'Где угодно, даже в самолете',
+            // 'Постановка номеров по желанию',
+            'Презентации',
+            'Уникальные номера',
+            'Шоу "Всё, кроме обычного"',
+          ]}
+        />
       </div>
       <div
         className="absolute right-0 top-[90px] z-10 hidden aspect-[235/303] h-[265px] w-[207px] md:block xl:hidden 2xl:h-[303px] 2xl:w-[235px]"

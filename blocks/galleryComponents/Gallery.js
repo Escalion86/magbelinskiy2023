@@ -40,11 +40,18 @@ const Arrow = ({ right, className, onClick }) => {
   )
 }
 
-const photos = ['1', '2', '3', '4', '5']
+// const photos = ['1', '2', '3', '4', '5']
 
-const Gallery = ({ type = 1 }) => {
+const Gallery = ({
+  type = 1,
+  folder = 'gallery',
+  imagesCount = 5,
+  signs = [],
+}) => {
   const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
   const setYandexAim = useSetRecoilState(yandexAimAtom)
+
+  const photos = Array.from({ length: imagesCount }, (_, i) => i + 1)
 
   var carousel,
     firstCardWidth,
@@ -140,9 +147,14 @@ const Gallery = ({ type = 1 }) => {
   const leftClick = (e) => {
     e?.stopPropagation()
     const deltaWidth = carousel.scrollLeft % firstCardWidth
+    const deltaCarouselWidth = (carousel.offsetWidth % firstCardWidth) / 2
     const add =
-      (deltaWidth > padding ? 0 : firstCardWidth) + deltaWidth - padding
-    carousel.scrollLeft -= add
+      (Math.floor(carousel.offsetWidth / firstCardWidth) % 2 === 0
+        ? -firstCardWidth * 0.5
+        : 0) +
+      deltaWidth +
+      deltaCarouselWidth
+    carousel.scrollLeft -= add <= 0 ? firstCardWidth + add : add
   }
 
   const rightClick = (e) => {
@@ -196,6 +208,7 @@ const Gallery = ({ type = 1 }) => {
             <div
               key={'pic' + '-' + name + '-' + type + '-' + index}
               className={cn(
+                'relative',
                 type === 1 ? 'px-[10px] md:px-[20px]' : 'px-[10px]'
               )}
             >
@@ -208,13 +221,25 @@ const Gallery = ({ type = 1 }) => {
                     : 'w-[calc((100%-80px)/3)] min-w-[270px] md:min-w-[462px]'
                 )}
                 alt={'pic' + name}
-                src={`/img/gallery/${name}.jpg`}
+                src={`/img/${folder}/${name}.jpg`}
                 style={{
                   scrollSnapAlign: 'start',
                   boxShadow: '4px 4px 25px 0px rgba(255, 255, 255, 0.15) inset',
                 }}
                 draggable={false}
               />
+              {signs[index % imagesCount] && (
+                <div
+                  className={cn(
+                    'absolute bottom-0 rounded-b-[20px] border-t border-white bg-black text-center text-white',
+                    type === 1
+                      ? '-ml-[2px] w-[calc((100%-86px)/3)] min-w-[272px] md:min-w-[362px]'
+                      : 'w-[calc((100%-86px)/3)] min-w-[272px] md:min-w-[464px]'
+                  )}
+                >
+                  {signs[index % imagesCount]}
+                </div>
+              )}
             </div>
           ))}
         </div>
