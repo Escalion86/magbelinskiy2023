@@ -93,7 +93,7 @@ const FooterBlock = () => {
               круглосуточно
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
-              <Link href="tel:+79138370020" legacyBehavior>
+              <Link href="tel:+79039034450" legacyBehavior>
                 <a
                   className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                   target="_blank"

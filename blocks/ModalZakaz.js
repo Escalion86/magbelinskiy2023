@@ -110,7 +110,7 @@ const OnUnsuccess = ({ visible }) => (
         одному из контактов ниже
       </DivText>
       <div className="mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px] tablet:gap-y-[20px]">
-        <Social text="+7-913-837-0020" href="tel:+79138370020" />
+        <Social text="+7-903-903-4450" href="tel:+79039034450" />
         <Social
           text="Whatsapp"
           href="https://api.whatsapp.com/send?phone=79138370020"
