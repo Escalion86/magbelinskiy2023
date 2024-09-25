@@ -285,7 +285,7 @@ const ModalZakaz = () => {
         <a
           href="/doc/privacy.doc"
           download
-          className="underline cursor-pointer"
+          className="cursor-pointer underline"
         >
           обработку персональных данных
         </a>

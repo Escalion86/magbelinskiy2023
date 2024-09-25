@@ -99,7 +99,7 @@ const FooterBlock = () => {
                   target="_blank"
                   onClick={() => reachGoal('klick_nomber')}
                 >
-                  +7-913-837-00-20
+                  +7-903-903-44-50
                 </a>
               </Link>
               <button
