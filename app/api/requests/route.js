@@ -96,30 +96,32 @@ export const POST = async (req, res) => {
     //   req
     // )
 
-    console.log('process.env.DOMAIN :>> ', process.env.DOMAIN)
+    const text = `Заявка с ${process.env.DOMAIN}\n${
+      name ? `\n<b>Имя клиента:</b> ${name}` : ''
+    }${audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''}${
+      typeName
+        ? `\n<b>Тип:</b> ${typeName}${
+            customType ? ' - ' + customType + ' ' : ''
+          }`
+        : ''
+    }${date ? `\n<b>Дата:</b> ${formatDate(date, false, true)}` : ''}${
+      spectators ? `\n<b>Кол-во зрителей:</b> ${spectators}` : ''
+    }${town ? `\n<b>Город:</b> ${town}` : ''}${
+      address ? `\n<b>Адрес:</b> ${address}` : ''
+    }${contact ? `\n<b>Способ связи:</b> ${contact}` : ''}${
+      comment ? `\n<b>Комментарий:</b> ${comment}` : ''
+    }${phone ? `\n<b>Телефон:</b> +${phone}` : ''}${
+      comment ? `\n<b>Комментарий:</b> ${comment}` : ''
+    }${
+      official && typeof official === 'boolean'
+        ? `\n<b>Юр. лицо:</b> ${official === false ? 'Нет' : 'Да'}`
+        : ''
+    }`
+
+    console.log('text :>> ', text)
 
     const result = await sendTelegramMassage(
-      `Заявка с ${process.env.DOMAIN}\n${
-        name ? `\n<b>Имя клиента:</b> ${name}` : ''
-      }${audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''}${
-        typeName
-          ? `\n<b>Тип:</b> ${typeName}${
-              customType ? ' - ' + customType + ' ' : ''
-            }`
-          : ''
-      }${date ? `\n<b>Дата:</b> ${formatDate(date, false, true)}` : ''}${
-        spectators ? `\n<b>Кол-во зрителей:</b> ${spectators}` : ''
-      }${town ? `\n<b>Город:</b> ${town}` : ''}${
-        address ? `\n<b>Адрес:</b> ${address}` : ''
-      }${contact ? `\n<b>Способ связи:</b> ${contact}` : ''}${
-        comment ? `\n<b>Комментарий:</b> ${comment}` : ''
-      }${phone ? `\n<b>Телефон:</b> +${phone}` : ''}${
-        comment ? `\n<b>Комментарий:</b> ${comment}` : ''
-      }${
-        official && typeof official === 'boolean'
-          ? `\n<b>Юр. лицо:</b> ${official === false ? 'Нет' : 'Да'}`
-          : ''
-      }`,
+      text,
       phone ? `tel:+${phone}` : undefined
     )
 
