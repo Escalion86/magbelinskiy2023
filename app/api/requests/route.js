@@ -44,8 +44,8 @@ export const POST = async (req, res) => {
 
   console.log('request :>> ', request)
 
-  if (!request?.data) {
-    console.log('no request data :>> ')
+  if (!request) {
+    console.log('no request :>> ')
     return NextResponse.json(
       { success: false, error: 'no data' },
       { status: 400 }
@@ -68,9 +68,7 @@ export const POST = async (req, res) => {
       official,
       comment,
       yandexAim,
-    } = request.data
-
-    console.log('request.data :>> ', request.data)
+    } = request
 
     // const data = await Requests.create(body)
     // if (!data) {
