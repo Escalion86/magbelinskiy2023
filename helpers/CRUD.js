@@ -90,16 +90,12 @@ export const postData = async (
       body: JSON.stringify(form),
     })
 
-    console.log('res :>> ', res)
-
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)
     }
     const json = await res.json()
-    console.log('json :>> ', json)
     const result = resJson ? json : json.data
-    console.log('result :>> ', result)
     // mutate(url, data, false)
     if (callbackOnSuccess) callbackOnSuccess(result)
     return result

@@ -42,8 +42,6 @@ export const POST = async (req, res) => {
   // const { query, method, body } = await req.json()
   const request = await req.json()
 
-  console.log('request :>> ', request)
-
   if (!request) {
     console.log('no request :>> ')
     return NextResponse.json(
@@ -77,11 +75,9 @@ export const POST = async (req, res) => {
     const audienceName = audience
       ? AUDIENCE.find((item) => item.value === audience)?.name ?? undefined
       : undefined
-    console.log('audienceName :>> ', audienceName)
     const typeName = type
       ? EVENT_TYPES.find((item) => item.value === type)?.name ?? undefined
       : undefined
-    console.log('typeName :>> ', typeName)
     // await sendTelegramMassage(
     //   `Заявка на cigam.ru\n\n<b>Аудитория:</b> ${audienceName}\n<b>Тип:</b> ${typeName}${
     //     customType ? ' - ' + customType + ' ' : ''
@@ -120,14 +116,10 @@ export const POST = async (req, res) => {
         : ''
     }`
 
-    console.log('text :>> ', text)
-
     const result = await sendTelegramMassage(
       text,
       phone ? `tel:+${phone}` : undefined
     )
-
-    console.log('result :>> ', result)
 
     if (!result?.ok)
       return NextResponse.json(
