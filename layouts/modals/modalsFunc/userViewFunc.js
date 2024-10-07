@@ -5,7 +5,6 @@ import ImageGallery from '@components/ImageGallery'
 import TextLine from '@components/TextLine'
 import UserName from '@components/UserName'
 import UserRelationshipIcon from '@components/UserRelationshipIcon'
-import UserStatusIcon from '@components/UserStatusIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
 import ZodiacIcon from '@components/ZodiacIcon'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
@@ -70,8 +69,8 @@ const userViewFunc = (userId, params = {}) => {
     return (
       <FormWrapper flex className="flex-col">
         <ImageGallery images={user?.images} />
-        <div className="flex flex-col flex-1 mt-1">
-          <div className="relative flex items-center mb-1 gap-x-2 min-h-6">
+        <div className="mt-1 flex flex-1 flex-col">
+          <div className="relative mb-1 flex min-h-6 items-center gap-x-2">
             {/* {user.status === 'member' && (
               <Tooltip title="Участник клуба">
                 <div className="w-6 h-6">
@@ -83,7 +82,6 @@ const userViewFunc = (userId, params = {}) => {
                 </div>
               </Tooltip>
             )} */}
-            <UserStatusIcon status={user?.status} />
             <UserName user={user} className="text-lg font-bold" />
             {!setTopLeftComponent && (
               <div className="absolute right-0">
@@ -92,7 +90,7 @@ const userViewFunc = (userId, params = {}) => {
             )}
           </div>
           {user.personalStatus && (
-            <div className="pb-3 pt-1 text-sm italic font-normal leading-[15px] text-general">
+            <div className="pb-3 pt-1 text-sm font-normal italic leading-[15px] text-general">
               {user.personalStatus}
             </div>
           )}
@@ -159,7 +157,7 @@ const userViewFunc = (userId, params = {}) => {
             {formatDate(user.createdAt)}
           </TextLine>
 
-          <div className="flex flex-col tablet:items-center tablet:flex-row gap-y-1 gap-x-2">
+          <div className="flex flex-col gap-x-2 gap-y-1 tablet:flex-row tablet:items-center">
             <div className="flex flex-col">
               <TextLine label="Посетил мероприятий">
                 {eventsUsersSignedUpCount.finished}

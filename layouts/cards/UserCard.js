@@ -4,7 +4,6 @@ import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
-import UserStatusIcon from '@components/UserStatusIcon'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
@@ -96,7 +95,6 @@ const UserCard = ({ userId, hidden = false, style }) => {
               <div className="flex flex-1">
                 <div className="flex flex-1 flex-col">
                   <div className="flex flex-nowrap items-center gap-x-1 px-1 py-0.5 leading-6">
-                    <UserStatusIcon status={user.status} />
                     <UserName
                       user={user}
                       className="-mt-0.5 h-8 text-base font-bold tablet:mt-0 tablet:h-auto tablet:text-lg"
@@ -127,7 +125,7 @@ const UserCard = ({ userId, hidden = false, style }) => {
                     <div className="flex h-full flex-col justify-end px-1">
                       <div className="flex flex-1 items-center">
                         <TextLinesLimiter
-                          className="text-general text-sm font-normal italic leading-[14px]"
+                          className="text-sm font-normal italic leading-[14px] text-general"
                           // textClassName="leading-5"
                           lines={2}
                         >

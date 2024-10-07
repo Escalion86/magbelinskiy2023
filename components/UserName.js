@@ -1,7 +1,6 @@
 import upperCaseFirst from '@helpers/upperCaseFirst'
 import cn from 'classnames'
 import TextLinesLimiter from './TextLinesLimiter'
-import UserStatusIcon from './UserStatusIcon'
 
 const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
   if (!user) return null
@@ -14,7 +13,6 @@ const UserName = ({ user, className, noWrap, thin, showStatus, trunc }) => {
         className
       )}
     >
-      {showStatus && <UserStatusIcon status={user.status} size="xs" />}
       {trunc ? (
         <TextLinesLimiter
           className="flex-1 leading-[14px]"

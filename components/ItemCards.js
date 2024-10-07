@@ -20,7 +20,6 @@ import EventNameById from './EventNameById'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
 import UserNameById from './UserNameById'
-import UserStatusIcon from './UserStatusIcon'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
 import IconWithTooltip from './IconWithTooltip'
@@ -172,10 +171,6 @@ export const UserItem = ({
               )}
             </UserName>
           </div>
-          <UserStatusIcon
-            status={item.status}
-            size={['phoneV', 'phoneH', 'tablet'].includes(device) ? 'm' : 'l'}
-          />
         </div>
         {children && children(item)}
       </div>
