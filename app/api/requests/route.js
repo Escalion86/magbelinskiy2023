@@ -41,6 +41,7 @@ export const POST = async (req, res) => {
   console.log('POST REQUEST')
   // const { query, method, body } = await req.json()
   const request = await req.json()
+  console.log('request :>> ', request)
   try {
     const {
       source,
@@ -106,6 +107,8 @@ export const POST = async (req, res) => {
       }`,
       `tel:+${phone}`
     )
+
+    console.log('result :>> ', result)
 
     if (!result.ok)
       return NextResponse.json({ success: false, result }, { status: 400 })
