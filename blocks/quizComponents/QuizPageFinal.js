@@ -45,9 +45,17 @@ const SocialContact = ({
   </div>
 )
 
-const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
+const QuizPageFinal = ({
+  show,
+  onSubmit,
+  isQuizSended,
+  handleEnterKeyDown,
+}) => {
   const [phone, setPhone] = useState('')
   const [selectedContact, setSelectedContact] = useState()
+
+  const isButtonDisabled =
+    isQuizSended === 'inProcess' || !phone || phone?.toString().length < 11
 
   return (
     <div
@@ -266,7 +274,11 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
                 letterSpacing: '0.76px',
               }}
               showMask={phone == '7'}
-              onKeyDown={(e) => handleEnterKeyDown(e, phone, selectedContact)}
+              onKeyDown={
+                isButtonDisabled
+                  ? undefined
+                  : (e) => handleEnterKeyDown(e, phone, selectedContact)
+              }
               // showMask
               placeholder="Номер телефона"
               onChange={(e) => {
@@ -313,11 +325,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
             <Button
               fullWidth
               onClick={() => onSubmit(phone, selectedContact)}
-              disabled={
-                isQuizSended === 'inProcess' ||
-                !phone ||
-                phone?.toString().length < 11
-              }
+              disabled={isButtonDisabled}
               addIcon={false}
             >
               {isQuizSended === 'inProcess'

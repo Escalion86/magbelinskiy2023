@@ -83,8 +83,10 @@ const AnketaBlock = () => {
     return reachGoal('poluchit_zvonok')
   }
 
+  const isButtonDisabled = !phone || phone?.toString().length < 11
+
   const handleEnterKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (!isButtonDisabled && event.key === 'Enter') {
       onSubmit()
     }
   }
@@ -234,11 +236,7 @@ const AnketaBlock = () => {
                   : ''
               }
             />
-            <Button
-              fullWidth
-              onClick={onSubmit}
-              disabled={!phone || phone?.toString().length < 11}
-            >
+            <Button fullWidth onClick={onSubmit} disabled={isButtonDisabled}>
               Получить звонок
             </Button>
             <div className="mt-[10px] w-[80%] text-center text-[11px] font-normal leading-[145%] text-[#A8A8CA] md:text-left md:text-[16px]">
