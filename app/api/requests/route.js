@@ -75,9 +75,11 @@ export const POST = async (req, res) => {
     const audienceName = audience
       ? AUDIENCE.find((item) => item.value === audience)?.name ?? undefined
       : undefined
+    console.log('audienceName :>> ', audienceName)
     const typeName = type
       ? EVENT_TYPES.find((item) => item.value === type)?.name ?? undefined
       : undefined
+    console.log('typeName :>> ', typeName)
     // await sendTelegramMassage(
     //   `Заявка на cigam.ru\n\n<b>Аудитория:</b> ${audienceName}\n<b>Тип:</b> ${typeName}${
     //     customType ? ' - ' + customType + ' ' : ''
@@ -93,6 +95,8 @@ export const POST = async (req, res) => {
     //   `tel:+${phone}`,
     //   req
     // )
+
+    console.log('process.env.DOMAIN :>> ', process.env.DOMAIN)
 
     const result = await sendTelegramMassage(
       `Заявка с ${process.env.DOMAIN}\n${
@@ -116,7 +120,7 @@ export const POST = async (req, res) => {
           ? `\n<b>Юр. лицо:</b> ${official === false ? 'Нет' : 'Да'}`
           : ''
       }`,
-      `tel:+${phone}`
+      phone ? `tel:+${phone}` : undefined
     )
 
     console.log('result :>> ', result)
