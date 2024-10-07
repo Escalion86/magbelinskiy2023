@@ -66,14 +66,18 @@ export const POST = async (req, res) => {
       yandexAim,
     } = request.data
 
+    console.log('request.data :>> ', request.data)
+
     // const data = await Requests.create(body)
     // if (!data) {
     //   return res?.status(400).json({ success: false })
     // // }
-    const audienceName =
-      AUDIENCE.find((item) => item.value === audience)?.name ?? undefined
-    const typeName =
-      EVENT_TYPES.find((item) => item.value === type)?.name ?? undefined
+    const audienceName = audience
+      ? AUDIENCE.find((item) => item.value === audience)?.name ?? undefined
+      : undefined
+    const typeName = type
+      ? EVENT_TYPES.find((item) => item.value === type)?.name ?? undefined
+      : undefined
     // await sendTelegramMassage(
     //   `Заявка на cigam.ru\n\n<b>Аудитория:</b> ${audienceName}\n<b>Тип:</b> ${typeName}${
     //     customType ? ' - ' + customType + ' ' : ''
@@ -114,6 +118,8 @@ export const POST = async (req, res) => {
       }`,
       `tel:+${phone}`
     )
+
+    console.log('result :>> ', result)
 
     if (!result?.ok)
       return NextResponse.json(
