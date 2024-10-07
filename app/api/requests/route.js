@@ -42,11 +42,15 @@ export const POST = async (req, res) => {
   // const { query, method, body } = await req.json()
   const request = await req.json()
 
-  if (!request?.data)
+  console.log('request :>> ', request)
+
+  if (!request?.data) {
+    console.log('no request data :>> ')
     return NextResponse.json(
       { success: false, error: 'no data' },
       { status: 400 }
     )
+  }
 
   try {
     const {

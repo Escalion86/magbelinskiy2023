@@ -64,7 +64,6 @@ export const putData = async (
     // mutate(url, data, false)
     if (callbackOnSuccess) callbackOnSuccess(result)
     return result
-    return data
   } catch (error) {
     console.log('Failed to update (PUT) on ' + url)
     console.log(error)
@@ -91,12 +90,16 @@ export const postData = async (
       body: JSON.stringify(form),
     })
 
+    console.log('res :>> ', res)
+
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status)
     }
     const json = await res.json()
+    console.log('json :>> ', json)
     const result = resJson ? json : json.data
+    console.log('result :>> ', result)
     // mutate(url, data, false)
     if (callbackOnSuccess) callbackOnSuccess(result)
     return result
@@ -121,7 +124,7 @@ export const deleteData = async (
         Accept: contentType,
         'Content-Type': contentType,
       },
-      body: JSON.stringify({ params }),
+      body: JSON.stringify(params),
       // body: dontAddUserId
       //   ? JSON.stringify(form)
       //   : JSON.stringify({ data: form, userId }),
