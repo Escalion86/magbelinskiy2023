@@ -5,7 +5,6 @@ import { CardWrapper } from '@components/CardWrapper'
 // import EventButtonSignIn from '@components/EventButtonSignIn'
 // import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 // import PriceDiscount from '@components/PriceDiscount'
-import TextInRing from '@components/TextInRing'
 // import TextLinesLimiter from '@components/TextLinesLimiter'
 import {
   AUDIENCE,
@@ -71,25 +70,24 @@ const RequestCard = ({
     >
       <div
         className={cn(
-          'min-h-40 relative hidden h-40 max-h-40 w-40 min-w-40 justify-center',
+          'relative hidden h-40 max-h-40 min-h-40 w-40 min-w-40 justify-center',
           changeStyle === 'laptop' ? 'laptop:flex' : 'desktop:flex',
           { 'laptop:w-auto': noButtons }
         )}
       >
-        <TextInRing text={requestType} />
         {requestStatus === 'canceled' && (
-          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 left-1/2 top-1/2 rotate-15 border-danger text-danger shadow-white2">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-15 border-2 border-danger bg-white bg-opacity-50 text-2xl font-bold text-danger shadow-white2">
             Отменено
           </div>
         )}
         {['finished', 'closed'].includes(requestStatus) && (
-          <div className="absolute text-2xl font-bold -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 border-2 left-1/2 top-1/2 rotate-15 border-success text-success shadow-white2">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-15 border-2 border-success bg-white bg-opacity-50 text-2xl font-bold text-success shadow-white2">
             Завершено
           </div>
         )}
       </div>
-      <div className="relative flex flex-col justify-between flex-1 w-full">
-        <div className="flex flex-col flex-1">
+      <div className="relative flex w-full flex-1 flex-col justify-between">
+        <div className="flex flex-1 flex-col">
           <div className="flex pl-2">
             <div className="flex h-[36px] flex-1 items-center gap-x-1">
               <div className="flex-1 font-bold text-general">
@@ -120,7 +118,7 @@ const RequestCard = ({
             )} */}
           </div>
           <div className="flex h-[32px] min-h-[32px] flex-1">
-            <div className="flex flex-col items-start justify-center flex-1 px-1 text-sm text-black">
+            <div className="flex flex-1 flex-col items-start justify-center px-1 text-sm text-black">
               <div className="flex gap-x-1">
                 <div className="font-bold">Тип:</div>
                 <div>{requestType}</div>

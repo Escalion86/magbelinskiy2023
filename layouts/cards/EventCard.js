@@ -5,7 +5,6 @@ import DateTimeEvent from '@components/DateTimeEvent'
 // import EventButtonSignIn from '@components/EventButtonSignIn'
 // import EventUsersCounterAndAge from '@components/EventUsersCounterAndAge'
 import PriceDiscount from '@components/PriceDiscount'
-import TextInRing from '@components/TextInRing'
 import TextLinesLimiter from '@components/TextLinesLimiter'
 import eventStatusFunc from '@helpers/eventStatus'
 import { modalsFuncAtom } from '@state/atoms'
@@ -93,30 +92,28 @@ const EventCard = ({
           { 'laptop:w-auto': noButtons }
         )}
       >
-        {direction?.image ? (
+        {direction?.image && (
           <img
-            className="laptop:object-cover min-w-32 laptop:w-72 w-full object-contain"
+            className="laptop:object-cover laptop:w-72 w-full min-w-32 object-contain"
             src={direction.image}
             alt="direction"
             // width={48}
             // height={48}
           />
-        ) : (
-          <TextInRing text={direction?.title} />
         )}
 
         {eventStatus === 'canceled' && (
-          <div className="text-danger rotate-15 border-danger shadow-white2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 bg-white bg-opacity-50 text-2xl font-bold">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-15 border-2 border-danger bg-white bg-opacity-50 text-2xl font-bold text-danger shadow-white2">
             Отменено
           </div>
         )}
         {['finished', 'closed'].includes(eventStatus) && (
-          <div className="text-success rotate-15 border-success shadow-white2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 bg-white bg-opacity-50 text-2xl font-bold">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-15 border-2 border-success bg-white bg-opacity-50 text-2xl font-bold text-success shadow-white2">
             Завершено
           </div>
         )}
         {!event.showOnSite && (
-          <div className="-rotate-15 shadow-white2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-purple-500 bg-white bg-opacity-50 text-3xl font-bold text-purple-500">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-15 border-2 border-purple-500 bg-white bg-opacity-50 text-3xl font-bold text-purple-500 shadow-white2">
             Скрыто
           </div>
         )}
@@ -197,7 +194,7 @@ const EventCard = ({
                 <div className="flex flex-1 flex-col items-center justify-center">
                   <TextLinesLimiter
                     className={cn(
-                      'text-general -mt-1 flex-1 text-lg font-bold italic',
+                      '-mt-1 flex-1 text-lg font-bold italic text-general',
                       changeStyle === 'laptop'
                         ? 'laptop:hidden laptop:text-xl'
                         : 'desktop:hidden desktop:text-xl'

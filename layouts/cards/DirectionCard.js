@@ -2,7 +2,6 @@
 
 import CardButtons from '@components/CardButtons'
 import { CardWrapper } from '@components/CardWrapper'
-import TextInRing from '@components/TextInRing'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import directionsAtom from '@state/atoms/directionsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -87,19 +86,6 @@ const DirectionCard = ({ directionId, hidden = false, style }) => {
       hidden={hidden}
       style={style}
     >
-      {/* {direction?.image ? (
-        <img
-          className="object-cover h-full max-w-full tablet:w-48 tablet:max-w-48 max-h-60 tablet:max-h-72"
-          src={direction.image}
-          alt="direction"
-          // width={48}
-          // height={48}
-        />
-      ) : ( */}
-      <div className="laptop:w-auto flex w-full justify-center">
-        <TextInRing text={direction.title} />
-      </div>
-      {/* )} */}
       <div className="w-full">
         <div className="flex">
           <div className="flex-1 px-2 py-1 text-xl font-bold ">
