@@ -223,6 +223,12 @@ const Quiz = () => {
     return reachGoal('form_test')
   }
 
+  const handleEnterKeyDown = (event, phone, contact) => {
+    if (event.key === 'Enter') {
+      onSubmit(phone, contact)
+    }
+  }
+
   // console.log('quiz?.scrollTop :>> ', quiz?.y)
   // const progress =
   //   (Object.keys(quizAnswers).reduce(
@@ -280,6 +286,7 @@ const Quiz = () => {
               show={quizQuestionNum === quizAnswers.length}
               onSubmit={onSubmit}
               isQuizSended={isQuizSended}
+              handleEnterKeyDown={handleEnterKeyDown}
             />
           </div>
           <div className="flex items-center gap-[30px]">

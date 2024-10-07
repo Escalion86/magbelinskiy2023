@@ -165,7 +165,11 @@ const ModalFocusResult = () => {
     if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
-  //showModalFocusResult === 'right'
+  const handleEnterKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      onSubmit()
+    }
+  }
 
   return (
     <Modal
@@ -236,6 +240,7 @@ const ModalFocusResult = () => {
         <MaskedInput
           className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
           showMask={phone == '7'}
+          onKeyDown={handleEnterKeyDown}
           // showMask
           onChange={(e) => {
             const value = e.target.value.replace(/[^0-9]/g, '')

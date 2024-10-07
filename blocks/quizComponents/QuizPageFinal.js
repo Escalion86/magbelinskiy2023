@@ -266,6 +266,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
                 letterSpacing: '0.76px',
               }}
               showMask={phone == '7'}
+              onKeyDown={(e) => handleEnterKeyDown(e, phone, selectedContact)}
               // showMask
               placeholder="Номер телефона"
               onChange={(e) => {
@@ -328,7 +329,7 @@ const QuizPageFinal = ({ show, onSubmit, isQuizSended }) => {
               <a
                 href="/doc/privacy.doc"
                 download
-                className="underline cursor-pointer"
+                className="cursor-pointer underline"
               >
                 обработку персональных данных
               </a>

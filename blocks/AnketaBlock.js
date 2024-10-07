@@ -83,6 +83,12 @@ const AnketaBlock = () => {
     return reachGoal('poluchit_zvonok')
   }
 
+  const handleEnterKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      onSubmit()
+    }
+  }
+
   return (
     <div className="relative mb-[40px] mt-[85px] flex w-full flex-col items-center md:mb-[100px] md:mt-[161px] xl:mt-[185px]">
       <div
@@ -187,6 +193,7 @@ const AnketaBlock = () => {
                 letterSpacing: '0.76px',
               }}
               showMask={phone == '7'}
+              onKeyDown={handleEnterKeyDown}
               // showMask
               placeholder="Номер телефона"
               onChange={(e) => {
