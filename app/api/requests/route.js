@@ -41,7 +41,13 @@ export const POST = async (req, res) => {
   console.log('POST REQUEST')
   // const { query, method, body } = await req.json()
   const request = await req.json()
-  console.log('request :>> ', request)
+
+  if (!request?.data)
+    return NextResponse.json(
+      { success: false, error: 'no data' },
+      { status: 400 }
+    )
+
   try {
     const {
       source,
@@ -57,7 +63,8 @@ export const POST = async (req, res) => {
       phone,
       official,
       comment,
-    } = request
+      yandexAim,
+    } = request.data
 
     // const data = await Requests.create(body)
     // if (!data) {
@@ -108,10 +115,11 @@ export const POST = async (req, res) => {
       `tel:+${phone}`
     )
 
-    console.log('result :>> ', result)
-
-    if (!result.ok)
-      return NextResponse.json({ success: false, result }, { status: 400 })
+    if (!result?.ok)
+      return NextResponse.json(
+        { success: false, error: 'no result' },
+        { status: 400 }
+      )
 
     // Создаем пустой календарь и получаем его id
     // if (Schema === Events) {
@@ -136,6 +144,7 @@ export const POST = async (req, res) => {
       comment,
       source,
       clientId: client._id,
+      yandexAim,
     })
 
     // if (!data) {

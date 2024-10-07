@@ -40,6 +40,10 @@ const requestsSchema = {
     type: String,
     default: '',
   },
+  yandexAim: {
+    type: String,
+    default: '',
+  },
 }
 
 export default requestsSchema
