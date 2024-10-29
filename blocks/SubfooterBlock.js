@@ -18,7 +18,7 @@ const SubfooterBlock = () => (
     <a
       className="text-[11px] font-light leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:text-[15px]"
       target="_blank"
-      href="https://t.me/escalion"
+      href="https://t.me/aventipc"
     >
       <span className="text-[#A8A8CA]">Верстка сайта:</span> Алексей Белинский
     </a>
