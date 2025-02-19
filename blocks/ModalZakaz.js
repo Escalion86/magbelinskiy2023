@@ -175,10 +175,8 @@ const ModalZakaz = () => {
     if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
-  const isButtonDisabled =
-    success !== undefined || !phone || phone?.toString().length < 11
   const handleEnterKeyDown = (event) => {
-    if (!isButtonDisabled && event.key === 'Enter') {
+    if (event.key === 'Enter') {
       onSubmit()
     }
   }
@@ -276,7 +274,9 @@ const ModalZakaz = () => {
           fullWidth
           className="mt-[15px] max-w-full"
           onClick={onSubmit}
-          disabled={isButtonDisabled}
+          disabled={
+            success !== undefined || !phone || phone?.toString().length < 11
+          }
           addIcon={false}
         >
           {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
