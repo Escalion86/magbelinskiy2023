@@ -165,8 +165,11 @@ const ModalFocusResult = () => {
     if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
+  const isButtonDisabled =
+    success !== undefined || !phone || phone?.toString().length < 11
+
   const handleEnterKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (!isButtonDisabled && event.key === 'Enter') {
       onSubmit()
     }
   }
@@ -288,9 +291,7 @@ const ModalFocusResult = () => {
           fullWidth
           className="mt-[15px] max-w-full"
           onClick={onSubmit}
-          disabled={
-            success !== undefined || !phone || phone?.toString().length < 11
-          }
+          disabled={isButtonDisabled}
           addIcon={false}
         >
           {success !== undefined ? 'Отправляем заявку' : 'Перезвоните мне'}
