@@ -122,7 +122,7 @@ const FooterBlock = () => {
               />
               <Social
                 text="Telegram"
-                href="https://t.me/aventipc"
+                href="https://t.me/escalion"
                 yandexAim="klick_TG"
               />
               <Social
@@ -132,7 +132,7 @@ const FooterBlock = () => {
               />
               <Social
                 text="Whatsapp"
-                href="https://api.whatsapp.com/send?phone=79039034450"
+                href="https://api.whatsapp.com/send?phone=79138370020"
                 yandexAim="klick_WA"
               />
             </div>

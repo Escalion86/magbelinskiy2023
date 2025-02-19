@@ -137,7 +137,7 @@ const CloseIcon = () => (
 const WhatsappButton = () => {
   return (
     <ContactButton
-      href="https://api.whatsapp.com/send?phone=79039034450"
+      href="https://api.whatsapp.com/send?phone=79138370020"
       onClick={() => reachGoal('klick_WA')}
       ariaLabel="Whatsapp"
     >
@@ -149,7 +149,7 @@ const WhatsappButton = () => {
 const TelegramButton = () => {
   return (
     <ContactButton
-      href="https://t.me/aventipc"
+      href="https://t.me/escalion"
       onClick={() => reachGoal('klick_TG')}
       ariaLabel="Telegram"
     >

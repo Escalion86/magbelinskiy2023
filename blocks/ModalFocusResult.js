@@ -101,9 +101,9 @@ const OnUnsuccess = ({ visible }) => (
         <Social text="+7-903-903-4450" href="tel:+79039034450" />
         <Social
           text="Whatsapp"
-          href="https://api.whatsapp.com/send?phone=79039034450"
+          href="https://api.whatsapp.com/send?phone=79138370020"
         />
-        <Social text="Telegram" href="https://t.me/aventipc" />
+        <Social text="Telegram" href="https://t.me/escalion" />
         <Social text="Instagram" href="https://instagram.com/magbelinskiy" />
         <Social text="VKontakte" href="https://vk.com/escalion" />
       </div>
