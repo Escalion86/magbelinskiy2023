@@ -82,7 +82,7 @@ const FooterBlock = () => {
             </a>
           </div>
         </div>
-        <div className="flex flex-1 justify-start md:justify-center tablet:justify-end">
+        <div className="flex justify-start flex-1 md:justify-center tablet:justify-end">
           <div className="mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] tablet:w-[460px] xl:w-[460px] xl:max-w-[460px]">
             <div className="font-buyan text-[29px] font-bold leading-[100%] text-white md:text-[64px]">
               Контакты
@@ -93,13 +93,13 @@ const FooterBlock = () => {
               круглосуточно
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
-              <Link href="tel:+79039034450" legacyBehavior>
+              <Link href="tel:+79138370020" legacyBehavior>
                 <a
                   className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                   target="_blank"
                   onClick={() => reachGoal('klick_nomber')}
                 >
-                  +7-903-903-44-50
+                  +7-913-837-00-20
                 </a>
               </Link>
               <button

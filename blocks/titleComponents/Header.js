@@ -287,7 +287,7 @@ const Header = () => {
               <TelegramButton />
             </div>
             <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
-              <Link href="tel:+79039034450" legacyBehavior>
+              <Link href="tel:+79138370020" legacyBehavior>
                 <a
                   className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
                   onClick={() => reachGoal('klick_nomber')}

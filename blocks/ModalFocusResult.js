@@ -98,7 +98,7 @@ const OnUnsuccess = ({ visible }) => (
         одному из контактов ниже
       </DivText>
       <div className="mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px] tablet:gap-y-[20px]">
-        <Social text="+7-903-903-4450" href="tel:+79039034450" />
+        <Social text="+7-913-837-0020" href="tel:+79138370020" />
         <Social
           text="Whatsapp"
           href="https://api.whatsapp.com/send?phone=79138370020"
@@ -204,7 +204,7 @@ const ModalFocusResult = () => {
         Оставьте свой номер или позвоните мне
         <br />
         <span className="font-bold">прямо сейчас</span>!{' '}
-        <Link href="tel:+79039034450" legacyBehavior>
+        <Link href="tel:+79138370020" legacyBehavior>
           <a
             className="cursor-pointer font-bold underline duration-300 hover:text-[#FFCA45]"
             onClick={() => reachGoal('after_focus_click_number')}
@@ -307,7 +307,7 @@ const ModalFocusResult = () => {
         <a
           href="/doc/privacy.doc"
           download
-          className="cursor-pointer underline"
+          className="underline cursor-pointer"
         >
           обработку персональных данных
         </a>
