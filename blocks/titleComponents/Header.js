@@ -293,7 +293,7 @@ const Header = () => {
                   onClick={() => reachGoal('klick_nomber')}
                   target="_blank"
                 >
-                  8(903)903-44-50
+                  8(913)837-00-20
                 </a>
               </Link>
               <button
