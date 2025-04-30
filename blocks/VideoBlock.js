@@ -78,6 +78,16 @@ const VideoBlock = () => {
           <div className="absolute top-[2.5%] flex aspect-video w-[96.5%] max-w-[1338px] flex-col items-center">
             <iframe
               className="h-full w-full"
+              title="vimeo-player"
+              src="https://player.vimeo.com/video/1080274049?h=9c1e9eebde&autoplay=1&loop=1&byline=0&muted=0"
+              // width="640"
+              // height="360"
+              frameborder="0"
+              allowfullscreen
+              allow="autoplay; fullscreen"
+            ></iframe>
+            {/* <iframe
+              className="w-full h-full"
               // width="100%"
               // height="100%"
               src="https://www.youtube.com/embed/CuoufduSlXQ?autoplay=1"
@@ -90,7 +100,7 @@ const VideoBlock = () => {
               msallowfullscreen="msallowfullscreen"
               oallowfullscreen="oallowfullscreen"
               webkitallowfullscreen="webkitallowfullscreen"
-            ></iframe>
+            ></iframe> */}
           </div>
         ) : (
           <div className="absolute top-[calc(44%)] flex -translate-y-1/2 flex-col items-center sm:top-[calc(50%-30px)] tablet:top-[calc(50%-45px)]">

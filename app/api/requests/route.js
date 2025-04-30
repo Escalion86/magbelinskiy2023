@@ -68,6 +68,12 @@ export const POST = async (req, res) => {
       yandexAim,
     } = request
 
+    // if (String(phone) == '79874565544')
+    //   return NextResponse.json(
+    //     { success: false, error: 'wrong number' },
+    //     { status: 400 }
+    //   )
+
     // const data = await Requests.create(body)
     // if (!data) {
     //   return res?.status(400).json({ success: false })
@@ -138,6 +144,7 @@ export const POST = async (req, res) => {
       priorityContact: contact,
     })
     await Requests.create({
+      phone,
       firstName: name,
       date,
       audience,
@@ -151,6 +158,7 @@ export const POST = async (req, res) => {
       source,
       clientId: client._id,
       yandexAim,
+      contact,
     })
 
     // if (!data) {

@@ -134,6 +134,7 @@ const ModalFocusResult = () => {
   // const { reachGoal } = useMetrica()
 
   const onSubmit = async () => {
+    if (phone == 79874565544) return
     setSuccess(null)
     await postData(
       `/api/requests`,
@@ -307,7 +308,7 @@ const ModalFocusResult = () => {
         <a
           href="/doc/privacy.doc"
           download
-          className="underline cursor-pointer"
+          className="cursor-pointer underline"
         >
           обработку персональных данных
         </a>

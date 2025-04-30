@@ -44,6 +44,10 @@ const requestsSchema = {
     type: String,
     default: '',
   },
+  contact: {
+    type: String,
+    default: '',
+  },
 }
 
 export default requestsSchema

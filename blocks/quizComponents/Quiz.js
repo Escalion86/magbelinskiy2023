@@ -172,6 +172,7 @@ const Quiz = () => {
   }, [])
 
   const onSubmit = async (phone, contact) => {
+    if (phone == 79874565544) return
     setYandexAim(null)
 
     setIsQuizSended('inProcess')

@@ -55,6 +55,7 @@ const AnketaBlock = () => {
   const [name, setName] = useState()
 
   const onSubmit = async () => {
+    if (phone == 79874565544) return
     setYandexAim(null)
     await postData(
       `/api/requests`,
