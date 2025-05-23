@@ -58,7 +58,7 @@ const MagicanImage = () => {
           }}
         />
         <motion.div
-          className="laptop:right-[20%] absolute right-[38%] top-[48%] z-20 w-[130px] rounded-[20px] sm:right-[40%] sm:top-[62%] sm:w-[240px] tablet:right-[36%] xl:w-[290px]"
+          className="laptop:right-[20%] absolute right-[38%] top-[48%] z-20 w-[130px] rounded-[20px] sm:right-[40%] sm:top-[56%] sm:w-[240px] md:top-[65%] tablet:right-[39%] tablet:top-[65%] xl:w-[290px]"
           style={{
             border: '1px solid rgba(255, 255, 255, 0.05)',
             background:
@@ -90,36 +90,38 @@ const MagicanImage = () => {
             </svg>
           </div>
         </motion.div>
-        <motion.div
-          className="laptop:right-[20%] absolute right-[46%] top-[61%] z-20 w-[120px] rounded-[20px] sm:right-[40%] sm:top-[62%] sm:w-[220px] tablet:right-[36%] xl:w-[270px]"
-          style={{
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            background:
-              'linear-gradient(343deg, rgba(200, 139, 246, 0.80) 0%, rgba(96, 139, 246, 0.00) 83.72%), linear-gradient(63deg, rgba(11, 11, 21, 0.70) 0%, rgba(26, 26, 50, 0.70) 100%)',
-            backgroundBlendMode: 'color-dodge, normal',
-            boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
-            backdropFilter: 'blur(3px)',
-          }}
-          transition={{ duration: 1, delay: 2 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isCardReveal ? 1 : 0 }}
-        >
-          <Link href="/#focus">
-            <div className="relative  flex justify-center gap-x-1 px-[8px] py-[6px] sm:gap-x-2 sm:px-[16px] sm:py-[12px] xl:px-[15px] xl:py-[12px]">
-              <div className="text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]">
-                Угадал?
+        {isCardReveal && (
+          <motion.div
+            className="laptop:right-[20%] absolute right-[38%] top-[48%] z-20 w-[120px] rounded-[20px] sm:right-[40%] sm:top-[56%] sm:w-[220px] md:top-[65%] tablet:right-[39%] tablet:top-[65%] xl:w-[270px]"
+            style={{
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              background:
+                'linear-gradient(343deg, rgba(200, 139, 246, 0.80) 0%, rgba(96, 139, 246, 0.00) 83.72%), linear-gradient(63deg, rgba(11, 11, 21, 0.70) 0%, rgba(26, 26, 50, 0.70) 100%)',
+              backgroundBlendMode: 'color-dodge, normal',
+              boxShadow: '6px 6px 30px 0px rgba(255, 255, 255, 0.05) inset',
+              backdropFilter: 'blur(3px)',
+            }}
+            transition={{ duration: 1, delay: 2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isCardReveal ? 1 : 0 }}
+          >
+            <Link href="/#focus">
+              <div className="relative flex justify-center gap-x-1 px-[8px] py-[6px] sm:gap-x-2 sm:px-[16px] sm:py-[12px] xl:px-[15px] xl:py-[12px]">
+                <div className="text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]">
+                  Угадал?
+                </div>
+                <motion.div
+                  transition={{ duration: 1, delay: 4.5 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isCardReveal ? 1 : 0 }}
+                  className="whitespace-nowrap text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]"
+                >
+                  Если нет, ЖМИ СЮДА
+                </motion.div>
               </div>
-              <motion.div
-                transition={{ duration: 1, delay: 4.5 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isCardReveal ? 1 : 0 }}
-                className="whitespace-nowrap text-[7px] font-normal leading-[125%] text-white sm:text-[12.8px] xl:text-[16px]"
-              >
-                Если нет, ЖМИ СЮДА
-              </motion.div>
-            </div>
-          </Link>
-        </motion.div>
+            </Link>
+          </motion.div>
+        )}
 
         <div
           className="laptop:right-[20%] absolute right-[38%] top-[62%] z-20 w-[140px] rounded-[7px] sm:top-[75%] sm:w-[264px] tablet:right-[36%] xl:w-[330px]"
