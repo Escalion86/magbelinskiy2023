@@ -51,8 +51,7 @@ function CabinetPage(props) {
     ? CONTENTS[page].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
 
-  // const title = CONTENTS[page] ? CONTENTS[page].name : ''
-  const title = 'test'
+  const title = CONTENTS[page] ? CONTENTS[page].name : ''
 
   return (
     <>

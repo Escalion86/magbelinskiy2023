@@ -433,12 +433,22 @@ export const DEFAULT_ADDRESS = Object.freeze({
 export const DEFAULT_EVENT = Object.freeze({
   directionId: null,
   organizerId: null,
+  requestId: null,
+  clientId: null,
+  clientName: '',
+  clientPhone: '',
+  contactChannels: [],
   title: '',
   description: '',
+  eventDate: null,
+  requestDate: null,
   dateStart: null,
   dateEnd: null,
   address: DEFAULT_ADDRESS,
-  status: 'active',
+  location: '',
+  status: 'planned',
+  contractSum: 0,
+  comment: '',
   images: [],
   showOnSite: true,
   report: '',
@@ -450,15 +460,24 @@ export const DEFAULT_EVENT = Object.freeze({
 
 export const DEFAULT_REQUEST = Object.freeze({
   clientId: null,
-  source: '',
+  clientName: '',
+  clientPhone: '',
+  contactChannels: [],
+  eventDate: null,
+  location: '',
+  contractSum: 0,
+  comment: '',
+  status: 'new',
+  eventId: null,
+})
+
+export const DEFAULT_TRANSACTION = Object.freeze({
+  eventId: null,
+  clientId: null,
+  requestId: null,
+  amount: 0,
+  type: 'expense',
   date: null,
-  audience: null,
-  type: null,
-  customType: null,
-  spectators: null,
-  town: null,
-  address: null,
-  official: null,
   comment: '',
 })
 
@@ -534,6 +553,25 @@ export const DEFAULT_PAYMENT = Object.freeze({
   payAt: undefined,
   comment: '',
 })
+
+export const REQUEST_STATUSES = Object.freeze([
+  { value: 'new', name: 'Новая', color: 'blue' },
+  { value: 'in_progress', name: 'В работе', color: 'amber' },
+  { value: 'converted', name: 'Преобразована', color: 'green' },
+  { value: 'canceled', name: 'Отменена', color: 'red' },
+])
+
+export const EVENT_STATUSES_SIMPLE = Object.freeze([
+  { value: 'planned', name: 'Запланировано', color: 'blue' },
+  { value: 'in_progress', name: 'В процессе', color: 'amber' },
+  { value: 'completed', name: 'Завершено', color: 'green' },
+  { value: 'canceled', name: 'Отменено', color: 'red' },
+])
+
+export const TRANSACTION_TYPES = Object.freeze([
+  { value: 'expense', name: 'Расход', color: 'red' },
+  { value: 'income', name: 'Доход', color: 'green' },
+])
 
 export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   title: '',

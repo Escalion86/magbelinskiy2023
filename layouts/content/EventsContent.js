@@ -1,191 +1,432 @@
 'use client'
 
-import ContentHeader from '@components/ContentHeader'
-// import Filter from '@components/Filter'
-import AddButton from '@components/IconToggleButtons/AddButton'
-import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusToggleButtons'
-import FilterToggleButton from '@components/IconToggleButtons/FilterToggleButton'
-import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
-import Search from '@components/Search'
-import SortingButtonMenu from '@components/SortingButtonMenu'
-import filterItems from '@helpers/filterItems'
-import { getNounEvents } from '@helpers/getNoun'
-import isEventActiveFunc from '@helpers/isEventActive'
-import isEventCanceledFunc from '@helpers/isEventCanceled'
-import isEventClosedFunc from '@helpers/isEventClosed'
-import isEventExpiredFunc from '@helpers/isEventExpired'
-import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import EventsList from '@layouts/lists/EventsList'
-import { modalsFuncAtom } from '@state/atoms'
-import eventsAtom from '@state/atoms/eventsAtom'
-// import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import ContentHeader from '@components/ContentHeader'
+import Button from '@components/Button'
+import Input from '@components/Input'
+import Textarea from '@components/Textarea'
+import DateTimePicker from '@components/DateTimePicker'
+import eventsAtom from '@state/atoms/eventsAtom'
+import transactionsAtom from '@state/atoms/transactionsAtom'
+import requestsAtom from '@state/atoms/requestsAtom'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { EVENT_STATUSES_SIMPLE, TRANSACTION_TYPES } from '@helpers/constants'
+import formatDate from '@helpers/formatDate'
 
-const defaultFilterValue = {
-  directions: null,
-  tags: [],
+const statusClassNames = {
+  planned: 'bg-blue-500',
+  in_progress: 'bg-amber-500',
+  completed: 'bg-green-500',
+  canceled: 'bg-red-500',
+}
+
+const defaultTransaction = {
+  amount: '',
+  type: 'expense',
+  date: null,
+  comment: '',
 }
 
 const EventsContent = () => {
-  const events = useRecoilValue(eventsAtom)
-  // const loggedUser = useRecoilValue(loggedUserAtom)
+  const [events, setEvents] = useRecoilState(eventsAtom)
+  const [transactions, setTransactions] = useRecoilState(transactionsAtom)
+  const requests = useRecoilValue(requestsAtom)
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const [formsState, setFormsState] = useState({})
+  const [error, setError] = useState('')
+  const [loadingEventId, setLoadingEventId] = useState('')
+  const [loadingTransactionId, setLoadingTransactionId] = useState('')
 
-  const [isSearching, setIsSearching] = useState(false)
-  const [showFilter, setShowFilter] = useState(false)
-  const [filter, setFilter] = useState({
-    status: {
-      active: true,
-      finished: false,
-      closed: false,
-      canceled: false,
-    },
-  })
-  const [searchText, setSearchText] = useState('')
+  const requestsMap = useMemo(() => {
+    const map = new Map()
+    requests.forEach((request) => map.set(request._id, request))
+    return map
+  }, [requests])
 
-  const [sort, setSort] = useState({ dateStart: 'asc' })
-  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
+  const transactionsByEvent = useMemo(() => {
+    const grouped = new Map()
+    transactions.forEach((transaction) => {
+      if (!grouped.has(transaction.eventId)) grouped.set(transaction.eventId, [])
+      grouped.get(transaction.eventId).push(transaction)
+    })
+    return grouped
+  }, [transactions])
 
-  const [filterOptions, setFilterOptions] = useState(defaultFilterValue)
-
-  const searchedEvents = useMemo(() => {
-    if (!searchText) return events
-    return filterItems(events, searchText, [], {}, ['title'])
-  }, [events, searchText])
-
-  const visibleEvents = useMemo(
+  const sortedEvents = useMemo(
     () =>
-      searchedEvents.filter((event) => {
-        const isEventExpired = isEventExpiredFunc(event)
-        const isEventActive = isEventActiveFunc(event)
-        const isEventCanceled = isEventCanceledFunc(event)
-        const isEventClosed = isEventClosedFunc(event)
-        const haveEventTag =
-          filterOptions.tags?.length === 0
-            ? true
-            : event.tags
-            ? event.tags.find((tag) => filterOptions.tags.includes(tag))
-            : false
-        return (
-          haveEventTag &&
-          ((isEventClosed && filter.status.finished) ||
-            (isEventClosed && filter.status.closed) ||
-            (isEventActive && filter.status.finished && isEventExpired) ||
-            (isEventActive && filter.status.active && !isEventExpired) ||
-            (isEventCanceled && filter.status.canceled)) &&
-          (!filterOptions.directions ||
-            filterOptions.directions === event.directionId)
-        )
+      [...events].sort((a, b) => {
+        const dateA = a.eventDate ? new Date(a.eventDate).getTime() : 0
+        const dateB = b.eventDate ? new Date(b.eventDate).getTime() : 0
+        return dateB - dateA
       }),
-    [searchedEvents, filter, filterOptions]
+    [events]
   )
 
-  const filteredAndSortedEvents = useMemo(
-    () => [...visibleEvents].sort(sortFunc),
-    [visibleEvents, sort]
-  )
+  const updateEventState = (event) => {
+    setEvents((prev) =>
+      prev.map((item) => (item._id === event._id ? event : item))
+    )
+  }
 
-  const isFiltered = filterOptions.directions || filterOptions.tags.length > 0
+  const handleEventUpdate = async (eventId, payload) => {
+    setLoadingEventId(eventId)
+    setError('')
+    try {
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success)
+        throw new Error(data.error || 'Не удалось обновить мероприятие')
+      updateEventState(data.data)
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoadingEventId('')
+    }
+  }
+
+  const handleStatusChange = (eventId, status) =>
+    handleEventUpdate(eventId, { status })
+
+  const handleEventFieldChange = (eventId, field, value) => {
+    setEvents((prev) =>
+      prev.map((event) =>
+        event._id === eventId ? { ...event, [field]: value } : event
+      )
+    )
+  }
+
+  const saveEventField = (eventId, field, value) =>
+    handleEventUpdate(eventId, { [field]: value })
+
+  const handleTransactionField = (eventId, field, value) => {
+    setFormsState((prev) => ({
+      ...prev,
+      [eventId]: {
+        ...(prev[eventId] ?? defaultTransaction),
+        [field]: value,
+      },
+    }))
+  }
+
+  const handleAddTransaction = async (event) => {
+    const form = formsState[event._id] ?? defaultTransaction
+    if (!form.amount) {
+      setError('Укажите сумму транзакции')
+      return
+    }
+    setLoadingTransactionId(event._id)
+    setError('')
+    try {
+      const response = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: event._id,
+          clientId: event.clientId,
+          requestId: event.requestId ?? null,
+          amount: form.amount,
+          type: form.type,
+          date: form.date,
+          comment: form.comment,
+        }),
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success)
+        throw new Error(data.error || 'Не удалось добавить транзакцию')
+      setTransactions((prev) => [...prev, data.data])
+      setFormsState((prev) => ({
+        ...prev,
+        [event._id]: { ...defaultTransaction },
+      }))
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoadingTransactionId('')
+    }
+  }
+
+  const handleDeleteTransaction = async (transactionId) => {
+    setLoadingTransactionId(transactionId)
+    setError('')
+    try {
+      const response = await fetch(`/api/transactions/${transactionId}`, {
+        method: 'DELETE',
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success)
+        throw new Error(data.error || 'Не удалось удалить транзакцию')
+      setTransactions((prev) =>
+        prev.filter((transaction) => transaction._id !== transactionId)
+      )
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoadingTransactionId('')
+    }
+  }
 
   return (
-    <>
+    <div className="flex h-full flex-col gap-4 p-4">
       <ContentHeader>
-        {/* <EventStatusToggleButtons
-          value={filter.status}
-          onChange={(value) =>
-            setFilter((state) => ({ ...state, status: value }))
-          }
-        /> */}
-        <div className="flex flex-1 flex-nowrap items-center justify-end gap-x-2">
-          <div className="whitespace-nowrap text-lg font-bold">
-            {getNounEvents(visibleEvents.length)}
-          </div>
-          <SortingButtonMenu
-            sort={sort}
-            onChange={setSort}
-            sortKeys={['dateStart']}
-          />
-          <FilterToggleButton
-            value={isFiltered}
-            onChange={() => {
-              setShowFilter((state) => !state)
-            }}
-          />
-          <SearchToggleButton
-            value={isSearching}
-            onChange={() => {
-              setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
-            }}
-          />
-          <AddButton onClick={() => modalsFunc.event.add()} />
+        <div className="flex flex-1 items-center justify-between">
+          <h2 className="text-xl font-semibold">Мероприятия</h2>
+          <div className="text-sm text-gray-600">Всего: {events.length}</div>
         </div>
       </ContentHeader>
-      <Search
-        searchText={searchText}
-        show={isSearching}
-        onChange={setSearchText}
-        className="mx-1 bg-gray-100"
-      />
-      {/* <Filter
-        show={showFilter}
-        onChange={setFilterOptions}
-        filterOptions={filterOptions}
-        defaultFilterValue={defaultFilterValue}
-        setShowFilter={setShowFilter}
-      /> */}
-      {/* <CardListWrapper> */}
-      <EventsList
-        events={filteredAndSortedEvents}
-        onTagClick={(tag) => {
-          setFilterOptions((state) => ({ ...state, tags: [tag] }))
-          setShowFilter(true)
-        }}
-      />
-      {/* <div className="flex-1 w-full bg-opacity-15 bg-general">
-        <AutoSizer>
-          {({ height, width }) => (
-            <FixedSizeList
-              height={height}
-              itemCount={filteredAndSortedEvents.length}
-              itemSize={
-                windowWidthNum > 3 ? 182 : windowWidthNum === 3 ? 151 : 194
-              }
-              width={width}
-            >
-              {({ index, style }) => (
-                <EventCard
-                  style={style}
-                  key={filteredAndSortedEvents[index]._id}
-                  eventId={filteredAndSortedEvents[index]._id}
-                  // hidden={!visibleEventsIds.includes(event._id)}
-                  // noButtons={
-                  //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
-                  // }
-                />
-              )}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
-      </div> */}
-      {/* {filteredAndSortedEvents?.length > 0 ? (
-          filteredAndSortedEvents.map((event) => (
-            <EventCard
+      {error && <div className="rounded border border-danger bg-red-50 p-3 text-sm text-danger">{error}</div>}
+      <div className="flex-1 space-y-4 overflow-auto">
+        {sortedEvents.map((event) => {
+          const status = EVENT_STATUSES_SIMPLE.find(
+            (item) => item.value === event.status
+          )
+          const request = event.requestId
+            ? requestsMap.get(event.requestId)
+            : null
+          const eventTransactions = (transactionsByEvent.get(event._id) ?? []).sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          )
+          const totals = eventTransactions.reduce(
+            (acc, transaction) => {
+              if (transaction.type === 'income') acc.income += transaction.amount
+              else acc.expense += transaction.amount
+              return acc
+            },
+            { income: 0, expense: 0 }
+          )
+          const form = formsState[event._id] ?? defaultTransaction
+          const isEventLoading = loadingEventId === event._id
+          const isTransactionLoading = loadingTransactionId === event._id
+
+          return (
+            <div
               key={event._id}
-              eventId={event._id}
-              // hidden={!visibleEventsIds.includes(event._id)}
-              // noButtons={
-              //   loggedUser?.role !== 'admin' && loggedUser?.role !== 'dev'
-              // }
-            />
-          ))
-        ) : (
-          <div className="flex justify-center p-2">{`Нет мероприятий`}</div>
-        )} */}
-      {/* </CardListWrapper> */}
-    </>
+              className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex flex-col gap-3 laptop:flex-row laptop:items-start laptop:justify-between">
+                <div>
+                  <div className="text-lg font-semibold">
+                    {event.title || `Мероприятие для ${event.clientName ?? 'клиента'}`}
+                  </div>
+                  <div className="mt-1 text-sm text-gray-600">
+                    Клиент: {event.clientName || '—'}{' '}
+                    {event.clientPhone ? `( +${event.clientPhone} )` : ''}
+                  </div>
+                  <div className="mt-1 text-sm text-gray-600">
+                    Дата заявки:{' '}
+                    {request?.createdAt
+                      ? formatDate(request.createdAt, false, true)
+                      : event.requestDate
+                      ? formatDate(event.requestDate, false, true)
+                      : '—'}
+                  </div>
+                  <div className="mt-1 text-sm text-gray-600">
+                    Дата мероприятия:{' '}
+                    {event.eventDate
+                      ? formatDate(event.eventDate, false, true)
+                      : '—'}
+                  </div>
+                  <div className="mt-1 text-sm text-gray-600">
+                    Место: {event.location || '—'}
+                  </div>
+                  <div className="mt-1 text-sm text-gray-600">
+                    Комментарий: {event.comment || '—'}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold text-white ${
+                        statusClassNames[status?.value ?? 'planned'] || 'bg-blue-500'
+                      }`}
+                    >
+                      {status?.name ?? 'Не указан'}
+                    </span>
+                    <select
+                      value={event.status}
+                      onChange={(eventTarget) =>
+                        handleStatusChange(event._id, eventTarget.target.value)
+                      }
+                      disabled={isEventLoading}
+                      className="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700"
+                    >
+                      {EVENT_STATUSES_SIMPLE.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <DateTimePicker
+                    label="Дата мероприятия"
+                    value={event.eventDate}
+                    onChange={(value) => {
+                      handleEventFieldChange(event._id, 'eventDate', value)
+                      saveEventField(event._id, 'eventDate', value)
+                    }}
+                  />
+                  <Input
+                    label="Место"
+                    value={event.location ?? ''}
+                    onChange={(value) =>
+                      handleEventFieldChange(event._id, 'location', value)
+                    }
+                    onBlur={(eventTarget) =>
+                      saveEventField(event._id, 'location', eventTarget.target.value)
+                    }
+                  />
+                  <Input
+                    label="Сумма по договору"
+                    type="number"
+                    value={event.contractSum ?? 0}
+                    onChange={(value) =>
+                      handleEventFieldChange(event._id, 'contractSum', value)
+                    }
+                    onBlur={(eventTarget) =>
+                      saveEventField(event._id, 'contractSum', eventTarget.target.value)
+                    }
+                  />
+                  <Textarea
+                    label="Комментарий"
+                    value={event.comment ?? ''}
+                    onChange={(value) =>
+                      handleEventFieldChange(event._id, 'comment', value)
+                    }
+                    onBlur={(eventTarget) =>
+                      saveEventField(event._id, 'comment', eventTarget.target.value)
+                    }
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-3">
+                <div className="flex flex-col gap-2 laptop:flex-row laptop:items-center laptop:justify-between">
+                  <div className="text-sm text-gray-700">
+                    Расходы: {totals.expense.toLocaleString()} ₽ | Доходы:{' '}
+                    {totals.income.toLocaleString()} ₽
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Input
+                      label="Сумма"
+                      type="number"
+                      value={form.amount}
+                      onChange={(value) =>
+                        handleTransactionField(event._id, 'amount', value)
+                      }
+                    />
+                    <DateTimePicker
+                      label="Дата"
+                      value={form.date}
+                      onChange={(value) =>
+                        handleTransactionField(event._id, 'date', value)
+                      }
+                    />
+                    <select
+                      value={form.type}
+                      onChange={(eventTarget) =>
+                        handleTransactionField(event._id, 'type', eventTarget.target.value)
+                      }
+                      className="mt-5 rounded border border-gray-300 px-2 py-1 text-sm"
+                    >
+                      {TRANSACTION_TYPES.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                    <Textarea
+                      label="Комментарий"
+                      value={form.comment}
+                      onChange={(value) =>
+                        handleTransactionField(event._id, 'comment', value)
+                      }
+                      rows={2}
+                    />
+                    <Button
+                      name="Добавить транзакцию"
+                      onClick={() => handleAddTransaction(event)}
+                      loading={isTransactionLoading}
+                      disabled={isTransactionLoading}
+                    />
+                  </div>
+                </div>
+                {eventTransactions.length > 0 ? (
+                  <div className="mt-4 overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 text-sm">
+                      <thead className="bg-white">
+                        <tr>
+                          <th className="px-3 py-2 text-left font-semibold text-gray-600">
+                            Дата
+                          </th>
+                          <th className="px-3 py-2 text-left font-semibold text-gray-600">
+                            Тип
+                          </th>
+                          <th className="px-3 py-2 text-right font-semibold text-gray-600">
+                            Сумма
+                          </th>
+                          <th className="px-3 py-2 text-left font-semibold text-gray-600">
+                            Комментарий
+                          </th>
+                          <th className="px-3 py-2" />
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {eventTransactions.map((transaction) => (
+                          <tr key={transaction._id}>
+                            <td className="px-3 py-2">
+                              {transaction.date
+                                ? formatDate(transaction.date, false, true)
+                                : '—'}
+                            </td>
+                            <td className="px-3 py-2">
+                              {
+                                TRANSACTION_TYPES.find(
+                                  (item) => item.value === transaction.type
+                                )?.name ?? '—'
+                              }
+                            </td>
+                            <td className="px-3 py-2 text-right">
+                              {transaction.amount.toLocaleString()} ₽
+                            </td>
+                            <td className="px-3 py-2 text-gray-600">
+                              {transaction.comment || '—'}
+                            </td>
+                            <td className="px-3 py-2 text-right">
+                              <Button
+                                name="Удалить"
+                                thin
+                                classBgColor="bg-white"
+                                classHoverBgColor="hover:bg-gray-100"
+                                className="border border-gray-300 text-gray-700"
+                                onClick={() => handleDeleteTransaction(transaction._id)}
+                                loading={loadingTransactionId === transaction._id}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="mt-3 text-sm text-gray-500">
+                    Транзакций пока нет
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+        {sortedEvents.length === 0 && (
+          <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-white p-6 text-sm text-gray-500">
+            Мероприятий пока нет
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
