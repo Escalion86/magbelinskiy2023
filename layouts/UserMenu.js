@@ -15,7 +15,7 @@ import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import Avatar from './Avatar'
 // import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
@@ -66,7 +66,7 @@ const MenuItem = ({ onClick, icon, title, href }) => {
 }
 
 const UserMenu = () => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
 

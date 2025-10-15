@@ -27,12 +27,6 @@ import {
   faCreditCard,
 } from '@fortawesome/free-regular-svg-icons'
 
-// import DirectionsContent from '@layouts/content/DirectionsContent'
-import EventsContent from '@layouts/content/EventsContent'
-// import DevContent from '@layouts/content/DevContent'
-import ClientsContent from '@layouts/content/ClientsContent'
-import RequestsContent from '@layouts/content/RequestsContent'
-
 import {
   faInstagram,
   faTelegram,
@@ -702,33 +696,6 @@ export const SOCIALS = [
     color: 'blue-400',
   },
 ]
-
-export const CONTENTS = Object.freeze({
-  // directions: {
-  //   Component: DirectionsContent,
-  //   name: 'Сайт / Направления',
-  // },
-  requests: {
-    Component: RequestsContent,
-    name: 'Заявки',
-  },
-  events: {
-    Component: EventsContent,
-    name: 'Мероприятия',
-  },
-  // notifications: {
-  //   Component: LoggedUserNotificationsContent,
-  //   name: 'Уведомления',
-  // },
-  clients: {
-    Component: ClientsContent,
-    name: 'Клиенты',
-  },
-  // dev: {
-  //   Component: DevContent,
-  //   name: 'Разработчик',
-  // },
-})
 
 export const pages = [
   // {

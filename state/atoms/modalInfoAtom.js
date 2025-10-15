@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const modalInfoAtom = atom({
-  key: 'modalInfoAtom', // unique ID (with respect to other atoms/selectors)
-  default: undefined, // default value (aka initial value)
-})
+const modalInfoAtom = atom(undefined)
 
 export default modalInfoAtom

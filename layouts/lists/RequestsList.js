@@ -1,10 +1,10 @@
 import RequestCard from '@layouts/cards/RequestCard'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
 const RequestsList = ({ requests }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
   return (
     <ListWrapper

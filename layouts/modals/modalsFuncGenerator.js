@@ -1,7 +1,7 @@
 // import goToUrlForAddEventToCalendar from '@helpers/goToUrlForAddEventToCalendar'
 // import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
-import { setRecoil } from 'recoil-nexus'
+import { setAtomValue } from '@state/storeHelpers'
 // import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 // import copyLinkFunc from './modalsFunc/copyLinkFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
@@ -40,7 +40,6 @@ import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 // import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 // import userViewFunc from './modalsFunc/userViewFunc'
 // import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
-// import { useRecoilRefresher_UNSTABLE } from 'recoil'
 // import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 // import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
 // import roleFunc from './modalsFunc/roleFunc'
@@ -68,7 +67,7 @@ const modalsFuncGenerator = (
   loggedUserActiveRole,
   loggedUserActiveStatus
 ) => {
-  const addModal = (value) => setRecoil(addModalSelector, value)
+  const addModal = (value) => setAtomValue(addModalSelector, value)
   // const itemsFunc = getRecoil(itemsFuncAtom)
 
   return {
