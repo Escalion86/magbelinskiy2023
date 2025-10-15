@@ -23,10 +23,11 @@ const emptyForm = {
   comment: '',
 }
 
-const statusMap = REQUEST_STATUSES.reduce((acc, item) => {
-  acc[item.value] = item
-  return acc
-}, {})
+const createStatusMap = (statuses) =>
+  statuses.reduce((acc, item) => {
+    acc[item.value] = item
+    return acc
+  }, {})
 
 const statusClassNames = {
   new: 'bg-blue-500',
@@ -45,6 +46,8 @@ const RequestsContent = () => {
   const [formError, setFormError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState('')
+
+  const statusMap = useMemo(() => createStatusMap(REQUEST_STATUSES), [])
 
   const sortedRequests = useMemo(
     () =>
