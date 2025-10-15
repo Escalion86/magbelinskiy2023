@@ -1,20 +1,13 @@
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 import { DEFAULT_REQUEST } from '@helpers/constants'
 import requestsAtom from '@state/atoms/requestsAtom'
-import { selectorFamily } from 'recoil'
 
-export const requestSelector = selectorFamily({
-  key: 'requestSelector',
-  get:
-    (id) =>
-    ({ get }) => {
-      if (!id) return DEFAULT_REQUEST
-      return get(requestsAtom).find((item) => item._id === id)
-    },
-  // set:
-  //   (id) =>
-  //   ({ set }, event) => {
-  //     set(eventsSelector, event)
-  //   },
-})
+export const requestSelector = atomFamily((id) =>
+  atom((get) => {
+    if (!id) return DEFAULT_REQUEST
+    return get(requestsAtom).find((item) => item._id === id)
+  })
+)
 
 export default requestSelector

@@ -9,7 +9,7 @@ import cn from 'classnames'
 import { m } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import Zoom from 'react-medium-image-zoom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
 import LoadingSpinner from './LoadingSpinner'
 import Image from 'next/image'
@@ -36,7 +36,7 @@ const InputImages = ({
   onLoaded,
   imageFolder = '',
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [isAddingImage, setAddingImage] = useState(false)
   const hiddenFileInput = useRef(null)
   const addImageClick = () => {

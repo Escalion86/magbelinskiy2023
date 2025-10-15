@@ -9,7 +9,7 @@ import DateTimePicker from '@components/DateTimePicker'
 import eventsAtom from '@state/atoms/eventsAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import { EVENT_STATUSES_SIMPLE, TRANSACTION_TYPES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 
@@ -28,9 +28,9 @@ const defaultTransaction = {
 }
 
 const EventsContent = () => {
-  const [events, setEvents] = useRecoilState(eventsAtom)
-  const [transactions, setTransactions] = useRecoilState(transactionsAtom)
-  const requests = useRecoilValue(requestsAtom)
+  const [events, setEvents] = useAtom(eventsAtom)
+  const [transactions, setTransactions] = useAtom(transactionsAtom)
+  const requests = useAtomValue(requestsAtom)
 
   const [formsState, setFormsState] = useState({})
   const [error, setError] = useState('')

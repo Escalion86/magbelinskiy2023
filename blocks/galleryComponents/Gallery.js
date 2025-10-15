@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 
 const Arrow = ({ right, className, onClick }) => {
@@ -48,8 +48,8 @@ const Gallery = ({
   imagesCount = 5,
   signs = [],
 }) => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
 
   const photos = Array.from({ length: imagesCount }, (_, i) => i + 1)
 

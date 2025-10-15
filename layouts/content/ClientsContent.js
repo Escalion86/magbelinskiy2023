@@ -6,13 +6,13 @@ import Input from '@components/Input'
 import clientsAtom from '@state/atoms/clientsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import formatDate from '@helpers/formatDate'
 
 const ClientsContent = () => {
-  const clients = useRecoilValue(clientsAtom)
-  const requests = useRecoilValue(requestsAtom)
-  const events = useRecoilValue(eventsAtom)
+  const clients = useAtomValue(clientsAtom)
+  const requests = useAtomValue(requestsAtom)
+  const events = useAtomValue(eventsAtom)
 
   const [search, setSearch] = useState('')
 

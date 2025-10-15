@@ -16,14 +16,14 @@ import TitleBlock from '@blocks/TitleBlock'
 import VideoBlock from '@blocks/VideoBlock'
 import StateLoader from '@blocks/components/StateLoader'
 import Header from '@blocks/titleComponents/Header'
-import { RecoilRoot } from 'recoil'
-import RecoilNexus from 'recoil-nexus'
+import { Provider } from 'jotai'
+import store from '@state/store'
 
 const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
 
 export default function Home() {
   return (
-    <RecoilRoot>
+    <Provider store={store}>
       <div className="relative flex flex-col items-center justify-between min-h-screen scroll-smooth">
         <Header />
         <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
@@ -78,8 +78,7 @@ export default function Home() {
       <ModalZakaz />
       <ModalFocusResult />
       <ModalInfo />
-      <RecoilNexus />
       <StateLoader />
-    </RecoilRoot>
+    </Provider>
   )
 }

@@ -1,5 +1,5 @@
-import { setRecoil } from 'recoil-nexus'
+import { setAtomValue } from '@state/storeHelpers'
 
-const setRecoilFunc = (selector) => (value) => setRecoil(selector, value)
+const setRecoilFunc = (atom) => (value) => setAtomValue(atom, value)
 
 export default setRecoilFunc

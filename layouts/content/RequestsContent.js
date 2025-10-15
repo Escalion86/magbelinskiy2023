@@ -9,7 +9,7 @@ import DateTimePicker from '@components/DateTimePicker'
 import requestsAtom from '@state/atoms/requestsAtom'
 import clientsAtom from '@state/atoms/clientsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useAtom, useSetAtom } from 'jotai'
 import { REQUEST_STATUSES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 
@@ -23,10 +23,11 @@ const emptyForm = {
   comment: '',
 }
 
-const statusMap = REQUEST_STATUSES.reduce((acc, item) => {
-  acc[item.value] = item
-  return acc
-}, {})
+const createStatusMap = (statuses) =>
+  statuses.reduce((acc, item) => {
+    acc[item.value] = item
+    return acc
+  }, {})
 
 const statusClassNames = {
   new: 'bg-blue-500',
@@ -36,15 +37,17 @@ const statusClassNames = {
 }
 
 const RequestsContent = () => {
-  const [requests, setRequests] = useRecoilState(requestsAtom)
-  const setClients = useSetRecoilState(clientsAtom)
-  const setEvents = useSetRecoilState(eventsAtom)
+  const [requests, setRequests] = useAtom(requestsAtom)
+  const setClients = useSetAtom(clientsAtom)
+  const setEvents = useSetAtom(eventsAtom)
 
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState(null)
   const [formError, setFormError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState('')
+
+  const statusMap = useMemo(() => createStatusMap(REQUEST_STATUSES), [])
 
   const sortedRequests = useMemo(
     () =>

@@ -5,7 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@helpers/CRUD'
@@ -137,8 +137,8 @@ const OnUnsuccess = ({ visible }) => (
 )
 
 const ModalZakaz = () => {
-  const [showModalZakaz, setShowModalZakaz] = useRecoilState(showModalZakazAtom)
-  const yandexAim = useRecoilValue(yandexAimAtom)
+  const [showModalZakaz, setShowModalZakaz] = useAtom(showModalZakazAtom)
+  const yandexAim = useAtomValue(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
   // const { reachGoal } = useMetrica()

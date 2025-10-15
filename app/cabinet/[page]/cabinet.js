@@ -5,7 +5,7 @@ import { signOut } from 'next-auth/react'
 // import FabMenu from '@components/FabMenu'
 // import LoadingSpinner from '@components/LoadingSpinner'
 import StateLoader from '@components/StateLoader'
-import { CONTENTS } from '@helpers/constants'
+import { CONTENTS } from '@layouts/content/contentsMap'
 // import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import BurgerLayout from '@layouts/BurgerLayout'
 import CabinetHeader from '@layouts/CabinetHeader'
@@ -18,9 +18,9 @@ import ContentWrapper from '@layouts/wrappers/ContentWrapper'
 // import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 // import { useRouter } from 'next/router'
-import { RecoilRoot } from 'recoil'
-import RecoilNexus from 'recoil-nexus'
-// import { useRecoilValue } from 'recoil'
+import { Provider } from 'jotai'
+import store from '@state/store'
+// import { useAtomValue } from 'jotai'
 
 // const SuspenseChild = () => (
 //   <div className="z-10 flex h-[calc(100vh-4rem)] w-full items-center justify-center">
@@ -32,9 +32,9 @@ function CabinetPage(props) {
   const { page } = props
   // const router = useRouter()
   // const page = router.asPath.replace('/cabinet/', '').split('?')[0]
-  // const loggedUser = useRecoilValue(loggedUserAtom)
-  // const loggedUserActiveRole = useRecoilValue(loggedUserActiveRoleSelector)
-  // const loggedUserActiveStatusName = useRecoilValue(loggedUserActiveStatusAtom)
+  // const loggedUser = useAtomValue(loggedUserAtom)
+  // const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
+  // const loggedUserActiveStatusName = useAtomValue(loggedUserActiveStatusAtom)
   // const showFab = !loggedUserActiveRole?.hideFab || page === 'settingsFabMenu'
 
   // let redirect
@@ -60,8 +60,7 @@ function CabinetPage(props) {
         {/* <meta name="description" content={activeLecture.description} /> */}
       </Head>
       {/* <button onClick={() => signOut()}>SignOut</button> */}
-      <RecoilRoot>
-        <RecoilNexus />
+      <Provider store={store}>
         <StateLoader {...props}>
           {/* {loggedUser && ( */}
           <CabinetWrapper>
@@ -79,7 +78,7 @@ function CabinetPage(props) {
           </CabinetWrapper>
           {/* )} */}
         </StateLoader>
-      </RecoilRoot>
+      </Provider>
     </>
   )
 }

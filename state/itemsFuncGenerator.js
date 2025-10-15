@@ -1,7 +1,7 @@
 import { postData, putData, deleteData } from '@helpers/CRUD'
 import isSiteLoadingAtom from './atoms/isSiteLoadingAtom'
 
-import { setRecoil } from 'recoil-nexus'
+import { setAtomValue } from '@state/storeHelpers'
 import addErrorModalSelector from './selectors/addErrorModalSelector'
 import setLoadingSelector from './selectors/setLoadingSelector'
 import setNotLoadingSelector from './selectors/setNotLoadingSelector'
@@ -157,7 +157,7 @@ const messages = {
   // },
 }
 
-const setFunc = (selector) => (value) => setRecoil(selector, value)
+const setFunc = (atom) => (value) => setAtomValue(atom, value)
 
 // const setFamilyFunc = (selector) => (id, value) =>
 //   setRecoil(selector(id), value)

@@ -17,17 +17,17 @@ import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import { Suspense } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const SignedUpCountComponent = ({ userId }) => {
-  const eventsUsersSignedUpCount = useRecoilValue(
+  const eventsUsersSignedUpCount = useAtomValue(
     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
   )
   return <span className="font-normal">{eventsUsersSignedUpCount.signUp}</span>
 }
 
 const FinishedComponent = ({ userId }) => {
-  const eventsUsersSignedUpCount = useRecoilValue(
+  const eventsUsersSignedUpCount = useAtomValue(
     eventsUsersSignedUpWithEventStatusByUserIdCountSelector(userId)
   )
   return (
@@ -48,13 +48,13 @@ const FinishedCount = (props) => (
 )
 
 const UserCard = ({ userId, hidden = false, style }) => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const user = useRecoilValue(userSelector(userId))
-  const loading = useRecoilValue(loadingAtom('user' + userId))
-  // const eventUsers = useRecoilValue(eventsUsersSignedUpByUserIdSelector(userId))
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const user = useAtomValue(userSelector(userId))
+  const loading = useAtomValue(loadingAtom('user' + userId))
+  // const eventUsers = useAtomValue(eventsUsersSignedUpByUserIdSelector(userId))
   // const widthNum = useWindowDimensionsTailwindNum()
-  // const itemFunc = useRecoilValue(itemsFuncAtom)
+  // const itemFunc = useAtomValue(itemsFuncAtom)
 
   const userGender =
     user.gender && GENDERS.find((gender) => gender.value === user.gender)

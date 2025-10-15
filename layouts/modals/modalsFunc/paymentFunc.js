@@ -15,7 +15,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import paymentSelector from '@state/selectors/paymentSelector'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import eventSelector from '@state/selectors/eventSelector'
 
 const paymentFunc = (paymentId, clone = false, props = {}) => {
@@ -29,10 +29,10 @@ const paymentFunc = (paymentId, clone = false, props = {}) => {
     setOnlyCloseButtonShow,
     setTopLeftComponent,
   }) => {
-    const payment = useRecoilValue(paymentSelector(paymentId))
-    const setPayment = useRecoilValue(itemsFuncAtom).payment.set
+    const payment = useAtomValue(paymentSelector(paymentId))
+    const setPayment = useAtomValue(itemsFuncAtom).payment.set
 
-    const event = useRecoilValue(eventSelector(payment.eventId))
+    const event = useAtomValue(eventSelector(payment.eventId))
 
     const isEventClosed = isEventClosedFunc(event)
 
