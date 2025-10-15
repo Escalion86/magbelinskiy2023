@@ -49,6 +49,7 @@ const eventFunc = (eventId, clone = false) => {
     const event = useAtomValue(eventSelector(eventId))
     const directions = useAtomValue(directionsAtom)
     const setEvent = useAtomValue(itemsFuncAtom).event.set
+    const loggedUser = useAtomValue(loggedUserAtom)
     // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
     // const [refMansMax, setFocusMansMax] = useFocus()
     // const [refWomansMax, setFocusWomansMax] = useFocus()
@@ -60,9 +61,22 @@ const eventFunc = (eventId, clone = false) => {
       event?.directionId ?? DEFAULT_EVENT.directionId
     )
 
-    const defaultOrganizerId =
-      event?.organizerId ?? useAtomValue(loggedUserAtom)._id
-    const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
+    const organizerFromEvent = event?.organizerId ?? null
+    const loggedUserId = loggedUser?._id ?? null
+
+    const [organizerId, setOrganizerId] = useState(
+      () => organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
+    )
+
+    useEffect(() => {
+      setOrganizerId((prevOrganizerId) => {
+        const nextOrganizerId =
+          organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
+        return prevOrganizerId === nextOrganizerId
+          ? prevOrganizerId
+          : nextOrganizerId
+      })
+    }, [organizerFromEvent, loggedUserId])
 
     const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
     const [images, setImages] = useState(event?.images ?? DEFAULT_EVENT.images)

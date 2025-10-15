@@ -2,17 +2,20 @@
 
 import { useMemo, useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
+import Button from '@components/Button'
 import Input from '@components/Input'
 import clientsAtom from '@state/atoms/clientsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useAtomValue } from 'jotai'
+import { modalsFuncAtom } from '@state/atoms'
 import formatDate from '@helpers/formatDate'
 
 const ClientsContent = () => {
   const clients = useAtomValue(clientsAtom)
   const requests = useAtomValue(requestsAtom)
   const events = useAtomValue(eventsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [search, setSearch] = useState('')
 
@@ -64,7 +67,16 @@ const ClientsContent = () => {
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
           <h2 className="text-xl font-semibold">Клиенты</h2>
-          <div className="text-sm text-gray-600">Всего: {clients.length}</div>
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <span>Всего: {clients.length}</span>
+            <Button
+              name="+"
+              collapsing
+              className="h-9 w-9 rounded-full text-lg"
+              onClick={() => modalsFunc.request?.add()}
+              disabled={!modalsFunc.request?.add}
+            />
+          </div>
         </div>
       </ContentHeader>
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">

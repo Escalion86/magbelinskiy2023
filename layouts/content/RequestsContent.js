@@ -3,25 +3,13 @@
 import { useMemo, useState } from 'react'
 import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
-import Input from '@components/Input'
-import Textarea from '@components/Textarea'
-import DateTimePicker from '@components/DateTimePicker'
 import requestsAtom from '@state/atoms/requestsAtom'
 import clientsAtom from '@state/atoms/clientsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useSetAtom, useAtomValue } from 'jotai'
+import { modalsFuncAtom } from '@state/atoms'
 import { REQUEST_STATUSES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
-
-const emptyForm = {
-  clientName: '',
-  clientPhone: '',
-  contactChannels: '',
-  eventDate: null,
-  location: '',
-  contractSum: '',
-  comment: '',
-}
 
 const createStatusMap = (statuses) =>
   statuses.reduce((acc, item) => {
@@ -40,11 +28,8 @@ const RequestsContent = () => {
   const [requests, setRequests] = useAtom(requestsAtom)
   const setClients = useSetAtom(clientsAtom)
   const setEvents = useSetAtom(eventsAtom)
-
-  const [form, setForm] = useState(emptyForm)
-  const [editingId, setEditingId] = useState(null)
-  const [formError, setFormError] = useState('')
-  const [formLoading, setFormLoading] = useState(false)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const [errorMessage, setErrorMessage] = useState('')
   const [actionLoading, setActionLoading] = useState('')
 
   const statusMap = useMemo(() => createStatusMap(REQUEST_STATUSES), [])
@@ -58,12 +43,6 @@ const RequestsContent = () => {
       }),
     [requests]
   )
-
-  const handleReset = () => {
-    setForm(emptyForm)
-    setEditingId(null)
-    setFormError('')
-  }
 
   const updateCollections = ({ request, client, event }) => {
     if (request) {
@@ -91,62 +70,9 @@ const RequestsContent = () => {
     }
   }
 
-  const handleSubmit = async () => {
-    setFormLoading(true)
-    setFormError('')
-    try {
-      const payload = {
-        clientName: form.clientName.trim(),
-        clientPhone: form.clientPhone,
-        contactChannels: form.contactChannels,
-        eventDate: form.eventDate,
-        location: form.location,
-        contractSum: form.contractSum,
-        comment: form.comment,
-      }
-
-      const url = editingId ? `/api/requests/${editingId}` : '/api/requests'
-      const method = editingId ? 'PUT' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      const data = await response.json()
-      if (!response.ok || !data.success) throw new Error(data.error || 'Ошибка сохранения заявки')
-
-      updateCollections(data.data)
-      handleReset()
-    } catch (error) {
-      setFormError(error.message)
-    } finally {
-      setFormLoading(false)
-    }
-  }
-
-  const handleEdit = (request) => {
-    setEditingId(request._id)
-    setForm({
-      clientName: request.clientName ?? '',
-      clientPhone: request.clientPhone ?? '',
-      contactChannels: Array.isArray(request.contactChannels)
-        ? request.contactChannels.join('\n')
-        : '',
-      eventDate: request.eventDate ?? null,
-      location: request.location ?? '',
-      contractSum:
-        request.contractSum !== undefined && request.contractSum !== null
-          ? String(request.contractSum)
-          : '',
-      comment: request.comment ?? '',
-    })
-    setFormError('')
-  }
-
   const handleStatusChange = async (requestId, status) => {
     setActionLoading(requestId)
+    setErrorMessage('')
     try {
       const response = await fetch(`/api/requests/${requestId}`, {
         method: 'PUT',
@@ -157,7 +83,7 @@ const RequestsContent = () => {
       if (!response.ok || !data.success) throw new Error(data.error || 'Не удалось обновить статус')
       updateCollections(data.data)
     } catch (error) {
-      setFormError(error.message)
+      setErrorMessage(error.message)
     } finally {
       setActionLoading('')
     }
@@ -165,6 +91,7 @@ const RequestsContent = () => {
 
   const handleConvert = async (requestId) => {
     setActionLoading(requestId)
+    setErrorMessage('')
     try {
       const response = await fetch(`/api/requests/${requestId}`, {
         method: 'PUT',
@@ -176,7 +103,7 @@ const RequestsContent = () => {
         throw new Error(data.error || 'Не удалось создать мероприятие')
       updateCollections(data.data)
     } catch (error) {
-      setFormError(error.message)
+      setErrorMessage(error.message)
     } finally {
       setActionLoading('')
     }
@@ -187,79 +114,24 @@ const RequestsContent = () => {
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
           <h2 className="text-xl font-semibold">Заявки</h2>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-3 text-sm text-gray-600">
             <span>Всего: {requests.length}</span>
+            <Button
+              name="+"
+              collapsing
+              className="h-9 w-9 rounded-full text-lg"
+              onClick={() => modalsFunc.request?.add()}
+              disabled={!modalsFunc.request?.add}
+            />
           </div>
         </div>
       </ContentHeader>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <h3 className="mb-3 text-lg font-semibold">
-          {editingId ? 'Редактирование заявки' : 'Новая заявка'}
-        </h3>
-        <div className="grid gap-3 laptop:grid-cols-2">
-          <Input
-            label="Имя клиента"
-            value={form.clientName}
-            onChange={(value) => setForm((prev) => ({ ...prev, clientName: value }))}
-            required
-          />
-          <Input
-            label="Телефон"
-            value={form.clientPhone}
-            onChange={(value) => setForm((prev) => ({ ...prev, clientPhone: value }))}
-            required
-          />
-          <DateTimePicker
-            label="Дата и время мероприятия"
-            value={form.eventDate}
-            onChange={(value) => setForm((prev) => ({ ...prev, eventDate: value }))}
-          />
-          <Input
-            label="Место проведения"
-            value={form.location}
-            onChange={(value) => setForm((prev) => ({ ...prev, location: value }))}
-          />
-          <Input
-            label="Сумма по договору"
-            type="number"
-            value={form.contractSum}
-            onChange={(value) => setForm((prev) => ({ ...prev, contractSum: value }))}
-          />
-          <Textarea
-            label="Контакты"
-            value={form.contactChannels}
-            onChange={(value) => setForm((prev) => ({ ...prev, contactChannels: value }))}
-            rows={3}
-          />
+      {errorMessage && (
+        <div className="rounded-lg border border-danger/30 bg-danger/5 p-3 text-sm text-danger shadow-sm">
+          {errorMessage}
         </div>
-        <Textarea
-          className="mt-3"
-          label="Комментарий"
-          value={form.comment}
-          onChange={(value) => setForm((prev) => ({ ...prev, comment: value }))}
-          rows={3}
-        />
-        {formError && <div className="mt-2 text-sm text-danger">{formError}</div>}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button
-            name={editingId ? 'Сохранить' : 'Создать заявку'}
-            onClick={handleSubmit}
-            loading={formLoading}
-            disabled={formLoading}
-          />
-          {editingId && (
-            <Button
-              name="Отменить"
-              classBgColor="bg-gray-200"
-              classHoverBgColor="hover:bg-gray-300"
-              className="text-gray-700"
-              onClick={handleReset}
-              disabled={formLoading}
-            />
-          )}
-        </div>
-      </div>
+      )}
 
       <div className="flex-1 overflow-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">
@@ -355,10 +227,11 @@ const RequestsContent = () => {
                       <Button
                         name="Редактировать"
                         thin
-                        onClick={() => handleEdit(request)}
+                        onClick={() => modalsFunc.request?.edit(request._id)}
                         classBgColor="bg-white"
                         classHoverBgColor="hover:bg-gray-100"
                         className="border border-gray-300 text-gray-700"
+                        disabled={!modalsFunc.request?.edit}
                       />
                       <Button
                         name={request.eventId ? 'Открыть мероприятие' : 'Преобразовать'}
