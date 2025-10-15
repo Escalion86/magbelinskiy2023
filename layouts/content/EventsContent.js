@@ -10,6 +10,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import { useAtom, useAtomValue } from 'jotai'
+import { modalsFuncAtom } from '@state/atoms'
 import { EVENT_STATUSES_SIMPLE, TRANSACTION_TYPES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 
@@ -31,6 +32,7 @@ const EventsContent = () => {
   const [events, setEvents] = useAtom(eventsAtom)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const requests = useAtomValue(requestsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const [formsState, setFormsState] = useState({})
   const [error, setError] = useState('')
@@ -174,7 +176,16 @@ const EventsContent = () => {
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
           <h2 className="text-xl font-semibold">Мероприятия</h2>
-          <div className="text-sm text-gray-600">Всего: {events.length}</div>
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <span>Всего: {events.length}</span>
+            <Button
+              name="+"
+              collapsing
+              className="h-9 w-9 rounded-full text-lg"
+              onClick={() => modalsFunc.event?.add()}
+              disabled={!modalsFunc.event?.add}
+            />
+          </div>
         </div>
       </ContentHeader>
       {error && <div className="rounded border border-danger bg-red-50 p-3 text-sm text-danger">{error}</div>}
