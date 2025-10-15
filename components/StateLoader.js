@@ -6,6 +6,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import clientsAtom from '@state/atoms/clientsAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import transactionsAtom from '@state/atoms/transactionsAtom'
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -39,6 +40,7 @@ const StateLoader = (props) => {
   const setEventsState = useSetRecoilState(eventsAtom)
   const setDirectionsState = useSetRecoilState(directionsAtom)
   const setClientsState = useSetRecoilState(clientsAtom)
+  const setTransactionsState = useSetRecoilState(transactionsAtom)
   // const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
   // const setUsersState = useSetRecoilState(usersAtom)
   // const setReviewsState = useSetRecoilState(reviewsAtom)
@@ -76,6 +78,7 @@ const StateLoader = (props) => {
     setEventsState(props.events)
     setDirectionsState(props.directions)
     setClientsState(props.clients)
+    setTransactionsState(props.transactions ?? [])
     setSiteSettingsState(props.siteSettings)
     setIsSiteLoading(false)
   }, [])

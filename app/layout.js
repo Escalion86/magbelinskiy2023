@@ -8,7 +8,6 @@ import '../fonts/FuturaPT.css'
 import { Suspense } from 'react'
 import Metrika from './components/metrika'
 import Script from 'next/script'
-import PrelineScript from './components/PrelineScript'
 // import Head from 'next/head'
 
 export const metadata = {
@@ -46,7 +45,6 @@ export default function RootLayout({ children }) {
         )}
         {children}
       </body>
-      <PrelineScript />
     </html>
   )
 }
