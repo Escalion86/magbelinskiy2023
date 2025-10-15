@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { Suspense, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 const Modal = ({
   Children,
@@ -47,7 +47,7 @@ const Modal = ({
   // const [rendered, setRendered] = useState(false)
   // const [preventCloseFunc, setPreventCloseFunc] = useState(null)
   const [titleState, setTitleState] = useState(title)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [disableDecline, setDisableDecline] = useState(false)
   const [confirmButtonNameState, setConfirmButtonNameState] =
@@ -59,7 +59,7 @@ const Modal = ({
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
-  const setModals = useSetRecoilState(modalsAtom)
+  const setModals = useSetAtom(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
   const [closeButtonShowState, setCloseButtonShowState] =

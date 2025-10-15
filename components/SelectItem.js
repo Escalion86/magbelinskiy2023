@@ -11,7 +11,7 @@ import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
 import {
   DirectionItem,
@@ -233,8 +233,8 @@ export const SelectUser = ({
   itemChildren,
   nameFieldWrapperClassName,
 }) => {
-  const users = useRecoilValue(usersAtom)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const users = useAtomValue(usersAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const filteredUsers = filterWithRules(users, filter)
 
@@ -317,8 +317,8 @@ export const SelectService = ({
   rounded = true,
   readOnly,
 }) => {
-  const services = useRecoilValue(servicesAtom)
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
+  const services = useAtomValue(servicesAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
   const filteredServices = filterWithRules(services, filter)
 
@@ -392,8 +392,8 @@ export const SelectEvent = ({
   showEventUsersButton = false,
   showEditButton = false,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const events = useRecoilValue(eventsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const events = useAtomValue(eventsAtom)
   return (
     <SelectItemContainer
       required={required}
@@ -495,8 +495,8 @@ export const SelectDirection = ({
   modalTitle,
   rounded = true,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const directions = useRecoilValue(directionsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const directions = useAtomValue(directionsAtom)
 
   return (
     <SelectItemContainer
@@ -560,8 +560,8 @@ export const SelectPayment = ({
   showEvent,
   showSectorIcon,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const payments = useRecoilValue(asyncPaymentsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const payments = useAtomValue(asyncPaymentsAtom)
 
   return (
     <SelectItemContainer

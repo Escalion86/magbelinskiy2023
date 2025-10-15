@@ -4,11 +4,11 @@ import React from 'react'
 import cn from 'classnames'
 import QuizCard from './QuizCard'
 import modalInfoAtom from '@state/atoms/modalInfoAtom'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import QuizInfo from './QuizInfo'
 
 const QuizPageQuestionType = ({ show, onChoose }) => {
-  const setModalInfo = useSetRecoilState(modalInfoAtom)
+  const setModalInfo = useSetAtom(modalInfoAtom)
 
   const infos = {
     birthday: {

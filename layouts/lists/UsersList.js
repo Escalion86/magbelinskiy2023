@@ -1,10 +1,10 @@
 import UserCard from '@layouts/cards/UserCard'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ListWrapper from './ListWrapper'
 
 const UsersList = ({ users }) => {
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ListWrapper
       itemCount={users.length}

@@ -4,10 +4,10 @@ import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import Image from 'next/legacy/image'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const StatusUserToggleButtons = ({ value, onChange }) => {
-  const windowDimensionsNum = useRecoilValue(windowDimensionsNumSelector)
+  const windowDimensionsNum = useAtomValue(windowDimensionsNumSelector)
   return (
     <ButtonGroup size={windowDimensionsNum < 2 ? 'small' : undefined}>
       <Button

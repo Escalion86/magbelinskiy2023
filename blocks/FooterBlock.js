@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import DivContent from './components/DivContent'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useAtom, useSetAtom } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import Link from 'next/link'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
@@ -24,8 +24,8 @@ const Social = ({ text, href, yandexAim }) => {
 }
 
 const FooterBlock = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useAtom(yandexAimAtom)
   // const { reachGoal } = useMetrica()
 
   return (

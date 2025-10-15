@@ -34,7 +34,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import { useEffect, useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { uid } from 'uid'
 
 const eventFunc = (eventId, clone = false) => {
@@ -46,9 +46,9 @@ const eventFunc = (eventId, clone = false) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
-    const directions = useRecoilValue(directionsAtom)
-    const setEvent = useRecoilValue(itemsFuncAtom).event.set
+    const event = useAtomValue(eventSelector(eventId))
+    const directions = useAtomValue(directionsAtom)
+    const setEvent = useAtomValue(itemsFuncAtom).event.set
     // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
     // const [refMansMax, setFocusMansMax] = useFocus()
     // const [refWomansMax, setFocusWomansMax] = useFocus()
@@ -61,7 +61,7 @@ const eventFunc = (eventId, clone = false) => {
     )
 
     const defaultOrganizerId =
-      event?.organizerId ?? useRecoilValue(loggedUserAtom)._id
+      event?.organizerId ?? useAtomValue(loggedUserAtom)._id
     const [organizerId, setOrganizerId] = useState(defaultOrganizerId)
 
     const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)

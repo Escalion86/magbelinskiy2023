@@ -4,12 +4,12 @@ import { EVENT_STATUSES_WITH_TIME } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import TextLinesLimiter from './TextLinesLimiter'
 import eventSelector from '@state/selectors/eventSelector'
 
 const EventNameById = ({ eventId, showStatus, className }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useAtomValue(eventSelector(eventId))
 
   if (!eventId) return null
   const eventStatus = eventStatusFunc(event)
