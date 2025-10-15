@@ -1,10 +1,18 @@
+import { Schema } from 'mongoose'
+
 const eventsSchema = {
   directionId: {
     type: String,
     default: null,
   },
   clientId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Clients',
+    default: null,
+  },
+  requestId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Requests',
     default: null,
   },
   title: {
@@ -14,6 +22,26 @@ const eventsSchema = {
   description: {
     type: String,
     default: 'Описание мероприятия',
+  },
+  clientName: {
+    type: String,
+    default: '',
+  },
+  clientPhone: {
+    type: String,
+    default: '',
+  },
+  contactChannels: {
+    type: [String],
+    default: [],
+  },
+  eventDate: {
+    type: Date,
+    default: null,
+  },
+  requestDate: {
+    type: Date,
+    default: null,
   },
   dateStart: {
     type: Date,
@@ -27,9 +55,13 @@ const eventsSchema = {
     type: Map,
     of: String,
   },
+  location: {
+    type: String,
+    default: '',
+  },
   status: {
     type: String,
-    default: 'request',
+    default: 'planned',
   },
   images: {
     type: Array,
@@ -51,9 +83,17 @@ const eventsSchema = {
     type: String,
     default: null,
   },
+  contractSum: {
+    type: Number,
+    default: 0,
+  },
   clientData: {
     type: {},
     default: {},
+  },
+  comment: {
+    type: String,
+    default: '',
   },
 }
 

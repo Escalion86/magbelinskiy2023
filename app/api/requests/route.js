@@ -1,188 +1,109 @@
-import { postData } from '@helpers/CRUD'
-import formatDate from '@helpers/formatDate'
 import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
-import { AUDIENCE, EVENT_TYPES } from '@helpers/constants'
 
-const sendTelegramMassage = async (text, url) =>
-  await postData(
-    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-    // `https://api.telegram.org/bot5982479442:AAFm5dx1Kk9MQGyZI_oQ6mcKnMRUbv_ZhJ/sendMessage`,
-    {
-      chat_id: 261102161,
-      text,
-      parse_mode: 'html',
-      // reply_markup:
-      //   process.env.NODE_ENV === 'production'
-      //     ? JSON.stringify({
-      //         inline_keyboard: [
-      //           [
-      //             {
-      //               text: 'Позвонить клиенту',
-      //               url: url,
-      //             },
-      //           ],
-      //         ],
-      //       })
-      //     : undefined,
-    },
-    (data) => console.log('data', data),
-    (data) => console.log('error', data),
-    true
-  )
+const normalizePhone = (phone) =>
+  typeof phone === 'string'
+    ? phone.replace(/[^0-9]/g, '')
+    : typeof phone === 'number'
+    ? String(phone)
+    : ''
 
-export const GET = async (req, res) => {
-  console.log('GET REQUEST')
+const sanitizeContacts = (contacts) => {
+  if (Array.isArray(contacts))
+    return contacts.map((item) => String(item).trim()).filter(Boolean)
+  if (typeof contacts === 'string')
+    return contacts
+      .split(/[\n,;]/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+  return []
 }
 
-export const POST = async (req, res) => {
-  console.log('POST REQUEST')
-  // const { query, method, body } = await req.json()
-  const request = await req.json()
+export const GET = async () => {
+  await dbConnect()
+  const requests = await Requests.find({}).sort({ createdAt: -1 }).lean()
 
-  if (!request) {
-    console.log('no request :>> ')
+  return NextResponse.json({ success: true, data: requests }, { status: 200 })
+}
+
+export const POST = async (req) => {
+  const body = await req.json()
+  const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
+  const rawPhone = body.clientPhone ?? body.phone ?? ''
+  const contactChannels =
+    body.contactChannels ?? body.contact ?? body.priorityContact ?? ''
+  const eventDate = body.eventDate ?? body.date ?? null
+  const location =
+    body.location ??
+    [body.town, body.address]
+      .filter((value) => typeof value === 'string' && value.trim().length > 0)
+      .join(', ')
+  const contractSum = body.contractSum ?? body.price ?? 0
+  const comment = body.comment ?? ''
+  const yandexAim = body.yandexAim ?? ''
+
+  if (!rawPhone) {
     return NextResponse.json(
-      { success: false, error: 'no data' },
+      {
+        success: false,
+        error: 'Укажите телефон клиента',
+      },
       { status: 400 }
     )
   }
 
-  try {
-    const {
-      source,
-      contact,
-      name,
-      audience,
-      type,
-      customType,
-      date,
-      spectators,
-      town,
-      address,
-      phone,
-      official,
-      comment,
-      yandexAim,
-    } = request
+  await dbConnect()
 
-    // if (String(phone) == '79874565544')
-    //   return NextResponse.json(
-    //     { success: false, error: 'wrong number' },
-    //     { status: 400 }
-    //   )
+  const normalizedPhone = normalizePhone(rawPhone)
+  const contacts = sanitizeContacts(contactChannels)
 
-    // const data = await Requests.create(body)
-    // if (!data) {
-    //   return res?.status(400).json({ success: false })
-    // // }
-    const audienceName = audience
-      ? AUDIENCE.find((item) => item.value === audience)?.name ?? undefined
-      : undefined
-    const typeName = type
-      ? EVENT_TYPES.find((item) => item.value === type)?.name ?? undefined
-      : undefined
-    // await sendTelegramMassage(
-    //   `Заявка на cigam.ru\n\n<b>Аудитория:</b> ${audienceName}\n<b>Тип:</b> ${typeName}${
-    //     customType ? ' - ' + customType + ' ' : ''
-    //   }\n<b>Дата:</b> ${
-    //     !!date ? formatDate(date, false, true) : '-'
-    //   }\n<b>Кол-во зрителей:</b> ${
-    //     !!spectators ? spectators : '-'
-    //   }\n<b>Город:</b> ${!!town ? town : '-'}\n<b>Адрес:</b> ${
-    //     !!address ? address : '-'
-    //   }\n<b>Телефон:</b> +${phone}\n<b>Комментарий:</b> ${
-    //     !!comment ? comment : '-'
-    //   }\n<b>Юр. лицо:</b> ${official ? 'Нет' : 'Да'}`,
-    //   `tel:+${phone}`,
-    //   req
-    // )
+  const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
 
-    const text = `Заявка с ${process.env.DOMAIN}\n${
-      name ? `\n<b>Имя клиента:</b> ${name}` : ''
-    }${audienceName ? `\n<b>Аудитория:</b> ${audienceName}` : ''}${
-      typeName
-        ? `\n<b>Тип:</b> ${typeName}${
-            customType ? ' - ' + customType + ' ' : ''
-          }`
-        : ''
-    }${date ? `\n<b>Дата:</b> ${formatDate(date, false, true)}` : ''}${
-      spectators ? `\n<b>Кол-во зрителей:</b> ${spectators}` : ''
-    }${town ? `\n<b>Город:</b> ${town}` : ''}${
-      address ? `\n<b>Адрес:</b> ${address}` : ''
-    }${contact ? `\n<b>Способ связи:</b> ${contact}` : ''}${
-      comment ? `\n<b>Комментарий:</b> ${comment}` : ''
-    }${phone ? `\n<b>Телефон:</b> +${phone}` : ''}${
-      comment ? `\n<b>Комментарий:</b> ${comment}` : ''
-    }${
-      official && typeof official === 'boolean'
-        ? `\n<b>Юр. лицо:</b> ${official === false ? 'Нет' : 'Да'}`
-        : ''
-    }`
+  let client =
+    phoneAsNumber !== null
+      ? await Clients.findOne({ phone: phoneAsNumber })
+      : null
 
-    const result = await sendTelegramMassage(
-      text,
-      phone ? `tel:+${phone}` : undefined
-    )
-
-    if (!result?.ok)
-      return NextResponse.json(
-        { success: false, error: 'no result' },
-        { status: 400 }
-      )
-
-    // Создаем пустой календарь и получаем его id
-    // if (Schema === Events) {
-    //   clearedBody.googleCalendarId = await addBlankEventToCalendar()
-    // }
-    await dbConnect()
-    const client = await Clients.create({
-      firstName: name,
-      phone,
-      priorityContact: contact,
+  if (!client) {
+    client = await Clients.create({
+      firstName: clientName,
+      phone: phoneAsNumber,
+      priorityContact: contacts[0] ?? null,
     })
-    await Requests.create({
-      phone,
-      firstName: name,
-      date,
-      audience,
-      type,
-      customType,
-      spectators,
-      town,
-      address,
-      official,
-      comment,
-      source,
-      clientId: client._id,
-      yandexAim,
-      contact,
-    })
-
-    // if (!data) {
-    //   return res?.status(400).json({ success: false })
-    // }
-    // const jsonData = data.toJSON()
-
-    // if (Schema === Events) {
-    //   // Вносим данные в календарь так как теперь мы имеем id мероприятия
-    //   const calendarEvent = updateEventInCalendar(jsonData, req)
-
-    //   // Проверяем есть ли тэги у мероприятия и видимо ли оно => оповещаем пользователей по их интересам
-    //   if (jsonData.showOnSite) {
-    //     notificateUsersAboutEvent(jsonData, req)
-    //   }
-    // }
-
-    return NextResponse.json({ success: true, result }, { status: 201 })
-    // return res?.status(201).json({ success: true, data })
-
-    // return res?.status(201).json({ success: true, data: eventUser })
-  } catch (error) {
-    console.log(error)
-    return NextResponse.json({ success: false, error }, { status: 400 })
-    // return res?.status(400).json({ success: false, error })
+  } else {
+    const updates = {}
+    if (!client.firstName && clientName) updates.firstName = clientName
+    if (!client.priorityContact && contacts[0])
+      updates.priorityContact = contacts[0]
+    if (Object.keys(updates).length > 0) {
+      client = await Clients.findByIdAndUpdate(client._id, updates, {
+        new: true,
+      })
+    }
   }
+
+  const request = await Requests.create({
+    clientId: client?._id ?? null,
+    clientName,
+    clientPhone: normalizedPhone,
+    contactChannels: contacts,
+    eventDate: eventDate ? new Date(eventDate) : null,
+    location: location ?? '',
+    contractSum: Number(contractSum) || 0,
+    comment: comment ?? '',
+    yandexAim,
+  })
+
+  return NextResponse.json(
+    {
+      success: true,
+      data: {
+        request,
+        client,
+      },
+    },
+    { status: 201 }
+  )
 }
