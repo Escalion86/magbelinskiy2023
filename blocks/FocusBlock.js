@@ -7,7 +7,7 @@ import BackLight from './components/BackLight'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import cn from 'classnames'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import showModalFocusResultAtom from '@state/atoms/showModalFocusResultAtom'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 
@@ -36,8 +36,8 @@ const SpanGold = ({ children }) => (
 )
 
 const FocusBlock = () => {
-  const setShowModalFocusResult = useSetRecoilState(showModalFocusResultAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalFocusResult = useSetAtom(showModalFocusResultAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
   const [focusStart, setFocusStart] = useState(false)
 
   return (

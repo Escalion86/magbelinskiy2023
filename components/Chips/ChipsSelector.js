@@ -7,7 +7,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { forwardRef, useState } from 'react'
 import { Popover } from 'react-tiny-popover'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const ChipsSelector = forwardRef(
   (
@@ -39,7 +39,7 @@ const ChipsSelector = forwardRef(
     },
     ref
   ) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
     const [isPopoverOpen, setIsPopoverOpen] = useState(false)
     const [isJustOpened, setIsJustOpened] = useState(false)
 

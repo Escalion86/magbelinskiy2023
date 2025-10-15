@@ -5,7 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import Reviews from './galleryComponents/Reviews'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
@@ -23,8 +23,8 @@ const Title = ({ className }) => (
 )
 
 const ReviewsBlock = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
   return (
     <div className="relative mt-[32px] flex w-full flex-col items-center md:mt-[72px]">
       <Title />

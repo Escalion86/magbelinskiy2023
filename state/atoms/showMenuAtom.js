@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const showMenuAtom = atom({
-  key: 'showMenuAtom', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
-})
+const showMenuAtom = atom(false)
 
 export default showMenuAtom

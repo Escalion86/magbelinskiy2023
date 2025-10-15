@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import QuizProgress from './QuizProgress'
 import QuizPageFinal from './QuizPageFinal'
 import QuizPageQuestionGuests from './QuizPageQuestionGuests'
@@ -127,8 +127,8 @@ const answers = [
 ]
 
 const Quiz = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
   const [isQuizSended, setIsQuizSended] = useState(false)
   // const { reachGoal } = useMetrica()
 

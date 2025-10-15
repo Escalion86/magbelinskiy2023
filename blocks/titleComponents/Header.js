@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Image from 'next/image'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import Link from 'next/link'
@@ -165,8 +165,8 @@ const BurgerButton = ({ opened = false, onClick }) => (
 )
 
 const Header = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
   const [showMenu, setShowMenu] = useState(false)
 
   useEffect(() => {
