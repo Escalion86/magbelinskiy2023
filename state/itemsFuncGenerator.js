@@ -22,6 +22,7 @@ import paymentEditSelector from './selectors/paymentEditSelector'
 import paymentsDeleteSelector from './selectors/paymentsDeleteSelector'
 import requestEditSelector from './selectors/requestEditSelector'
 import requestDeleteSelector from './selectors/requestDeleteSelector'
+import clientEditSelector from './selectors/clientEditSelector'
 // import siteSettingsAtom from './atoms/siteSettingsAtom'
 // import questionnaireEditSelector from './selectors/questionnaireEditSelector'
 // import questionnaireDeleteSelector from './selectors/questionnaireDeleteSelector'
@@ -175,6 +176,7 @@ const props = {
   deleteDirection: setFunc(directionDeleteSelector),
   setRequest: setFunc(requestEditSelector),
   deleteRequest: setFunc(requestDeleteSelector),
+  setClient: setFunc(clientEditSelector),
   addPayments: setFunc(paymentsAddSelector),
   setPayment: setFunc(paymentEditSelector),
   deletePayment: setFunc(paymentsDeleteSelector),
@@ -463,6 +465,37 @@ const itemsFuncGenerator = (
       false,
       loggedUser?._id
     )
+  }
+
+  if (obj.request) {
+    obj.request.convert = async (requestId) => {
+      setLoadingCard('request' + requestId)
+      return await putData(
+        `/api/requests/${requestId}`,
+        { convertToEvent: true },
+        (data) => {
+          const { request, event, client } = data ?? {}
+          snackbar.success('Мероприятие создано из заявки')
+          setNotLoadingCard('request' + requestId)
+          if (request) props.setRequest(request)
+          if (event) props.setEvent(event)
+          if (client) props.setClient(client)
+        },
+        (error) => {
+          snackbar.error('Не удалось преобразовать заявку')
+          setErrorCard('request' + requestId)
+          const data = {
+            errorPlace: 'REQUEST CONVERT ERROR',
+            requestId,
+            error,
+          }
+          addErrorModal(data)
+          console.log(data)
+        },
+        false,
+        loggedUser?._id
+      )
+    }
   }
 
   return obj
