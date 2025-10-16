@@ -58,6 +58,7 @@ import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 // import eventUserSubEventChangeFunc from './modalsFunc/eventUserSubEventChangeFunc'
 import requestViewFunc from './modalsFunc/requestViewFunc'
 import requestFunc from './modalsFunc/requestFunc'
+import requestStatusEditFunc from './modalsFunc/requestStatusEditFunc'
 
 const modalsFuncGenerator = (
   router,
@@ -231,6 +232,7 @@ const modalsFuncGenerator = (
     request: {
       add: (requestId) => addModal(requestFunc(requestId, true)),
       edit: (requestId) => addModal(requestFunc(requestId)),
+      statusEdit: (requestId) => addModal(requestStatusEditFunc(requestId)),
       view: (requestId) => addModal(requestViewFunc(requestId)),
     },
     event: {

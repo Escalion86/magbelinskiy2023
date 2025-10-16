@@ -11,15 +11,14 @@ import transactionsAtom from '@state/atoms/transactionsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import { useAtom, useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
-import { EVENT_STATUSES_SIMPLE, TRANSACTION_TYPES } from '@helpers/constants'
+import {
+  EVENT_STATUSES,
+  EVENT_STATUSES_SIMPLE,
+  TRANSACTION_TYPES,
+} from '@helpers/constants'
+import { getEventStatusBadgeClasses } from '@helpers/eventStatusStyles'
 import formatDate from '@helpers/formatDate'
-
-const statusClassNames = {
-  planned: 'bg-blue-500',
-  in_progress: 'bg-amber-500',
-  completed: 'bg-green-500',
-  canceled: 'bg-red-500',
-}
+import cn from 'classnames'
 
 const defaultTransaction = {
   amount: '',
@@ -27,6 +26,14 @@ const defaultTransaction = {
   date: null,
   comment: '',
 }
+
+const statusOptions = [
+  ...EVENT_STATUSES_SIMPLE,
+  ...EVENT_STATUSES.filter(
+    (status) =>
+      !EVENT_STATUSES_SIMPLE.some((simple) => simple.value === status.value)
+  ),
+]
 
 const EventsContent = () => {
   const [events, setEvents] = useAtom(eventsAtom)
@@ -191,9 +198,9 @@ const EventsContent = () => {
       {error && <div className="rounded border border-danger bg-red-50 p-3 text-sm text-danger">{error}</div>}
       <div className="flex-1 space-y-4 overflow-auto">
         {sortedEvents.map((event) => {
-          const status = EVENT_STATUSES_SIMPLE.find(
-            (item) => item.value === event.status
-          )
+          const status =
+            EVENT_STATUSES_SIMPLE.find((item) => item.value === event.status) ??
+            EVENT_STATUSES.find((item) => item.value === event.status)
           const request = event.requestId
             ? requestsMap.get(event.requestId)
             : null
@@ -246,13 +253,30 @@ const EventsContent = () => {
                   <div className="mt-1 text-sm text-gray-600">
                     Комментарий: {event.comment || '—'}
                   </div>
+                  {event.requestId && (
+                    <div className="mt-1 text-sm text-gray-600">
+                      Заявка:{' '}
+                      {request ? (
+                        <button
+                          type="button"
+                          className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-500"
+                          onClick={() => modalsFunc.request?.edit(request._id)}
+                        >
+                          Открыть заявку
+                        </button>
+                      ) : (
+                        <span className="text-gray-400">{event.requestId}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2 text-sm">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold text-white ${
-                        statusClassNames[status?.value ?? 'planned'] || 'bg-blue-500'
-                      }`}
+                      className={cn(
+                        'inline-flex rounded-full px-2 py-0.5 text-xs font-semibold',
+                        getEventStatusBadgeClasses(status?.value ?? event.status)
+                      )}
                     >
                       {status?.name ?? 'Не указан'}
                     </span>
@@ -264,7 +288,7 @@ const EventsContent = () => {
                       disabled={isEventLoading}
                       className="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700"
                     >
-                      {EVENT_STATUSES_SIMPLE.map((item) => (
+                      {statusOptions.map((item) => (
                         <option key={item.value} value={item.value}>
                           {item.name}
                         </option>

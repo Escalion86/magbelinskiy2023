@@ -77,7 +77,7 @@ const CardButtons = ({
     eventUsersBtn: typeOfItem === 'event',
     upBtn: onUpClick && upDownSee,
     downBtn: onDownClick && upDownSee,
-    editBtn: true,
+    editBtn: showEditButton,
     cloneBtn: !['user', 'review'].includes(typeOfItem),
     showOnSiteBtn: showOnSiteOnClick,
     statusBtn: true,
