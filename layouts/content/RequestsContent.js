@@ -119,25 +119,18 @@ const RequestsContent = () => {
                     {request.contractSum ? `${request.contractSum.toLocaleString()} ₽` : '—'}
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-gray-700">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold text-white ${
-                          statusClassNames[status.value] || 'bg-blue-500'
-                        }`}
-                      >
-                        {status.name}
-                      </span>
-                      <button
-                        type="button"
-                        className="text-xs font-medium text-blue-600 underline underline-offset-2 hover:text-blue-500"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          modalsFunc.request?.statusEdit(request._id)
-                        }}
-                      >
-                        Изменить
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold text-white ${
+                        statusClassNames[status.value] || 'bg-blue-500'
+                      }`}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        modalsFunc.request?.statusEdit(request._id)
+                      }}
+                    >
+                      {status.name}
+                    </button>
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-gray-600">
                     {request.comment || '—'}
