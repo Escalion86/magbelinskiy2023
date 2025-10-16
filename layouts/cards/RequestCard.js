@@ -63,7 +63,7 @@ const RequestCard = ({
     <CardWrapper
       loading={loading}
       error={error}
-      onClick={() => !loading && modalsFunc.request.view(request._id)}
+      onClick={() => !loading && modalsFunc.request.edit(request._id)}
       gap={false}
       hidden={hidden}
       style={style}
@@ -94,7 +94,11 @@ const RequestCard = ({
                 {formatDate(request.date, false, true)}
               </div>
               {!noButtons && (
-                <CardButtons item={request} typeOfItem="request" />
+                <CardButtons
+                  item={request}
+                  typeOfItem="request"
+                  showEditButton={false}
+                />
               )}
             </div>
             {/* <TextLinesLimiter
