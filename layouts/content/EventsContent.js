@@ -246,6 +246,22 @@ const EventsContent = () => {
                   <div className="mt-1 text-sm text-gray-600">
                     Комментарий: {event.comment || '—'}
                   </div>
+                  {event.requestId && (
+                    <div className="mt-1 text-sm text-gray-600">
+                      Заявка:{' '}
+                      {request ? (
+                        <button
+                          type="button"
+                          className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-500"
+                          onClick={() => modalsFunc.request?.edit(request._id)}
+                        >
+                          Открыть заявку
+                        </button>
+                      ) : (
+                        <span className="text-gray-400">{event.requestId}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2 text-sm">
                   <div className="flex items-center gap-2">
