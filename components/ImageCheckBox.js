@@ -45,6 +45,7 @@ const ImageCheckBox = ({
             src={src}
             width={big ? 24 : small ? 16 : 20}
             height={big ? 24 : small ? 16 : 20}
+            alt={typeof label === 'string' ? label : ''}
           />
         </div>
         <div

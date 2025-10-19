@@ -70,7 +70,7 @@ const StateLoader = (props) => {
         // siteSettingsState,
       )
     )
-  }, [router, setModalsFunc])
+  }, [loggedUser, router, setItemsFunc, setModalsFunc, snackbar])
 
   useEffect(() => {
     setLoggedUser(props.loggedUser)
@@ -81,7 +81,23 @@ const StateLoader = (props) => {
     setTransactionsState(props.transactions ?? [])
     setSiteSettingsState(props.siteSettings)
     setIsSiteLoading(false)
-  }, [])
+  }, [
+    props.clients,
+    props.directions,
+    props.events,
+    props.loggedUser,
+    props.requests,
+    props.siteSettings,
+    props.transactions,
+    setClientsState,
+    setDirectionsState,
+    setEventsState,
+    setIsSiteLoading,
+    setLoggedUser,
+    setRequestsState,
+    setSiteSettingsState,
+    setTransactionsState,
+  ])
 
   // useEffect(() => {
   //   if (loggedUser) {

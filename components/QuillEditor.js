@@ -107,8 +107,7 @@ const QuillEditor = forwardRef(
     const onTextChangeRef = useRef(onTextChange)
     const onSelectionChangeRef = useRef(onSelectionChange)
     const onChangeRef = useRef(onChange)
-
-    var quill
+    const quillRef = useRef(null)
     // const [loading, setLoading] = useState(false)
     // const [ReactQuill, setReactQuill] = useState(null)
 
@@ -163,7 +162,7 @@ const QuillEditor = forwardRef(
       // const quilLoader = async () => {
       // const Quill = await import('quill')
       // console.log('Quill :>> ', Quill)
-      if (!quill) {
+      if (!quillRef.current) {
         const init = async () => {
           const container = containerRef.current
           const editorContainer = container.appendChild(
@@ -185,7 +184,7 @@ const QuillEditor = forwardRef(
 
           // Quill.register({ 'modules/emoji-toolbar': Emoji })
 
-          quill = new Quill(
+          quillRef.current = new Quill(
             // '#quill-editor'
             editorContainer,
             {
@@ -206,22 +205,19 @@ const QuillEditor = forwardRef(
           // console.log('quill :>> ', quill)
           // quill.set
 
-          if (
-            defaultValue
-            //defaultValueRef.current
-          ) {
+          if (defaultValue) {
             //   // quill.setContents(defaultValueRef.current)
             //   // console.log(quill)
             //   // quill.pasteHTML(defaultValue)
-            quill.clipboard.dangerouslyPasteHTML(defaultValue)
+            quillRef.current.clipboard.dangerouslyPasteHTML(defaultValue)
           }
 
-          quill.on(Quill.events.TEXT_CHANGE, (...args) => {
+          quillRef.current.on(Quill.events.TEXT_CHANGE, (...args) => {
             onTextChangeRef.current?.(...args)
-            onChangeRef.current?.(quill.root.innerHTML)
+            onChangeRef.current?.(quillRef.current.root.innerHTML)
           })
 
-          quill.on(Quill.events.SELECTION_CHANGE, (...args) => {
+          quillRef.current.on(Quill.events.SELECTION_CHANGE, (...args) => {
             onSelectionChangeRef.current?.(...args)
           })
 
@@ -235,8 +231,10 @@ const QuillEditor = forwardRef(
           // }
         }
         init()
+      } else if (defaultValue !== undefined && defaultValue !== null) {
+        quillRef.current.clipboard.dangerouslyPasteHTML(defaultValue)
       }
-    }, [ref])
+    }, [defaultValue])
 
     // if (typeof window !== 'undefined' && ReactQuill) {
     //   const quill = ReactQuill // Save a reference to ReactQuill
