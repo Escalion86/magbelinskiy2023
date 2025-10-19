@@ -43,8 +43,8 @@ const sendTelegramMassage = async (text, url) =>
           })
         : undefined,
     },
-    null,
-    null,
+    (data) => console.log('data', data),
+    (data) => console.log('error', data),
     true
   )
 
