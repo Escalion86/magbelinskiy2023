@@ -15,7 +15,7 @@ import eventSelector from '@state/selectors/eventSelector'
 import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const CardButtonsComponent = ({ event, isEventClosed }) => (
   <CardButtons
@@ -37,10 +37,10 @@ const eventViewFunc = (eventId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const event = useRecoilValue(eventSelector(eventId))
+    const event = useAtomValue(eventSelector(eventId))
 
-    const direction = useRecoilValue(directionSelector(event?.directionId))
-    const organizer = useRecoilValue(userSelector(event?.organizerId))
+    const direction = useAtomValue(directionSelector(event?.directionId))
+    const organizer = useAtomValue(userSelector(event?.organizerId))
 
     const duration = getEventDuration(event)
 

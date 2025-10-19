@@ -12,7 +12,7 @@ import { EVENT_STATUSES, SERVICE_USER_STATUSES } from '@helpers/constants'
 import { modalsFuncAtom } from '@state/atoms'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import CardButton from './CardButton'
 import DropDown from './DropDown'
 import useCopyToClipboard from '@helpers/useCopyToClipboard'
@@ -47,8 +47,8 @@ const CardButtons = ({
   showDeleteButton = true,
   onEditQuestionnaire,
 }) => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
 
   const copyId = useCopyToClipboard(item._id, 'ID скопирован в буфер обмена')
 
@@ -77,7 +77,7 @@ const CardButtons = ({
     eventUsersBtn: typeOfItem === 'event',
     upBtn: onUpClick && upDownSee,
     downBtn: onDownClick && upDownSee,
-    editBtn: true,
+    editBtn: showEditButton,
     cloneBtn: !['user', 'review'].includes(typeOfItem),
     showOnSiteBtn: showOnSiteOnClick,
     statusBtn: true,

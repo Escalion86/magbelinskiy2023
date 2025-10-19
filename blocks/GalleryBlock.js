@@ -7,7 +7,7 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import DivText from './components/DivText'
 import Gallery from './galleryComponents/Gallery'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
@@ -37,8 +37,8 @@ const Title = ({ className }) => (
 )
 
 const GalleryBlock = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
 
   return (
     <div className="relative mt-[100px] flex w-full flex-col items-center md:mt-[110px] xl:mt-[150px]">

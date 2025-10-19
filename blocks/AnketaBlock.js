@@ -7,7 +7,7 @@ import Button from './components/Button'
 import DivContent from './components/DivContent'
 import MaskedInput from 'react-text-mask'
 import { postData } from '@helpers/CRUD'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
 import BackLight from './components/BackLight'
 import BackLight2 from './components/BackLight2'
@@ -49,8 +49,8 @@ const Item = ({ num, text }) => (
 )
 
 const AnketaBlock = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [name, setName] = useState()
 

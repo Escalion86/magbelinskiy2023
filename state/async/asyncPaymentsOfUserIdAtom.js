@@ -1,9 +1,8 @@
-import { atomFamily } from 'recoil'
+import { atomFamily, atomWithDefault } from 'jotai/utils'
 import asyncPaymentsOfUserIdSelector from './asyncPaymentsOfUserIdSelector'
 
-const asyncPaymentsOfUserIdAtom = atomFamily({
-  key: 'asyncPaymentsOfUserIdAtom',
-  default: asyncPaymentsOfUserIdSelector,
-})
+const asyncPaymentsOfUserIdAtom = atomFamily((userId) =>
+  atomWithDefault((get) => get(asyncPaymentsOfUserIdSelector(userId)))
+)
 
 export default asyncPaymentsOfUserIdAtom

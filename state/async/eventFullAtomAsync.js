@@ -1,26 +1,22 @@
+import { atom } from 'jotai'
 import { getData } from '@helpers/CRUD'
 import { DEFAULT_EVENT } from '@helpers/constants'
 import isLoadedAtom from '@state/atoms/isLoadedAtom'
 // import eventsAtom from '@state/atoms/eventsAtom'
-import { atomFamily, selectorFamily } from 'recoil'
-import { setRecoil } from 'recoil-nexus'
+import { atomFamily, atomWithDefault } from 'jotai/utils'
+import { setAtomValue } from '@state/storeHelpers'
 
-export const eventFullSelectorAsync = selectorFamily({
-  key: 'eventFullSelectorAsync',
-  get:
-    (id) =>
-    async ({ get }) => {
-      if (!id) return DEFAULT_EVENT
-      const res = await getData('/api/events/' + id, {}, null, null, false)
-      setRecoil(isLoadedAtom('eventFullAtomAsync' + id), true)
-      return res
-      // return get(eventsAtom).find((item) => item._id === id)
-    },
-})
+export const eventFullSelectorAsync = atomFamily((id) =>
+  atom(async () => {
+    if (!id) return DEFAULT_EVENT
+    const res = await getData('/api/events/' + id, {}, null, null, false)
+    setAtomValue(isLoadedAtom('eventFullAtomAsync' + id), true)
+    return res
+  })
+)
 
-const eventFullAtomAsync = atomFamily({
-  key: 'eventFullAtomAsync',
-  default: eventFullSelectorAsync,
-})
+const eventFullAtomAsync = atomFamily((id) =>
+  atomWithDefault((get) => get(eventFullSelectorAsync(id)))
+)
 
 export default eventFullAtomAsync

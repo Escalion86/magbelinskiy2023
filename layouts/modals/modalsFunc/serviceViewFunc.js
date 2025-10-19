@@ -8,7 +8,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import serviceSelector from '@state/selectors/serviceSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const CardButtonsComponent = ({ service }) => (
   <CardButtons item={service} typeOfItem="service" forForm />
@@ -24,8 +24,8 @@ const serviceViewFunc = (serviceId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const modalsFunc = useRecoilValue(modalsFuncAtom)
-    const service = useRecoilValue(serviceSelector(serviceId))
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+    const service = useAtomValue(serviceSelector(serviceId))
 
     useEffect(() => {
       if (setTopLeftComponent)

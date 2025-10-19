@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Button from '../components/Button'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 
 const Arrow = ({ right, className, onClick }) => {
   return (
@@ -107,7 +107,7 @@ const Star = () => (
 )
 
 const Reviews = ({ className }) => {
-  // const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
+  // const setShowModalZakaz = useSetAtom(showModalZakazAtom)
 
   var carousel,
     firstCardWidth,

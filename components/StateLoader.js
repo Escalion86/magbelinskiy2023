@@ -1,4 +1,4 @@
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useAtom, useSetAtom } from 'jotai'
 
 import directionsAtom from '@state/atoms/directionsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
@@ -28,34 +28,34 @@ const StateLoader = (props) => {
 
   const router = useRouter()
 
-  const [modalFunc, setModalsFunc] = useRecoilState(modalsFuncAtom)
+  const [modalFunc, setModalsFunc] = useAtom(modalsFuncAtom)
 
-  const [isSiteLoading, setIsSiteLoading] = useRecoilState(isSiteLoadingAtom)
+  const [isSiteLoading, setIsSiteLoading] = useAtom(isSiteLoadingAtom)
 
-  // const [mode, setMode] = useRecoilState(modeAtom)
+  // const [mode, setMode] = useAtom(modeAtom)
 
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom)
+  const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom)
 
-  const setRequestsState = useSetRecoilState(requestsAtom)
-  const setEventsState = useSetRecoilState(eventsAtom)
-  const setDirectionsState = useSetRecoilState(directionsAtom)
-  const setClientsState = useSetRecoilState(clientsAtom)
-  const setTransactionsState = useSetRecoilState(transactionsAtom)
-  // const setAdditionalBlocksState = useSetRecoilState(additionalBlocksAtom)
-  // const setUsersState = useSetRecoilState(usersAtom)
-  // const setReviewsState = useSetRecoilState(reviewsAtom)
-  // const setPaymentsState = useSetRecoilState(paymentsAtom)
+  const setRequestsState = useSetAtom(requestsAtom)
+  const setEventsState = useSetAtom(eventsAtom)
+  const setDirectionsState = useSetAtom(directionsAtom)
+  const setClientsState = useSetAtom(clientsAtom)
+  const setTransactionsState = useSetAtom(transactionsAtom)
+  // const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
+  // const setUsersState = useSetAtom(usersAtom)
+  // const setReviewsState = useSetAtom(reviewsAtom)
+  // const setPaymentsState = useSetAtom(paymentsAtom)
   const [siteSettingsState, setSiteSettingsState] =
-    useRecoilState(siteSettingsAtom)
-  // const setRolesSettingsState = useSetRecoilState(rolesAtom)
-  // const setHistoriesState = useSetRecoilState(historiesAtom)
-  // const setQuestionnairesState = useSetRecoilState(questionnairesAtom)
-  // const setQuestionnairesUsersState = useSetRecoilState(questionnairesUsersAtom)
-  // const setServicesState = useSetRecoilState(servicesAtom)
-  // const setServicesUsersState = useSetRecoilState(servicesUsersAtom)
-  // const setServerSettingsState = useSetRecoilState(serverSettingsAtom)
+    useAtom(siteSettingsAtom)
+  // const setRolesSettingsState = useSetAtom(rolesAtom)
+  // const setHistoriesState = useSetAtom(historiesAtom)
+  // const setQuestionnairesState = useSetAtom(questionnairesAtom)
+  // const setQuestionnairesUsersState = useSetAtom(questionnairesUsersAtom)
+  // const setServicesState = useSetAtom(servicesAtom)
+  // const setServicesUsersState = useSetAtom(servicesUsersAtom)
+  // const setServerSettingsState = useSetAtom(serverSettingsAtom)
 
-  const setItemsFunc = useSetRecoilState(itemsFuncAtom)
+  const setItemsFunc = useSetAtom(itemsFuncAtom)
 
   useWindowDimensionsRecoil()
 

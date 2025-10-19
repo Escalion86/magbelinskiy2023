@@ -1,7 +1,7 @@
 import { AUDIENCE, EVENT_TYPES } from '@helpers/constants'
 import requestSelector from '@state/selectors/requestSelector'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const requestViewFunc = (requestId) => {
   const RequestViewModal = ({
@@ -13,7 +13,7 @@ const requestViewFunc = (requestId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const request = useRecoilValue(requestSelector(requestId))
+    const request = useAtomValue(requestSelector(requestId))
 
     if (!requestId || !request)
       return (

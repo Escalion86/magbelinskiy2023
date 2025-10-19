@@ -14,7 +14,7 @@ import { PASTEL_COLORS } from '@helpers/constants'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 
 function randomIntFromInterval(min, max) {
   // min and max included
@@ -30,9 +30,9 @@ const eventsTagsFunc = () => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
-    const [siteSettings, setSiteSettings] = useRecoilState(siteSettingsAtom)
-    // const setEventsTags = useRecoilValue(itemsFuncAtom).eventsTags.set
+    const loggedUser = useAtomValue(loggedUserAtom)
+    const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
+    // const setEventsTags = useAtomValue(itemsFuncAtom).eventsTags.set
     const [tags, setTags] = useState(siteSettings.eventsTags ?? [])
 
     const onAdd = () => {

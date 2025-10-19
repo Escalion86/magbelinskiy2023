@@ -15,7 +15,7 @@ import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const EventCard = ({
   eventId,
@@ -26,22 +26,22 @@ const EventCard = ({
   changeStyle = 'laptop',
 }) => {
   // const widthNum = useWindowDimensionsTailwindNum()
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const event = useRecoilValue(eventSelector(eventId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const event = useAtomValue(eventSelector(eventId))
 
-  const direction = useRecoilValue(directionSelector(event?.directionId))
-  const loading = useRecoilValue(loadingAtom('event' + eventId))
-  const error = useRecoilValue(errorAtom('event' + eventId))
-  const itemFunc = useRecoilValue(itemsFuncAtom)
-  // const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+  const direction = useAtomValue(directionSelector(event?.directionId))
+  const loading = useAtomValue(loadingAtom('event' + eventId))
+  const error = useAtomValue(errorAtom('event' + eventId))
+  const itemFunc = useAtomValue(itemsFuncAtom)
+  // const subEventSum = useAtomValue(subEventsSumOfEventSelector(event._id))
 
   if (!event) return null
   const eventStatus = eventStatusFunc(event)
-  // const eventUsers = useRecoilValue(eventsUsersFullByEventIdSelector(eventId))
+  // const eventUsers = useAtomValue(eventsUsersFullByEventIdSelector(eventId))
 
-  // const eventLoggedUserStatus = useRecoilValue(
+  // const eventLoggedUserStatus = useAtomValue(
   //   loggedUserToEventStatusSelector(eventId)
   // )
 
@@ -49,7 +49,7 @@ const EventCard = ({
   //   .filter((item) => item.user && item.status === 'assistant')
   //   .map((item) => item.user)
 
-  // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+  // const eventAssistants = useAtomValue(eventAssistantsSelector(eventId))
 
   // const formatedAddress = formatAddress(event.address)
 

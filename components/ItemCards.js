@@ -14,7 +14,7 @@ import directionSelector from '@state/selectors/directionSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
 import DOMPurify from 'isomorphic-dompurify'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import DateTimeEvent from './DateTimeEvent'
 import EventNameById from './EventNameById'
 import TextLinesLimiter from './TextLinesLimiter'
@@ -86,7 +86,7 @@ export const UserItemFromId = ({
   noBorder,
   ...props
 }) => {
-  const user = useRecoilValue(userSelector(userId))
+  const user = useAtomValue(userSelector(userId))
   return (
     <UserItem
       item={user}
@@ -109,11 +109,11 @@ export const UserItem = ({
   children,
   nameFieldWrapperClassName,
 }) => {
-  const serverDate = new Date(useRecoilValue(serverSettingsAtom)?.dateTime)
+  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
 
   const seeBirthday = true
 
-  const device = useRecoilValue(windowDimensionsTailwindSelector)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
 
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
@@ -179,7 +179,7 @@ export const UserItem = ({
 }
 
 export const EventItemFromId = ({ eventId, ...props }) => {
-  const event = useRecoilValue(eventSelector(eventId))
+  const event = useAtomValue(eventSelector(eventId))
   return <EventItem item={event} {...props} />
 }
 
@@ -193,7 +193,7 @@ export const EventItem = ({
   noBorder,
   noStatusIcon,
 }) => {
-  const direction = useRecoilValue(directionSelector(item.directionId))
+  const direction = useAtomValue(directionSelector(item.directionId))
 
   const eventStatus = eventStatusFunc(item)
   const eventStatusObj = EVENT_STATUSES_WITH_TIME.find(
@@ -298,7 +298,7 @@ export const ServiceItemFromId = ({
   active = false,
   bordered = false,
 }) => {
-  const service = useRecoilValue(serviceSelector(serviceId))
+  const service = useAtomValue(serviceSelector(serviceId))
   return (
     <ServiceItem
       item={service}
