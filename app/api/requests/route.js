@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
-import { postData } from '@helpers/CRUD'
 import formatDate from '@helpers/formatDate'
-import dns from 'dns'
-import { Agent as UndiciAgent } from 'undici'
+import telegramPost from '@server/telegramApi'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -13,12 +11,6 @@ const normalizePhone = (phone) =>
     : typeof phone === 'number'
     ? String(phone)
     : ''
-
-const escapeHtml = (value) =>
-  String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
 
 const sanitizeContacts = (contacts) => {
   if (Array.isArray(contacts))
@@ -31,23 +23,8 @@ const sanitizeContacts = (contacts) => {
   return []
 }
 
-const lookupIPv4 = (hostname, options, callback) => {
-  if (typeof options === 'function') {
-    return dns.lookup(hostname, { family: 4 }, options)
-  }
-
-  return dns.lookup(hostname, { ...(options || {}), family: 4 }, callback)
-}
-
-const telegramDispatcher = new UndiciAgent({
-  connect: {
-    lookup: lookupIPv4,
-    family: 4,
-  },
-})
-
 const sendTelegramMassage = async (text, url) =>
-  await postData(
+  await telegramPost(
     `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
     {
       chat_id: 261102161,
@@ -68,8 +45,7 @@ const sendTelegramMassage = async (text, url) =>
     },
     null,
     null,
-    true,
-    telegramDispatcher
+    true
   )
 
 export const GET = async () => {
@@ -117,45 +93,29 @@ export const POST = async (req) => {
       ? `+${normalizedPhone}`
       : ''
 
-  const safeClientName = clientName ? escapeHtml(clientName) : ''
-  const safeDisplayPhone = displayPhone ? escapeHtml(displayPhone) : ''
-  const safeContacts = contacts.map((contact) => escapeHtml(contact))
-  const safeLocation = location ? escapeHtml(location) : ''
-  const safeComment = comment ? escapeHtml(comment) : ''
-  const safeYandexAim = yandexAim ? escapeHtml(yandexAim) : ''
-  const domainSuffix = process.env.DOMAIN
-    ? ` с ${escapeHtml(process.env.DOMAIN)}`
-    : ''
-
-  const safeEventDate = eventDate
-    ? escapeHtml(formatDate(eventDate, false, true))
-    : null
-
   const messageParts = [
-    `Новая заявка${domainSuffix}`,
+    `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
     '',
-    safeClientName ? `<b>Имя клиента:</b> ${safeClientName}` : null,
-    safeDisplayPhone ? `<b>Телефон:</b> ${safeDisplayPhone}` : null,
-    safeContacts.length > 0
-      ? `<b>Способы связи:</b> ${safeContacts.join(', ')}`
+    clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
+    displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+    contacts.length > 0 ? `<b>Способы связи:</b> ${contacts.join(', ')}` : null,
+    eventDate
+      ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
       : null,
-    safeEventDate ? `<b>Дата мероприятия:</b> ${safeEventDate}` : null,
-    safeLocation ? `<b>Локация:</b> ${safeLocation}` : null,
+    location ? `<b>Локация:</b> ${location}` : null,
     numericContractSum
       ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
           'ru-RU'
         )} ₽`
       : null,
-    safeComment ? `<b>Комментарий:</b> ${safeComment}` : null,
-    safeYandexAim ? `<b>Яндекс цель:</b> ${safeYandexAim}` : null,
+    comment ? `<b>Комментарий:</b> ${comment}` : null,
+    yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
   ].filter(Boolean)
-
   // const telegramResult = await
   sendTelegramMassage(
     messageParts.join('\n'),
     normalizedPhone ? `tel:+${normalizedPhone}` : undefined
   )
-
   // if (!telegramResult?.ok) {
   //   return NextResponse.json(
   //     {
