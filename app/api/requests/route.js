@@ -14,6 +14,12 @@ const normalizePhone = (phone) =>
     ? String(phone)
     : ''
 
+const escapeHtml = (value) =>
+  String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+
 const sanitizeContacts = (contacts) => {
   if (Array.isArray(contacts))
     return contacts.map((item) => String(item).trim()).filter(Boolean)
@@ -111,23 +117,37 @@ export const POST = async (req) => {
       ? `+${normalizedPhone}`
       : ''
 
+  const safeClientName = clientName ? escapeHtml(clientName) : ''
+  const safeDisplayPhone = displayPhone ? escapeHtml(displayPhone) : ''
+  const safeContacts = contacts.map((contact) => escapeHtml(contact))
+  const safeLocation = location ? escapeHtml(location) : ''
+  const safeComment = comment ? escapeHtml(comment) : ''
+  const safeYandexAim = yandexAim ? escapeHtml(yandexAim) : ''
+  const domainSuffix = process.env.DOMAIN
+    ? ` с ${escapeHtml(process.env.DOMAIN)}`
+    : ''
+
+  const safeEventDate = eventDate
+    ? escapeHtml(formatDate(eventDate, false, true))
+    : null
+
   const messageParts = [
-    `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
+    `Новая заявка${domainSuffix}`,
     '',
-    clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
-    displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
-    contacts.length > 0 ? `<b>Способы связи:</b> ${contacts.join(', ')}` : null,
-    eventDate
-      ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
+    safeClientName ? `<b>Имя клиента:</b> ${safeClientName}` : null,
+    safeDisplayPhone ? `<b>Телефон:</b> ${safeDisplayPhone}` : null,
+    safeContacts.length > 0
+      ? `<b>Способы связи:</b> ${safeContacts.join(', ')}`
       : null,
-    location ? `<b>Локация:</b> ${location}` : null,
+    safeEventDate ? `<b>Дата мероприятия:</b> ${safeEventDate}` : null,
+    safeLocation ? `<b>Локация:</b> ${safeLocation}` : null,
     numericContractSum
       ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
           'ru-RU'
         )} ₽`
       : null,
-    comment ? `<b>Комментарий:</b> ${comment}` : null,
-    yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+    safeComment ? `<b>Комментарий:</b> ${safeComment}` : null,
+    safeYandexAim ? `<b>Яндекс цель:</b> ${safeYandexAim}` : null,
   ].filter(Boolean)
 
   // const telegramResult = await

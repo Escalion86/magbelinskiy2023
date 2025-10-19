@@ -26,6 +26,7 @@ import IconWithTooltip from './IconWithTooltip'
 import paymentSectorFunc from '@helpers/paymentSector'
 import PayTypeIcon from './PayTypeIcon'
 import eventSelector from '@state/selectors/eventSelector'
+import Image from 'next/image'
 
 const ItemContainer = ({
   onClick,
@@ -145,10 +146,12 @@ export const UserItem = ({
           )}
         </div>
       )}
-      <img
+      <Image
         className="aspect-1 h-[42px] object-cover"
         src={getUserAvatarSrc(item)}
-        alt="user"
+        alt="Фотография пользователя"
+        width={42}
+        height={42}
       />
       <div className="relative flex flex-1 items-center gap-x-0.5 px-1 py-0.5">
         <div
@@ -268,10 +271,12 @@ export const DirectionItem = ({ item, onClick = null, active = false }) => (
     noPadding
   >
     {item?.image && (
-      <img
+      <Image
         className="aspect-1 h-[50px] object-cover"
         src={item.image}
-        alt="direction"
+        alt="Изображение направления"
+        width={50}
+        height={50}
       />
     )}
     <div className="px-1">
@@ -326,10 +331,12 @@ export const ServiceItem = ({
     style={style}
   >
     {item?.images && item?.images.length > 0 && (
-      <img
+      <Image
         className="aspect-1 h-[50px] object-cover"
         src={item.images[0]}
-        alt="direction"
+        alt="Изображение услуги"
+        width={50}
+        height={50}
       />
     )}
     <div className="px-1">

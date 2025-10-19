@@ -1,5 +1,6 @@
 import cn from 'classnames'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export const LoadingSpinner = ({
   className,
@@ -54,11 +55,14 @@ export const LoadingSpinner = ({
           }}
           className="flex h-full items-center justify-center"
         >
-          <img
+          <Image
             className="aspect-1 h-[70%] max-h-[80%] w-[70%] object-contain"
             style={{ maxHeight: widthHeight, maxWidth: widthHeight }}
             src="/img/logo.png"
-            alt="logo"
+            alt="Логотип"
+            width={widthHeight}
+            height={widthHeight}
+            priority
           />
         </motion.div>
       </div>
