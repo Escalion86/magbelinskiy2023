@@ -77,7 +77,7 @@ const InputImages = ({
   useEffect(() => {
     setAddingImage(false)
     if (typeof onLoaded === 'function') onLoaded()
-  }, [images])
+  }, [images, onLoaded])
 
   return (
     <InputWrapper
