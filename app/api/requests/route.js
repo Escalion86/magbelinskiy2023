@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
+import { postData } from '@helpers/CRUD'
+import formatDate from '@helpers/formatDate'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -20,6 +22,31 @@ const sanitizeContacts = (contacts) => {
       .filter(Boolean)
   return []
 }
+
+const sendTelegramMassage = async (text, url) =>
+  await postData(
+    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    {
+      chat_id: 261102161,
+      text,
+      parse_mode: 'html',
+      reply_markup: url
+        ? JSON.stringify({
+            inline_keyboard: [
+              [
+                {
+                  text: 'Позвонить клиенту',
+                  url,
+                },
+              ],
+            ],
+          })
+        : undefined,
+    },
+    null,
+    null,
+    true
+  )
 
 export const GET = async () => {
   await dbConnect()
@@ -58,6 +85,43 @@ export const POST = async (req) => {
 
   const normalizedPhone = normalizePhone(rawPhone)
   const contacts = sanitizeContacts(contactChannels)
+  const numericContractSum = Number(contractSum) || 0
+  const displayPhone =
+    typeof rawPhone === 'string' && rawPhone.trim().length > 0
+      ? rawPhone.trim()
+      : normalizedPhone
+      ? `+${normalizedPhone}`
+      : ''
+
+  const messageParts = [
+    `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
+    '',
+    clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
+    displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+    contacts.length > 0 ? `<b>Способы связи:</b> ${contacts.join(', ')}` : null,
+    eventDate ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}` : null,
+    location ? `<b>Локация:</b> ${location}` : null,
+    numericContractSum
+      ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString('ru-RU')} ₽`
+      : null,
+    comment ? `<b>Комментарий:</b> ${comment}` : null,
+    yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+  ].filter(Boolean)
+
+  const telegramResult = await sendTelegramMassage(
+    messageParts.join('\n'),
+    normalizedPhone ? `tel:+${normalizedPhone}` : undefined
+  )
+
+  if (!telegramResult?.ok) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Не удалось отправить уведомление в Telegram',
+      },
+      { status: 502 }
+    )
+  }
 
   const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
 
@@ -91,7 +155,7 @@ export const POST = async (req) => {
     contactChannels: contacts,
     eventDate: eventDate ? new Date(eventDate) : null,
     location: location ?? '',
-    contractSum: Number(contractSum) || 0,
+    contractSum: numericContractSum,
     comment: comment ?? '',
     yandexAim,
   })
