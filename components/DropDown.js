@@ -1,4 +1,4 @@
-import PrelineScript from 'app/components/PrelineScript'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cn from 'classnames'
 
 const DropDown = ({
@@ -12,62 +12,109 @@ const DropDown = ({
   className,
   placement,
 }) => {
-  const padding =
-    menuPadding === 'md'
-      ? 'p-2'
-      : menuPadding === 'sm'
-      ? 'p-1'
-      : menuPadding === 'lg'
-      ? 'p-3'
-      : ''
-  const placementVal =
-    placement === 'right' ? 'right-0' : placement === 'left' ? 'left-0' : ''
-  // const placementVal =
-  //   placement === 'bottom'
-  //     ? '[--placement:bottom]'
-  //     : placement === 'right'
-  //     ? '[--placement:right]'
-  //     : placement === 'right-bottom'
-  //     ? '[--placement:right-bottom]'
-  //     : placement === 'right-top'
-  //     ? '[--placement:right-top]'
-  //     : placement === 'top'
-  //     ? '[--placement:top]'
-  //     : ''
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef(null)
+
+  const padding = useMemo(() => {
+    switch (menuPadding) {
+      case 'md':
+        return 'p-2'
+      case 'sm':
+        return 'p-1'
+      case 'lg':
+        return 'p-3'
+      default:
+        return ''
+    }
+  }, [menuPadding])
+
+  const placementClassName = useMemo(() => {
+    if (placement === 'right') {
+      return 'right-0'
+    }
+    if (placement === 'left') {
+      return 'left-0'
+    }
+    return ''
+  }, [placement])
+
+  const handleToggle = useCallback(() => {
+    if (openOnHover) return
+    setIsOpen((prev) => !prev)
+  }, [openOnHover])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleMouseDown = (event) => {
+      const element = containerRef.current
+      if (!element) return
+
+      const isInside = element.contains(event.target)
+
+      if (isInside) {
+        if (turnOffAutoClose !== 'inside') {
+          setIsOpen(false)
+        }
+        return
+      }
+
+      if (turnOffAutoClose !== 'outside') {
+        setIsOpen(false)
+      }
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleMouseDown)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, turnOffAutoClose])
+
+  const hoverHandlers = openOnHover
+    ? {
+        onMouseEnter: () => setIsOpen(true),
+        onMouseLeave: () => setIsOpen(false),
+      }
+    : {}
+
   return (
     <div
-      className={cn(
-        'hs-dropdown relative inline-flex [--placement:bottom]',
-        turnOffAutoClose === 'inside'
-          ? '[--auto-close:inside]'
-          : turnOffAutoClose === 'outside'
-          ? '[--auto-close:outside]'
-          : '',
-        // placementVal,
-        openOnHover ? '[--trigger:hover] ' : '',
-        strategyAbsolute ? '[--strategy:absolute]' : '',
-        className
-      )}
+      ref={containerRef}
+      className={cn('relative inline-flex', className)}
       data-prevent-parent-click
+      {...hoverHandlers}
     >
-      <PrelineScript />
-      <div id="hs-dropdown" className="hs-dropdown-toggle w-full">
+      <div className="w-full" onClick={handleToggle}>
         {trigger}
       </div>
-      <div
-        className={cn(
-          'hs-dropdown-menu duration z-50 hidden items-center justify-center rounded-lg border border-gray-400 bg-white opacity-0 shadow-md transition-[opacity,margin] hs-dropdown-open:flex hs-dropdown-open:opacity-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800',
-          strategyAbsolute
-            ? 'before:absolute before:-top-4 before:left-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:left-0 after:h-4 after:w-full'
-            : '',
-          padding,
-          placementVal,
-          menuClassName
-        )}
-        aria-labelledby="hs-dropdown"
-      >
-        {children}
-      </div>
+      {isOpen ? (
+        <div
+          className={cn(
+            'z-50 flex items-center justify-center rounded-lg border border-gray-400 bg-white shadow-md dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800',
+            strategyAbsolute
+              ? cn(
+                  'absolute top-full mt-2',
+                  placementClassName || 'left-0'
+                )
+              : 'mt-2 w-full',
+            padding,
+            menuClassName
+          )}
+          aria-hidden={!isOpen}
+          role="menu"
+        >
+          {children}
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -5,7 +5,7 @@ import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
 import DivText from './components/DivText'
-import { useRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 import modalInfoAtom from '@state/atoms/modalInfoAtom'
 import Modal from './components/Modal'
 
@@ -21,7 +21,7 @@ const Title = ({ children, className }) => (
 )
 
 const ModalInfo = ({}) => {
-  const [modalInfo, setModalInfo] = useRecoilState(modalInfoAtom)
+  const [modalInfo, setModalInfo] = useAtom(modalInfoAtom)
 
   return (
     <Modal show={modalInfo} closeFunc={() => setModalInfo(undefined)}>

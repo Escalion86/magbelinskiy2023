@@ -3,7 +3,7 @@ import { putData } from '@helpers/CRUD'
 import useSnackbar from '@helpers/useSnackbar'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const notificationsDeativateTelegramFunc = (onSuccess) => {
   const NotificationsDeativateTelegramModal = ({
@@ -14,7 +14,7 @@ const notificationsDeativateTelegramFunc = (onSuccess) => {
     setDisableConfirm,
     setDisableDecline,
   }) => {
-    const loggedUser = useRecoilValue(loggedUserAtom)
+    const loggedUser = useAtomValue(loggedUserAtom)
 
     const { success, error } = useSnackbar()
 

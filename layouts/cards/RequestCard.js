@@ -21,7 +21,7 @@ import loadingAtom from '@state/atoms/loadingAtom'
 import requestSelector from '@state/selectors/requestSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 
 const RequestCard = ({
   requestId,
@@ -31,15 +31,15 @@ const RequestCard = ({
   changeStyle = 'laptop',
 }) => {
   // const widthNum = useWindowDimensionsTailwindNum()
-  const widthNum = useRecoilValue(windowDimensionsNumSelector)
+  const widthNum = useAtomValue(windowDimensionsNumSelector)
 
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const request = useRecoilValue(requestSelector(requestId))
+  const modalsFunc = useAtomValue(modalsFuncAtom)
+  const request = useAtomValue(requestSelector(requestId))
 
-  const loading = useRecoilValue(loadingAtom('request' + requestId))
-  const error = useRecoilValue(errorAtom('request' + requestId))
-  // const itemFunc = useRecoilValue(itemsFuncAtom)
-  // const subEventSum = useRecoilValue(subEventsSumOfEventSelector(event._id))
+  const loading = useAtomValue(loadingAtom('request' + requestId))
+  const error = useAtomValue(errorAtom('request' + requestId))
+  // const itemFunc = useAtomValue(itemsFuncAtom)
+  // const subEventSum = useAtomValue(subEventsSumOfEventSelector(event._id))
 
   if (!request) return null
   const requestStatus = 'active' //eventStatusFunc(event)
@@ -48,7 +48,7 @@ const RequestCard = ({
     AUDIENCE.find((item) => item.value === request.audience)?.name ?? undefined
   const requestType =
     EVENT_TYPES.find((item) => item.value === request.type)?.name ?? undefined
-  // const eventLoggedUserStatus = useRecoilValue(
+  // const eventLoggedUserStatus = useAtomValue(
   //   loggedUserToEventStatusSelector(eventId)
   // )
 
@@ -56,14 +56,14 @@ const RequestCard = ({
   //   .filter((item) => item.user && item.status === 'assistant')
   //   .map((item) => item.user)
 
-  // const eventAssistants = useRecoilValue(eventAssistantsSelector(eventId))
+  // const eventAssistants = useAtomValue(eventAssistantsSelector(eventId))
 
   // const formatedAddress = formatAddress(event.address)
   return (
     <CardWrapper
       loading={loading}
       error={error}
-      onClick={() => !loading && modalsFunc.request.view(request._id)}
+      onClick={() => !loading && modalsFunc.request.edit(request._id)}
       gap={false}
       hidden={hidden}
       style={style}
@@ -94,7 +94,11 @@ const RequestCard = ({
                 {formatDate(request.date, false, true)}
               </div>
               {!noButtons && (
-                <CardButtons item={request} typeOfItem="request" />
+                <CardButtons
+                  item={request}
+                  typeOfItem="request"
+                  showEditButton={false}
+                />
               )}
             </div>
             {/* <TextLinesLimiter

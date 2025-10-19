@@ -12,7 +12,7 @@ import {
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { useCallback, useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import ComboBox from '@components/ComboBox'
 import requestSelector from '@state/selectors/requestSelector'
 import DateTimePicker from '@components/DateTimePicker'
@@ -28,8 +28,8 @@ const requestFunc = (requestId, clone = false) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const request = useRecoilValue(requestSelector(requestId))
-    const setRequest = useRecoilValue(itemsFuncAtom).request.set
+    const request = useAtomValue(requestSelector(requestId))
+    const setRequest = useAtomValue(itemsFuncAtom).request.set
 
     const [phone, setPhone] = useState(request?.phone ?? DEFAULT_REQUEST.phone)
     const [source, setSource] = useState(

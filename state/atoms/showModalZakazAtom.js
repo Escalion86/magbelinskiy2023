@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const showModalZakazAtom = atom({
-  key: 'showModalZakazAtom', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
-})
+const showModalZakazAtom = atom(false)
 
 export default showModalZakazAtom

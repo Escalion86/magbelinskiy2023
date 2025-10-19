@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const showModalFocusResultAtom = atom({
-  key: 'showModalFocusResultAtom', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
-})
+const showModalFocusResultAtom = atom(false)
 
 export default showModalFocusResultAtom

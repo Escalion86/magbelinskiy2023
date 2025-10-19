@@ -12,7 +12,7 @@ import cn from 'classnames'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 const menuCfg = () => {
   // const visiblePages = pages.filter((page) => )
@@ -62,7 +62,7 @@ const menuCfg = () => {
 }
 
 const MenuItem = ({ item, active = false, badge }) => {
-  const setMenuOpen = useSetRecoilState(menuOpenAtom)
+  const setMenuOpen = useSetAtom(menuOpenAtom)
   return (
     <Link href={'/cabinet/' + item.href} shallow legacyBehavior>
       <a
@@ -95,10 +95,10 @@ const MenuItem = ({ item, active = false, badge }) => {
 }
 
 const Menu = ({ menuCfg, activePage }) => {
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [openedMenuIndex, setOpenedMenuIndex] = useState(1)
 
-  // const { itemsBadges, groupsBadges } = useRecoilValue(badgesSelector)
+  // const { itemsBadges, groupsBadges } = useAtomValue(badgesSelector)
 
   const variants = {
     show: { height: 'auto' },
@@ -229,10 +229,10 @@ const SideBar = ({ page }) => {
   console.log('page :>> ', page)
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
-  const [menuOpen, setMenuOpen] = useRecoilState(menuOpenAtom)
+  const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
   const [scrollPos, setScrollPos] = useState(0)
   const [scrollable, setScrollable] = useState(false)
-  const { height } = useRecoilValue(windowDimensionsAtom)
+  const { height } = useAtomValue(windowDimensionsAtom)
 
   const handleScrollPosition = (scrollAmount) => {
     var newPos

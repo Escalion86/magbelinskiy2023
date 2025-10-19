@@ -6,7 +6,7 @@ import Button from '../components/Button'
 import DivContent from '../components/DivContent'
 import DivText from '../components/DivText'
 import showModalZakazAtom from '@state/atoms/showModalZakazAtom'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 
@@ -308,9 +308,9 @@ const DiscountInfo = ({ className }) => (
 )
 
 const Content = () => {
-  const setShowModalZakaz = useSetRecoilState(showModalZakazAtom)
-  const setYandexAim = useSetRecoilState(yandexAimAtom)
-  const widthTailwind = useRecoilValue(windowDimensionsTailwindSelector)
+  const setShowModalZakaz = useSetAtom(showModalZakazAtom)
+  const setYandexAim = useSetAtom(yandexAimAtom)
+  const widthTailwind = useAtomValue(windowDimensionsTailwindSelector)
 
   return (
     <DivContent

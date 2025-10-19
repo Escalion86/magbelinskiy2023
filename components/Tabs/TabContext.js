@@ -1,12 +1,12 @@
 import { TabContext as MuiTabContext } from '@mui/lab'
 import Tab from '@mui/material/Tab'
-import { useState } from 'react'
+import { Children, useState } from 'react'
 import TabList from './TabList'
 
 const TabContext = ({ value, children }) => {
   const [tab, setTab] = useState(value)
   const tabs = []
-  children.forEach((child, index) => {
+  Children.forEach(children, (child) => {
     if (child?.props?.tabName) {
       const tabName = child.props.tabName
       const tabAddToLabel = child.props.tabAddToLabel

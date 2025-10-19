@@ -1,8 +1,5 @@
-import { atom } from 'recoil'
+import { atom } from 'jotai'
 
-const yandexAimAtom = atom({
-  key: 'yandexAimAtom', // unique ID (with respect to other atoms/selectors)
-  default: null, // default value (aka initial value)
-})
+const yandexAimAtom = atom(null)
 
 export default yandexAimAtom

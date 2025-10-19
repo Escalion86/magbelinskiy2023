@@ -1,41 +1,36 @@
+import { Schema } from 'mongoose'
+
 const requestsSchema = {
-  phone: {
-    type: Number,
+  clientId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Clients',
     default: null,
   },
-  source: {
+  clientName: {
     type: String,
-    default: null,
+    required: [true, 'Укажите имя клиента'],
+    trim: true,
   },
-  date: {
+  clientPhone: {
+    type: String,
+    required: [true, 'Укажите телефон клиента'],
+  },
+  contactChannels: {
+    type: [String],
+    default: [],
+  },
+  eventDate: {
     type: Date,
     default: null,
   },
-  audience: {
+  location: {
     type: String,
     default: '',
   },
-  type: {
-    type: String,
-    default: '',
+  contractSum: {
+    type: Number,
+    default: 0,
   },
-  customType: {
-    type: String,
-    default: '',
-  },
-  spectators: {
-    type: String,
-    default: '',
-  },
-  town: {
-    type: String,
-    default: '',
-  },
-  address: {
-    type: String,
-    default: '',
-  },
-  official: { type: Boolean, default: false },
   comment: {
     type: String,
     default: '',
@@ -44,9 +39,15 @@ const requestsSchema = {
     type: String,
     default: '',
   },
-  contact: {
+  status: {
     type: String,
-    default: '',
+    enum: ['new', 'in_progress', 'converted', 'canceled'],
+    default: 'new',
+  },
+  eventId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Events',
+    default: null,
   },
 }
 

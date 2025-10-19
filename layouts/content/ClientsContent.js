@@ -1,161 +1,156 @@
 'use client'
 
-import ContentHeader from '@components/ContentHeader'
-// import UsersFilter from '@components/Filter/UsersFilter'
-import AddButton from '@components/IconToggleButtons/AddButton'
-import SearchToggleButton from '@components/IconToggleButtons/SearchToggleButton'
-import Search from '@components/Search'
-import SortingButtonMenu from '@components/SortingButtonMenu'
-import filterItems from '@helpers/filterItems'
-import { getNounUsers } from '@helpers/getNoun'
-import sortFuncGenerator from '@helpers/sortFuncGenerator'
-import UsersList from '@layouts/lists/UsersList'
-import { modalsFuncAtom } from '@state/atoms'
-import usersAtom from '@state/atoms/usersAtom'
 import { useMemo, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import ContentHeader from '@components/ContentHeader'
+import Button from '@components/Button'
+import Input from '@components/Input'
+import clientsAtom from '@state/atoms/clientsAtom'
+import requestsAtom from '@state/atoms/requestsAtom'
+import eventsAtom from '@state/atoms/eventsAtom'
+import { useAtomValue } from 'jotai'
+import { modalsFuncAtom } from '@state/atoms'
+import formatDate from '@helpers/formatDate'
 
 const ClientsContent = () => {
-  const modalsFunc = useRecoilValue(modalsFuncAtom)
-  const users = useRecoilValue(usersAtom)
+  const clients = useAtomValue(clientsAtom)
+  const requests = useAtomValue(requestsAtom)
+  const events = useAtomValue(eventsAtom)
+  const modalsFunc = useAtomValue(modalsFuncAtom)
 
-  // const notCanceledAndFinishedEventsUsers = useRecoilValue(
-  //   eventsUsersNotCanceledAndFinishedSelector
-  // )
+  const [search, setSearch] = useState('')
 
-  // const updatedUsers = useMemo(
-  //   () =>
-  //     users.map((user) => {
-  //       const eventsUser = notCanceledAndFinishedEventsUsers.filter(
-  //         ({ userId, status }) =>
-  //           user._id === userId && status !== 'ban' && status !== 'reserve'
-  //       )
-  //       return { ...user, eventsUserCount: eventsUser.length }
-  //     }),
-  //   [users, notCanceledAndFinishedEventsUsers]
-  // )
-
-  const [isSearching, setIsSearching] = useState(false)
-  const [filter, setFilter] = useState({
-    gender: {
-      male: true,
-      famale: true,
-      null: true,
-    },
-    status: {
-      novice: true,
-      member: true,
-    },
-    relationship: {
-      havePartner: true,
-      noPartner: true,
-    },
-  })
-  const [searchText, setSearchText] = useState('')
-
-  const [sort, setSort] = useState({ name: 'asc' })
-  const sortFunc = useMemo(() => sortFuncGenerator(sort), [sort])
-
-  // const visibleUsersIds = useMemo(
-  //   () =>
-  //     users
-  //       .filter(
-  //         (user) =>
-  //           filter.gender[String(user.gender)] &&
-  //           filter.status[user.status ?? 'novice']
-  //       )
-  //       .map((user) => user._id),
-  //   [users, filter]
-  // )
-
-  const filteredUsers = useMemo(
-    () =>
-      // updatedUsers
-      users.filter(
-        (user) =>
-          user &&
-          (filter.gender[String(user.gender)] ||
-            (filter.gender.null &&
-              user.gender !== 'male' &&
-              user.gender !== 'famale')) &&
-          filter.status[user?.status ?? 'novice'] &&
-          (user.relationship
-            ? filter.relationship.havePartner
-            : filter.relationship.noPartner)
-      ),
-    [
-      // updatedUsers,
-      users,
-      filter,
-    ]
-  )
-
-  const visibleUsers = useMemo(() => {
-    if (!searchText) return filteredUsers
-    return filterItems(filteredUsers, searchText, [], {}, [
-      'firstName',
-      'secondName',
-      'thirdName',
-      'phone',
-      'whatsapp',
-      'viber',
-      'instagram',
-      'telegram',
-      'vk',
-      'email',
-    ])
-  }, [filteredUsers, searchText])
+  const clientsWithStats = useMemo(() => {
+    const lowerSearch = search.trim().toLowerCase()
+    return clients
+      .map((client) => {
+        const clientRequests = requests.filter(
+          (request) => request.clientId === client._id
+        )
+        const clientEvents = events.filter(
+          (event) => event.clientId === client._id
+        )
+        const lastRequest = clientRequests.reduce((latest, request) => {
+          if (!request.createdAt) return latest
+          const requestDate = new Date(request.createdAt)
+          return !latest || requestDate > latest ? requestDate : latest
+        }, null)
+        return {
+          ...client,
+          requestsCount: clientRequests.length,
+          eventsCount: clientEvents.length,
+          lastRequest,
+        }
+      })
+      .filter((client) => {
+        if (!lowerSearch) return true
+        return [
+          client.firstName,
+          client.secondName,
+          client.phone ? `+${client.phone}` : '',
+          client.priorityContact ?? '',
+        ]
+          .join(' ')
+          .toLowerCase()
+          .includes(lowerSearch)
+      })
+      .sort((a, b) => {
+        if (a.lastRequest && b.lastRequest)
+          return b.lastRequest.getTime() - a.lastRequest.getTime()
+        if (a.lastRequest) return -1
+        if (b.lastRequest) return 1
+        return (b.requestsCount || 0) - (a.requestsCount || 0)
+      })
+  }, [clients, events, requests, search])
 
   return (
-    <>
+    <div className="flex h-full flex-col gap-4 p-4">
       <ContentHeader>
-        {/* <UsersFilter value={filter} onChange={setFilter} /> */}
-        {/* // <GenderToggleButtons value={genderFilter} onChange={setGenderFilter} />
-        // <StatusUserToggleButtons
-        //   value={statusFilter}
-        //   onChange={setStatusFilter}
-        // /> */}
-        <div className="flex flex-1 flex-nowrap items-center justify-end gap-x-2">
-          <div className="whitespace-nowrap text-lg font-bold">
-            {getNounUsers(visibleUsers.length)}
-          </div>
-          <SortingButtonMenu
-            sort={sort}
-            onChange={setSort}
-            sortKeys={[
-              'name',
-              'birthday',
-              'createdAt',
-              // 'eventsUserCount'
-            ]}
-          />
-          <SearchToggleButton
-            value={isSearching}
-            onChange={() => {
-              setIsSearching((state) => !state)
-              if (isSearching) setSearchText('')
-            }}
-          />
-          {/* <FormControl size="small">
-            <FilterToggleButton
-              value={isFiltered}
-              onChange={() => {
-                setShowFilter((state) => !state)
-              }}
+        <div className="flex flex-1 items-center justify-between">
+          <h2 className="text-xl font-semibold">Клиенты</h2>
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <span>Всего: {clients.length}</span>
+            <Button
+              name="+"
+              collapsing
+              className="h-9 w-9 rounded-full text-lg"
+              onClick={() => modalsFunc.request?.add()}
+              disabled={!modalsFunc.request?.add}
             />
-          </FormControl> */}
-          <AddButton onClick={() => modalsFunc.user.edit()} />
+          </div>
         </div>
       </ContentHeader>
-      <Search
-        searchText={searchText}
-        show={isSearching}
-        onChange={setSearchText}
-        className="mx-1 bg-gray-100"
-      />
-      {/* <Filter show={showFilter} options={options} onChange={setFilterOptions} /> */}
-      <UsersList users={[...visibleUsers].sort(sortFunc)} />
-    </>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <Input
+          label="Поиск клиента"
+          value={search}
+          onChange={setSearch}
+          placeholder="Введите имя, телефон или контакт"
+        />
+      </div>
+      <div className="flex-1 overflow-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
+                Клиент
+              </th>
+              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
+                Телефон
+              </th>
+              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
+                Контакты
+              </th>
+              <th className="px-4 py-3 text-right font-semibold uppercase tracking-wide text-gray-500">
+                Заявки
+              </th>
+              <th className="px-4 py-3 text-right font-semibold uppercase tracking-wide text-gray-500">
+                Мероприятия
+              </th>
+              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
+                Последняя заявка
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {clientsWithStats.map((client) => (
+              <tr key={client._id} className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-gray-900">
+                  {client.firstName || '—'}{' '}
+                  {client.secondName || ''}
+                </td>
+                <td className="px-4 py-3 text-gray-700">
+                  {client.phone ? `+${client.phone}` : '—'}
+                </td>
+                <td className="px-4 py-3 text-gray-700">
+                  {client.priorityContact || '—'}
+                </td>
+                <td className="px-4 py-3 text-right text-gray-700">
+                  {client.requestsCount}
+                </td>
+                <td className="px-4 py-3 text-right text-gray-700">
+                  {client.eventsCount}
+                </td>
+                <td className="px-4 py-3 text-gray-700">
+                  {client.lastRequest
+                    ? formatDate(client.lastRequest.toISOString(), false, true)
+                    : '—'}
+                </td>
+              </tr>
+            ))}
+            {clientsWithStats.length === 0 && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-6 text-center text-sm text-gray-500"
+                >
+                  Клиенты не найдены
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   )
 }
 
