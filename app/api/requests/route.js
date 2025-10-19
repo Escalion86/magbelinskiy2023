@@ -4,6 +4,8 @@ import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
 import { postData } from '@helpers/CRUD'
 import formatDate from '@helpers/formatDate'
+import dns from 'dns'
+import { Agent as UndiciAgent } from 'undici'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -22,6 +24,21 @@ const sanitizeContacts = (contacts) => {
       .filter(Boolean)
   return []
 }
+
+const lookupIPv4 = (hostname, options, callback) => {
+  if (typeof options === 'function') {
+    return dns.lookup(hostname, { family: 4 }, options)
+  }
+
+  return dns.lookup(hostname, { ...(options || {}), family: 4 }, callback)
+}
+
+const telegramDispatcher = new UndiciAgent({
+  connect: {
+    lookup: lookupIPv4,
+    family: 4,
+  },
+})
 
 const sendTelegramMassage = async (text, url) =>
   await postData(
@@ -45,7 +62,8 @@ const sendTelegramMassage = async (text, url) =>
     },
     null,
     null,
-    true
+    true,
+    telegramDispatcher
   )
 
 export const GET = async () => {
@@ -99,29 +117,34 @@ export const POST = async (req) => {
     clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
     displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
     contacts.length > 0 ? `<b>Способы связи:</b> ${contacts.join(', ')}` : null,
-    eventDate ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}` : null,
+    eventDate
+      ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
+      : null,
     location ? `<b>Локация:</b> ${location}` : null,
     numericContractSum
-      ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString('ru-RU')} ₽`
+      ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
+          'ru-RU'
+        )} ₽`
       : null,
     comment ? `<b>Комментарий:</b> ${comment}` : null,
     yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
   ].filter(Boolean)
 
-  const telegramResult = await sendTelegramMassage(
+  // const telegramResult = await
+  sendTelegramMassage(
     messageParts.join('\n'),
     normalizedPhone ? `tel:+${normalizedPhone}` : undefined
   )
 
-  if (!telegramResult?.ok) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Не удалось отправить уведомление в Telegram',
-      },
-      { status: 502 }
-    )
-  }
+  // if (!telegramResult?.ok) {
+  //   return NextResponse.json(
+  //     {
+  //       success: false,
+  //       error: 'Не удалось отправить уведомление в Telegram',
+  //     },
+  //     { status: 502 }
+  //   )
+  // }
 
   const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
 

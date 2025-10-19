@@ -78,7 +78,8 @@ export const postData = async (
   form,
   callbackOnSuccess = null,
   callbackOnError = null,
-  resJson = false
+  resJson = false,
+  dispatcher
 ) => {
   try {
     const res = await fetch(url, {
@@ -88,6 +89,7 @@ export const postData = async (
         'Content-Type': contentType,
       },
       body: JSON.stringify(form),
+      dispatcher,
     })
 
     // Throw error with status code in case Fetch API req failed
