@@ -1,8 +1,44 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
+import crypto from 'crypto'
+
+const getAuthSecret = () => {
+  if (process.env.NEXTAUTH_SECRET) {
+    return process.env.NEXTAUTH_SECRET
+  }
+
+  const login = process.env.LOGIN
+  const password = process.env.PASSWORD
+
+  if (!login || !password) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'NEXTAUTH_SECRET не задан. Укажите переменную окружения или задайте LOGIN и PASSWORD.'
+      )
+    }
+
+    return undefined
+  }
+
+  const fallbackSecret = crypto
+    .createHash('sha256')
+    .update(`${login}:${password}`)
+    .digest('hex')
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'NEXTAUTH_SECRET не найден. Используется детерминированный секрет, сформированный из LOGIN и PASSWORD.'
+    )
+  }
+
+  return fallbackSecret
+}
+
+const authSecret = getAuthSecret()
 
 const authOptions = {
   // Configure one or more authentication providers
   pages: { signIn: '/login' },
+  secret: authSecret,
   providers: [
     CredentialsProvider({
       name: 'credentials',
