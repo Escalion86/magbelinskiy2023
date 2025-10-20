@@ -30,18 +30,18 @@ const sendTelegramMassage = async (text, url) =>
       chat_id: 261102161,
       text,
       parse_mode: 'html',
-      reply_markup: url
-        ? JSON.stringify({
-            inline_keyboard: [
-              [
-                {
-                  text: 'Позвонить клиенту',
-                  url,
-                },
-              ],
-            ],
-          })
-        : undefined,
+      // reply_markup: url
+      //   ? JSON.stringify({
+      //       inline_keyboard: [
+      //         [
+      //           {
+      //             text: 'Позвонить клиенту',
+      //             url,
+      //           },
+      //         ],
+      //       ],
+      //     })
+      //   : undefined,
     },
     (data) => console.log('data', data),
     (data) => console.log('error', data),
