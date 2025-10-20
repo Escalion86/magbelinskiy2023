@@ -13,9 +13,7 @@ export default async function Login() {
     console.error('Ошибка получения сессии в /login', error)
   }
 
-  const user = session?.user
-
-  if (user) return redirect('/cabinet')
+  if (session) return redirect('/cabinet')
 
   return <LoginInputs />
 }

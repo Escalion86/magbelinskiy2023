@@ -2,21 +2,24 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import crypto from 'crypto'
 
 const getAuthSecret = () => {
-  if (process.env.NEXTAUTH_SECRET) {
-    return process.env.NEXTAUTH_SECRET
+  const existingSecret = process.env.NEXTAUTH_SECRET
+
+  if (existingSecret) {
+    return existingSecret
   }
 
   const login = process.env.LOGIN
   const password = process.env.PASSWORD
 
   if (!login || !password) {
+    const message =
+      'NEXTAUTH_SECRET не задан. Укажите переменную окружения или задайте LOGIN и PASSWORD.'
+
     if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        'NEXTAUTH_SECRET не задан. Укажите переменную окружения или задайте LOGIN и PASSWORD.'
-      )
+      console.warn(message)
     }
 
-    return undefined
+    throw new Error(message)
   }
 
   const fallbackSecret = crypto
@@ -29,6 +32,8 @@ const getAuthSecret = () => {
       'NEXTAUTH_SECRET не найден. Используется детерминированный секрет, сформированный из LOGIN и PASSWORD.'
     )
   }
+
+  process.env.NEXTAUTH_SECRET = fallbackSecret
 
   return fallbackSecret
 }
