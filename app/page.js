@@ -1,25 +1,61 @@
 'use client'
 
-import AboutBlock from '@blocks/AboutBlock'
-import AnketaBlock from '@blocks/AnketaBlock'
-import FocusBlock from '@blocks/FocusBlock'
-import FooterBlock from '@blocks/FooterBlock'
-import GalleryBlock from '@blocks/GalleryBlock'
-import GalleryBlock2 from '@blocks/GalleryBlock2'
-import ModalFocusResult from '@blocks/ModalFocusResult'
-import ModalInfo from '@blocks/ModalInfo'
-import ModalZakaz from '@blocks/ModalZakaz'
-import QuizBlock from '@blocks/QuizBlock'
-import ReviewsBlock from '@blocks/ReviewsBlock'
-import SubfooterBlock from '@blocks/SubfooterBlock'
-import TitleBlock from '@blocks/TitleBlock'
-import VideoBlock from '@blocks/VideoBlock'
-import StateLoader from '@blocks/components/StateLoader'
+import dynamic from 'next/dynamic'
+import { memo } from 'react'
+
 import Header from '@blocks/titleComponents/Header'
+import TitleBlock from '@blocks/TitleBlock'
 import { Provider } from 'jotai'
 import store from '@state/store'
 
-const Section = ({ id }) => <section id={id} className="relative -top-[50px]" />
+const SectionFallback = () => (
+  <div className="w-full h-[320px] rounded-3xl bg-zinc-900/40 animate-pulse" aria-hidden="true" />
+)
+
+const AboutBlock = dynamic(() => import('@blocks/AboutBlock'), {
+  loading: SectionFallback,
+})
+const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
+  loading: SectionFallback,
+})
+const GalleryBlock = dynamic(() => import('@blocks/GalleryBlock'), {
+  loading: SectionFallback,
+})
+const QuizBlock = dynamic(() => import('@blocks/QuizBlock'), {
+  loading: SectionFallback,
+})
+const FocusBlock = dynamic(() => import('@blocks/FocusBlock'), {
+  loading: SectionFallback,
+})
+const GalleryBlock2 = dynamic(() => import('@blocks/GalleryBlock2'), {
+  loading: SectionFallback,
+})
+const ReviewsBlock = dynamic(() => import('@blocks/ReviewsBlock'), {
+  loading: SectionFallback,
+})
+const AnketaBlock = dynamic(() => import('@blocks/AnketaBlock'), {
+  loading: SectionFallback,
+})
+const FooterBlock = dynamic(() => import('@blocks/FooterBlock'), {
+  loading: SectionFallback,
+})
+const SubfooterBlock = dynamic(() => import('@blocks/SubfooterBlock'), {
+  loading: SectionFallback,
+})
+
+const ModalZakaz = dynamic(() => import('@blocks/ModalZakaz'), { ssr: false, loading: () => null })
+const ModalFocusResult = dynamic(() => import('@blocks/ModalFocusResult'), {
+  ssr: false,
+  loading: () => null,
+})
+const ModalInfo = dynamic(() => import('@blocks/ModalInfo'), { ssr: false, loading: () => null })
+const StateLoader = dynamic(() => import('@blocks/components/StateLoader'), {
+  ssr: false,
+  loading: () => null,
+})
+
+const Section = memo(({ id }) => <section id={id} className="relative -top-[50px]" />)
+Section.displayName = 'Section'
 
 export default function Home() {
   return (
