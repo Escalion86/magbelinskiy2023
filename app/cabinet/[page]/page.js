@@ -19,5 +19,7 @@ export default async function Cabinet({ params, searchParams }) {
 
   const fetchedProps = await fetchProps(session?.user)
 
+  const fetchedProps = await fetchProps(user)
+
   return <CabinetPage {...fetchedProps} page={page} />
 }
