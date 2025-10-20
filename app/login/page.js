@@ -15,7 +15,7 @@ export default async function Login() {
 
   const user = session?.user
 
-  if (user) return redirect('cabinet')
+  if (user) return redirect('/cabinet')
 
   return <LoginInputs />
 }
