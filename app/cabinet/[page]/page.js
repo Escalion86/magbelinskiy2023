@@ -13,10 +13,11 @@ export default async function Cabinet({ params, searchParams }) {
     console.error('Ошибка получения сессии в /cabinet/[page]', error)
   }
 
-  const user = session?.user
   const page = params?.page
 
-  if (!user) return redirect('/login')
+  if (!session) return redirect('/login')
+
+  const fetchedProps = await fetchProps(session?.user)
 
   const fetchedProps = await fetchProps(user)
 
