@@ -1,19 +1,12 @@
-import CheckBox from '@components/CheckBox'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import Textarea from '@components/Textarea'
-import {
-  AUDIENCE,
-  DEFAULT_REQUEST,
-  EVENT_TYPES,
-  SPECTATORS,
-} from '@helpers/constants'
+import { DEFAULT_REQUEST } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import ComboBox from '@components/ComboBox'
 import requestSelector from '@state/selectors/requestSelector'
 import DateTimePicker from '@components/DateTimePicker'
 import PhoneInput from '@components/PhoneInput'
@@ -31,52 +24,159 @@ const requestFunc = (requestId, clone = false) => {
     const request = useAtomValue(requestSelector(requestId))
     const setRequest = useAtomValue(itemsFuncAtom).request.set
 
-    const [phone, setPhone] = useState(request?.phone ?? DEFAULT_REQUEST.phone)
-    const [source, setSource] = useState(
-      request?.source ?? DEFAULT_REQUEST.source
+    const [clientName, setClientName] = useState(
+      DEFAULT_REQUEST.clientName ?? ''
     )
-    const [date, setDate] = useState(request?.date ?? DEFAULT_REQUEST.date)
-    const [audience, setAudience] = useState(
-      request?.audience ?? DEFAULT_REQUEST.audience
+    const [clientPhone, setClientPhone] = useState(
+      DEFAULT_REQUEST.clientPhone ? Number(DEFAULT_REQUEST.clientPhone) : null
     )
-    const [type, setType] = useState(request?.type ?? DEFAULT_REQUEST.type)
-    const [customType, setCustomType] = useState(
-      request?.customType ?? DEFAULT_REQUEST.customType
+    const [contactChannels, setContactChannels] = useState('')
+    const [eventDate, setEventDate] = useState(
+      DEFAULT_REQUEST.eventDate ?? null
     )
-    const [spectators, setSpectators] = useState(
-      request?.spectators ?? DEFAULT_REQUEST.spectators
+    const [location, setLocation] = useState(
+      DEFAULT_REQUEST.location ?? ''
     )
-    const [town, setTown] = useState(request?.town ?? DEFAULT_REQUEST.town)
-    const [address, setAddress] = useState(
-      request?.address ?? DEFAULT_REQUEST.address
-    )
-    const [official, setOfficial] = useState(
-      request?.official ?? DEFAULT_REQUEST.official
+    const [contractSum, setContractSum] = useState(
+      DEFAULT_REQUEST.contractSum ?? 0
     )
     const [comment, setComment] = useState(
-      request?.comment ?? DEFAULT_REQUEST.comment
+      DEFAULT_REQUEST.comment ?? ''
     )
+    const [yandexAim, setYandexAim] = useState('')
 
-    const [errors, checkErrors, addError, removeError, clearErrors] =
-      useErrors()
+    const originalValues = useMemo(() => {
+      const originalName =
+        request?.clientName ?? request?.name ?? DEFAULT_REQUEST.clientName ?? ''
+
+      const rawPhone =
+        request?.clientPhone ??
+        request?.phone ??
+        DEFAULT_REQUEST.clientPhone ??
+        ''
+
+      let sanitizedPhone = `${rawPhone}`.replace(/[^0-9]/g, '')
+
+      if (sanitizedPhone.length === 10)
+        sanitizedPhone = `7${sanitizedPhone}`
+      else if (sanitizedPhone.length === 11 && sanitizedPhone.startsWith('8'))
+        sanitizedPhone = `7${sanitizedPhone.slice(1)}`
+
+      const clientPhoneValue =
+        sanitizedPhone.length > 0 ? Number(sanitizedPhone) : null
+
+      const contactSources = Array.isArray(request?.contactChannels)
+        ? request.contactChannels
+        : request?.contact
+        ? [request.contact]
+        : Array.isArray(DEFAULT_REQUEST.contactChannels)
+        ? DEFAULT_REQUEST.contactChannels
+        : []
+
+      const contactChannelsValue = contactSources
+        .filter((item) => typeof item === 'string' && item.trim().length > 0)
+        .map((item) => item.trim())
+        .join('\n')
+
+      const eventDateValue =
+        request?.eventDate ??
+        request?.date ??
+        DEFAULT_REQUEST.eventDate ??
+        null
+
+      const legacyLocation = [request?.town, request?.address]
+        .map((value) => (typeof value === 'string' ? value.trim() : ''))
+        .filter(Boolean)
+        .join(', ')
+
+      const locationValue =
+        (typeof request?.location === 'string' && request.location.trim().length
+          ? request.location.trim()
+          : legacyLocation) ||
+        (typeof DEFAULT_REQUEST.location === 'string'
+          ? DEFAULT_REQUEST.location
+          : '')
+
+      const contractSumValue =
+        typeof request?.contractSum === 'number'
+          ? request.contractSum
+          : typeof DEFAULT_REQUEST.contractSum === 'number'
+          ? DEFAULT_REQUEST.contractSum
+          : 0
+
+      const commentValue =
+        typeof request?.comment === 'string'
+          ? request.comment
+          : typeof DEFAULT_REQUEST.comment === 'string'
+          ? DEFAULT_REQUEST.comment
+          : ''
+
+      const yandexAimValue =
+        typeof request?.yandexAim === 'string' ? request.yandexAim : ''
+
+      return {
+        clientName: originalName,
+        clientPhone: clientPhoneValue,
+        contactChannels: contactChannelsValue,
+        eventDate: eventDateValue,
+        location: locationValue,
+        contractSum: contractSumValue,
+        comment: commentValue,
+        yandexAim: yandexAimValue,
+      }
+    }, [request])
+
+    useEffect(() => {
+      setClientName(originalValues.clientName)
+      setClientPhone(originalValues.clientPhone)
+      setContactChannels(originalValues.contactChannels)
+      setEventDate(originalValues.eventDate)
+      setLocation(originalValues.location)
+      setContractSum(originalValues.contractSum)
+      setComment(originalValues.comment)
+      setYandexAim(originalValues.yandexAim)
+    }, [originalValues])
+
+    const [errors, checkErrors, addError, removeError] = useErrors()
 
     const onClickConfirm = useCallback(async () => {
-      if (!checkErrors({ date })) {
+      const hasPhoneError = checkErrors({ phone: clientPhone })
+
+      let hasCustomError = false
+
+      if (!clientName || !clientName.trim()) {
+        addError({ clientName: 'Укажите имя клиента' })
+        hasCustomError = true
+      }
+
+      if (!hasPhoneError && !hasCustomError) {
         closeModal()
+        const normalizedLocation = location ? location.trim() : ''
+        const normalizedContractSum =
+          typeof contractSum === 'number' && !Number.isNaN(contractSum)
+            ? contractSum
+            : 0
+        const normalizedPhone =
+          typeof clientPhone === 'number' && !Number.isNaN(clientPhone)
+            ? clientPhone
+            : null
+        const normalizedEventDate = eventDate ?? null
+
         setRequest(
           {
             _id: request?._id,
-            phone,
-            source,
-            date,
-            audience,
-            type,
-            customType,
-            spectators,
-            town,
-            address,
-            official,
-            comment,
+            clientId: request?.clientId ?? null,
+            clientName: clientName.trim(),
+            clientPhone: normalizedPhone,
+            contactChannels: contactChannels
+              .split(/[\n,;]/)
+              .map((value) => value.trim())
+              .filter(Boolean),
+            eventDate: normalizedEventDate,
+            location: normalizedLocation,
+            contractSum: normalizedContractSum,
+            comment: comment.trim(),
+            yandexAim: yandexAim.trim(),
           },
           clone
         )
@@ -106,130 +206,100 @@ const requestFunc = (requestId, clone = false) => {
       }
     }, [
       request,
-      phone,
-      source,
-      date,
-      audience,
-      type,
-      customType,
-      spectators,
-      town,
-      address,
-      official,
+      clientName,
+      clientPhone,
+      contactChannels,
+      eventDate,
+      location,
+      contractSum,
       comment,
+      yandexAim,
       checkErrors,
       closeModal,
       setRequest,
+      addError,
     ])
 
     useEffect(() => {
       const isFormChanged =
-        (request?.phone ?? DEFAULT_REQUEST.phone) !== phone ||
-        (request?.source ?? DEFAULT_REQUEST.source) !== source ||
-        (request?.date ?? DEFAULT_REQUEST.date) !== date ||
-        (request?.audience ?? DEFAULT_REQUEST.audience) !== audience ||
-        (request?.type ?? DEFAULT_REQUEST.type) !== type ||
-        (request?.customType ?? DEFAULT_REQUEST.customType) !== customType ||
-        (request?.spectators ?? DEFAULT_REQUEST.spectators) !== spectators ||
-        (request?.town ?? DEFAULT_REQUEST.town) !== town ||
-        (request?.address ?? DEFAULT_REQUEST.address) !== address ||
-        (request?.official ?? DEFAULT_REQUEST.official) !== official ||
-        (request?.comment ?? DEFAULT_REQUEST.comment) !== comment
+        originalValues.clientName !== clientName ||
+        (originalValues.clientPhone ?? null) !== (clientPhone ?? null) ||
+        originalValues.contactChannels !== contactChannels ||
+        (originalValues.eventDate ?? null) !== (eventDate ?? null) ||
+        originalValues.location !== location ||
+        originalValues.contractSum !== contractSum ||
+        originalValues.comment !== comment ||
+        originalValues.yandexAim !== yandexAim
 
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [
-      // request,
-      phone,
-      source,
-      date,
-      audience,
-      type,
-      customType,
-      spectators,
-      town,
-      address,
-      official,
+      originalValues,
+      clientName,
+      clientPhone,
+      contactChannels,
+      eventDate,
+      location,
+      contractSum,
       comment,
-      // onClickConfirm,
-      // setDisableConfirm,
-      // setOnShowOnCloseConfirmDialog,
-      // setOnConfirmFunc,
+      yandexAim,
+      onClickConfirm,
+      setDisableConfirm,
+      setOnShowOnCloseConfirmDialog,
+      setOnConfirmFunc,
     ])
     return (
       <FormWrapper>
-        {/* <Input
-          label="Название"
+        <Input
+          label="Имя клиента"
           type="text"
-          value={title}
+          value={clientName}
           onChange={(value) => {
-            removeError('title')
-            setTitle(value)
+            removeError('clientName')
+            setClientName(value)
           }}
-          // labelClassName="w-40"
-          error={errors.title}
-        /> */}
-        <DateTimePicker
-          value={date}
-          onChange={(date) => {
-            removeError('date')
-            setDateStart(date)
-          }}
-          label="Дата заявки"
           required
-          error={errors.date}
-          // noMargin
-        />
-        <ComboBox
-          label="Тип"
-          value={type}
-          items={EVENT_TYPES}
-          onChange={setType}
-          paddingY="small"
-          fullWidth={false}
-          placeholder="Не выбрано"
-        />
-        {type === 'other' && (
-          <Input
-            label="Другой тип"
-            type="text"
-            value={customType}
-            onChange={setCustomType}
-          />
-        )}
-        <ComboBox
-          label="Аудитория"
-          value={audience}
-          items={AUDIENCE}
-          onChange={setAudience}
-          paddingY="small"
-          fullWidth={false}
-          placeholder="Не выбрано"
-        />
-        <ComboBox
-          label="Количество зрителей"
-          value={spectators}
-          items={SPECTATORS}
-          onChange={setSpectators}
-          paddingY="small"
-          fullWidth={false}
-          placeholder="Не выбрано"
+          error={errors.clientName}
         />
         <PhoneInput
           required
-          label="Телефон заявителя"
-          value={phone}
-          onChange={setPhone}
+          label="Телефон клиента"
+          value={clientPhone}
+          onChange={(value) => {
+            removeError('phone')
+            setClientPhone(value)
+          }}
           error={errors.phone}
-          copyPasteButtons
         />
-        <Input label="Город" type="text" value={town} onChange={setTown} />
+        <Textarea
+          label="Способы связи"
+          onChange={setContactChannels}
+          value={contactChannels}
+          rows={2}
+          comment="Каждый способ с новой строки или через запятую"
+        />
+        <DateTimePicker
+          value={eventDate}
+          onChange={(value) => {
+            removeError('eventDate')
+            setEventDate(value ?? null)
+          }}
+          label="Дата мероприятия"
+          error={errors.eventDate}
+        />
         <Input
-          label="Адрес"
+          label="Локация"
           type="text"
-          value={address}
-          onChange={setAddress}
+          value={location}
+          onChange={setLocation}
+        />
+        <Input
+          label="Договорная сумма"
+          type="number"
+          value={contractSum}
+          onChange={setContractSum}
+          min={0}
         />
         <Textarea
           label="Комментарий"
@@ -238,16 +308,10 @@ const requestFunc = (requestId, clone = false) => {
           rows={3}
         />
         <Input
-          label="Источник"
+          label="Яндекс цель"
           type="text"
-          value={source}
-          onChange={setSource}
-        />
-        <CheckBox
-          checked={official || false}
-          labelPos="left"
-          onClick={() => setOfficial((checked) => !checked)}
-          label="Юр. лицо"
+          value={yandexAim}
+          onChange={setYandexAim}
         />
         <ErrorsList errors={errors} />
       </FormWrapper>
