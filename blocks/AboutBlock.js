@@ -289,7 +289,7 @@ const ImgPhone = ({
       )}
     >
       <AutoplayVideo
-        src="/img/levitation.mp4"
+        src="/img/promo2.mp4"
         style={{
           background:
             'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
@@ -314,8 +314,8 @@ const ImgPhone = ({
         )}
         // className="absolute -left-[6px] -top-[22px] z-50 object-fill sm:-left-[8px] sm:-top-[36px]"
         // style={{ width: width - 8, minWidth: width - 8, height: height + 68 }}
-        alt="levitation_pic"
-        src="/img/levitation_pic.png"
+        alt="promo2_pic"
+        src="/img/promo2.png"
         draggable={false}
         width={width}
         height={height}
