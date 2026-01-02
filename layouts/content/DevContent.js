@@ -7,6 +7,7 @@ import Input from '@components/Input'
 
 const DevContent = () => {
   const [calendarId, setCalendarId] = useState('')
+  const [forceFullSync, setForceFullSync] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
@@ -20,8 +21,11 @@ const DevContent = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: calendarId.trim()
-          ? JSON.stringify({ calendarId: calendarId.trim() })
-          : JSON.stringify({}),
+          ? JSON.stringify({
+              calendarId: calendarId.trim(),
+              forceFullSync,
+            })
+          : JSON.stringify({ forceFullSync }),
       })
       const data = await response.json()
       if (!response.ok || !data.success)
@@ -50,6 +54,14 @@ const DevContent = () => {
             onChange={setCalendarId}
             placeholder="например, your-calendar-id@group.calendar.google.com"
           />
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={forceFullSync}
+              onChange={(event) => setForceFullSync(event.target.checked)}
+            />
+            Полная синхронизация (игнорировать syncToken)
+          </label>
           <Button
             name="Синхронизировать календарь"
             onClick={handleSync}

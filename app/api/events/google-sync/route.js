@@ -84,6 +84,7 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
 export const POST = async (req) => {
   const body = await req.json().catch(() => ({}))
   const calendarId = body.calendarId ?? process.env.GOOGLE_CALENDAR_ID
+  const forceFullSync = Boolean(body.forceFullSync)
 
   if (!calendarId)
     return NextResponse.json(
@@ -106,7 +107,7 @@ export const POST = async (req) => {
 
   const settings = await ensureSiteSettings()
   const storedSyncToken = settings?.custom?.get('googleCalendarSyncToken')
-  const syncToken = body.syncToken ?? storedSyncToken ?? null
+  const syncToken = forceFullSync ? null : body.syncToken ?? storedSyncToken ?? null
   const timeMin = body.timeMin ?? (syncToken ? undefined : DEFAULT_TIME_MIN)
   const timeMax = body.timeMax ?? undefined
 
