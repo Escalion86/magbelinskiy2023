@@ -338,7 +338,7 @@ const SideBar = ({ page }) => {
         transition={{ duration: 0.5, type: 'tween' }}
         initial={'min'}
         layout
-        className="bg-general absolute bottom-0 top-0"
+        className="bg-general pointer-events-none absolute bottom-0 top-0"
       />
       {scrollable && (
         <>
