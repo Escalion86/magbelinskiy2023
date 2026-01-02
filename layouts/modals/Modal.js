@@ -7,7 +7,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Suspense, useState } from 'react'
+import { Suspense, useCallback, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue, useSetAtom } from 'jotai'
 
@@ -59,6 +59,9 @@ const Modal = ({
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
+  const onConfirmFuncRef = useRef(onConfirmFunc)
+  const onConfirm2FuncRef = useRef(onConfirm2Func)
+  const onDeclineFuncRef = useRef(onDeclineFunc)
   const setModals = useSetAtom(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
@@ -75,6 +78,27 @@ const Modal = ({
   )
   const [bottomLeftComponentState, setBottomLeftComponent] =
     useState(bottomLeftComponent)
+
+  const handleSetOnConfirmFunc = useCallback((func) => {
+    const nextFunc = typeof func === 'function' ? func : null
+    if (onConfirmFuncRef.current === nextFunc) return
+    onConfirmFuncRef.current = nextFunc
+    setOnConfirmFunc(() => nextFunc)
+  }, [])
+
+  const handleSetOnConfirm2Func = useCallback((func) => {
+    const nextFunc = typeof func === 'function' ? func : null
+    if (onConfirm2FuncRef.current === nextFunc) return
+    onConfirm2FuncRef.current = nextFunc
+    setOnConfirm2Func(() => nextFunc)
+  }, [])
+
+  const handleSetOnDeclineFunc = useCallback((func) => {
+    const nextFunc = typeof func === 'function' ? func : null
+    if (onDeclineFuncRef.current === nextFunc) return
+    onDeclineFuncRef.current = nextFunc
+    setOnDeclineFunc(() => nextFunc)
+  }, [])
 
   const closeModal = () => {
     onClose && typeof onClose === 'function' && onClose()
@@ -262,15 +286,9 @@ const Modal = ({
             <Suspense fallback={<Skeleton count={12} />}>
               <Children
                 closeModal={closeModal}
-                setOnConfirmFunc={(func) =>
-                  setOnConfirmFunc(func ? () => func : null)
-                }
-                setOnConfirm2Func={(func) =>
-                  setOnConfirm2Func(func ? () => func : null)
-                }
-                setOnDeclineFunc={(func) =>
-                  setOnDeclineFunc(func ? () => func : null)
-                }
+                setOnConfirmFunc={handleSetOnConfirmFunc}
+                setOnConfirm2Func={handleSetOnConfirm2Func}
+                setOnDeclineFunc={handleSetOnDeclineFunc}
                 setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
                 setDisableConfirm={setDisableConfirm}
                 setDisableDecline={setDisableDecline}
