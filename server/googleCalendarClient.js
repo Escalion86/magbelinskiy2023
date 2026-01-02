@@ -53,15 +53,20 @@ export const listCalendarEvents = async (
 
   while (true) {
     try {
+      const useSyncToken = Boolean(effectiveSyncToken)
+      const resolvedTimeMin = useSyncToken
+        ? undefined
+        : toIsoString(fallbackTimeMin ?? timeMin ?? DEFAULT_FETCH_START)
+      const resolvedTimeMax = useSyncToken ? undefined : toIsoString(timeMax)
       const response = await calendar.events.list({
         calendarId,
         singleEvents: true,
         orderBy: 'startTime',
         maxResults: pageSize,
         pageToken,
-        syncToken: effectiveSyncToken,
-        timeMin: toIsoString(fallbackTimeMin ?? timeMin ?? DEFAULT_FETCH_START),
-        timeMax: toIsoString(timeMax),
+        syncToken: useSyncToken ? effectiveSyncToken : undefined,
+        timeMin: resolvedTimeMin,
+        timeMax: resolvedTimeMax,
       })
 
       if (Array.isArray(response.data.items)) items.push(...response.data.items)
