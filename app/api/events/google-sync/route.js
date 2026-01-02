@@ -73,8 +73,6 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
     $set: setPayload,
     $setOnInsert: {
       eventDate: parsedEvent.eventDate ?? parsedEvent.dateStart ?? null,
-      importedFromCalendar: true,
-      calendarImportChecked: false,
     },
   }
 }
