@@ -18,7 +18,7 @@
 # misc
 .DS_Store
 *.pem
-google_calendar_key.json
+google_calendar_token.json
 
 # debug
 npm-debug.log*
