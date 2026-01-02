@@ -27,12 +27,14 @@ const DevContent = () => {
             })
           : JSON.stringify({ forceFullSync }),
       })
-      const data = await response.json()
+      const rawText = await response.text()
+      const data = rawText ? JSON.parse(rawText) : null
+      if (!data) throw new Error('Пустой ответ от сервера')
       if (!response.ok || !data.success)
         throw new Error(data.error || 'Не удалось синхронизировать календарь')
       setResult(data.data)
     } catch (syncError) {
-      setError(syncError.message)
+      setError(syncError.message || 'Не удалось синхронизировать календарь')
     } finally {
       setLoading(false)
     }
