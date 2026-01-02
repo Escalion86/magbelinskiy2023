@@ -51,6 +51,8 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
     description: parsedEvent.description,
     location: parsedEvent.location,
     status: parsedEvent.status,
+    importedFromCalendar: true,
+    calendarImportChecked: false,
   }
 
   if (parsedEvent.dateStart) setPayload.dateStart = parsedEvent.dateStart
@@ -73,6 +75,8 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
       googleCalendarId: googleEventId,
       eventDate: parsedEvent.eventDate ?? parsedEvent.dateStart ?? null,
       status: parsedEvent.status,
+      importedFromCalendar: true,
+      calendarImportChecked: false,
     },
   }
 }

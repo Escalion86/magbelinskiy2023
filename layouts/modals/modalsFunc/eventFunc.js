@@ -233,6 +233,12 @@ const eventFunc = (eventId, clone = false) => {
     )
 
     const [likes, setLikes] = useState(event?.likes ?? DEFAULT_EVENT.likes)
+    const [calendarImportChecked, setCalendarImportChecked] = useState(
+      event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked
+    )
+
+    const importedFromCalendar =
+      event?.importedFromCalendar ?? DEFAULT_EVENT.importedFromCalendar
 
     const direction = useMemo(
       () => directions.find(({ _id }) => _id === directionId),
@@ -335,6 +341,7 @@ const eventFunc = (eventId, clone = false) => {
             reportImages,
             warning,
             likes,
+            calendarImportChecked,
           },
           clone
         )
@@ -380,7 +387,8 @@ const eventFunc = (eventId, clone = false) => {
         event?.report !== report ||
         !compareArrays(event?.reportImages, reportImages) ||
         event?.warning !== warning ||
-        event?.likes !== likes
+        event?.likes !== likes ||
+        event?.calendarImportChecked !== calendarImportChecked
 
       // setOnConfirmFunc(onClickConfirm)
       setOnShowOnCloseConfirmDialog(isFormChanged)
@@ -427,6 +435,7 @@ const eventFunc = (eventId, clone = false) => {
       reportImages,
       warning,
       likes,
+      calendarImportChecked,
     ])
 
     const duration = getEventDuration({ dateStart, dateEnd })
@@ -597,6 +606,19 @@ const eventFunc = (eventId, clone = false) => {
               label="Предупреждение о рисках и травмоопасности на мероприятии"
               checkedIcon={faTriangleExclamation}
               checkedIconColor="#AA0000"
+              big
+            />
+
+            <IconCheckBox
+              checked={calendarImportChecked}
+              onClick={() =>
+                setCalendarImportChecked((checked) => !checked)
+              }
+              label={
+                importedFromCalendar
+                  ? 'Импорт из календаря проверен'
+                  : 'Проверка мероприятия завершена'
+              }
               big
             />
 
