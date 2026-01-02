@@ -71,9 +71,6 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
 
   return {
     $set: setPayload,
-    $setOnInsert: {
-      eventDate: parsedEvent.eventDate ?? parsedEvent.dateStart ?? null,
-    },
   }
 }
 
