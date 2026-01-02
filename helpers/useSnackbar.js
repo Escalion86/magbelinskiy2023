@@ -1,14 +1,14 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSnackbar as notistackUseSnackbar } from 'notistack'
+import { useCallback, useMemo } from 'react'
+
+const variants = ['default', 'error', 'success', 'warning', 'info']
 
 const useSnackbar = () => {
   const { enqueueSnackbar, closeSnackbar } = notistackUseSnackbar()
-
-  const variants = ['default', 'error', 'success', 'warning', 'info']
-  const result = {}
-  variants.forEach((variant) => {
-    result[variant] = (text, props = {}) => {
+  const makeHandler = useCallback(
+    (variant) => (text, props = {}) => {
       const key = enqueueSnackbar(text, {
         open: true,
         variant,
@@ -30,9 +30,17 @@ const useSnackbar = () => {
         ),
         ...props,
       })
-    }
-  })
-  return result
+    },
+    [closeSnackbar, enqueueSnackbar]
+  )
+
+  return useMemo(() => {
+    const result = {}
+    variants.forEach((variant) => {
+      result[variant] = makeHandler(variant)
+    })
+    return result
+  }, [makeHandler])
 }
 
 export default useSnackbar
