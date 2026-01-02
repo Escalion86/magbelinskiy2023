@@ -443,6 +443,8 @@ export const DEFAULT_EVENT = Object.freeze({
   status: 'planned',
   contractSum: 0,
   comment: '',
+  importedFromCalendar: false,
+  calendarImportChecked: false,
   images: [],
   showOnSite: true,
   report: '',

@@ -21,6 +21,8 @@ export const PUT = async (req, { params }) => {
   if (body.contractSum !== undefined)
     update.contractSum = Number(body.contractSum) || 0
   if (body.comment !== undefined) update.comment = body.comment ?? ''
+  if (body.calendarImportChecked !== undefined)
+    update.calendarImportChecked = Boolean(body.calendarImportChecked)
   if (body.status && EVENT_STATUSES.has(body.status)) update.status = body.status
 
   const event = await Events.findByIdAndUpdate(id, update, { new: true })
