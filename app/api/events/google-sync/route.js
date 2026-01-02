@@ -72,7 +72,10 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
   return {
     $set: setPayload,
     $setOnInsert: {
+<<<<<<< HEAD
       googleCalendarId: googleEventId,
+=======
+>>>>>>> origin/iykslk-codex/integrate-google-calendar-with-database
       eventDate: parsedEvent.eventDate ?? parsedEvent.dateStart ?? null,
       status: parsedEvent.status,
       importedFromCalendar: true,

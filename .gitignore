@@ -18,7 +18,11 @@
 # misc
 .DS_Store
 *.pem
+<<<<<<< HEAD
 google_calendar_token.json
+=======
+google_calendar_key.json
+>>>>>>> origin/iykslk-codex/integrate-google-calendar-with-database
 
 # debug
 npm-debug.log*
