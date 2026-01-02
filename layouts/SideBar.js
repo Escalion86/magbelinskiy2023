@@ -123,10 +123,7 @@ const Menu = ({ menuCfg, activePage }) => {
           // })
           .map((item, index) => {
             const groupIsActive = index === indexOfActiveGroup
-            const Component =
-              item.items.length === 1
-                ? (props) => <Link {...props} shallow />
-                : (props) => <button {...props} />
+            const isSingleItem = item.items.length === 1
             return (
               <div
                 className={cn('z-50 flex flex-col', {
@@ -146,46 +143,76 @@ const Menu = ({ menuCfg, activePage }) => {
                   )}
                   key={'groupMenu' + index}
                 >
-                  <Component
-                    className={cn(
-                      'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
-                      // groupIsActive ? 'text-ganeral' : 'text-white'
-                    )}
-                    href={item.items[0].href}
-                    onClick={() => {
-                      if (item.items.length === 1) {
-                        // setPageId(item.items[0].id)
-                        setMenuOpen(false)
-                      } else {
+                  {isSingleItem ? (
+                    <Link
+                      href={`/cabinet/${item.items[0].href}`}
+                      shallow
+                      legacyBehavior
+                    >
+                      <a
+                        className={cn(
+                          'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                          // groupIsActive ? 'text-ganeral' : 'text-white'
+                        )}
+                        onClick={() => {
+                          setMenuOpen(false)
+                        }}
+                      >
+                        <div
+                          className={cn(
+                            'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
+                            // groupIsActive ? 'text-ganeral' : 'text-white'
+                          )}
+                        >
+                          <FontAwesomeIcon icon={item.icon} size="2x" />
+                          {/* {item.items.length > 1 &&
+                            typeof groupsBadges[item.id] === 'number' &&
+                            groupsBadges[item.id] > 0 && (
+                              <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
+                                {groupsBadges[item.id] <= 99
+                                  ? groupsBadges[item.id]
+                                  : '!'}
+                              </div>
+                            )} */}
+                        </div>
+                        <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
+                          {item.items[0].name}
+                        </h3>
+                      </a>
+                    </Link>
+                  ) : (
+                    <button
+                      className={cn(
+                        'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                        // groupIsActive ? 'text-ganeral' : 'text-white'
+                      )}
+                      onClick={() => {
                         setOpenedMenuIndex(
                           openedMenuIndex === index ? null : index
                         )
                         setMenuOpen(true)
-                      }
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
-                        // groupIsActive ? 'text-ganeral' : 'text-white'
-                      )}
+                      }}
                     >
-                      <FontAwesomeIcon icon={item.icon} size="2x" />
-                      {/* {item.items.length > 1 &&
-                        typeof groupsBadges[item.id] === 'number' &&
-                        groupsBadges[item.id] > 0 && (
-                          <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
-                            {groupsBadges[item.id] <= 99
-                              ? groupsBadges[item.id]
-                              : '!'}
-                          </div>
-                        )} */}
-                    </div>
-                    <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
-                      {item.items.length === 1 ? item.items[0].name : item.name}
-                    </h3>
-
-                    {item.items.length > 1 && (
+                      <div
+                        className={cn(
+                          'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
+                          // groupIsActive ? 'text-ganeral' : 'text-white'
+                        )}
+                      >
+                        <FontAwesomeIcon icon={item.icon} size="2x" />
+                        {/* {item.items.length > 1 &&
+                          typeof groupsBadges[item.id] === 'number' &&
+                          groupsBadges[item.id] > 0 && (
+                            <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
+                              {groupsBadges[item.id] <= 99
+                                ? groupsBadges[item.id]
+                                : '!'}
+                            </div>
+                          )} */}
+                      </div>
+                      <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
+                        {item.name}
+                      </h3>
                       <div
                         className={cn('w-4 transition-transform duration-300', {
                           'rotate-180': openedMenuIndex === index,
@@ -193,8 +220,8 @@ const Menu = ({ menuCfg, activePage }) => {
                       >
                         <FontAwesomeIcon icon={faAngleDown} size="lg" />
                       </div>
-                    )}
-                  </Component>
+                    </button>
+                  )}
                   {item.items.length > 1 && (
                     <motion.div
                       variants={variants}

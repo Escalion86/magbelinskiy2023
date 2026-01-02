@@ -83,6 +83,14 @@ const eventsSchema = {
     type: String,
     default: null,
   },
+  importedFromCalendar: {
+    type: Boolean,
+    default: false,
+  },
+  calendarImportChecked: {
+    type: Boolean,
+    default: false,
+  },
   contractSum: {
     type: Number,
     default: 0,
