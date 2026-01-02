@@ -19,9 +19,6 @@
 .DS_Store
 *.pem
 google_calendar_token.json
-=========
-google_calendar_key.json
->>>>>>>>> Temporary merge branch 2
 
 # debug
 npm-debug.log*
