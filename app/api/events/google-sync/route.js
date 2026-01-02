@@ -35,11 +35,15 @@ const findOrCreateClient = async (clientName, clientPhone, contactChannels) => {
 
   if (primaryContact) update.$set = { priorityContact: primaryContact }
 
-  const client = await Clients.findOneAndUpdate({ phone: numericPhone }, update, {
-    new: true,
-    upsert: true,
-    setDefaultsOnInsert: true,
-  })
+  const client = await Clients.findOneAndUpdate(
+    { phone: numericPhone },
+    update,
+    {
+      new: true,
+      upsert: true,
+      setDefaultsOnInsert: true,
+    }
+  )
 
   return client
 }
@@ -72,10 +76,6 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
   return {
     $set: setPayload,
     $setOnInsert: {
-<<<<<<< HEAD
-      googleCalendarId: googleEventId,
-=======
->>>>>>> origin/iykslk-codex/integrate-google-calendar-with-database
       eventDate: parsedEvent.eventDate ?? parsedEvent.dateStart ?? null,
       status: parsedEvent.status,
       importedFromCalendar: true,
@@ -110,7 +110,9 @@ export const POST = async (req) => {
 
   const settings = await ensureSiteSettings()
   const storedSyncToken = settings?.custom?.get('googleCalendarSyncToken')
-  const syncToken = forceFullSync ? null : body.syncToken ?? storedSyncToken ?? null
+  const syncToken = forceFullSync
+    ? null
+    : body.syncToken ?? storedSyncToken ?? null
   const timeMin = body.timeMin ?? (syncToken ? undefined : DEFAULT_TIME_MIN)
   const timeMax = body.timeMax ?? undefined
 
@@ -126,7 +128,9 @@ export const POST = async (req) => {
     return NextResponse.json(
       {
         success: false,
-        error: `Не удалось загрузить события Google Calendar: ${error?.message ?? error}`,
+        error: `Не удалось загрузить события Google Calendar: ${
+          error?.message ?? error
+        }`,
       },
       { status: 502 }
     )
@@ -138,7 +142,9 @@ export const POST = async (req) => {
   }
 
   const results = []
-  const calendarItems = Array.isArray(googleEvents.items) ? googleEvents.items : []
+  const calendarItems = Array.isArray(googleEvents.items)
+    ? googleEvents.items
+    : []
 
   for (const item of calendarItems) {
     const parsed = parseGoogleEvent(item)
