@@ -8,6 +8,7 @@ import FormRow from '@components/FormRow'
 import IconCheckBox from '@components/IconCheckBox'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
+import Textarea from '@components/Textarea'
 import { SelectUser } from '@components/SelectItem'
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
@@ -67,6 +68,8 @@ const eventFunc = (eventId, clone = false) => {
     const [organizerId, setOrganizerId] = useState(
       () => organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
     )
+    const defaultOrganizerId =
+      organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
 
     useEffect(() => {
       setOrganizerId((prevOrganizerId) => {
@@ -220,6 +223,10 @@ const eventFunc = (eventId, clone = false) => {
     const [showOnSite, setShowOnSite] = useState(
       event?.showOnSite ?? DEFAULT_EVENT.showOnSite
     )
+    const [contractSum, setContractSum] = useState(
+      event?.contractSum ?? DEFAULT_EVENT.contractSum
+    )
+    const [comment, setComment] = useState(event?.comment ?? DEFAULT_EVENT.comment)
     // const [isReserveActive, setIsReserveActive] = useState(
     //   event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
     // )
@@ -320,6 +327,8 @@ const eventFunc = (eventId, clone = false) => {
             // price,
             subEvents,
             directionId,
+            contractSum,
+            comment,
             // maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
             // maxMans: maxMansCheck ? null : maxMans ?? 0,
             // maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
@@ -362,6 +371,8 @@ const eventFunc = (eventId, clone = false) => {
         // event?.price !== price ||
         !compareObjects(event?.subEvents, subEvents) ||
         event?.directionId !== directionId ||
+        event?.contractSum !== contractSum ||
+        event?.comment !== comment ||
         // event?.maxParticipants !==
         //   (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
         // event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
@@ -407,6 +418,8 @@ const eventFunc = (eventId, clone = false) => {
       // price,
       subEvents,
       directionId,
+      contractSum,
+      comment,
       // maxParticipants,
       // maxMans,
       // maxWomans,
@@ -639,6 +652,27 @@ const eventFunc = (eventId, clone = false) => {
               uncheckedIcon={faHeartBroken}
               checkedIconColor="#EC4899"
               big
+            />
+          </TabPanel>
+          <TabPanel tabName="Финансы" className="px-0">
+            <Input
+              label="Сумма по договору"
+              type="number"
+              value={contractSum}
+              onChange={(value) => {
+                removeError('contractSum')
+                setContractSum(value)
+              }}
+              min={0}
+            />
+            <Textarea
+              label="Комментарий"
+              value={comment}
+              onChange={(value) => {
+                removeError('comment')
+                setComment(value)
+              }}
+              rows={3}
             />
           </TabPanel>
         </TabContext>

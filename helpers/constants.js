@@ -719,9 +719,16 @@ export const pages = [
   {
     id: 4,
     group: 2,
-    name: 'Мероприятия',
-    href: 'events',
+    name: 'Предстоящие',
+    href: 'eventsUpcoming',
     icon: faCalendarCheck,
+  },
+  {
+    id: 5,
+    group: 2,
+    name: 'Прошедшие',
+    href: 'eventsPast',
+    icon: faClock,
   },
   // {
   //   id: 5,
