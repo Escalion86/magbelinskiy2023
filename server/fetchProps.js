@@ -4,6 +4,7 @@ import SiteSettings from '@models/SiteSettings'
 import Clients from '@models/Clients'
 import Requests from '@models/Requests'
 import Transactions from '@models/Transactions'
+import Colleagues from '@models/Colleagues'
 import dbConnect from './dbConnect'
 
 const fetchProps = async (user) => {
@@ -12,6 +13,7 @@ const fetchProps = async (user) => {
     const db = await dbConnect()
 
     const clients = await Clients.find({}).select('-password').lean()
+    const colleagues = await Colleagues.find({}).lean()
     const events = await Events.find({}).lean()
     const directions = await Directions.find({}).lean()
     const siteSettings = await SiteSettings.find({}).lean()
@@ -27,6 +29,7 @@ const fetchProps = async (user) => {
       ),
       requests: JSON.parse(JSON.stringify(requests)),
       transactions: JSON.parse(JSON.stringify(transactions)),
+      colleagues: JSON.parse(JSON.stringify(colleagues)),
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,
@@ -43,6 +46,7 @@ const fetchProps = async (user) => {
       siteSettings: {},
       requests: [],
       transactions: [],
+      colleagues: [],
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,

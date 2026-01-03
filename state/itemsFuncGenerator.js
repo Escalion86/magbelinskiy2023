@@ -205,6 +205,7 @@ const itemsFuncGenerator = (
   array = [
     'request',
     'event',
+    'client',
     // 'eventsUser',
     'direction',
     // 'additionalBlock',

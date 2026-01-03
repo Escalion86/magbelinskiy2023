@@ -10,6 +10,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import requestsAtom from '@state/atoms/requestsAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
 import eventSelector from '@state/selectors/eventSelector'
+import clientSelector from '@state/selectors/clientSelector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClock,
@@ -21,6 +22,7 @@ import {
 
 const EventCard = ({ eventId, style }) => {
   const event = useAtomValue(eventSelector(eventId))
+  const client = useAtomValue(clientSelector(event?.clientId))
   const transactions = useAtomValue(transactionsAtom)
   const requests = useAtomValue(requestsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -72,7 +74,8 @@ const EventCard = ({ eventId, style }) => {
       >
         <div className="flex items-center justify-between gap-x-1">
           <div className="truncate text-lg font-semibold text-gray-900">
-            {event.title || `Мероприятие для ${event.clientName ?? 'клиента'}`}
+            {event.title ||
+              `Мероприятие${client ? ` для ${client.firstName ?? 'клиента'}` : ''}`}
           </div>
           <div
             className={cn(
@@ -88,8 +91,11 @@ const EventCard = ({ eventId, style }) => {
             <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
               <span className="font-medium">Клиент:</span>
               <span className="truncate">
-                {event.clientName || '-'}
-                {event.clientPhone ? ` ( +${event.clientPhone} )` : ''}
+                {client
+                  ? `${client.firstName ?? ''} ${client.secondName ?? ''}`.trim() ||
+                    client._id
+                  : '-'}
+                {client?.phone ? ` ( +${client.phone} )` : ''}
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">

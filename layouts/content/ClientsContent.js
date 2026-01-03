@@ -113,16 +113,19 @@ const ClientsContent = () => {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {clientsWithStats.map((client) => (
-              <tr key={client._id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-900">
-                  {client.firstName || '—'}{' '}
-                  {client.secondName || ''}
+              <tr
+                key={client._id}
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => modalsFunc.client?.edit(client._id)}
+              >
+                <td className="px-4 py-3 text-gray-900 underline">
+                  {client.firstName || '-'} {client.secondName || ''}
                 </td>
-                <td className="px-4 py-3 text-gray-700">
-                  {client.phone ? `+${client.phone}` : '—'}
+                <td className="px-4 py-3 text-gray-700 underline">
+                  {client.phone ? `+${client.phone}` : '-'}
                 </td>
-                <td className="px-4 py-3 text-gray-700">
-                  {client.priorityContact || '—'}
+                <td className="px-4 py-3 text-gray-700 underline">
+                  {client.priorityContact || '-'}
                 </td>
                 <td className="px-4 py-3 text-right text-gray-700">
                   {client.requestsCount}

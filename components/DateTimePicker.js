@@ -87,7 +87,7 @@ const DateTimePicker = ({
           }
           value={value === null ? null : value ? dayjs(value) : undefined}
           defaultValue={defaultValue ? dayjs(defaultValue) : undefined}
-          onChange={(date) => onChange(date.toISOString())}
+          onChange={(date) => onChange(date ? date.toISOString() : null)}
           disabled={disabled}
           showDisabledIcon={false}
         />
@@ -119,7 +119,7 @@ const DateTimePicker = ({
             slots={{
               openPickerIcon: AccessTimeIcon,
             }}
-            onChange={(date) => onChange(date.toISOString())}
+            onChange={(date) => onChange(date ? date.toISOString() : null)}
             disabled={disabled}
             showDisabledIcon={false}
           />

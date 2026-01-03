@@ -36,13 +36,15 @@ const EventsContent = ({ filter = 'all' }) => {
   }, [events, filter])
 
   const sortedEvents = useMemo(
-    () =>
-      [...filteredEvents].sort((a, b) => {
+    () => {
+      const sorter = (a, b) => {
         const dateA = a.eventDate ? new Date(a.eventDate).getTime() : 0
         const dateB = b.eventDate ? new Date(b.eventDate).getTime() : 0
-        return dateB - dateA
-      }),
-    [filteredEvents]
+        return filter === 'upcoming' ? dateA - dateB : dateB - dateA
+      }
+      return [...filteredEvents].sort(sorter)
+    },
+    [filteredEvents, filter]
   )
 
   const filterName =

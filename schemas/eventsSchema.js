@@ -23,18 +23,6 @@ const eventsSchema = {
     type: String,
     default: 'Описание мероприятия',
   },
-  clientName: {
-    type: String,
-    default: '',
-  },
-  clientPhone: {
-    type: String,
-    default: '',
-  },
-  contactChannels: {
-    type: [String],
-    default: [],
-  },
   eventDate: {
     type: Date,
     default: null,
@@ -62,6 +50,11 @@ const eventsSchema = {
   status: {
     type: String,
     default: 'planned',
+  },
+  colleagueId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Colleagues',
+    default: null,
   },
   images: {
     type: Array,

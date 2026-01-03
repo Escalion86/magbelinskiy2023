@@ -1,42 +1,21 @@
-import AddressPicker from '@components/AddressPicker'
-import EventTagsChipsSelector from '@components/Chips/EventTagsChipsSelector'
-import DirectionSelector from '@components/ComboBox/DirectionSelector'
 import DateTimePicker from '@components/DateTimePicker'
-import EditableTextarea from '@components/EditableTextarea'
 import ErrorsList from '@components/ErrorsList'
-import FormRow from '@components/FormRow'
+import FormWrapper from '@components/FormWrapper'
 import IconCheckBox from '@components/IconCheckBox'
 import Input from '@components/Input'
-import InputImages from '@components/InputImages'
+import InputWrapper from '@components/InputWrapper'
 import Textarea from '@components/Textarea'
-import { SelectUser } from '@components/SelectItem'
-import TabContext from '@components/Tabs/TabContext'
-import TabPanel from '@components/Tabs/TabPanel'
-import {
-  faEye,
-  faEyeSlash,
-  faHeart,
-  faHeartBroken,
-  faTriangleExclamation,
-} from '@fortawesome/free-solid-svg-icons'
-import compareArrays from '@helpers/compareArrays'
-import compareObjects from '@helpers/compareObjects'
-import {
-  DEFAULT_EVENT,
-  DEFAULT_USERS_STATUS_DISCOUNT,
-} from '@helpers/constants'
-import formatMinutes from '@helpers/formatMinutes'
-import getDiffBetweenDates from '@helpers/getDiffBetweenDates'
-import getEventDuration from '@helpers/getEventDuration'
-import isObject from '@helpers/isObject'
+import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { DEFAULT_EVENT } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
-import directionsAtom from '@state/atoms/directionsAtom'
+import clientsAtom from '@state/atoms/clientsAtom'
+import colleaguesAtom from '@state/atoms/colleaguesAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { modalsFuncAtom } from '@state/atoms'
 import eventSelector from '@state/selectors/eventSelector'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { uid } from 'uid'
 
 const eventFunc = (eventId, clone = false) => {
   const EventModal = ({
@@ -48,636 +27,386 @@ const eventFunc = (eventId, clone = false) => {
     setDisableDecline,
   }) => {
     const event = useAtomValue(eventSelector(eventId))
-    const directions = useAtomValue(directionsAtom)
     const setEvent = useAtomValue(itemsFuncAtom).event.set
-    const loggedUser = useAtomValue(loggedUserAtom)
-    // const [refPerticipantsMax, setFocusPerticipantsMax] = useFocus()
-    // const [refMansMax, setFocusMansMax] = useFocus()
-    // const [refWomansMax, setFocusWomansMax] = useFocus()
-    // const [refMansNoviceMax, setFocusMansNoviceMax] = useFocus()
-    // const [refWomansNoviceMax, setFocusWomansNoviceMax] = useFocus()
-    // const [refMansMemberMax, setFocusMansMemberMax] = useFocus()
-    // const [refWomansMemberMax, setFocusWomansMemberMax] = useFocus()
-    const [directionId, setDirectionId] = useState(
-      event?.directionId ?? DEFAULT_EVENT.directionId
+    const clients = useAtomValue(clientsAtom)
+    const colleagues = useAtomValue(colleaguesAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
+
+    const [clientId, setClientId] = useState(
+      event?.clientId ?? DEFAULT_EVENT.clientId
     )
-
-    const organizerFromEvent = event?.organizerId ?? null
-    const loggedUserId = loggedUser?._id ?? null
-
-    const [organizerId, setOrganizerId] = useState(
-      () => organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
+    const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
+    const [colleagueId, setColleagueId] = useState(
+      event?.colleagueId ?? DEFAULT_EVENT.colleagueId
     )
-    const defaultOrganizerId =
-      organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
-
-    useEffect(() => {
-      setOrganizerId((prevOrganizerId) => {
-        const nextOrganizerId =
-          organizerFromEvent ?? loggedUserId ?? DEFAULT_EVENT.organizerId
-        return prevOrganizerId === nextOrganizerId
-          ? prevOrganizerId
-          : nextOrganizerId
-      })
-    }, [organizerFromEvent, loggedUserId])
-
-    const [title, setTitle] = useState(event?.title ?? DEFAULT_EVENT.title)
-    const [images, setImages] = useState(event?.images ?? DEFAULT_EVENT.images)
-    const [description, setDescription] = useState(
-      event?.description ?? DEFAULT_EVENT.description
+    const [eventDate, setEventDate] = useState(
+      event?.eventDate ?? DEFAULT_EVENT.eventDate
     )
-
-    const defaultTags = useMemo(
-      () =>
-        typeof event?.tags === 'object' ? event?.tags.filter((tag) => tag) : [],
-      []
-    )
-    const [tags, setTags] = useState(defaultTags)
-
-    const defaultDateStart = useMemo(
-      () => event?.dateStart ?? Date.now() - (Date.now() % 3600000) + 3600000,
-      []
-    )
-
-    const defaultDateEnd = useMemo(
-      () => event?.dateEnd ?? defaultDateStart + 3600000,
-      []
-    )
-
-    const [dateStart, setDateStart] = useState(defaultDateStart)
-    const [dateEnd, setDateEnd] = useState(defaultDateEnd)
-
-    // const [duration, setDuration] = useState(
-    //   event?.duration ?? DEFAULT_EVENT.duration
-    // )
-
-    const [address, setAddress] = useState(
-      event?.address && isObject(event.address)
-        ? event.address
-        : DEFAULT_EVENT.address
-    )
-    // const [price, setPrice] = useState(event?.price ?? DEFAULT_EVENT.price)
-    const [subEvents, setSubEvents] = useState(
-      event?.subEvents
-        ? event.subEvents
-        : eventId
-        ? []
-        : [
-            {
-              id: uid(24),
-              title: 'Вариант участия №1',
-              price: 0,
-              usersStatusDiscount: { ...DEFAULT_USERS_STATUS_DISCOUNT },
-              maxParticipants: null,
-              maxMans: null,
-              maxWomans: null,
-              maxMansNovice: null,
-              maxWomansNovice: null,
-              maxMansMember: null,
-              maxWomansMember: null,
-              minMansAge: 35,
-              minWomansAge: 30,
-              maxMansAge: 50,
-              maxWomansAge: 45,
-              usersStatusAccess: {},
-              usersRelationshipAccess: 'yes',
-            },
-          ]
-    )
-
-    // const [maxParticipants, setMaxParticipants] = useState(
-    //   event?.maxParticipants ?? DEFAULT_EVENT.maxParticipants
-    // )
-    // const [maxMans, setMaxMans] = useState(
-    //   event?.maxMans ?? DEFAULT_EVENT.maxMans
-    // )
-    // const [maxWomans, setMaxWomans] = useState(
-    //   event?.maxWomans ?? DEFAULT_EVENT.maxWomans
-    // )
-    // const [maxParticipantsCheck, setMaxParticipantsCheck] = useState(
-    //   typeof event?.maxParticipants !== 'number'
-    // )
-    // const [maxMansCheck, setMaxMansCheck] = useState(
-    //   typeof event?.maxMans !== 'number'
-    // )
-    // const [maxWomansCheck, setMaxWomansCheck] = useState(
-    //   typeof event?.maxWomans !== 'number'
-    // )
-    // const [maxMansNovice, setMaxMansNovice] = useState(
-    //   event?.maxMansNovice ?? DEFAULT_EVENT.maxMansNovice
-    // )
-    // const [maxMansMember, setMaxMansMember] = useState(
-    //   event?.maxMansMember ?? DEFAULT_EVENT.maxMansMember
-    // )
-    // const [maxWomansNovice, setMaxWomansNovice] = useState(
-    //   event?.maxWomansNovice ?? DEFAULT_EVENT.maxWomansNovice
-    // )
-    // const [maxWomansMember, setMaxWomansMember] = useState(
-    //   event?.maxWomansMember ?? DEFAULT_EVENT.maxWomansMember
-    // )
-    // const [maxMansNoviceCheck, setMaxMansNoviceCheck] = useState(
-    //   typeof event?.maxMansNovice !== 'number'
-    // )
-    // const [maxMansMemberCheck, setMaxMansMemberCheck] = useState(
-    //   typeof event?.maxMansMember !== 'number'
-    // )
-    // const [maxWomansNoviceCheck, setMaxWomansNoviceCheck] = useState(
-    //   typeof event?.maxWomansNovice !== 'number'
-    // )
-    // const [maxWomansMemberCheck, setMaxWomansMemberCheck] = useState(
-    //   typeof event?.maxWomansMember !== 'number'
-    // )
-
-    // const [minMansAge, setMinMansAge] = useState(
-    //   event?.minMansAge ?? DEFAULT_EVENT.minMansAge
-    // )
-    // const [minWomansAge, setMinWomansAge] = useState(
-    //   event?.minWomansAge ?? DEFAULT_EVENT.minWomansAge
-    // )
-    // const [maxMansAge, setMaxMansAge] = useState(
-    //   event?.maxMansAge ?? DEFAULT_EVENT.maxMansAge
-    // )
-    // const [maxWomansAge, setMaxWomansAge] = useState(
-    //   event?.maxWomansAge ?? DEFAULT_EVENT.maxWomansAge
-    // )
-    // const defaultUsersStatusAccess = {
-    //   ...DEFAULT_USERS_STATUS_ACCESS,
-    //   ...event?.usersStatusAccess,
-    // }
-    // const [usersStatusAccess, setUsersStatusAccess] = useState(
-    //   defaultUsersStatusAccess
-    // )
-
-    // const defaultUsersStatusDiscount = {
-    //   ...DEFAULT_USERS_STATUS_DISCOUNT,
-    //   ...(event?.usersStatusDiscount ?? DEFAULT_EVENT.usersStatusDiscount),
-    // }
-    // const [usersStatusDiscount, setUsersStatusDiscount] = useState(
-    //   defaultUsersStatusDiscount
-    // )
-
-    // const [usersRelationshipAccess, setUsersRelationshipAccess] = useState(
-    //   event?.usersRelationshipAccess ?? DEFAULT_EVENT.usersRelationshipAccess
-    // )
-
-    const [showOnSite, setShowOnSite] = useState(
-      event?.showOnSite ?? DEFAULT_EVENT.showOnSite
+    const [location, setLocation] = useState(
+      event?.location ?? DEFAULT_EVENT.location
     )
     const [contractSum, setContractSum] = useState(
-      event?.contractSum ?? DEFAULT_EVENT.contractSum
+      DEFAULT_EVENT.contractSum ?? 0
     )
-    const [comment, setComment] = useState(event?.comment ?? DEFAULT_EVENT.comment)
-    // const [isReserveActive, setIsReserveActive] = useState(
-    //   event?.isReserveActive ?? DEFAULT_EVENT.isReserveActive
-    // )
-    const [reportImages, setReportImages] = useState(
-      event?.reportImages ?? DEFAULT_EVENT.reportImages
-    )
-    const [report, setReport] = useState(event?.report ?? DEFAULT_EVENT.report)
-
-    const [warning, setWarning] = useState(
-      event?.warning ?? DEFAULT_EVENT.warning
-    )
-
-    const [likes, setLikes] = useState(event?.likes ?? DEFAULT_EVENT.likes)
+    const [comment, setComment] = useState(DEFAULT_EVENT.comment ?? '')
     const [calendarImportChecked, setCalendarImportChecked] = useState(
-      event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked
+      DEFAULT_EVENT.calendarImportChecked ?? false
     )
 
     const importedFromCalendar =
       event?.importedFromCalendar ?? DEFAULT_EVENT.importedFromCalendar
 
-    const direction = useMemo(
-      () => directions.find(({ _id }) => _id === directionId),
-      [directionId]
-    )
+    // const originalRef = useRef({
+    //   clientId: event?.clientId ?? null,
+    //   status: event?.status ?? DEFAULT_EVENT.status,
+    //   colleagueId: event?.colleagueId ?? null,
+    //   eventDate: event?.eventDate ?? DEFAULT_EVENT.eventDate ?? null,
+    //   location:
+    //     typeof event?.location === 'string'
+    //       ? event.location
+    //       : typeof DEFAULT_EVENT.location === 'string'
+    //       ? DEFAULT_EVENT.location
+    //       : '',
+    //   contractSum:
+    //     typeof event?.contractSum === 'number'
+    //       ? event.contractSum
+    //       : typeof DEFAULT_EVENT.contractSum === 'number'
+    //       ? DEFAULT_EVENT.contractSum
+    //       : 0,
+    //   comment:
+    //     typeof event?.comment === 'string'
+    //       ? event.comment
+    //       : typeof DEFAULT_EVENT.comment === 'string'
+    //       ? DEFAULT_EVENT.comment
+    //       : '',
+    //   calendarImportChecked: Boolean(
+    //     event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked
+    //   ),
+    // })
 
-    // const changeDirectionId = (id) => {
-    //   const direction = directions.find(({ _id }) => _id === id)
-    //   const rules = direction.rules
-    //   if (rules && typeof rules === 'object') {
-    //     if (rules?.userStatus) {
-    //       setUsersStatusAccess((state) => {
-    //         const novice = ['novice', 'any'].includes(rules.userStatus)
-    //           ? true
-    //           : rules.userStatus === 'member'
-    //             ? false
-    //             : state.novice
-    //         const member = ['member', 'any'].includes(rules.userStatus)
-    //           ? true
-    //           : rules.userStatus === 'novice'
-    //             ? false
-    //             : state.member
-    //         return { ...state, novice, member }
-    //       })
-    //     }
-    //     if (rules?.userRelationship) {
-    //       setUsersRelationshipAccess((state) => {
-    //         if (rules.userRelationship === 'any') {
-    //           return 'yes'
-    //         }
-    //         if (rules.userRelationship === 'alone') {
-    //           return 'no'
-    //         }
-    //         if (rules.userRelationship === 'pair') {
-    //           return 'only'
-    //         }
-    //         return state
-    //       })
-    //     }
+    // useEffect(() => {
+    //   originalRef.current = {
+    //     clientId: event?.clientId ?? null,
+    //     status: event?.status ?? DEFAULT_EVENT.status,
+    //     colleagueId: event?.colleagueId ?? null,
+    //     eventDate: event?.eventDate ?? DEFAULT_EVENT.eventDate ?? null,
+    //     location:
+    //       typeof event?.location === 'string'
+    //         ? event.location
+    //         : typeof DEFAULT_EVENT.location === 'string'
+    //         ? DEFAULT_EVENT.location
+    //         : '',
+    //     contractSum:
+    //       typeof event?.contractSum === 'number'
+    //         ? event.contractSum
+    //         : typeof DEFAULT_EVENT.contractSum === 'number'
+    //         ? DEFAULT_EVENT.contractSum
+    //         : 0,
+    //     comment:
+    //       typeof event?.comment === 'string'
+    //         ? event.comment
+    //         : typeof DEFAULT_EVENT.comment === 'string'
+    //         ? DEFAULT_EVENT.comment
+    //         : '',
+    //     calendarImportChecked: Boolean(
+    //       event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked
+    //     ),
     //   }
-    //   setDirectionId(id)
-    // }
 
-    const [errors, checkErrors, addError, removeError, clearErrors] =
-      useErrors()
-
-    const onClickConfirm = async () => {
-      let isErrorsExists = checkErrors({
-        title,
-        description,
-        images,
-        directionId,
-        organizerId,
-        dateStart,
-        dateEnd,
-        tags,
-      })
-      if (getDiffBetweenDates(dateStart, dateEnd) < 0) {
-        addError({
-          dateEnd:
-            'Дата завершения не может быть раньше даты начала мероприятия',
-        })
-        isErrorsExists = true
-      }
-      if (!isErrorsExists) {
-        closeModal()
-        setEvent(
-          {
-            _id: event?._id,
-            images,
-            title: title.trim(),
-            description,
-            tags,
-            showOnSite,
-            dateStart,
-            dateEnd,
-            // duration,
-            address,
-            // price,
-            subEvents,
-            directionId,
-            contractSum,
-            comment,
-            // maxParticipants: maxParticipantsCheck ? null : maxParticipants ?? 0,
-            // maxMans: maxMansCheck ? null : maxMans ?? 0,
-            // maxWomans: maxWomansCheck ? null : maxWomans ?? 0,
-            // maxMansNovice: maxMansNoviceCheck ? null : maxMansNovice ?? 0,
-            // maxWomansNovice: maxWomansNoviceCheck ? null : maxWomansNovice ?? 0,
-            // maxMansMember: maxMansMemberCheck ? null : maxMansMember ?? 0,
-            // maxWomansMember: maxWomansMemberCheck ? null : maxWomansMember ?? 0,
-            // maxMansAge,
-            // minMansAge,
-            // maxWomansAge,
-            // minWomansAge,
-            organizerId,
-            // status,
-            // usersStatusAccess,
-            // usersStatusDiscount,
-            // usersRelationshipAccess,
-            // isReserveActive,
-            report,
-            reportImages,
-            warning,
-            likes,
-            calendarImportChecked,
-          },
-          clone
-        )
-      }
-    }
+    //   setClientId(originalRef.current.clientId)
+    //   setStatus(originalRef.current.status)
+    //   setColleagueId(originalRef.current.colleagueId)
+    //   setEventDate(originalRef.current.eventDate)
+    //   setLocation(originalRef.current.location)
+    //   setContractSum(originalRef.current.contractSum)
+    //   setComment(originalRef.current.comment)
+    //   setCalendarImportChecked(originalRef.current.calendarImportChecked)
+    // }, [event])
 
     useEffect(() => {
-      const isFormChanged =
-        event?.title !== title ||
-        event?.description !== description ||
-        !compareArrays(defaultTags, tags) ||
-        event?.showOnSite !== showOnSite ||
-        dateStart !== defaultDateStart ||
-        dateEnd !== defaultDateEnd ||
-        // event?.duration !== duration ||
-        !compareArrays(event?.images, images) ||
-        !compareObjects(event?.address, address) ||
-        // event?.price !== price ||
-        !compareObjects(event?.subEvents, subEvents) ||
-        event?.directionId !== directionId ||
-        event?.contractSum !== contractSum ||
-        event?.comment !== comment ||
-        // event?.maxParticipants !==
-        //   (maxParticipantsCheck ? null : maxParticipants ?? 0) ||
-        // event?.maxMans !== (maxMansCheck ? null : maxMans ?? 0) ||
-        // event?.maxWomans !== (maxWomansCheck ? null : maxWomans ?? 0) ||
-        // event?.maxMansNovice !==
-        //   (maxMansNoviceCheck ? null : maxMansNovice ?? 0) ||
-        // event?.maxWomansNovice !==
-        //   (maxWomansNoviceCheck ? null : maxWomansNovice ?? 0) ||
-        // event?.maxMansMember !==
-        //   (maxMansMemberCheck ? null : maxMansMember ?? 0) ||
-        // event?.maxWomansMember !==
-        //   (maxWomansMemberCheck ? null : maxWomansMember ?? 0) ||
-        // event?.minMansAge !== minMansAge ||
-        // event?.maxMansAge !== maxMansAge ||
-        // event?.minWomansAge !== minWomansAge ||
-        // event?.maxWomansAge !== maxWomansAge ||
-        organizerId !== defaultOrganizerId ||
-        // event?.status !== status ||
-        // !compareObjects(defaultUsersStatusAccess, usersStatusAccess) ||
-        // !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
-        // event?.usersRelationshipAccess !== usersRelationshipAccess ||
-        // event?.isReserveActive !== isReserveActive ||
-        event?.report !== report ||
-        !compareArrays(event?.reportImages, reportImages) ||
-        event?.warning !== warning ||
-        event?.likes !== likes ||
-        event?.calendarImportChecked !== calendarImportChecked
+      if (status !== 'transferred' && colleagueId !== null) {
+        setColleagueId(null)
+      }
+    }, [status, colleagueId])
 
-      // setOnConfirmFunc(onClickConfirm)
+    const [errors, , addError, removeError, clearErrors] = useErrors()
+
+    const isFormChanged = useMemo(
+      () =>
+        (event?.clientId ?? DEFAULT_EVENT.clientId) !== clientId ||
+        (event?.status ?? DEFAULT_EVENT.status) !== status ||
+        (event?.colleagueId ?? DEFAULT_EVENT.colleagueId) !== colleagueId ||
+        (event?.eventDate ?? DEFAULT_EVENT.eventDate) !== eventDate ||
+        (event?.eventDate ?? DEFAULT_EVENT.location) !== location ||
+        (event?.eventDate ?? DEFAULT_EVENT.contractSum) !== contractSum ||
+        (event?.eventDate ?? DEFAULT_EVENT.comment) !== comment ||
+        (event?.eventDate ?? DEFAULT_EVENT.calendarImportChecked) !==
+          calendarImportChecked,
+      [
+        clientId,
+        status,
+        colleagueId,
+        eventDate,
+        location,
+        contractSum,
+        comment,
+        calendarImportChecked,
+        event,
+      ]
+    )
+
+    useEffect(() => {
+      const onClickConfirm = () => {
+        clearErrors()
+        let hasError = false
+
+        if (!clientId) {
+          addError({ clientId: 'Выберите клиента' })
+          hasError = true
+        }
+        if (status === 'transferred' && !colleagueId) {
+          addError({ colleagueId: 'Выберите коллегу' })
+          hasError = true
+        }
+
+        if (!hasError) {
+          closeModal()
+          const normalizedContractSum =
+            typeof contractSum === 'number' && !Number.isNaN(contractSum)
+              ? contractSum
+              : 0
+          setEvent(
+            {
+              _id: event?._id,
+              clientId,
+              requestId: event.requestId ?? null,
+              status,
+              colleagueId: status === 'transferred' ? colleagueId : null,
+              eventDate,
+              location: location ? location.trim() : '',
+              contractSum: normalizedContractSum,
+              comment: comment?.trim() ?? '',
+              calendarImportChecked,
+            },
+            clone
+          )
+        }
+      }
+
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
     }, [
-      title,
-      description,
-      tags,
-      showOnSite,
-      dateStart,
-      dateEnd,
-      // duration,
-      images,
-      address,
-      // price,
-      subEvents,
-      directionId,
+      clientId,
+      status,
+      colleagueId,
+      eventDate,
+      location,
       contractSum,
       comment,
-      // maxParticipants,
-      // maxMans,
-      // maxWomans,
-      // maxMansNovice,
-      // maxWomansNovice,
-      // maxMansMember,
-      // maxWomansMember,
-      // maxMansAge,
-      // minMansAge,
-      // maxWomansAge,
-      // minWomansAge,
-      organizerId,
-      // maxParticipantsCheck,
-      // maxMansCheck,
-      // maxWomansCheck,
-      // maxMansNoviceCheck,
-      // maxWomansNoviceCheck,
-      // maxMansMemberCheck,
-      // maxWomansMemberCheck,
-      // status,
-      // usersStatusAccess,
-      // usersStatusDiscount,
-      // usersRelationshipAccess,
-      // isReserveActive,
-      report,
-      reportImages,
-      warning,
-      likes,
       calendarImportChecked,
+      event,
     ])
 
-    const duration = getEventDuration({ dateStart, dateEnd })
+    const selectedClient = useMemo(
+      () =>
+        clientId && clients.length
+          ? clients.find((client) => client._id === clientId)
+          : null,
+      [clientId, clients]
+    )
 
-    return (
-      <>
-        <TabContext value="Общие">
-          <TabPanel tabName="Общие" className="px-0">
-            {/* <FormWrapper> */}
-            <InputImages
-              label="Фотографии"
-              directory="events"
-              images={images}
-              onChange={(images) => {
-                removeError('images')
-                setImages(images)
-              }}
-              required
-              error={errors.images}
-            />
-            {/* <SelectDirection
-              selectedId={directionId}
-              onChange={(directionId) => {
-                removeError('directionId')
-                setDirectionId(directionId)
-              }}
-              required
-              error={errors.directionId}
-            /> */}
-            <DirectionSelector
-              value={directionId}
-              onChange={(directionId) => {
-                removeError('directionId')
-                // changeDirectionId(directionId)
-                setDirectionId(directionId)
-              }}
-              required
-              error={errors.directionId}
-            />
-            {(direction?.rules?.userStatus &&
-              direction?.rules?.userStatus !== 'select') ||
-              (direction?.rules?.userRelationship &&
-                direction?.rules?.userRelationship !== 'select' && (
-                  <div className="text-danger -mb-2 pl-2 text-sm">
-                    Применены ограничения доступа заданные направлением
-                  </div>
-                ))}
+    const sortedColleagues = useMemo(
+      () =>
+        [...colleagues].sort((a, b) =>
+          (a.name ?? '').localeCompare(b.name ?? '')
+        ),
+      [colleagues]
+    )
+
+    const openClientSelectModal = () => {
+      const ClientSelectModal = ({ closeModal }) => {
+        const [search, setSearch] = useState('')
+        const filteredClients = clients
+          .filter((client) => {
+            if (!search.trim()) return true
+            const text = search.trim().toLowerCase()
+            return [
+              client.firstName,
+              client.secondName,
+              client.priorityContact,
+              client.phone ? `+${client.phone}` : '',
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase()
+              .includes(text)
+          })
+          .sort((a, b) => (a.firstName ?? '').localeCompare(b.firstName ?? ''))
+
+        const onPick = (client) => {
+          setClientId(client._id)
+          closeModal()
+        }
+
+        return (
+          <div className="flex h-full flex-col gap-2">
             <Input
-              label="Название"
-              type="text"
-              value={title}
-              onChange={(value) => {
-                removeError('title')
-                setTitle(value)
-              }}
-              // labelClassName="w-40"
-              error={errors.title}
-              required
+              label="Поиск клиента"
+              value={search}
+              onChange={setSearch}
+              placeholder="Имя, телефон или контакт"
             />
-            <EditableTextarea
-              label="Описание"
-              html={description}
-              uncontrolled={false}
-              onChange={(value) => {
-                removeError('description')
-                setDescription(value)
-              }}
-              placeholder="Описание мероприятия..."
-              required
-              error={errors.description}
-            />
-            <EventTagsChipsSelector
-              tags={tags}
-              onChange={(value) => {
-                removeError('tags')
-                setTags(value)
-              }}
-              canEditChips
-              required
-              error={errors.tags}
-              // readOnly
-              // className
-            />
-            {/* <FormWrapper twoColumns> */}
-            <FormRow className="flex-wrap">
-              <DateTimePicker
-                value={dateStart}
-                onChange={(date) => {
-                  removeError('dateStart')
-                  setDateStart(date)
-                }}
-                label="Начало"
-                required
-                error={errors.dateStart}
-                noMargin
-                // postfix={
-                //   getDiffBetweenDates(dateStart) > 0 && 'Внимание: дата прошла!'
-                // }
-                // postfixClassName="text-danger"
-              />
-              {getDiffBetweenDates(dateStart) > 0 && (
-                <div className="laptop:pt-0 text-danger flex items-center pt-[4px] leading-3">
-                  Внимание: дата прошла!
+            <div className="flex-1 overflow-auto rounded border border-gray-200">
+              {filteredClients.length === 0 ? (
+                <div className="p-3 text-sm text-gray-500">
+                  Клиенты не найдены
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {filteredClients.map((client) => (
+                    <button
+                      key={client._id}
+                      className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-gray-50"
+                      onClick={() => onPick(client)}
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-gray-900">
+                          {[client.firstName, client.secondName]
+                            .filter(Boolean)
+                            .join(' ') || '[Без имени]'}
+                        </span>
+                        <span className="text-sm text-gray-600">
+                          {client.phone
+                            ? `+${client.phone}`
+                            : 'Телефон не указан'}
+                        </span>
+                      </div>
+                      {client.priorityContact && (
+                        <span className="text-xs text-gray-500">
+                          {client.priorityContact}
+                        </span>
+                      )}
+                    </button>
+                  ))}
                 </div>
               )}
-            </FormRow>
-            <FormRow>
-              <DateTimePicker
-                value={dateEnd}
-                onChange={(date) => {
-                  removeError('dateEnd')
-                  setDateEnd(date)
-                }}
-                label="Завершение"
-                required
-                error={errors.dateEnd}
-                noMargin
-                // postfix={formatMinutes(duration)}
-              />
-              <div className="laptop:pt-0 flex items-center pt-[4px] leading-3">
-                {formatMinutes(duration)}
+            </div>
+          </div>
+        )
+      }
+
+      modalsFunc.custom({
+        title: 'Выбор клиента',
+        confirmButtonName: 'Закрыть',
+        Children: ClientSelectModal,
+      })
+    }
+
+    return (
+      <FormWrapper>
+        <InputWrapper label="Клиент" required error={errors.clientId} paddingY>
+          <div className="flex items-center gap-2">
+            <div
+              className="flex-1 cursor-pointer rounded border border-gray-300 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow"
+              onClick={openClientSelectModal}
+            >
+              <div className="text-base font-semibold text-gray-900">
+                {[selectedClient?.firstName, selectedClient?.secondName]
+                  .filter(Boolean)
+                  .join(' ') || 'Не выбрано'}
               </div>
-            </FormRow>
-            {/* <TimePicker
-                  value={
-                    formatMinutes(duration, true)
-                    // (Math.ceil(duration / 60) <= 9
-                    //   ? '0' + Math.ceil(duration / 60)
-                    //   : Math.ceil(duration / 60)) +
-                    // ':' +
-                    // (duration % 60 <= 9 ? '0' + (duration % 60) : duration % 60)
-                  }
-                  onChange={(duration) => {
-                    removeError('duration')
-                    setDuration(
-                      duration
-                        .split(':')
-                        .reduce((seconds, v) => +v + seconds * 60, 0)
-                    )
-                  }}
-                  label="Продолжительность"
-                  required
-                  error={errors.duration}
-                /> */}
-            {/* </FormWrapper> */}
-            <SelectUser
-              label="Организатор"
-              modalTitle="Выбор организатора"
-              selectedId={organizerId}
-              onChange={(userId) => {
-                removeError('organizerId')
-                setOrganizerId(userId)
-              }}
-              required
-              error={errors.organizerId}
-            />
-            <AddressPicker address={address} onChange={setAddress} />
-            {/* <CheckBox
-              checked={warning}
-              labelPos="left"
-              // labelClassName="w-40"
-              onClick={() => setWarning((checked) => !checked)}
-              label="Предупреждение о рисках и травмоопасности на мероприятии"
-            /> */}
-            <IconCheckBox
-              checked={warning}
-              onClick={() => setWarning((checked) => !checked)}
-              label="Предупреждение о рисках и травмоопасности на мероприятии"
-              checkedIcon={faTriangleExclamation}
-              checkedIconColor="#AA0000"
-              big
-            />
+              <div className="text-sm text-gray-600">
+                {selectedClient?.priorityContact || 'Контакт не указан'}
+              </div>
+              <div className="text-sm text-gray-600">
+                {selectedClient?.phone
+                  ? `+${selectedClient.phone}`
+                  : 'Телефон не указан'}
+              </div>
+            </div>
+            {clientId && (
+              <button
+                type="button"
+                className="flex h-[54px] w-[54px] items-center justify-center rounded bg-gray-100 text-primary shadow-sm transition hover:bg-gray-200"
+                onClick={() => modalsFunc.client?.edit(clientId)}
+                title="Редактировать клиента"
+              >
+                ✎
+              </button>
+            )}
+          </div>
+        </InputWrapper>
 
-            <IconCheckBox
-              checked={calendarImportChecked}
-              onClick={() =>
-                setCalendarImportChecked((checked) => !checked)
-              }
-              label={
-                importedFromCalendar
-                  ? 'Импорт из календаря проверен'
-                  : 'Проверка мероприятия завершена'
-              }
-              big
-            />
+        <EventStatusPicker status={status} onChange={setStatus} required />
+        {status === 'transferred' && (
+          <InputWrapper
+            label="Кому передано"
+            required
+            error={errors.colleagueId}
+          >
+            <select
+              className="h-9 w-full rounded border border-gray-300 px-2 text-sm focus:border-general focus:outline-none"
+              value={colleagueId ?? ''}
+              onChange={(e) => {
+                removeError('colleagueId')
+                const value = e.target.value || null
+                setColleagueId(value)
+              }}
+            >
+              <option value="">Не выбрано</option>
+              {sortedColleagues.map((colleague) => (
+                <option key={colleague._id} value={colleague._id}>
+                  {colleague.name}{' '}
+                  {colleague.phone ? `(+${colleague.phone})` : ''}
+                </option>
+              ))}
+            </select>
+          </InputWrapper>
+        )}
 
-            <IconCheckBox
-              checked={showOnSite}
-              onClick={() => setShowOnSite((checked) => !checked)}
-              label="Показывать на сайте"
-              checkedIcon={faEye}
-              uncheckedIcon={faEyeSlash}
-              checkedIconColor="#A855F7"
-              big
-            />
-            <IconCheckBox
-              checked={likes}
-              onClick={() => setLikes((checked) => !checked)}
-              label="Участники ставят лайки другим участникам во время и после мероприятия"
-              checkedIcon={faHeart}
-              uncheckedIcon={faHeartBroken}
-              checkedIconColor="#EC4899"
-              big
-            />
-          </TabPanel>
-          <TabPanel tabName="Финансы" className="px-0">
-            <Input
-              label="Сумма по договору"
-              type="number"
-              value={contractSum}
-              onChange={(value) => {
-                removeError('contractSum')
-                setContractSum(value)
-              }}
-              min={0}
-            />
-            <Textarea
-              label="Комментарий"
-              value={comment}
-              onChange={(value) => {
-                removeError('comment')
-                setComment(value)
-              }}
-              rows={3}
-            />
-          </TabPanel>
-        </TabContext>
+        <DateTimePicker
+          value={eventDate}
+          onChange={(value) => {
+            removeError('eventDate')
+            setEventDate(value ?? null)
+          }}
+          label="Дата мероприятия"
+          error={errors.eventDate}
+        />
+        <Input
+          label="Локация"
+          type="text"
+          value={location}
+          onChange={setLocation}
+        />
+        <Input
+          label="Договорная сумма"
+          type="number"
+          value={contractSum}
+          onChange={setContractSum}
+          min={0}
+        />
+        <Textarea
+          label="Комментарий"
+          onChange={setComment}
+          value={comment}
+          rows={3}
+        />
+        <IconCheckBox
+          checked={calendarImportChecked}
+          onClick={() => setCalendarImportChecked((checked) => !checked)}
+          label={
+            importedFromCalendar
+              ? 'Импорт из календаря проверен'
+              : 'Проверка мероприятия завершена'
+          }
+          checkedIcon={faCircleCheck}
+          checkedIconColor="#10B981"
+          big
+        />
         <ErrorsList errors={errors} />
-      </>
+      </FormWrapper>
     )
   }
 

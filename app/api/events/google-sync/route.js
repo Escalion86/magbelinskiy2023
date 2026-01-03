@@ -58,10 +58,6 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
   if (parsedEvent.dateStart) setPayload.dateStart = parsedEvent.dateStart
   if (parsedEvent.dateEnd) setPayload.dateEnd = parsedEvent.dateEnd
   if (parsedEvent.eventDate) setPayload.eventDate = parsedEvent.eventDate
-  if (parsedEvent.clientName) setPayload.clientName = parsedEvent.clientName
-  if (parsedEvent.clientPhone) setPayload.clientPhone = parsedEvent.clientPhone
-  if (parsedEvent.contactChannels.length > 0)
-    setPayload.contactChannels = parsedEvent.contactChannels
   if (parsedEvent.contractSum !== null && parsedEvent.contractSum !== undefined)
     setPayload.contractSum = parsedEvent.contractSum
   if (parsedEvent.comment) setPayload.comment = parsedEvent.comment

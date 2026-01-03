@@ -7,6 +7,9 @@ const EVENT_STATUSES = new Set([
   'in_progress',
   'completed',
   'canceled',
+  'transferred',
+  'active',
+  'closed',
 ])
 
 export const PUT = async (req, { params }) => {
@@ -23,6 +26,7 @@ export const PUT = async (req, { params }) => {
   if (body.comment !== undefined) update.comment = body.comment ?? ''
   if (body.calendarImportChecked !== undefined)
     update.calendarImportChecked = Boolean(body.calendarImportChecked)
+  if (body.colleagueId !== undefined) update.colleagueId = body.colleagueId
   if (body.status && EVENT_STATUSES.has(body.status)) update.status = body.status
 
   const event = await Events.findByIdAndUpdate(id, update, { new: true })

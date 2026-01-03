@@ -10,6 +10,7 @@ import {
   faLock,
   faMars,
   faPlay,
+  faShare,
   faShoppingBag,
   faSignInAlt,
   faVenus,
@@ -429,9 +430,6 @@ export const DEFAULT_EVENT = Object.freeze({
   organizerId: null,
   requestId: null,
   clientId: null,
-  clientName: '',
-  clientPhone: '',
-  contactChannels: [],
   title: '',
   description: '',
   eventDate: null,
@@ -445,6 +443,7 @@ export const DEFAULT_EVENT = Object.freeze({
   comment: '',
   importedFromCalendar: false,
   calendarImportChecked: false,
+  colleagueId: null,
   images: [],
   showOnSite: true,
   report: '',
@@ -452,6 +451,13 @@ export const DEFAULT_EVENT = Object.freeze({
   warning: false,
   likes: false,
   likesProcessActive: true,
+})
+
+export const DEFAULT_CLIENT = Object.freeze({
+  firstName: '',
+  secondName: '',
+  priorityContact: '',
+  phone: null,
 })
 
 export const DEFAULT_REQUEST = Object.freeze({
@@ -562,6 +568,7 @@ export const EVENT_STATUSES_SIMPLE = Object.freeze([
   { value: 'in_progress', name: 'В процессе', color: 'amber' },
   { value: 'completed', name: 'Завершено', color: 'green' },
   { value: 'canceled', name: 'Отменено', color: 'red' },
+  { value: 'transferred', name: 'Передано', color: 'violet' },
 ])
 
 export const TRANSACTION_TYPES = Object.freeze([
@@ -631,7 +638,11 @@ export const EVENT_RELATIONSHIP_ACCESS = [
 ]
 
 export const EVENT_STATUSES = [
+  { value: 'planned', name: 'Запланировано', color: 'blue-400', icon: faCalendarAlt },
+  { value: 'in_progress', name: 'В процессе', color: 'amber-400', icon: faClock },
+  { value: 'completed', name: 'Завершено', color: 'green-400', icon: faCheck },
   { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },
+  { value: 'transferred', name: 'Передано', color: 'purple-400', icon: faShare },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
   { value: 'closed', name: 'Закрыто', color: 'green-400', icon: faLock },
 ]

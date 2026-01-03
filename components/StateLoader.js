@@ -7,6 +7,7 @@ import clientsAtom from '@state/atoms/clientsAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
+import colleaguesAtom from '@state/atoms/colleaguesAtom'
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -41,6 +42,7 @@ const StateLoader = (props) => {
   const setDirectionsState = useSetAtom(directionsAtom)
   const setClientsState = useSetAtom(clientsAtom)
   const setTransactionsState = useSetAtom(transactionsAtom)
+  const setColleaguesState = useSetAtom(colleaguesAtom)
   // const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
   // const setUsersState = useSetAtom(usersAtom)
   // const setReviewsState = useSetAtom(reviewsAtom)
@@ -79,9 +81,11 @@ const StateLoader = (props) => {
     setDirectionsState(props.directions)
     setClientsState(props.clients)
     setTransactionsState(props.transactions ?? [])
+    setColleaguesState(props.colleagues ?? [])
     setSiteSettingsState(props.siteSettings)
     setIsSiteLoading(false)
   }, [
+    props.colleagues,
     props.clients,
     props.directions,
     props.events,
@@ -97,6 +101,7 @@ const StateLoader = (props) => {
     setRequestsState,
     setSiteSettingsState,
     setTransactionsState,
+    setColleaguesState,
   ])
 
   // useEffect(() => {

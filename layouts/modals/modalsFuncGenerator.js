@@ -46,6 +46,7 @@ import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 // import browseLocationFunc from './modalsFunc/browseLocationFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
 import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
+import clientFunc from './modalsFunc/clientFunc'
 // import userHistoryFunc from './modalsFunc/userHistoryFunc'
 // import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 // import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
@@ -336,6 +337,10 @@ const modalsFuncGenerator = (
             })
           },
         }),
+    },
+    client: {
+      edit: (clientId) => addModal(clientFunc(clientId)),
+      add: () => addModal(clientFunc(null, true)),
     },
     // serviceUser: {
     //   add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),

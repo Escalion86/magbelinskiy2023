@@ -52,9 +52,6 @@ export const PUT = async (req, { params }) => {
     const event = await Events.create({
       requestId: request._id,
       clientId: request.clientId,
-      clientName: request.clientName,
-      clientPhone: request.clientPhone,
-      contactChannels: request.contactChannels,
       eventDate: request.eventDate,
       requestDate: request.createdAt,
       location: request.location,
