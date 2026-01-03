@@ -7,7 +7,7 @@ import { DEFAULT_CLIENT } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import clientSelector from '@state/selectors/clientSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const clientFunc = (clientId, clone = false) => {
@@ -23,68 +23,60 @@ const clientFunc = (clientId, clone = false) => {
     const setClient = useAtomValue(itemsFuncAtom).client.set
 
     const [firstName, setFirstName] = useState(
-      client?.firstName ?? DEFAULT_CLIENT.firstName ?? ''
+      client?.firstName ?? DEFAULT_CLIENT.firstName
     )
     const [secondName, setSecondName] = useState(
-      client?.secondName ?? DEFAULT_CLIENT.secondName ?? ''
+      client?.secondName ?? DEFAULT_CLIENT.secondName
     )
     const [priorityContact, setPriorityContact] = useState(
-      client?.priorityContact ?? DEFAULT_CLIENT.priorityContact ?? ''
+      client?.priorityContact ?? DEFAULT_CLIENT.priorityContact
     )
-    const [phone, setPhone] = useState(
-      client?.phone ?? DEFAULT_CLIENT.phone ?? null
-    )
+    const [phone, setPhone] = useState(client?.phone ?? DEFAULT_CLIENT.phone)
     const [errors, checkErrors, addError, removeError] = useErrors()
 
-    useEffect(() => {
-      const isChanged =
-        client?.firstName !== firstName ||
-        client?.secondName !== secondName ||
-        client?.priorityContact !== priorityContact ||
-        (client?.phone ?? null) !== (phone ?? null)
+    const isFormChanged = useMemo(
+      () =>
+        (client?.firstName ?? DEFAULT_CLIENT.firstName) !== firstName ||
+        (client?.secondName ?? DEFAULT_CLIENT.secondName) !== secondName ||
+        (client?.priorityContact ?? DEFAULT_CLIENT.priorityContact) !==
+          priorityContact ||
+        (client?.phone ?? DEFAULT_CLIENT.phone) !== phone,
+      [firstName, phone, priorityContact, secondName]
+    )
 
-      setOnShowOnCloseConfirmDialog(isChanged)
-      setDisableConfirm(!isChanged)
-      setOnConfirmFunc(
-        isChanged
-          ? () => {
-              const hasPhoneError = checkErrors({ phone: phone })
-              let customError = false
-              if (!firstName || !firstName.trim()) {
-                addError({ firstName: 'Укажите имя' })
-                customError = true
-              }
-              if (!hasPhoneError && !customError) {
-                setClient(
-                  {
-                    _id: client?._id,
-                    firstName: firstName.trim(),
-                    secondName: secondName.trim(),
-                    priorityContact: priorityContact.trim(),
-                    phone: phone ?? null,
-                  },
-                  clone
-                )
-                closeModal()
-              }
-            }
-          : undefined
-      )
+    useEffect(() => {
+      const onClickConfirm = () => {
+        const hasPhoneError = checkErrors({ phone: phone })
+        let customError = false
+        if (!firstName || !firstName.trim()) {
+          addError({ firstName: 'Укажите имя' })
+          customError = true
+        }
+        if (!hasPhoneError && !customError) {
+          setClient(
+            {
+              _id: client?._id,
+              firstName: firstName.trim(),
+              secondName: secondName.trim(),
+              priorityContact: priorityContact.trim(),
+              phone: phone ?? null,
+            },
+            clone
+          )
+          closeModal()
+        }
+      }
+
+      setOnShowOnCloseConfirmDialog(isFormChanged)
+      setDisableConfirm(!isFormChanged)
+      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
     }, [
       firstName,
       secondName,
       priorityContact,
       phone,
-      client?._id,
-      client?.firstName,
-      client?.secondName,
-      client?.priorityContact,
-      client?.phone,
+      client,
       clone,
-      addError,
-      checkErrors,
-      closeModal,
-      setClient,
       setDisableConfirm,
       setOnConfirmFunc,
       setOnShowOnCloseConfirmDialog,
@@ -102,11 +94,7 @@ const clientFunc = (clientId, clone = false) => {
           required
           error={errors.firstName}
         />
-        <Input
-          label="Фамилия"
-          value={secondName}
-          onChange={setSecondName}
-        />
+        <Input label="Фамилия" value={secondName} onChange={setSecondName} />
         <PhoneInput
           label="Телефон"
           value={phone}

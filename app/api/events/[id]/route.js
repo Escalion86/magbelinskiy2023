@@ -20,6 +20,7 @@ export const PUT = async (req, { params }) => {
   const update = {}
   if (body.eventDate !== undefined)
     update.eventDate = body.eventDate ? new Date(body.eventDate) : null
+  if (body.clientId !== undefined) update.clientId = body.clientId
   if (body.location !== undefined) update.location = body.location ?? ''
   if (body.contractSum !== undefined)
     update.contractSum = Number(body.contractSum) || 0
