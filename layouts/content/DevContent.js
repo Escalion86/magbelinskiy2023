@@ -11,6 +11,9 @@ const DevContent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
+  const [cleanupLoading, setCleanupLoading] = useState(false)
+  const [cleanupError, setCleanupError] = useState('')
+  const [cleanupResult, setCleanupResult] = useState(null)
 
   const handleSync = async () => {
     setLoading(true)
@@ -37,6 +40,32 @@ const DevContent = () => {
       setError(syncError.message || 'Не удалось синхронизировать календарь')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleCleanup = async () => {
+    if (
+      !window.confirm(
+        'Удалить все импортированные из календаря мероприятия, которые еще не проверены?'
+      )
+    )
+      return
+
+    setCleanupLoading(true)
+    setCleanupError('')
+    setCleanupResult(null)
+    try {
+      const response = await fetch('/api/events/cleanup-unchecked', { method: 'POST' })
+      const rawText = await response.text()
+      const data = rawText ? JSON.parse(rawText) : null
+      if (!data) throw new Error('Пустой ответ от сервера')
+      if (!response.ok || !data.success)
+        throw new Error(data.error || 'Не удалось удалить мероприятия')
+      setCleanupResult(data.data)
+    } catch (cleanupErr) {
+      setCleanupError(cleanupErr.message || 'Не удалось удалить мероприятия')
+    } finally {
+      setCleanupLoading(false)
     }
   }
 
@@ -70,6 +99,28 @@ const DevContent = () => {
             loading={loading}
             className="w-full sm:w-auto"
           />
+        </div>
+        <div className="flex flex-col gap-3 rounded border border-amber-200 bg-amber-50 p-3">
+          <div className="text-sm text-amber-800">
+            Удалить все мероприятия, импортированные из Google Calendar, которые еще не
+            отмечены как проверенные.
+          </div>
+          <Button
+            name="Удалить непроверенные импорты"
+            onClick={handleCleanup}
+            loading={cleanupLoading}
+            className="w-full sm:w-auto bg-amber-600 text-white hover:bg-amber-700"
+          />
+          {cleanupError && (
+            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+              {cleanupError}
+            </div>
+          )}
+          {cleanupResult && (
+            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+              Удалено мероприятий: <b>{cleanupResult.deleted ?? 0}</b>
+            </div>
+          )}
         </div>
         {error && (
           <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">

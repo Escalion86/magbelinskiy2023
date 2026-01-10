@@ -3,11 +3,7 @@ import Events from '@models/Events'
 import dbConnect from '@server/dbConnect'
 
 const EVENT_STATUSES = new Set([
-  'planned',
-  'in_progress',
-  'completed',
   'canceled',
-  'transferred',
   'active',
   'closed',
 ])
@@ -28,6 +24,10 @@ export const PUT = async (req, { params }) => {
   if (body.calendarImportChecked !== undefined)
     update.calendarImportChecked = Boolean(body.calendarImportChecked)
   if (body.colleagueId !== undefined) update.colleagueId = body.colleagueId
+  if (body.isTransferred !== undefined) {
+    update.isTransferred = Boolean(body.isTransferred)
+    if (!update.isTransferred) update.colleagueId = null
+  }
   if (body.status && EVENT_STATUSES.has(body.status)) update.status = body.status
 
   const event = await Events.findByIdAndUpdate(id, update, { new: true })

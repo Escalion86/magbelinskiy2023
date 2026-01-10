@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { pages, pagesGroups } from '@helpers/constants'
 import menuOpenAtom from '@state/atoms/menuOpen'
 import windowDimensionsAtom from '@state/atoms/windowDimensionsAtom'
+import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 // import badgesSelector from '@state/selectors/badgesSelector'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
@@ -64,32 +65,29 @@ const menuCfg = () => {
 const MenuItem = ({ item, active = false, badge }) => {
   const setMenuOpen = useSetAtom(menuOpenAtom)
   return (
-    <Link href={'/cabinet/' + item.href} shallow legacyBehavior>
-      <a
-        onClick={() => setMenuOpen(false)}
-        className={cn(
-          'mb-1 flex cursor-pointer flex-nowrap items-center justify-between rounded-lg ',
-          active ? 'bg-general text-white' : '',
-          'hover:bg-general hover:text-white'
+    <Link
+      href={`/cabinet/${item.href}`}
+      onClick={() => setMenuOpen(false)}
+      className={cn(
+        'mb-1 flex cursor-pointer flex-nowrap items-center justify-between rounded-lg ',
+        active ? 'bg-general text-white' : '',
+        'hover:bg-general hover:text-white'
+      )}
+    >
+      <div className={cn('flex w-full items-center gap-x-2 px-3 py-1 ')}>
+        <FontAwesomeIcon icon={item.icon} className="min-w-5 h-5 w-5" />
+        <span className={'whitespace-nowrap text-sm font-medium'}>
+          {item.name}
+        </span>
+        {item.num !== null && (
+          <span className="text-general text-xs font-semibold">{item.num}</span>
         )}
-      >
-        <div className={cn('flex w-full items-center gap-x-2 px-3 py-1 ')}>
-          <FontAwesomeIcon icon={item.icon} className="min-w-5 h-5 w-5" />
-          <span className={'whitespace-nowrap text-sm font-medium'}>
-            {item.name}
-          </span>
-          {item.num !== null && (
-            <span className="text-general text-xs font-semibold">
-              {item.num}
-            </span>
-          )}
-          {typeof badge === 'number' && badge > 0 && (
-            <div className="min-w-5 min-h-5 bg-danger flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-              {badge <= 99 ? badge : '!'}
-            </div>
-          )}
-        </div>
-      </a>
+        {typeof badge === 'number' && badge > 0 && (
+          <div className="min-w-5 min-h-5 bg-danger flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+            {badge <= 99 ? badge : '!'}
+          </div>
+        )}
+      </div>
     </Link>
   )
 }
@@ -146,39 +144,34 @@ const Menu = ({ menuCfg, activePage }) => {
                   {isSingleItem ? (
                     <Link
                       href={`/cabinet/${item.items[0].href}`}
-                      shallow
-                      legacyBehavior
+                      className={cn(
+                        'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                        // groupIsActive ? 'text-ganeral' : 'text-white'
+                      )}
+                      onClick={() => {
+                        setMenuOpen(false)
+                      }}
                     >
-                      <a
+                      <div
                         className={cn(
-                          'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                          'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
                           // groupIsActive ? 'text-ganeral' : 'text-white'
                         )}
-                        onClick={() => {
-                          setMenuOpen(false)
-                        }}
                       >
-                        <div
-                          className={cn(
-                            'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
-                            // groupIsActive ? 'text-ganeral' : 'text-white'
-                          )}
-                        >
-                          <FontAwesomeIcon icon={item.icon} size="2x" />
-                          {/* {item.items.length > 1 &&
-                            typeof groupsBadges[item.id] === 'number' &&
-                            groupsBadges[item.id] > 0 && (
-                              <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
-                                {groupsBadges[item.id] <= 99
-                                  ? groupsBadges[item.id]
-                                  : '!'}
-                              </div>
-                            )} */}
-                        </div>
-                        <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
-                          {item.items[0].name}
-                        </h3>
-                      </a>
+                        <FontAwesomeIcon icon={item.icon} size="2x" />
+                        {/* {item.items.length > 1 &&
+                          typeof groupsBadges[item.id] === 'number' &&
+                          groupsBadges[item.id] > 0 && (
+                            <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-full min-w-5 min-h-5 bg-danger -right-2 -top-1">
+                              {groupsBadges[item.id] <= 99
+                                ? groupsBadges[item.id]
+                                : '!'}
+                            </div>
+                          )} */}
+                      </div>
+                      <h3 className="ml-3 flex-1 whitespace-nowrap text-left font-semibold uppercase tracking-wide">
+                        {item.items[0].name}
+                      </h3>
                     </Link>
                   ) : (
                     <button
@@ -252,6 +245,11 @@ const variants = {
   max: { width: 320 },
 }
 
+const mobileVariants = {
+  min: { width: 0 },
+  max: { width: '85vw' },
+}
+
 const SideBar = ({ page }) => {
   console.log('page :>> ', page)
   const wrapperRef = useRef(null)
@@ -260,6 +258,10 @@ const SideBar = ({ page }) => {
   const [scrollPos, setScrollPos] = useState(0)
   const [scrollable, setScrollable] = useState(false)
   const { height } = useAtomValue(windowDimensionsAtom)
+  const device = useAtomValue(windowDimensionsTailwindSelector)
+  const isMobile =
+    device === 'phoneV' || device === 'phoneH' || device === 'tablet'
+  const motionVariants = isMobile ? mobileVariants : variants
 
   const handleScrollPosition = (scrollAmount) => {
     var newPos
@@ -306,23 +308,29 @@ const SideBar = ({ page }) => {
   }, [menuRef.current?.scrollHeight, height])
 
   return (
-    <div
-      className="min-w-16 tablet:min-w-16 relative bottom-0 top-0 z-50 flex max-h-full w-0 flex-col bg-blue-200 tablet:w-16"
+    <motion.div
+      className={cn(
+        'bottom-0 top-0 z-50 flex max-h-full flex-col',
+        isMobile
+          ? 'fixed left-0 min-w-0 max-w-[320px] overflow-hidden top-16 bottom-0 max-h-[calc(100vh-4rem)] bg-transparent'
+          : 'relative min-w-16 tablet:min-w-16 w-0 tablet:w-16 bg-blue-200'
+      )}
       // style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
       // style={{ width: 64 }}
+      variants={mobileVariants}
+      animate={isMobile ? (!menuOpen ? 'min' : 'max') : undefined}
+      transition={{ duration: 0.5, type: 'tween' }}
+      initial={isMobile ? 'min' : undefined}
     >
       <motion.div
         ref={menuRef}
-        className={
-          'absolute top-0 z-10 max-h-full items-start overflow-y-hidden'
-          // 'sidepanel fixed laptop:static w-64 h-full pb-15 laptop:pb-0 max-h-screen left-0 top-menu laptop:top-0 z-40 transform duration-300 border-t border-primary laptop:border-t-0 bg-white' +
-          // (!menuOpen
-          //   ? ' scale-x-0 -translate-x-32 w-0 laptop:w-64 laptop:transform-none'
-          //   : '')
-        }
+        className={cn(
+          'absolute top-0 z-10 h-full max-h-full w-full items-start overflow-y-hidden',
+          isMobile ? 'bg-general shadow-2xl' : ''
+        )}
         style={{ scrollBehavior: 'smooth' }}
-        variants={variants}
+        variants={motionVariants}
         animate={!menuOpen ? 'min' : 'max'}
         transition={{ duration: 0.5, type: 'tween' }}
         initial={'min'}
@@ -333,12 +341,15 @@ const SideBar = ({ page }) => {
         </div>
       </motion.div>
       <motion.div
-        variants={variants}
+        variants={motionVariants}
         animate={!menuOpen ? 'min' : 'max'}
         transition={{ duration: 0.5, type: 'tween' }}
         initial={'min'}
         layout
-        className="bg-general pointer-events-none absolute bottom-0 top-0"
+        className={cn(
+          'pointer-events-none absolute bottom-0 top-0',
+          isMobile ? 'bg-transparent' : 'bg-general'
+        )}
       />
       {scrollable && (
         <>
@@ -372,7 +383,7 @@ const SideBar = ({ page }) => {
           )}
         </>
       )}
-    </div>
+    </motion.div>
   )
 }
 

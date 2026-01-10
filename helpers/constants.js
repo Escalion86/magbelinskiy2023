@@ -438,8 +438,9 @@ export const DEFAULT_EVENT = Object.freeze({
   dateEnd: null,
   address: DEFAULT_ADDRESS,
   location: '',
-  status: 'planned',
+  status: 'active',
   contractSum: 0,
+  isTransferred: false,
   comment: '',
   importedFromCalendar: false,
   calendarImportChecked: false,
@@ -564,11 +565,9 @@ export const REQUEST_STATUSES = Object.freeze([
 ])
 
 export const EVENT_STATUSES_SIMPLE = Object.freeze([
-  { value: 'planned', name: 'Запланировано', color: 'blue' },
-  { value: 'in_progress', name: 'В процессе', color: 'amber' },
-  { value: 'completed', name: 'Завершено', color: 'green' },
+  { value: 'active', name: 'Активно', color: 'blue' },
   { value: 'canceled', name: 'Отменено', color: 'red' },
-  { value: 'transferred', name: 'Передано', color: 'violet' },
+  { value: 'closed', name: 'Закрыто', color: 'green' },
 ])
 
 export const TRANSACTION_TYPES = Object.freeze([
@@ -638,11 +637,7 @@ export const EVENT_RELATIONSHIP_ACCESS = [
 ]
 
 export const EVENT_STATUSES = [
-  { value: 'planned', name: 'Запланировано', color: 'blue-400', icon: faCalendarAlt },
-  { value: 'in_progress', name: 'В процессе', color: 'amber-400', icon: faClock },
-  { value: 'completed', name: 'Завершено', color: 'green-400', icon: faCheck },
   { value: 'active', name: 'Активно', color: 'blue-400', icon: faPlay },
-  { value: 'transferred', name: 'Передано', color: 'purple-400', icon: faShare },
   { value: 'canceled', name: 'Отменено', color: 'red-400', icon: faBan },
   { value: 'closed', name: 'Закрыто', color: 'green-400', icon: faLock },
 ]
@@ -755,13 +750,13 @@ export const pages = [
     href: 'clients',
     icon: faUser,
   },
-  // {
-  //   id: 11,
-  //   group: 5,
-  //   name: 'Транзакции',
-  //   href: 'payments',
-  //   icon: faMoneyBill,
-  // },
+  {
+    id: 11,
+    group: 5,
+    name: 'Транзакции',
+    href: 'transactions',
+    icon: faMoneyBill,
+  },
   {
     id: 99,
     group: 99,
@@ -792,11 +787,11 @@ export const pagesGroups = [
     name: 'Клиенты',
     icon: faUser,
   },
-  // {
-  //   id: 5,
-  //   name: 'Транзакции',
-  //   icon: faMoneyBill,
-  // },
+  {
+    id: 5,
+    name: 'Транзакции',
+    icon: faMoneyBill,
+  },
   // {
   //   id: 10,
   //   name: 'Настройки',

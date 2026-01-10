@@ -11,14 +11,14 @@ import { reachGoal } from 'app/components/metrika'
 
 const Social = ({ text, href, yandexAim }) => {
   return (
-    <Link href={href} legacyBehavior>
-      <a
-        className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
-        target="_blank"
-        onClick={yandexAim ? () => reachGoal(yandexAim) : undefined}
-      >
-        {text}
-      </a>
+    <Link
+      href={href}
+      className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
+      target="_blank"
+      onClick={yandexAim ? () => reachGoal(yandexAim) : undefined}
+      prefetch={false}
+    >
+      {text}
     </Link>
   )
 }
@@ -93,14 +93,14 @@ const FooterBlock = () => {
               круглосуточно
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
-              <Link href="tel:+79138370020" legacyBehavior>
-                <a
-                  className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
-                  target="_blank"
-                  onClick={() => reachGoal('klick_nomber')}
-                >
-                  +7-913-837-00-20
-                </a>
+              <Link
+                href="tel:+79138370020"
+                className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
+                target="_blank"
+                onClick={() => reachGoal('klick_nomber')}
+                prefetch={false}
+              >
+                +7-913-837-00-20
               </Link>
               <button
                 className="h-[40px] cursor-pointer rounded-[10px] border border-white border-opacity-20 px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"

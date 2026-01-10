@@ -10,6 +10,36 @@ import {
 } from '@server/googleCalendarClient'
 
 const DEFAULT_TIME_MIN = '2000-01-01T00:00:00.000Z'
+const EMPTY_CLIENT_NAME = 'Клиент из Google Calendar'
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const normalizePhoneNumber = (phone) => {
+  if (!phone) return null
+  const digits = String(phone).replace(/[^\d]/g, '')
+  if (!digits) return null
+  const numeric = Number(digits)
+  return Number.isNaN(numeric) ? null : numeric
+}
+
+const pickPriorityContact = (contactChannels = [], clientPhone = null) => {
+  const firstNonPhone = contactChannels.find((item) => item && !/^\+\d+$/.test(item))
+  if (firstNonPhone) return firstNonPhone
+  if (clientPhone) return `+${clientPhone}`
+  return contactChannels.find(Boolean) ?? null
+}
+
+const findExistingClient = async (numericPhone, priorityContact) => {
+  const conditions = []
+  if (numericPhone) conditions.push({ phone: numericPhone })
+  if (priorityContact)
+    conditions.push({
+      priorityContact: new RegExp(`^${escapeRegExp(priorityContact)}$`, 'i'),
+    })
+
+  if (!conditions.length) return null
+  return Clients.findOne(conditions.length === 1 ? conditions[0] : { $or: conditions })
+}
 
 const ensureSiteSettings = async () => {
   const current = await SiteSettings.findOne()
@@ -17,38 +47,101 @@ const ensureSiteSettings = async () => {
   return SiteSettings.create({})
 }
 
-const findOrCreateClient = async (clientName, clientPhone, contactChannels) => {
-  const numericPhone = clientPhone ? Number(clientPhone) : null
-  if (!numericPhone || Number.isNaN(numericPhone)) return null
+const ensureClientFromCalendar = async (clientName, clientPhone, contactChannels) => {
+  const numericPhone = normalizePhoneNumber(clientPhone)
+  const priorityContact = pickPriorityContact(contactChannels, clientPhone)
 
-  const primaryContact =
-    contactChannels.find((item) => item.includes('@')) ??
-    contactChannels.find((item) => item.startsWith('+')) ??
-    null
+  const existingClient = await findExistingClient(numericPhone, priorityContact)
+  if (existingClient) {
+    const update = {}
+    if (numericPhone && !existingClient.phone) update.phone = numericPhone
+    if (priorityContact && !existingClient.priorityContact)
+      update.priorityContact = priorityContact
+    if (
+      clientName &&
+      existingClient.firstName === EMPTY_CLIENT_NAME &&
+      clientName !== existingClient.firstName
+    )
+      update.firstName = clientName
 
-  const update = {
-    $setOnInsert: {
-      firstName: clientName || 'Клиент из Google Calendar',
-      phone: numericPhone,
-    },
+    if (Object.keys(update).length) {
+      existingClient.set(update)
+      await existingClient.save()
+    }
+
+    return existingClient
   }
 
-  if (primaryContact) update.$set = { priorityContact: primaryContact }
+  if (!numericPhone) return null
 
-  const client = await Clients.findOneAndUpdate({ phone: numericPhone }, update, {
-    new: true,
-    upsert: true,
-    setDefaultsOnInsert: true,
-  })
+  const createPayload = {
+    firstName: clientName || EMPTY_CLIENT_NAME,
+    phone: numericPhone,
+  }
+  if (priorityContact) createPayload.priorityContact = priorityContact
 
-  return client
+  return Clients.create(createPayload)
 }
 
-const buildEventUpdate = (parsedEvent, googleEventId, clientId) => {
+const formatCalendarDate = (date) => {
+  if (!date) return null
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) return date
+  const parsed = new Date(date)
+  return Number.isNaN(parsed.getTime()) ? String(date) : parsed.toISOString()
+}
+
+const buildDescriptionFromCalendar = (parsedEvent, calendarEvent) => {
+  const details = []
+  const addLine = (label, value) => {
+    if (!value) return
+    details.push(`${label}: ${value}`)
+  }
+
+  addLine('Тема', calendarEvent?.summary)
+  addLine('Описание календаря', calendarEvent?.description)
+  addLine('Локация', calendarEvent?.location)
+  addLine(
+    'Начало',
+    formatCalendarDate(
+      calendarEvent?.start?.dateTime ?? calendarEvent?.start?.date ?? null
+    )
+  )
+  addLine(
+    'Окончание',
+    formatCalendarDate(calendarEvent?.end?.dateTime ?? calendarEvent?.end?.date ?? null)
+  )
+  addLine('Статус', calendarEvent?.status)
+  if (Array.isArray(calendarEvent?.attendees)) {
+    const attendees = calendarEvent.attendees
+      .map((attendee) =>
+        [attendee?.displayName, attendee?.email].filter(Boolean).join(' / ')
+      )
+      .filter(Boolean)
+    if (attendees.length) addLine('Участники', attendees.join('; '))
+  }
+  addLine('Организатор', calendarEvent?.organizer?.email)
+  addLine(
+    'Контакты',
+    parsedEvent?.contactChannels?.length
+      ? parsedEvent.contactChannels.join(', ')
+      : null
+  )
+  addLine('Google ID', calendarEvent?.id)
+  addLine('iCal UID', calendarEvent?.iCalUID)
+  addLine('Ссылка', calendarEvent?.htmlLink)
+
+  const descriptionHeader =
+    details.length > 0 ? ['--- Данные из Google Calendar ---', ...details].join('\n') : ''
+  const baseDescription = parsedEvent?.description?.trim() ?? ''
+
+  return [baseDescription, descriptionHeader].filter(Boolean).join('\n\n')
+}
+
+const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) => {
   const setPayload = {
     googleCalendarId: googleEventId,
     title: parsedEvent.title,
-    description: parsedEvent.description,
+    description: buildDescriptionFromCalendar(parsedEvent, calendarEvent),
     location: parsedEvent.location,
     status: parsedEvent.status,
     importedFromCalendar: true,
@@ -128,13 +221,13 @@ export const POST = async (req) => {
 
   for (const item of calendarItems) {
     const parsed = parseGoogleEvent(item)
-    const client = await findOrCreateClient(
+    const client = await ensureClientFromCalendar(
       parsed.clientName,
       parsed.clientPhone,
       parsed.contactChannels
     )
 
-    const update = buildEventUpdate(parsed, item.id, client?._id)
+    const update = buildEventUpdate(parsed, item.id, client?._id, item)
 
     const dbResult = await Events.findOneAndUpdate(
       { googleCalendarId: item.id },

@@ -7,7 +7,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import cn from 'classnames'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Suspense, useCallback, useRef, useState } from 'react'
+import { Suspense, useCallback, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtomValue, useSetAtom } from 'jotai'
 
@@ -59,9 +59,6 @@ const Modal = ({
   const [onConfirmFunc, setOnConfirmFunc] = useState(null)
   const [onConfirm2Func, setOnConfirm2Func] = useState(null)
   const [onDeclineFunc, setOnDeclineFunc] = useState(null)
-  const onConfirmFuncRef = useRef(onConfirmFunc)
-  const onConfirm2FuncRef = useRef(onConfirm2Func)
-  const onDeclineFuncRef = useRef(onDeclineFunc)
   const setModals = useSetAtom(modalsAtom)
   const [close, setClose] = useState(false)
   const [ComponentInFooter, setComponentInFooter] = useState(null)
@@ -79,41 +76,41 @@ const Modal = ({
   const [bottomLeftComponentState, setBottomLeftComponent] =
     useState(bottomLeftComponent)
 
-  const handleSetOnConfirmFunc = useCallback((func) => {
-    const nextFunc = typeof func === 'function' ? func : null
-    if (onConfirmFuncRef.current === nextFunc) return
-    onConfirmFuncRef.current = nextFunc
-    setOnConfirmFunc(() => nextFunc)
-  }, [])
+  const setOnConfirmFuncSafe = useCallback(
+    (value) => {
+      setOnConfirmFunc(typeof value === 'function' ? () => value : value)
+    },
+    [setOnConfirmFunc]
+  )
 
-  const handleSetOnConfirm2Func = useCallback((func) => {
-    const nextFunc = typeof func === 'function' ? func : null
-    if (onConfirm2FuncRef.current === nextFunc) return
-    onConfirm2FuncRef.current = nextFunc
-    setOnConfirm2Func(() => nextFunc)
-  }, [])
+  const setOnConfirm2FuncSafe = useCallback(
+    (value) => {
+      setOnConfirm2Func(typeof value === 'function' ? () => value : value)
+    },
+    [setOnConfirm2Func]
+  )
 
-  const handleSetOnDeclineFunc = useCallback((func) => {
-    const nextFunc = typeof func === 'function' ? func : null
-    if (onDeclineFuncRef.current === nextFunc) return
-    onDeclineFuncRef.current = nextFunc
-    setOnDeclineFunc(() => nextFunc)
-  }, [])
+  const setOnDeclineFuncSafe = useCallback(
+    (value) => {
+      setOnDeclineFunc(typeof value === 'function' ? () => value : value)
+    },
+    [setOnDeclineFunc]
+  )
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     onClose && typeof onClose === 'function' && onClose()
     setClose(true)
     setTimeout(
       () => setModals((modals) => modals.filter((modal) => modal.id !== id)),
       200
     )
-  }
+  }, [id, onClose, setModals])
 
   const router = useRouter()
 
-  const refreshPage = () => {
+  const refreshPage = useCallback(() => {
     router.replace(router.asPath)
-  }
+  }, [router])
 
   // const onConfirmClick = () => {
   //   if (onConfirmFunc) return onConfirmFunc(refreshPage)
@@ -215,7 +212,7 @@ const Modal = ({
       <motion.div
         className={
           cn(
-            'real-screen-height laptop:w-9/12 border-primary relative flex w-full min-w-84 flex-col border-l bg-white pb-1 duration-300 tablet:my-auto tablet:h-auto tablet:w-[95%] tablet:min-w-156 tablet:rounded-lg tablet:pb-2',
+            'real-screen-height laptop:w-9/12 relative flex w-full min-w-84 flex-col border-l border-primary bg-white pb-1 duration-300 tablet:my-auto tablet:h-auto tablet:w-[95%] tablet:min-w-156 tablet:rounded-lg tablet:pb-2',
             titleState ? 'pt-3' : 'pt-12'
           )
           // + (rendered ? '' : ' scale-50')
@@ -286,9 +283,9 @@ const Modal = ({
             <Suspense fallback={<Skeleton count={12} />}>
               <Children
                 closeModal={closeModal}
-                setOnConfirmFunc={handleSetOnConfirmFunc}
-                setOnConfirm2Func={handleSetOnConfirm2Func}
-                setOnDeclineFunc={handleSetOnDeclineFunc}
+                setOnConfirmFunc={setOnConfirmFuncSafe}
+                setOnConfirm2Func={setOnConfirm2FuncSafe}
+                setOnDeclineFunc={setOnDeclineFuncSafe}
                 setOnShowOnCloseConfirmDialog={setOnShowOnCloseConfirmDialog}
                 setDisableConfirm={setDisableConfirm}
                 setDisableDecline={setDisableDecline}

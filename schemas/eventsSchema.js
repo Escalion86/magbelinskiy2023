@@ -49,7 +49,11 @@ const eventsSchema = {
   },
   status: {
     type: String,
-    default: 'planned',
+    default: 'active',
+  },
+  isTransferred: {
+    type: Boolean,
+    default: false,
   },
   colleagueId: {
     type: Schema.Types.ObjectId,

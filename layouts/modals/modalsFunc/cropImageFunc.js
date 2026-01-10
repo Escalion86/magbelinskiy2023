@@ -1,6 +1,5 @@
 import RotateButton from '@components/IconToggleButtons/RotateButton'
-import { useRef } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactCrop, {
   centerCrop,
   convertToPixelCrop,
@@ -151,7 +150,7 @@ const cropImageFunc = (
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
 
-    const getCroppedImg = (
+    const getCroppedImg = useCallback((
       image,
       completedCrop = completedCrop,
       crop = crop,
@@ -237,7 +236,12 @@ const cropImageFunc = (
       } else {
         onConfirm(canvas.toDataURL('image/jpeg'))
       }
-    }
+    }, [completedCrop, crop, onConfirm, src.name, toBlob])
+
+    const handleConfirm = useCallback(() => {
+      getCroppedImg(ref.current, completedCrop, crop, scale, rotate)
+      closeModal()
+    }, [closeModal, completedCrop, crop, getCroppedImg, rotate, scale])
 
     useEffect(() => {
       if (!imgSrc) {
@@ -265,12 +269,9 @@ const cropImageFunc = (
     }, [imgSrc])
 
     useEffect(() => {
-      setOnConfirmFunc(() => {
-        getCroppedImg(ref.current, completedCrop, crop, scale, rotate)
-        closeModal()
-      })
+      setOnConfirmFunc(handleConfirm)
       // setDisableConfirm(completedCrop.width < 100 || completedCrop.height < 100)
-    }, [completedCrop])
+    }, [handleConfirm, setOnConfirmFunc])
 
     const onImageLoad = (e) => {
       const { width, height } = e.currentTarget

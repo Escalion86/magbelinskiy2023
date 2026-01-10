@@ -19,6 +19,7 @@ import {
   faHandHoldingDollar,
   faTimeline,
 } from '@fortawesome/free-solid-svg-icons'
+import SvgSigma from 'svg/SvgSigma'
 
 const EventCard = ({ eventId, style }) => {
   const event = useAtomValue(eventSelector(eventId))
@@ -66,6 +67,23 @@ const EventCard = ({ eventId, style }) => {
 
   if (!event) return null
 
+  const eventStart = event.eventDate ? new Date(event.eventDate) : null
+  const eventEnd = event.dateEnd ? new Date(event.dateEnd) : eventStart
+  const now = new Date()
+
+  const rawStatus = status?.value ?? event.status
+  const isActiveLike =
+    rawStatus === 'active' ||
+    rawStatus === 'planned' ||
+    rawStatus === 'in_progress' ||
+    rawStatus === 'completed'
+
+  const statusLabel = isActiveLike
+    ? eventEnd && eventEnd.getTime() < now.getTime()
+      ? 'Завершено'
+      : 'Запланировано'
+    : status?.name ?? 'Не указан'
+
   return (
     <div style={style} className="px-2 py-1">
       <div
@@ -75,7 +93,9 @@ const EventCard = ({ eventId, style }) => {
         <div className="flex items-center justify-between gap-x-1">
           <div className="truncate text-lg font-semibold text-gray-900">
             {event.title ||
-              `Мероприятие${client ? ` для ${client.firstName ?? 'клиента'}` : ''}`}
+              `Мероприятие${
+                client ? ` для ${client.firstName ?? 'клиента'}` : ''
+              }`}
           </div>
           <div
             className={cn(
@@ -83,7 +103,7 @@ const EventCard = ({ eventId, style }) => {
               getEventStatusBadgeClasses(status?.value ?? event.status)
             )}
           >
-            {status?.name ?? 'Не указан'}
+            {statusLabel}
           </div>
         </div>
         <div className="flex gap-x-1">
@@ -92,8 +112,9 @@ const EventCard = ({ eventId, style }) => {
               <span className="font-medium">Клиент:</span>
               <span className="truncate">
                 {client
-                  ? `${client.firstName ?? ''} ${client.secondName ?? ''}`.trim() ||
-                    client._id
+                  ? `${client.firstName ?? ''} ${
+                      client.secondName ?? ''
+                    }`.trim() || client._id
                   : '-'}
                 {client?.phone ? ` ( +${client.phone} )` : ''}
               </span>
@@ -155,7 +176,9 @@ const EventCard = ({ eventId, style }) => {
                 </span>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <FontAwesomeIcon icon={faEquals} className="h-6 w-6" />
+                <div className="h-5 min-h-5 w-5 min-w-5">
+                  <SvgSigma className="fill-current" />
+                </div>
                 <span className="font-semibold">
                   {contractSum.toLocaleString()} руб.
                 </span>

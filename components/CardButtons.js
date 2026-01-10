@@ -46,6 +46,9 @@ const CardButtons = ({
   showEditButton = true,
   showDeleteButton = true,
   onEditQuestionnaire,
+  onEdit,
+  onDelete,
+  minimalActions = false,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const device = useAtomValue(windowDimensionsTailwindSelector)
@@ -69,23 +72,28 @@ const CardButtons = ({
   // (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions) ||
   // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
-  const show = {
-    copyId: true,
-    userActionsHistory: typeOfItem === 'user',
-    setPasswordBtn: true,
-    addToCalendar: typeOfItem === 'event',
-    eventUsersBtn: typeOfItem === 'event',
-    upBtn: onUpClick && upDownSee,
-    downBtn: onDownClick && upDownSee,
-    editBtn: showEditButton,
-    cloneBtn: !['user', 'review'].includes(typeOfItem),
-    showOnSiteBtn: showOnSiteOnClick,
-    statusBtn: true,
-    deleteBtn: showDeleteButton && item.status !== 'closed',
-    paymentsUsersBtn: true,
-    userEvents: typeOfItem === 'client',
-    userPaymentsBtn: true,
-  }
+  const show = minimalActions
+    ? {
+        editBtn: showEditButton,
+        deleteBtn: showDeleteButton && item.status !== 'closed',
+      }
+    : {
+        copyId: true,
+        userActionsHistory: typeOfItem === 'user',
+        setPasswordBtn: true,
+        addToCalendar: typeOfItem === 'event',
+        eventUsersBtn: typeOfItem === 'event',
+        upBtn: onUpClick && upDownSee,
+        downBtn: onDownClick && upDownSee,
+        editBtn: showEditButton,
+        cloneBtn: !['user', 'review'].includes(typeOfItem),
+        showOnSiteBtn: showOnSiteOnClick,
+        statusBtn: true,
+        deleteBtn: showDeleteButton && item.status !== 'closed',
+        paymentsUsersBtn: true,
+        userEvents: typeOfItem === 'client',
+        userPaymentsBtn: true,
+      }
 
   const numberOfButtons = Object.keys(show).reduce(
     (p, c) => p + (show[c] ? 1 : 0),
@@ -165,7 +173,8 @@ const CardButtons = ({
         <ItemComponent
           icon={faPencilAlt}
           onClick={() => {
-            modalsFunc[typeOfItem].edit(item._id)
+            if (onEdit) onEdit()
+            else modalsFunc[typeOfItem].edit(item._id)
           }}
           color="orange"
           tooltipText="Редактировать"
@@ -209,7 +218,8 @@ const CardButtons = ({
         <ItemComponent
           icon={faTrashAlt}
           onClick={() => {
-            modalsFunc[typeOfItem].delete(item._id)
+            if (onDelete) onDelete()
+            else modalsFunc[typeOfItem].delete(item._id)
           }}
           color="red"
           tooltipText="Удалить"
@@ -228,6 +238,7 @@ const CardButtons = ({
       className={className}
       menuPadding={false}
       openOnHover
+      placement="right"
     >
       <div className="overflow-hidden rounded-lg">{items}</div>
     </DropDown>

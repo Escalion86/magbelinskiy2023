@@ -15,6 +15,7 @@ import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 // import eventUsersFunc from './modalsFunc/eventUsersFunc'
 // import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
 import eventViewFunc from './modalsFunc/eventViewFunc'
+import transactionFunc from './modalsFunc/transactionFunc'
 import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 import paymentFunc from './modalsFunc/paymentFunc'
@@ -47,6 +48,9 @@ import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
 import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import clientFunc from './modalsFunc/clientFunc'
+import colleagueFunc from './modalsFunc/colleagueFunc'
+import clientSelectFunc from './modalsFunc/clientSelectFunc'
+import colleagueSelectFunc from './modalsFunc/colleagueSelectFunc'
 // import userHistoryFunc from './modalsFunc/userHistoryFunc'
 // import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 // import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
@@ -230,6 +234,23 @@ const modalsFuncGenerator = (
     eventsTags: {
       edit: () => addModal(eventsTagsFunc()),
     },
+    transaction: {
+      add: (eventId, props) =>
+        addModal(
+          transactionFunc({
+            eventId,
+            ...props,
+          })
+        ),
+      edit: (eventId, transactionId, props) =>
+        addModal(
+          transactionFunc({
+            eventId,
+            transactionId,
+            ...props,
+          })
+        ),
+    },
     request: {
       add: (requestId) => addModal(requestFunc(requestId, true)),
       edit: (requestId) => addModal(requestFunc(requestId)),
@@ -339,8 +360,17 @@ const modalsFuncGenerator = (
         }),
     },
     client: {
-      edit: (clientId) => addModal(clientFunc(clientId)),
-      add: () => addModal(clientFunc(null, true)),
+      edit: (clientId, onSuccess) =>
+        addModal(clientFunc(clientId, false, onSuccess)),
+      add: (onSuccess) => addModal(clientFunc(null, true, onSuccess)),
+      select: (onSelect, title) => addModal(clientSelectFunc(onSelect, title)),
+    },
+    colleague: {
+      edit: (colleagueId, onSuccess) =>
+        addModal(colleagueFunc(colleagueId, false, onSuccess)),
+      add: (onSuccess) => addModal(colleagueFunc(null, true, onSuccess)),
+      select: (onSelect, title) =>
+        addModal(colleagueSelectFunc(onSelect, title)),
     },
     // serviceUser: {
     //   add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),

@@ -205,14 +205,14 @@ const ModalFocusResult = () => {
         Оставьте свой номер или позвоните мне
         <br />
         <span className="font-bold">прямо сейчас</span>!{' '}
-        <Link href="tel:+79138370020" legacyBehavior>
-          <a
-            className="cursor-pointer font-bold underline duration-300 hover:text-[#FFCA45]"
-            onClick={() => reachGoal('after_focus_click_number')}
-            target="_blank"
-          >
-            8 (913) 837-00-20
-          </a>
+        <Link
+          href="tel:+79138370020"
+          className="cursor-pointer font-bold underline duration-300 hover:text-[#FFCA45]"
+          onClick={() => reachGoal('after_focus_click_number')}
+          target="_blank"
+          prefetch={false}
+        >
+          8 (913) 837-00-20
         </Link>
         <br />
         Расскажете о предстоящем событии

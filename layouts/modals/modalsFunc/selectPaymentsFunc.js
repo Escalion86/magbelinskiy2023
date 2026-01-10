@@ -4,7 +4,7 @@ import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import servicesAtom from '@state/atoms/servicesAtom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const selectPaymentsFunc = (
@@ -67,6 +67,11 @@ const selectPaymentsFunc = (
       }
     }
 
+    const handleConfirm = useCallback(() => {
+      onConfirm(selectedServices)
+      closeModal()
+    }, [closeModal, onConfirm, selectedServices])
+
     useEffect(() => {
       // const isFormChanged =
       //   assistantsIds !== eventAssistantsIds ||
@@ -88,15 +93,15 @@ const selectPaymentsFunc = (
           <span>напрвл.</span>
         </div>
       )
-      setOnConfirmFunc(() => {
-        onConfirm(selectedServices)
-        closeModal()
-      })
+      setOnConfirmFunc(handleConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
-      selectedServices,
+      handleConfirm,
       maxServices,
+      selectedServices,
+      setComponentInFooter,
+      setOnConfirmFunc,
       // mansIds,
       // womansIds,
       // assistantsIds,

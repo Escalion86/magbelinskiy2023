@@ -2,6 +2,8 @@ const PHONE_REGEX = /(\+?\d[\d\s\-()]{6,}\d)/g
 const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g
 const CLIENT_NAME_REGEX = /(клиент|имя|заказчик)\s*[:\-]\s*(.+)/i
 const COMMENT_REGEX = /(коммент|примечание|заметка|note)\s*[:\-]\s*(.+)/i
+const CONTACT_LINK_REGEX =
+  /(https?:\/\/t\.me\/\S+|t\.me\/\S+|https?:\/\/vk\.com\/\S+|vk\.com\/\S+)/gi
 
 const normalizePhone = (value) => {
   if (!value) return ''
@@ -11,6 +13,26 @@ const normalizePhone = (value) => {
 const unique = (items) => Array.from(new Set(items.filter(Boolean)))
 
 const AMOUNT_CANDIDATE_REGEX = /(\d[\d\s.,]*)(?:\s*(к|k|тыс|тыщ|т\b))?/gi
+const TOTAL_AMOUNT_LABELS = [
+  'сумма',
+  'стоимость',
+  'итого',
+  'budget',
+  'всего',
+  'оплата',
+  'гонорар',
+  'договор',
+  'цена',
+  'к оплате',
+]
+const DEPOSIT_AMOUNT_LABELS = [
+  'задаток',
+  'предоплата',
+  'депозит',
+  'аванс',
+  'бронь',
+  'предопл',
+]
 
 const parseNumeric = (value) => {
   const normalized = value.replace(/\s+/g, '').replace(/,/g, '.')
@@ -113,15 +135,22 @@ export const parseGoogleEvent = (event) => {
   )
 
   const totalAmountByLabel =
-    findAmountByLabels(description, ['сумма', 'стоимость', 'итого', 'budget']) ??
-    findAmountByLabels(summary, ['сумма', 'стоимость', 'итого', 'budget'])
+    findAmountByLabels(description, TOTAL_AMOUNT_LABELS) ??
+    findAmountByLabels(summary, TOTAL_AMOUNT_LABELS)
 
   const depositAmountByLabel =
-    findAmountByLabels(description, ['задаток', 'предоплата', 'депозит', 'аванс']) ??
-    findAmountByLabels(summary, ['задаток', 'предоплата', 'депозит', 'аванс'])
+    findAmountByLabels(description, DEPOSIT_AMOUNT_LABELS) ??
+    findAmountByLabels(summary, DEPOSIT_AMOUNT_LABELS)
+
+  const amountsWithoutDeposit =
+    depositAmountByLabel !== null
+      ? allAmounts.filter((amount) => amount !== depositAmountByLabel)
+      : []
 
   const totalAmount =
-    totalAmountByLabel ?? (allAmounts.length ? Math.max(...allAmounts) : null)
+    totalAmountByLabel ??
+    (amountsWithoutDeposit.length ? Math.max(...amountsWithoutDeposit) : null) ??
+    (allAmounts.length ? Math.max(...allAmounts) : null)
 
   let depositAmount = depositAmountByLabel
 
@@ -160,6 +189,7 @@ export const parseGoogleEvent = (event) => {
     ...emails,
     ...attendeeEmails,
     ...(clientPhone ? [`+${clientPhone}`] : []),
+    ...(description.match(CONTACT_LINK_REGEX) ?? []),
   ])
 
   const clientData = {}
@@ -185,7 +215,7 @@ export const parseGoogleEvent = (event) => {
     status:
       event?.status === 'cancelled' || /отмена/i.test(summary)
         ? 'canceled'
-        : 'planned',
+        : 'active',
     clientData,
   }
 }

@@ -4,7 +4,7 @@ import filterItems from '@helpers/filterItems'
 import isObject from '@helpers/isObject'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import usersAtom from '@state/atoms/usersAtom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const selectUsersFunc = (
@@ -94,6 +94,11 @@ const selectUsersFunc = (
       }
     }
 
+    const handleConfirm = useCallback(() => {
+      onConfirm(selectedUsers)
+      closeModal()
+    }, [closeModal, onConfirm, selectedUsers])
+
     useEffect(() => {
       // const isFormChanged =
       //   assistantsIds !== eventAssistantsIds ||
@@ -115,15 +120,15 @@ const selectUsersFunc = (
           <span>чел.</span>
         </div>
       )
-      setOnConfirmFunc(() => {
-        onConfirm(selectedUsers)
-        closeModal()
-      })
+      setOnConfirmFunc(handleConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
-      selectedUsers,
+      handleConfirm,
       maxUsers,
+      selectedUsers,
+      setComponentInFooter,
+      setOnConfirmFunc,
       // mansIds,
       // womansIds,
       // assistantsIds,

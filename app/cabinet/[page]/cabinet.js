@@ -20,6 +20,8 @@ import Head from 'next/head'
 // import { useRouter } from 'next/router'
 import { Provider } from 'jotai'
 import store from '@state/store'
+import { useMemo } from 'react'
+import { usePathname } from 'next/navigation'
 // import { useAtomValue } from 'jotai'
 
 // const SuspenseChild = () => (
@@ -30,6 +32,14 @@ import store from '@state/store'
 
 function CabinetPage(props) {
   const { page } = props
+  const pathname = usePathname()
+
+  const pageFromPath = useMemo(() => {
+    const parts = pathname?.split('/').filter(Boolean) || []
+    return parts[parts.length - 1] || null
+  }, [pathname])
+
+  const currentPage = page || pageFromPath || 'requests'
   // const router = useRouter()
   // const page = router.asPath.replace('/cabinet/', '').split('?')[0]
   // const loggedUser = useAtomValue(loggedUserAtom)
@@ -47,11 +57,11 @@ function CabinetPage(props) {
 
   // if (redirect) return null
 
-  const Component = CONTENTS[page]
-    ? CONTENTS[page].Component
+  const Component = CONTENTS[currentPage]
+    ? CONTENTS[currentPage].Component
     : (props) => <div className="flex justify-center px-2">Ошибка 404</div>
 
-  const title = CONTENTS[page] ? CONTENTS[page].name : ''
+  const title = CONTENTS[currentPage] ? CONTENTS[currentPage].name : ''
 
   return (
     <>
@@ -66,7 +76,7 @@ function CabinetPage(props) {
           <CabinetWrapper>
             <CabinetHeader title={title} />
             <BurgerLayout />
-            <ContentWrapper page={page}>
+            <ContentWrapper page={currentPage}>
               <Component {...props} />
               {/* {!redirect && (
                 <Suspense fallback={<SuspenseChild />}>

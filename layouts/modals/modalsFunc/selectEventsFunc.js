@@ -7,7 +7,7 @@ import isObject from '@helpers/isObject'
 import sortFunctions from '@helpers/sortFunctions'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import eventsAtom from '@state/atoms/eventsAtom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const selectEventsFunc = (
@@ -89,6 +89,11 @@ const selectEventsFunc = (
       }
     }
 
+    const handleConfirm = useCallback(() => {
+      onConfirm(selectedEvents)
+      closeModal()
+    }, [closeModal, onConfirm, selectedEvents])
+
     useEffect(() => {
       // const isFormChanged =
       //   assistantsIds !== eventAssistantsIds ||
@@ -110,15 +115,15 @@ const selectEventsFunc = (
           <span>меропр.</span>
         </div>
       )
-      setOnConfirmFunc(() => {
-        onConfirm(selectedEvents)
-        closeModal()
-      })
+      setOnConfirmFunc(handleConfirm)
       // setOnShowOnCloseConfirmDialog(isFormChanged)
       // setDisableConfirm(!isFormChanged)
     }, [
-      selectedEvents,
+      handleConfirm,
       maxEvents,
+      selectedEvents,
+      setComponentInFooter,
+      setOnConfirmFunc,
       // mansIds,
       // womansIds,
       // assistantsIds,

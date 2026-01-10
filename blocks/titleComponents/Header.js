@@ -23,8 +23,8 @@ const MenuItem = ({ name, active, href }) => (
 const ContactButton = ({ children, href, onClick, big, ariaLabel }) => {
   const Component = ({ children, ...props }) =>
     href ? (
-      <Link href={href} legacyBehavior>
-        <a {...props}>{children}</a>
+      <Link href={href} {...props}>
+        {children}
       </Link>
     ) : (
       <div {...props}>{children}</div>
@@ -287,14 +287,14 @@ const Header = () => {
               <TelegramButton />
             </div>
             <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
-              <Link href="tel:+79138370020" legacyBehavior>
-                <a
-                  className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
-                  onClick={() => reachGoal('klick_nomber')}
-                  target="_blank"
-                >
-                  8(913)837-00-20
-                </a>
+              <Link
+                href="tel:+79138370020"
+                className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
+                onClick={() => reachGoal('klick_nomber')}
+                target="_blank"
+                prefetch={false}
+              >
+                8(913)837-00-20
               </Link>
               <button
                 className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal leading-[125%] text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"

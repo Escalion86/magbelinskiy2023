@@ -4,6 +4,8 @@ import CabinetPage from './cabinet'
 import fetchProps from '@server/fetchProps'
 import authOptions from '../../api/auth/[...nextauth]/_options'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Cabinet({ params, searchParams }) {
   let session = null
 
@@ -13,7 +15,10 @@ export default async function Cabinet({ params, searchParams }) {
     console.error('Ошибка получения сессии в /cabinet/[page]', error)
   }
 
-  const page = params?.page
+  const resolvedParams = await params
+
+  const page =
+    typeof resolvedParams?.page === 'string' ? resolvedParams.page : 'requests'
 
   if (!session) return redirect('/login')
 

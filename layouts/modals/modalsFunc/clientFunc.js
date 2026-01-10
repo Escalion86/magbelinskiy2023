@@ -10,7 +10,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
-const clientFunc = (clientId, clone = false) => {
+const clientFunc = (clientId, clone = false, onSuccess) => {
   const ClientModal = ({
     closeModal,
     setOnConfirmFunc,
@@ -44,8 +44,7 @@ const clientFunc = (clientId, clone = false) => {
       [firstName, phone, priorityContact, secondName]
     )
 
-    useEffect(() => {
-      const onClickConfirm = () => {
+    const onClickConfirm = useCallback(async () => {
         const hasPhoneError = checkErrors({ phone: phone })
         let customError = false
         if (!firstName || !firstName.trim()) {
@@ -53,7 +52,7 @@ const clientFunc = (clientId, clone = false) => {
           customError = true
         }
         if (!hasPhoneError && !customError) {
-          setClient(
+          const result = await setClient(
             {
               _id: client?._id,
               firstName: firstName.trim(),
@@ -63,23 +62,33 @@ const clientFunc = (clientId, clone = false) => {
             },
             clone
           )
+          if (result && typeof onSuccess === 'function') onSuccess(result)
           closeModal()
         }
-      }
+      }, [
+        addError,
+        checkErrors,
+        client?._id,
+        clone,
+        closeModal,
+        firstName,
+        phone,
+        priorityContact,
+        secondName,
+        setClient,
+        onSuccess,
+      ])
 
+    useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
     }, [
-      firstName,
-      secondName,
-      priorityContact,
-      phone,
-      client,
-      clone,
       setDisableConfirm,
       setOnConfirmFunc,
       setOnShowOnCloseConfirmDialog,
+      isFormChanged,
+      onClickConfirm,
     ])
 
     return (

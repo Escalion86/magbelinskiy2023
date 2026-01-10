@@ -46,7 +46,7 @@ const DropDown = ({
   useEffect(() => {
     if (!isOpen) return
 
-    const handleMouseDown = (event) => {
+    const handleClick = (event) => {
       const element = containerRef.current
       if (!element) return
 
@@ -70,16 +70,31 @@ const DropDown = ({
       }
     }
 
-    document.addEventListener('mousedown', handleMouseDown)
+    document.addEventListener('click', handleClick)
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.removeEventListener('mousedown', handleMouseDown)
+      document.removeEventListener('click', handleClick)
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen, turnOffAutoClose])
 
   const hoverHandlers = openOnHover
+    ? {
+        onMouseEnter: () => setIsOpen(true),
+        onMouseLeave: (event) => {
+          const element = containerRef.current
+          if (!element) {
+            setIsOpen(false)
+            return
+          }
+          if (element.contains(event.relatedTarget)) return
+          setIsOpen(false)
+        },
+      }
+    : {}
+
+  const menuHoverHandlers = openOnHover
     ? {
         onMouseEnter: () => setIsOpen(true),
         onMouseLeave: () => setIsOpen(false),
@@ -102,7 +117,7 @@ const DropDown = ({
             'z-50 flex items-center justify-center rounded-lg border border-gray-400 bg-white shadow-md dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800',
             strategyAbsolute
               ? cn(
-                  'absolute top-full mt-2',
+                  `absolute top-full ${openOnHover ? 'mt-0' : 'mt-2'}`,
                   placementClassName || 'left-0'
                 )
               : 'mt-2 w-full',
@@ -111,6 +126,7 @@ const DropDown = ({
           )}
           aria-hidden={!isOpen}
           role="menu"
+          {...menuHoverHandlers}
         >
           {children}
         </div>
