@@ -9,11 +9,13 @@ import { Provider } from 'jotai'
 import store from '@state/store'
 
 const SectionFallback = () => (
-  <div className="w-full h-[320px] rounded-3xl bg-zinc-900/40 animate-pulse" aria-hidden="true" />
+  <div
+    className="h-[320px] w-full animate-pulse rounded-3xl bg-zinc-900/40"
+    aria-hidden="true"
+  />
 )
 
 const AboutBlock = dynamic(() => import('@blocks/AboutBlock'), {
-  ssr: false,
   loading: SectionFallback,
 })
 const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
@@ -31,6 +33,9 @@ const FocusBlock = dynamic(() => import('@blocks/FocusBlock'), {
 const GalleryBlock2 = dynamic(() => import('@blocks/GalleryBlock2'), {
   loading: SectionFallback,
 })
+const ReviewsBlock = dynamic(() => import('@blocks/ReviewsBlock'), {
+  loading: SectionFallback,
+})
 const AnketaBlock = dynamic(() => import('@blocks/AnketaBlock'), {
   loading: SectionFallback,
 })
@@ -41,26 +46,34 @@ const SubfooterBlock = dynamic(() => import('@blocks/SubfooterBlock'), {
   loading: SectionFallback,
 })
 
-const ModalZakaz = dynamic(() => import('@blocks/ModalZakaz'), { ssr: false, loading: () => null })
+const ModalZakaz = dynamic(() => import('@blocks/ModalZakaz'), {
+  ssr: false,
+  loading: () => null,
+})
 const ModalFocusResult = dynamic(() => import('@blocks/ModalFocusResult'), {
   ssr: false,
   loading: () => null,
 })
-const ModalInfo = dynamic(() => import('@blocks/ModalInfo'), { ssr: false, loading: () => null })
+const ModalInfo = dynamic(() => import('@blocks/ModalInfo'), {
+  ssr: false,
+  loading: () => null,
+})
 const StateLoader = dynamic(() => import('@blocks/components/StateLoader'), {
   ssr: false,
   loading: () => null,
 })
 
-const Section = memo(({ id }) => <section id={id} className="relative -top-[50px]" />)
+const Section = memo(({ id }) => (
+  <section id={id} className="relative -top-[50px]" />
+))
 Section.displayName = 'Section'
 
 export default function Home() {
   return (
     <Provider store={store}>
-      <div className="relative flex flex-col items-center justify-between min-h-screen scroll-smooth">
+      <div className="relative flex min-h-screen flex-col items-center justify-between scroll-smooth">
         <Header />
-        <main className="relative flex flex-col items-center justify-between w-full max-w-full overflow-hidden">
+        <main className="relative flex w-full max-w-full flex-col items-center justify-between overflow-hidden">
           <TitleBlock />
 
           <Section id="about" />
@@ -75,6 +88,8 @@ export default function Home() {
           <FocusBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
+          <Section id="reviews" />
+          <ReviewsBlock />
           <Section id="zakaz" />
           <AnketaBlock />
           <FooterBlock />
@@ -88,16 +103,16 @@ export default function Home() {
             background:
               'linear-gradient(180deg, #D9D9D9 83.34%, rgba(217, 217, 217, 0.00) 100%)',
           }}
-          className="absolute top-0 w-full h-full overflow-hidden -z-20 shrink-0"
+          className="absolute top-0 -z-20 h-full w-full shrink-0 overflow-hidden"
         >
           <div
-            className="w-full h-full"
+            className="h-full w-full"
             style={{
               background: '#0E0E1C',
             }}
           />
           <div
-            className="absolute w-full h-full"
+            className="absolute h-full w-full"
             style={{
               opacity: 0.3,
               background:
