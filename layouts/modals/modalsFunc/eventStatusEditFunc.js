@@ -2,10 +2,11 @@ import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import { DEFAULT_EVENT } from '@helpers/constants'
 // import isEventExpiredFunc from '@helpers/isEventExpired'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
+import transactionsAtom from '@state/atoms/transactionsAtom'
 import eventSelector from '@state/selectors/eventSelector'
 // import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 // import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const eventStatusEditFunc = (eventId) => {
@@ -20,6 +21,7 @@ const eventStatusEditFunc = (eventId) => {
   }) => {
     const event = useAtomValue(eventSelector(eventId))
     const setEvent = useAtomValue(itemsFuncAtom).event.set
+    const transactions = useAtomValue(transactionsAtom)
     // const isEventExpired = isEventExpiredFunc(event)
 
     // const totalIncome = useAtomValue(totalIncomeOfEventSelector(eventId))
@@ -29,13 +31,34 @@ const eventStatusEditFunc = (eventId) => {
     // const canSetClosed = totalIncome >= expectedIncome && isEventExpired
 
     const [status, setStatus] = useState(event?.status ?? DEFAULT_EVENT.status)
-
-    if (!event || !eventId)
-      return (
-        <div className="flex w-full justify-center text-lg ">
-          ОШИБКА! Мероприятие не найдено!
-        </div>
-      )
+    const incomeTotal = useMemo(
+      () =>
+        (transactions ?? [])
+          .filter(
+            (transaction) =>
+              transaction.eventId === eventId && transaction.type === 'income'
+          )
+          .reduce((total, item) => total + (item.amount ?? 0), 0),
+      [eventId, transactions]
+    )
+    const contractSum = event?.contractSum ?? 0
+    const hasTaxes = useMemo(
+      () =>
+        (transactions ?? []).some(
+          (transaction) =>
+            transaction.eventId === eventId &&
+            transaction.category === 'taxes'
+        ),
+      [eventId, transactions]
+    )
+    const canClose =
+      incomeTotal >= contractSum && (!event?.isByContract || hasTaxes)
+    const statusDisabledValues = useMemo(() => {
+      if (status === 'closed') return []
+      if (!canClose) return ['closed']
+      return []
+    }, [canClose, status])
+    const hasEvent = Boolean(event && eventId)
 
     const onClickConfirm = async () => {
       closeModal()
@@ -46,10 +69,18 @@ const eventStatusEditFunc = (eventId) => {
     }
 
     useEffect(() => {
+      if (!hasEvent) return
       const isFormChanged = event?.status !== status
       setDisableConfirm(!isFormChanged)
       setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
-    }, [status])
+    }, [event?.status, hasEvent, onClickConfirm, setDisableConfirm, setOnConfirmFunc, status])
+
+    if (!hasEvent)
+      return (
+        <div className="flex w-full justify-center text-lg ">
+          ОШИБКА! Мероприятие не найдено!
+        </div>
+      )
 
     return (
       <div className="flex flex-col gap-y-2">
@@ -57,8 +88,15 @@ const eventStatusEditFunc = (eventId) => {
           required
           status={status}
           onChange={setStatus}
-          // disabledValues={canSetClosed ? [] : ['closed']}
+          disabledValues={statusDisabledValues}
         />
+        {!canClose && (
+          <div className="text-xs text-gray-500">
+            {event?.isByContract && !hasTaxes
+              ? 'Закрытие недоступно: добавьте транзакцию Налоги.'
+              : 'Закрытие недоступно, пока сумма поступлений меньше договорной.'}
+          </div>
+        )}
         {/* {!canSetClosed && (
           <>
             <div className="text-red-500">

@@ -1,13 +1,16 @@
+'use client'
+
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import InputWrapper from '@components/InputWrapper'
+import formatDate from '@helpers/formatDate'
 import { useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
 
-const ColleaguePicker = ({
-  selectedColleague,
-  selectedColleagueId,
+const EventPicker = ({
+  selectedEvent,
+  selectedEventId,
   onSelectClick,
   disabled,
   label,
@@ -15,12 +18,22 @@ const ColleaguePicker = ({
   error,
   paddingY,
   fullWidth,
+  showEditButton,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const handleEdit = () => {
-    if (selectedColleagueId && !disabled)
-      modalsFunc.client?.edit(selectedColleagueId)
+    if (selectedEventId && !disabled) modalsFunc.event?.edit(selectedEventId)
   }
+
+  const eventDateLabel = selectedEvent?.eventDate
+    ? formatDate(selectedEvent.eventDate, false, true)
+    : null
+  const eventTimeLabel = selectedEvent?.eventDate
+    ? new Date(selectedEvent.eventDate).toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null
 
   return (
     <InputWrapper
@@ -38,30 +51,28 @@ const ColleaguePicker = ({
         >
           <div className="flex flex-col gap-0.5">
             <div className="text-base font-semibold text-gray-900">
-              {[selectedColleague?.firstName, selectedColleague?.secondName]
-                .filter(Boolean)
-                .join(' ') || 'Не выбрано'}
+              {selectedEvent?.title || 'Не выбрано'}
             </div>
-            {selectedColleague && (
+            {selectedEvent && (
               <>
                 <div className="text-sm text-gray-600">
-                  {selectedColleague?.phone
-                    ? `+${selectedColleague.phone}`
-                    : 'Телефон не указан'}
+                  {eventDateLabel && eventTimeLabel
+                    ? `${eventDateLabel} ${eventTimeLabel}`
+                    : eventDateLabel || '-'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {selectedColleague?.priorityContact || 'Контакты не указаны'}
+                  {selectedEvent?.location || 'Локация не указана'}
                 </div>
               </>
             )}
           </div>
         </div>
-        {selectedColleagueId && !disabled && (
+        {showEditButton && selectedEventId && !disabled && (
           <button
             type="button"
             className="flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded border border-orange-600 bg-orange-50 text-orange-500 shadow-sm transition hover:bg-orange-100 hover:text-orange-600"
             onClick={handleEdit}
-            title="Редактировать коллегу"
+            title="Редактировать мероприятие"
           >
             <FontAwesomeIcon className="h-5 w-5" icon={faPencilAlt} />
           </button>
@@ -71,17 +82,17 @@ const ColleaguePicker = ({
   )
 }
 
-ColleaguePicker.propTypes = {
-  selectedColleague: PropTypes.shape({
-    firstName: PropTypes.string,
-    secondName: PropTypes.string,
-    phone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    priorityContact: PropTypes.string,
+EventPicker.propTypes = {
+  selectedEvent: PropTypes.shape({
+    title: PropTypes.string,
+    eventDate: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+      PropTypes.instanceOf(Date),
+    ]),
+    location: PropTypes.string,
   }),
-  selectedColleagueId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  selectedEventId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSelectClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   label: PropTypes.string,
@@ -89,17 +100,19 @@ ColleaguePicker.propTypes = {
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   paddingY: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   fullWidth: PropTypes.bool,
+  showEditButton: PropTypes.bool,
 }
 
-ColleaguePicker.defaultProps = {
-  selectedColleague: null,
-  selectedColleagueId: null,
+EventPicker.defaultProps = {
+  selectedEvent: null,
+  selectedEventId: null,
   disabled: false,
-  label: 'Коллега',
+  label: 'Мероприятие',
   required: false,
   error: null,
   paddingY: true,
   fullWidth: false,
+  showEditButton: true,
 }
 
-export default ColleaguePicker
+export default EventPicker

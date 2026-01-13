@@ -9,7 +9,7 @@ const EVENT_STATUSES = new Set([
 ])
 
 export const PUT = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
   await dbConnect()
 
@@ -20,7 +20,7 @@ export const PUT = async (req, { params }) => {
   if (body.location !== undefined) update.location = body.location ?? ''
   if (body.contractSum !== undefined)
     update.contractSum = Number(body.contractSum) || 0
-  if (body.comment !== undefined) update.comment = body.comment ?? ''
+  if (body.description !== undefined) update.description = body.description ?? ''
   if (body.calendarImportChecked !== undefined)
     update.calendarImportChecked = Boolean(body.calendarImportChecked)
   if (body.colleagueId !== undefined) update.colleagueId = body.colleagueId
@@ -41,8 +41,13 @@ export const PUT = async (req, { params }) => {
 }
 
 export const DELETE = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   await dbConnect()
-  await Events.findByIdAndDelete(id)
+  const deleted = await Events.findByIdAndDelete(id)
+  if (!deleted)
+    return NextResponse.json(
+      { success: false, error: 'Мероприятие не найдено' },
+      { status: 404 }
+    )
   return NextResponse.json({ success: true }, { status: 200 })
 }

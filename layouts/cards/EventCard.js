@@ -17,9 +17,21 @@ import {
   faE,
   faEquals,
   faHandHoldingDollar,
+  faShare,
   faTimeline,
+  faUserSlash,
 } from '@fortawesome/free-solid-svg-icons'
 import SvgSigma from 'svg/SvgSigma'
+import CardButtons from '@components/CardButtons'
+
+const CALENDAR_RESPONSE_MARKER = '--- Google Calendar Response ---'
+
+const stripCalendarResponse = (text = '') => {
+  const marker = `\n\n${CALENDAR_RESPONSE_MARKER}\n`
+  const markerIndex = text.indexOf(marker)
+  if (markerIndex === -1) return text.trim()
+  return text.slice(0, markerIndex).trim()
+}
 
 const EventCard = ({ eventId, style }) => {
   const event = useAtomValue(eventSelector(eventId))
@@ -90,20 +102,50 @@ const EventCard = ({ eventId, style }) => {
         className="laptop:flex-row laptop:items-start laptop:gap-4 relative flex h-full cursor-pointer flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         onClick={() => modalsFunc.event?.edit(event._id)}
       >
+        <div
+          className="absolute right-2 top-2 z-10"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <CardButtons
+            item={event}
+            typeOfItem="event"
+            minimalActions
+            alwaysCompact
+            onEdit={() => modalsFunc.event?.edit(event._id)}
+          />
+        </div>
         <div className="flex items-center justify-between gap-x-1">
-          <div className="truncate text-lg font-semibold text-gray-900">
-            {event.title ||
-              `Мероприятие${
-                client ? ` для ${client.firstName ?? 'клиента'}` : ''
-              }`}
-          </div>
-          <div
-            className={cn(
-              'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm',
-              getEventStatusBadgeClasses(status?.value ?? event.status)
+          <div className="flex min-w-0 items-center gap-2">
+            {event.isTransferred && (
+              <FontAwesomeIcon
+                icon={faShare}
+                className="h-4 w-4 text-amber-500"
+                title="Передано коллеге"
+              />
             )}
-          >
-            {statusLabel}
+            <div className="truncate text-lg font-semibold text-gray-900">
+              {event.title ||
+                `Мероприятие${
+                  client ? ` для ${client.firstName ?? 'клиента'}` : ''
+                }`}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {!client && (
+              <FontAwesomeIcon
+                icon={faUserSlash}
+                className="h-4 w-4 text-red-500"
+                title="Клиент не указан"
+              />
+            )}
+            <div
+              className={cn(
+                'mr-10 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm',
+                getEventStatusBadgeClasses(status?.value ?? event.status)
+              )}
+            >
+              {statusLabel}
+            </div>
           </div>
         </div>
         <div className="flex gap-x-1">
@@ -135,20 +177,28 @@ const EventCard = ({ eventId, style }) => {
               <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
                 <span className="font-medium">Заявка:</span>
                 {request ? (
-                  <span className="font-medium text-blue-600 underline underline-offset-2">
+                  <button
+                    type="button"
+                    className="font-medium text-blue-600 underline underline-offset-2"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      modalsFunc.request?.view(request._id)
+                    }}
+                  >
                     {request.clientName || request._id}
-                  </span>
+                  </button>
                 ) : (
-                  <span className="text-gray-400">{event.requestId}</span>
+                  <button
+                    type="button"
+                    className="text-gray-400 underline underline-offset-2"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      modalsFunc.request?.view(event.requestId)
+                    }}
+                  >
+                    {event.requestId}
+                  </button>
                 )}
-              </div>
-            )}
-            {event.comment && (
-              <div className="flex flex-wrap items-start gap-x-2 text-sm text-gray-600">
-                <span className="font-medium">Комментарий:</span>
-                <span className="max-h-12 overflow-hidden break-words">
-                  {event.comment}
-                </span>
               </div>
             )}
           </div>

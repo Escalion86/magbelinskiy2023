@@ -58,19 +58,13 @@ const CardButtons = ({
   const upDownSee =
     (!forForm && typeOfItem === 'service') ||
     typeOfItem === 'product' ||
-    typeOfItem === 'additionalBlock' ||
-    typeOfItem === 'direction'
+    false
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
   // (typeOfItem === 'serviceUser' && loggedUserActiveRole.servicesUsers.edit) ||
   // (typeOfItem === 'product' && loggedUserActiveRole.products.edit) ||
   // (typeOfItem === 'productUser' && loggedUserActiveRole.productsUsers.edit) ||
-  // (typeOfItem === 'payment' && loggedUserActiveRole.payments.edit) ||
-  // (typeOfItem === 'additionalBlock' &&
-  // loggedUserActiveRole.generalPage.additionalBlocks) ||
-  // (typeOfItem === 'direction' && loggedUserActiveRole.generalPage.directions) ||
-  // (typeOfItem === 'review' && loggedUserActiveRole.generalPage.reviews)
 
   const show = minimalActions
     ? {
@@ -86,13 +80,11 @@ const CardButtons = ({
         upBtn: onUpClick && upDownSee,
         downBtn: onDownClick && upDownSee,
         editBtn: showEditButton,
-        cloneBtn: !['user', 'review'].includes(typeOfItem),
+        cloneBtn: typeOfItem !== 'user',
         showOnSiteBtn: showOnSiteOnClick,
         statusBtn: true,
         deleteBtn: showDeleteButton && item.status !== 'closed',
-        paymentsUsersBtn: true,
         userEvents: typeOfItem === 'client',
-        userPaymentsBtn: true,
       }
 
   const numberOfButtons = Object.keys(show).reduce(
@@ -119,26 +111,6 @@ const CardButtons = ({
           tooltipText="Скопировать ID"
         />
       )}
-      {/* {show.paymentsUsersBtn && (
-        <ItemComponent
-          icon={faMoneyBill}
-          onClick={() => {
-            modalsFunc.event.payments(item._id)
-          }}
-          color="amber"
-          tooltipText="Финансы"
-        />
-      )} */}
-      {/* {show.userPaymentsBtn && (
-        <ItemComponent
-          icon={faMoneyBill}
-          onClick={() => {
-            modalsFunc.user.payments(item._id)
-          }}
-          color="amber"
-          tooltipText="Финансы"
-        />
-      )} */}
       {show.upBtn && (
         <ItemComponent
           icon={faArrowUp}
@@ -231,8 +203,8 @@ const CardButtons = ({
   return isCompact ? (
     <DropDown
       trigger={
-        <div className="flex h-9 w-9 cursor-pointer flex-col items-center justify-center text-general">
-          <FontAwesomeIcon icon={faEllipsisV} className="h-7 w-7" />
+        <div className="flex flex-col items-center justify-center cursor-pointer h-9 w-9 min-h-9 text-general">
+          <FontAwesomeIcon icon={faEllipsisV} className="h-7 w-7 min-h-7" />
         </div>
       }
       className={className}

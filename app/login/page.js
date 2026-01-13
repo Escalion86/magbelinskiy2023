@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import authOptions from '../api/auth/[...nextauth]/_options'
 // import { signIn } from 'next-auth/react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Login() {
   let session = null
 

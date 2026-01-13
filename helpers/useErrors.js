@@ -73,12 +73,6 @@ const useErrors = () => {
           ? setError({ image: 'Введите имя и фамилию руководителя' })
           : null,
       quote: (data) => (!data ? setError({ image: 'Введите цитату' }) : null),
-      directionId: (data) =>
-        !data
-          ? setError({
-              directionId: 'Выберите направление мероприятия',
-            })
-          : null,
       organizerId: (data) =>
         !data ? setError({ organizerId: 'Выберите организатора' }) : null,
       date: (data) => (!data ? setError({ date: 'Введите дату' }) : null),
@@ -90,41 +84,6 @@ const useErrors = () => {
         !data
           ? setError({ payAt: 'Введите дату совершения транзакции' })
           : null,
-      payType: (data) =>
-        !data
-          ? setError({ payType: 'Введите тип оплаты' })
-          : !['card', 'cash', 'remittance', 'coupon'].includes(data)
-            ? setError({ payType: 'Введен некорректный тип оплаты' })
-            : null,
-      payDirection: (data) =>
-        !data
-          ? setError({ payDirection: 'Введите направление транзакции' })
-          : ![
-                'toUser',
-                'fromUser',
-                'toEvent',
-                'fromEvent',
-                'toService',
-                'fromService',
-                'toProduct',
-                'fromProduct',
-                'toInternal',
-                'fromInternal',
-              ].includes(data)
-            ? setError({
-                payDirection: 'Введен некорректное направление транзакции',
-              })
-            : null,
-      sector: (data) =>
-        !data
-          ? setError({ sector: 'Введите область применения транзакции' })
-          : !['product', 'event', 'service', 'project', 'internal'].includes(
-                data
-              )
-            ? setError({
-                sector: 'Введена некорректная область применения транзакции',
-              })
-            : null,
       userId: (data) =>
         !data ? setError({ userId: 'Выберите пользователя' }) : null,
       serviceId: (data) =>
@@ -148,8 +107,6 @@ const useErrors = () => {
           : null,
       author: (data) =>
         !data ? setError({ author: 'Введите имя автора' }) : null,
-      reviewText: (data) =>
-        !data ? setError({ reviewText: 'Введите текст отзыва' }) : null,
       firstName: (data) =>
         !data
           ? setError({ firstName: 'Введите имя' })

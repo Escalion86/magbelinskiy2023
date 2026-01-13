@@ -27,15 +27,10 @@ const eventHistoryFunc = (eventId) => {
     const event = useAtomValue(eventSelector(eventId))
     const [eventHistory, setEventHistory] = useState()
     const setEvent = useAtomValue(itemsFuncAtom).event.set
-
-    if (!event || !eventId)
-      return (
-        <div className="flex justify-center w-full text-lg ">
-          ОШИБКА! Мероприятие не найдено!
-        </div>
-      )
+    const hasEvent = Boolean(event && eventId)
 
     useEffect(() => {
+      if (!hasEvent) return
       const fetchData = async () => {
         const result = await getData(`/api/histories`, {
           schema: 'events',
@@ -44,7 +39,14 @@ const eventHistoryFunc = (eventId) => {
         setEventHistory(result)
       }
       fetchData().catch(console.error)
-    }, [])
+    }, [eventId, hasEvent])
+
+    if (!hasEvent)
+      return (
+        <div className="flex justify-center w-full text-lg ">
+          ОШИБКА! Мероприятие не найдено!
+        </div>
+      )
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">

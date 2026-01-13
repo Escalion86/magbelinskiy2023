@@ -4,6 +4,7 @@ import { useMemo, useCallback, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import ContentHeader from '@components/ContentHeader'
+import Button from '@components/Button'
 import TransactionTypeToggleButtons from '@components/IconToggleButtons/TransactionTypeToggleButtons'
 import TransactionCard from '@layouts/cards/TransactionCard'
 import transactionsAtom from '@state/atoms/transactionsAtom'
@@ -138,9 +139,18 @@ const TransactionsContent = () => {
               onChange={setTypeFilter}
             />
           </div>
-          <span>
-            {filteredTransactions.length} из {transactions.length}
-          </span>
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <span>
+              {filteredTransactions.length} из {transactions.length}
+            </span>
+            <Button
+              name="+"
+              collapsing
+              className="h-9 w-9 rounded-full text-lg"
+              onClick={() => modalsFunc.transaction?.add()}
+              disabled={!modalsFunc.transaction?.add}
+            />
+          </div>
         </div>
       </ContentHeader>
       <div className="min-h-0 flex-1 overflow-hidden">

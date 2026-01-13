@@ -2,28 +2,20 @@
 // import isUserQuestionnaireFilled from '@helpers/isUserQuestionnaireFilled'
 import addModalSelector from '@state/selectors/addModalSelector'
 import { setAtomValue } from '@state/storeHelpers'
-// import additionalBlockFunc from './modalsFunc/additionalBlockFunc'
 // import copyLinkFunc from './modalsFunc/copyLinkFunc'
 import cropImageFunc from './modalsFunc/cropImageFunc'
-import directionFunc from './modalsFunc/directionFunc'
-import directionViewFunc from './modalsFunc/directionViewFunc'
 import errorFunc from './modalsFunc/errorFunc'
 import eventFunc from './modalsFunc/eventFunc'
 // import eventSignUpFunc from './modalsFunc/eventSignUpFunc2'
 import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 // import eventUserStatusChangeFunc from './modalsFunc/eventUserStatusChangeFunc'
 // import eventUsersFunc from './modalsFunc/eventUsersFunc'
-// import eventUsersPaymentsFunc from './modalsFunc/eventUsersPaymentsFunc'
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import transactionFunc from './modalsFunc/transactionFunc'
 import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
-import paymentFunc from './modalsFunc/paymentFunc'
-// import paymentsAutoFillFunc from './modalsFunc/paymentsAutoFillFunc'
 // import questionnaireConstructorFunc from './modalsFunc/questionnaireConstructorFunc'
-// import selectDirectionsFunc from './modalsFunc/selectDirectionsFunc'
 import selectEventsFunc from './modalsFunc/selectEventsFunc'
-import selectPaymentsFunc from './modalsFunc/selectPaymentsFunc'
 // import selectServicesFunc from './modalsFunc/selectServicesFunc'
 import selectUsersFunc from './modalsFunc/selectUsersFunc'
 // import serviceApplyFunc from './modalsFunc/serviceApplyFunc'
@@ -35,8 +27,6 @@ import serviceViewFunc from './modalsFunc/serviceViewFunc'
 // import userDeleteFunc from './modalsFunc/userDeleteFunc'
 // import userFunc from './modalsFunc/userFunc'
 // import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
-import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
-// import userPaymentsFunc from './modalsFunc/userPaymentsFunc'
 // import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 // import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
 // import userViewFunc from './modalsFunc/userViewFunc'
@@ -46,11 +36,8 @@ import userPaymentsForEventFunc from './modalsFunc/userPaymentsForEventFunc'
 // import roleFunc from './modalsFunc/roleFunc'
 // import browseLocationFunc from './modalsFunc/browseLocationFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
-import paymentHistoryFunc from './modalsFunc/paymentHistoryFunc'
 import clientFunc from './modalsFunc/clientFunc'
-import colleagueFunc from './modalsFunc/colleagueFunc'
 import clientSelectFunc from './modalsFunc/clientSelectFunc'
-import colleagueSelectFunc from './modalsFunc/colleagueSelectFunc'
 // import userHistoryFunc from './modalsFunc/userHistoryFunc'
 // import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
 // import userPersonalStatusEditFunc from './modalsFunc/userPersonalStatusEditFunc'
@@ -154,28 +141,6 @@ const modalsFuncGenerator = (
           modalTitle
         )
       ),
-    // selectDirections: (
-    //   itemsId,
-    //   filterRules,
-    //   onChange,
-    //   exceptedIds,
-    //   acceptedIds,
-    //   maxDirections,
-    //   canSelectNone,
-    //   modalTitle
-    // ) =>
-    //   addModal(
-    //     selectDirectionsFunc(
-    //       itemsId,
-    //       filterRules,
-    //       onChange,
-    //       exceptedIds,
-    //       acceptedIds,
-    //       maxDirections,
-    //       canSelectNone,
-    //       modalTitle
-    //     )
-    //   ),
     // selectServices: (
     //   itemsId,
     //   filterRules,
@@ -198,39 +163,6 @@ const modalsFuncGenerator = (
     //       modalTitle
     //     )
     //   ),
-    selectPayments: (
-      itemsId,
-      filterRules,
-      onChange,
-      exceptedIds,
-      acceptedIds,
-      maxPayments,
-      canSelectNone,
-      modalTitle
-    ) =>
-      addModal(
-        selectPaymentsFunc(
-          itemsId,
-          filterRules,
-          onChange,
-          exceptedIds,
-          acceptedIds,
-          maxPayments,
-          canSelectNone,
-          modalTitle
-        )
-      ),
-    direction: {
-      add: (directionId) => addModal(directionFunc(directionId, true)),
-      edit: (directionId) => addModal(directionFunc(directionId)),
-      delete: (directionId) =>
-        addModal({
-          title: 'Удаление направления',
-          text: 'Вы уверены, что хотите удалить направление?',
-          onConfirm: async () => itemsFunc.direction.delete(directionId),
-        }),
-      view: (directionId) => addModal(directionViewFunc(directionId)),
-    },
     eventsTags: {
       edit: () => addModal(eventsTagsFunc()),
     },
@@ -255,15 +187,21 @@ const modalsFuncGenerator = (
       add: (requestId) => addModal(requestFunc(requestId, true)),
       edit: (requestId) => addModal(requestFunc(requestId)),
       statusEdit: (requestId) => addModal(requestStatusEditFunc(requestId)),
+      delete: (requestId) =>
+        addModal({
+          title: 'Удаление заявки',
+          text: 'Вы уверены, что хотите удалить заявку?',
+          onConfirm: async () => itemsFunc.request.delete(requestId),
+        }),
       view: (requestId) => addModal(requestViewFunc(requestId)),
     },
     event: {
       add: (eventId) => addModal(eventFunc(eventId, true)),
       edit: (eventId) => addModal(eventFunc(eventId)),
+      fromRequest: (requestId) => addModal(eventFunc(null, false, requestId)),
       // users: (eventId) => addModal(eventUsersFunc(eventId)),
       history: (eventId) => addModal(eventHistoryFunc(eventId)),
       statusEdit: (eventId) => addModal(eventStatusEditFunc(eventId)),
-      // payments: (eventId) => addModal(eventUsersPaymentsFunc(eventId)),
       close: (eventId) =>
         addModal({
           title: 'Закрытие мероприятия',
@@ -301,20 +239,6 @@ const modalsFuncGenerator = (
     //     addModal(likeEditFunc(eventUser, adminView)),
     //   likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
     // },
-    payment: {
-      add: (paymentId, props) => addModal(paymentFunc(paymentId, true, props)),
-      edit: (paymentId) => addModal(paymentFunc(paymentId)),
-      history: (paymentId) => addModal(paymentHistoryFunc(paymentId)),
-      // autoFill: (eventId) => addModal(paymentsAutoFillFunc(eventId)),
-      delete: (paymentId) =>
-        addModal({
-          title: 'Удаление транзакции',
-          text: 'Вы уверены, что хотите удалить транзакцию?',
-          onConfirm: async () => itemsFunc.payment.delete(paymentId),
-        }),
-      userEvent: (userId, eventId) =>
-        addModal(userPaymentsForEventFunc(userId, eventId)),
-    },
     // user: {
     //   add: (userId) => addModal(userFunc(userId, true)),
     //   edit: (userId) => addModal(userFunc(userId)),
@@ -333,7 +257,6 @@ const modalsFuncGenerator = (
     //     ),
     //   view: (userId, params) => addModal(userViewFunc(userId, params)),
     //   events: (userId) => addModal(userSignedUpEventsFunc(userId)),
-    //   payments: (userId) => addModal(userPaymentsFunc(userId)),
     //   setPassword: (userId) => addModal(userSetPasswordFunc(userId)),
     // },
     service: {
@@ -363,14 +286,8 @@ const modalsFuncGenerator = (
       edit: (clientId, onSuccess) =>
         addModal(clientFunc(clientId, false, onSuccess)),
       add: (onSuccess) => addModal(clientFunc(null, true, onSuccess)),
-      select: (onSelect, title) => addModal(clientSelectFunc(onSelect, title)),
-    },
-    colleague: {
-      edit: (colleagueId, onSuccess) =>
-        addModal(colleagueFunc(colleagueId, false, onSuccess)),
-      add: (onSuccess) => addModal(colleagueFunc(null, true, onSuccess)),
-      select: (onSelect, title) =>
-        addModal(colleagueSelectFunc(onSelect, title)),
+      select: (onSelect, title, options) =>
+        addModal(clientSelectFunc(onSelect, title, options)),
     },
     // serviceUser: {
     //   add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),

@@ -12,7 +12,8 @@ const normalizePhone = (value) => {
 
 const unique = (items) => Array.from(new Set(items.filter(Boolean)))
 
-const AMOUNT_CANDIDATE_REGEX = /(\d[\d\s.,]*)(?:\s*(к|k|тыс|тыщ|т\b))?/gi
+const AMOUNT_CANDIDATE_REGEX =
+  /(\d[\d\s.,]*)(?:\s*(к|k|тыс|тыщ|т)(?![A-Za-zА-Яа-я])\.?)?/gi
 const TOTAL_AMOUNT_LABELS = [
   'сумма',
   'стоимость',
@@ -51,11 +52,15 @@ const parseAmountCandidate = (rawNumber, suffix) => {
   return numeric * multiplier
 }
 
+const sanitizeTextForAmounts = (text = '') =>
+  text ? text.replace(PHONE_REGEX, ' ') : ''
+
 const extractAmountCandidates = (text) => {
   if (!text) return []
 
   const amounts = []
-  for (const match of text.matchAll(AMOUNT_CANDIDATE_REGEX)) {
+  const sanitized = sanitizeTextForAmounts(text)
+  for (const match of sanitized.matchAll(AMOUNT_CANDIDATE_REGEX)) {
     const [full, rawNumber, suffix] = match
     if (/%/.test(full)) continue
 
@@ -70,8 +75,12 @@ const findAmountByLabels = (text, labels) => {
   if (!text) return null
 
   const labelsRegex = new RegExp(`(?:${labels.join('|')})`, 'ig')
-  for (const labelMatch of text.matchAll(labelsRegex)) {
-    const context = text.slice(labelMatch.index ?? 0, (labelMatch.index ?? 0) + 120)
+  const sanitized = sanitizeTextForAmounts(text)
+  for (const labelMatch of sanitized.matchAll(labelsRegex)) {
+    const context = sanitized.slice(
+      labelMatch.index ?? 0,
+      (labelMatch.index ?? 0) + 120
+    )
     const [amount] = extractAmountCandidates(context)
     if (amount !== undefined) return amount
   }
@@ -102,9 +111,38 @@ const detectDepositStatusByMarkers = (summary) => {
   return null
 }
 
+const detectTransferred = (summary, description) => {
+  const text = `${summary ?? ''}\n${description ?? ''}`
+  if (/передан|передано|передача|передал/i.test(text)) return true
+  if (/коллег/i.test(text)) return true
+  return false
+}
+
+const extractClientNameFromDescription = (description = '') => {
+  const lines = description.split(/\r?\n/).map((line) => line.trim())
+  const labelsRegex = new RegExp(
+    `(?:${TOTAL_AMOUNT_LABELS.join('|')}|${DEPOSIT_AMOUNT_LABELS.join('|')})`,
+    'i'
+  )
+
+  for (const line of lines) {
+    if (!line) continue
+    if (!/[A-Za-zА-Яа-я]/.test(line)) continue
+    if (/\d/.test(line)) continue
+    if (labelsRegex.test(line)) continue
+    if (/коммент|примечание|заметка|note/i.test(line)) continue
+    return line
+  }
+
+  return ''
+}
+
 const pickClientName = (summary, description, attendees) => {
   const descriptionMatch = description.match(CLIENT_NAME_REGEX)
   if (descriptionMatch?.[2]) return descriptionMatch[2].trim()
+
+  const possibleName = extractClientNameFromDescription(description)
+  if (possibleName) return possibleName
 
   const attendeeName = attendees.find((attendee) => attendee?.displayName)?.displayName
   if (attendeeName) return attendeeName.trim()
@@ -194,11 +232,16 @@ export const parseGoogleEvent = (event) => {
 
   const clientData = {}
   if (currency) clientData.currency = currency
+  const depositDate = dateStart ?? eventDate ?? dateEnd ?? null
+
   if (depositAmount !== null || depositStatus)
     clientData.deposit = {
       amount: depositAmount ?? null,
       status: depositStatus ?? 'unknown',
+      date: depositDate,
     }
+
+  const isTransferred = detectTransferred(summary, description)
 
   return {
     title: summary?.trim() || 'Мероприятие из Google Calendar',
@@ -217,5 +260,6 @@ export const parseGoogleEvent = (event) => {
         ? 'canceled'
         : 'active',
     clientData,
+    isTransferred,
   }
 }

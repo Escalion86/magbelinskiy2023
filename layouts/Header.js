@@ -1,13 +1,9 @@
 import Burger from '@components/Burger'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import transliterate from '@helpers/transliterate'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import menuOpenAtom from '@state/atoms/menuOpen'
-import filteredAdditionalBlocksSelector from '@state/selectors/filteredAdditionalBlocksSelector'
-import filteredDirectionsSelector from '@state/selectors/filteredDirectionsSelector'
 import filteredEventsSelector from '@state/selectors/filteredEventsSelector'
-import filteredReviewsSelector from '@state/selectors/filteredReviewsSelector'
 import cn from 'classnames'
 import Link from 'next/link'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -41,39 +37,16 @@ const BurgerMenuItem = ({ text, href = '#' }) => {
   )
 }
 
-// const menu = [
-//   { name: 'О нас', href: '#about', key: null },
-//   { name: 'Запись', href: '#timetable', key: 'events' },
-//   { name: 'Направления', href: '#directions', key: 'directions' },
-//   // { name: 'Доп. блоки', href: '#additionalBlock', key: 'additionalBlocks' },
-//   // { name: 'Стоимость', href: '#price', key: null },
-//   { name: 'Отзывы', href: '#reviews', key: 'reviews' },
-//   { name: 'Контакты', href: '#contacts', key: null },
-// ]
 
 const Header = ({ noMenu }) => {
   const loggedUser = useAtomValue(loggedUserAtom)
   const events = useAtomValue(filteredEventsSelector)
-  const reviews = useAtomValue(filteredReviewsSelector)
-  const directions = useAtomValue(filteredDirectionsSelector)
   const services = useAtomValue(filteredServicesSelector)
-  const additionalBlocks = useAtomValue(filteredAdditionalBlocksSelector)
 
   const menu = [{ name: 'Наши цели', href: '/#about' }]
   // if (events?.length > 0)
   menu.push({ name: 'Мероприятия', href: '/#events' })
-  if (directions?.length > 0)
-    menu.push({ name: 'Направления', href: '/#directions' })
   if (services?.length > 0) menu.push({ name: 'Услуги', href: '/#services' })
-  if (additionalBlocks?.length > 0)
-    additionalBlocks.forEach((additionalBlock) => {
-      if (additionalBlock.menuName)
-        menu.push({
-          name: additionalBlock.menuName,
-          href: '/#' + transliterate(additionalBlock.menuName),
-        })
-    })
-  if (reviews?.length > 0) menu.push({ name: 'Отзывы', href: '/#reviews' })
   menu.push({ name: 'Контакты', href: '/#contacts' })
 
   // const filteredMenu = menu.filter(

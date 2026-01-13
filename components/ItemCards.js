@@ -1,30 +1,19 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons/faGenderless'
-import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
-import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import birthDateToAge from '@helpers/birthDateToAge'
-import { EVENT_STATUSES_WITH_TIME, GENDERS, SECTORS } from '@helpers/constants'
+import { EVENT_STATUSES_WITH_TIME, GENDERS } from '@helpers/constants'
 import eventStatusFunc from '@helpers/eventStatus'
-import formatDateTime from '@helpers/formatDateTime'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
-import directionSelector from '@state/selectors/directionSelector'
 // import eventFullAtomAsync from '@state/async/eventFullAtomAsync'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
-import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
 import DateTimeEvent from './DateTimeEvent'
-import EventNameById from './EventNameById'
 import TextLinesLimiter from './TextLinesLimiter'
 import UserName from './UserName'
-import UserNameById from './UserNameById'
-import windowDimensionsTailwindSelector from '@state/selectors/windowDimensionsTailwindSelector'
 import serviceSelector from '@state/selectors/serviceSelector'
-import IconWithTooltip from './IconWithTooltip'
-import paymentSectorFunc from '@helpers/paymentSector'
-import PayTypeIcon from './PayTypeIcon'
 import eventSelector from '@state/selectors/eventSelector'
 import Image from 'next/image'
 
@@ -114,8 +103,6 @@ export const UserItem = ({
 
   const seeBirthday = true
 
-  const device = useAtomValue(windowDimensionsTailwindSelector)
-
   const userGender =
     item.gender && GENDERS.find((gender) => gender.value === item.gender)
 
@@ -196,8 +183,6 @@ export const EventItem = ({
   noBorder,
   noStatusIcon,
 }) => {
-  const direction = useAtomValue(directionSelector(item.directionId))
-
   const eventStatus = eventStatusFunc(item)
   const eventStatusObj = EVENT_STATUSES_WITH_TIME.find(
     (data) => data.value === eventStatus
@@ -233,17 +218,9 @@ export const EventItem = ({
         <div className="flex h-full flex-col justify-evenly">
           <TextLinesLimiter
             className="-mb-[1px] font-bold text-general"
-            textCenter={false}
             lines={1}
           >
-            {direction?.title ?? '[Напривление неизвестно]'}
-          </TextLinesLimiter>
-          <TextLinesLimiter
-            className="font-bold text-gray-800"
-            lines={1}
-            textCenter={false}
-          >
-            {item.title}
+            {item.title || 'Без названия'}
           </TextLinesLimiter>
         </div>
         <div className="gap-x-2 text-gray-600">
@@ -262,40 +239,6 @@ export const EventItem = ({
     </ItemContainer>
   )
 }
-
-export const DirectionItem = ({ item, onClick = null, active = false }) => (
-  <ItemContainer
-    onClick={onClick}
-    active={active}
-    className="flex h-[50px]"
-    noPadding
-  >
-    {item?.image && (
-      <Image
-        className="aspect-1 h-[50px] object-cover"
-        src={item.image}
-        alt="Изображение направления"
-        width={50}
-        height={50}
-      />
-    )}
-    <div className="px-1">
-      <div className="h-5 truncate text-sm font-bold text-gray-800">
-        {item.title}
-      </div>
-      <div className="flex items-center gap-x-2 text-xs text-gray-600">
-        <TextLinesLimiter
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(item.description),
-          }}
-          className="textarea ql w-full max-w-full flex-1 overflow-hidden leading-[0.85rem]"
-          lines={2}
-          textCenter={false}
-        />
-      </div>
-    </div>
-  </ItemContainer>
-)
 
 export const ServiceItemFromId = ({
   serviceId,
@@ -347,7 +290,6 @@ export const ServiceItem = ({
         <TextLinesLimiter
           className="textarea w-full max-w-full flex-1 overflow-hidden leading-[0.85rem]"
           lines={2}
-          textCenter={false}
         >
           {item.shortDescription}
         </TextLinesLimiter>
@@ -356,108 +298,3 @@ export const ServiceItem = ({
   </ItemContainer>
 )
 
-export const PaymentItem = ({
-  item,
-  onClick = null,
-  active = false,
-  noBorder = false,
-  checkable,
-  className,
-  showUser = true,
-  showEvent = true,
-  showSectorIcon = true,
-}) => {
-  const paymentSector = paymentSectorFunc(item)
-  const sectorProps = SECTORS.find((sector) => sector.value === paymentSector)
-
-  return (
-    <ItemContainer
-      onClick={onClick}
-      active={active}
-      noPadding
-      noBorder={noBorder}
-      className={cn('flex h-9', className)}
-      checkable={checkable}
-    >
-      {showSectorIcon && (
-        <div
-          className={cn(
-            'flex w-8 items-center justify-center text-white',
-            sectorProps ? 'bg-' + sectorProps.color : 'bg-gray-400'
-          )}
-        >
-          <FontAwesomeIcon
-            icon={sectorProps?.icon ?? faQuestion}
-            className="h-6 w-6"
-          />
-        </div>
-      )}
-      <div className="flex w-full flex-1 items-center justify-between gap-x-1 px-1">
-        <div className="flex flex-col">
-          <div className="truncate text-sm font-bold leading-4 text-gray-800">
-            {formatDateTime(item.payAt)}
-          </div>
-          {showUser && (
-            <UserNameById
-              userId={item.userId}
-              noWrap
-              className="text-sm font-bold leading-4"
-            />
-          )}
-          {showEvent && (
-            <EventNameById
-              eventId={item.eventId}
-              className="text-sm font-bold leading-4 text-general"
-            />
-          )}
-          {item.comment && (
-            <div className="text-sm leading-4">{item.comment}</div>
-          )}
-        </div>
-        <div className="flex flex-1 justify-end gap-x-3">
-          {item.sector === 'event' && !item.eventId && (
-            <IconWithTooltip
-              icon={faUnlink}
-              className="text-danger"
-              tooltip="Транзакция не привязана к мероприятию"
-            />
-          )}
-          {item.sector === 'service' && !item.serviceId && (
-            <IconWithTooltip
-              icon={faUnlink}
-              className="text-danger"
-              tooltip="Транзакция не привязана к услуге"
-            />
-          )}
-          {item.sector === 'product' && !item.productId && (
-            <IconWithTooltip
-              icon={faUnlink}
-              className="text-danger"
-              tooltip="Транзакция не привязана к продукту"
-            />
-          )}
-        </div>
-        <div className="flex items-center gap-x-1 text-xs">
-          <div
-            className={cn(
-              'whitespace-nowrap px-1 text-sm font-bold phoneH:text-base',
-              item.payType === 'coupon'
-                ? 'text-general'
-                : item.payDirection === 'toUser' ||
-                  item.payDirection === 'toEvent'
-                ? 'text-danger'
-                : 'text-success'
-            )}
-          >
-            {`${
-              item.payDirection === 'toUser' || item.payDirection === 'toEvent'
-                ? '-'
-                : ''
-            }${item.sum / 100} ₽`}
-          </div>
-          <PayTypeIcon payment={item} size="sm" />
-        </div>
-      </div>
-    </ItemContainer>
-  )
-}

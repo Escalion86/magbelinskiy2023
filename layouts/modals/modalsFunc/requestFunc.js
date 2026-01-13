@@ -5,11 +5,13 @@ import Textarea from '@components/Textarea'
 import { DEFAULT_REQUEST } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import requestSelector from '@state/selectors/requestSelector'
 import DateTimePicker from '@components/DateTimePicker'
-import PhoneInput from '@components/PhoneInput'
+import clientsAtom from '@state/atoms/clientsAtom'
+import ClientPicker from '@components/ClientPicker'
+import { modalsFuncAtom } from '@state/atoms'
 
 const requestFunc = (requestId, clone = false) => {
   const RequestModal = ({
@@ -23,14 +25,13 @@ const requestFunc = (requestId, clone = false) => {
   }) => {
     const request = useAtomValue(requestSelector(requestId))
     const setRequest = useAtomValue(itemsFuncAtom).request.set
+    const clients = useAtomValue(clientsAtom)
+    const modalsFunc = useAtomValue(modalsFuncAtom)
 
-    const [clientName, setClientName] = useState(
-      DEFAULT_REQUEST.clientName ?? ''
+    const [clientId, setClientId] = useState(
+      request?.clientId ?? DEFAULT_REQUEST.clientId ?? null
     )
-    const [clientPhone, setClientPhone] = useState(
-      DEFAULT_REQUEST.clientPhone ? Number(DEFAULT_REQUEST.clientPhone) : null
-    )
-    const [contactChannels, setContactChannels] = useState('')
+    const [createdAt, setCreatedAt] = useState(null)
     const [eventDate, setEventDate] = useState(
       DEFAULT_REQUEST.eventDate ?? null
     )
@@ -44,39 +45,31 @@ const requestFunc = (requestId, clone = false) => {
       DEFAULT_REQUEST.comment ?? ''
     )
     const [yandexAim, setYandexAim] = useState('')
+    const initializedRef = useRef(false)
+    const yandexAimOptions = useMemo(
+      () => [
+        'poluchit_zvonok',
+        'zakaz_show',
+        'zakaz_zvonok',
+        'after_focus_form',
+        'form_test',
+        'klick_nomber',
+        'klick_WA',
+        'klick_TG',
+        'after_focus_click_number',
+      ],
+      []
+    )
 
     const originalValues = useMemo(() => {
-      const originalName =
-        request?.clientName ?? request?.name ?? DEFAULT_REQUEST.clientName ?? ''
+      const clientIdValue =
+        request?.clientId ?? DEFAULT_REQUEST.clientId ?? null
 
-      const rawPhone =
-        request?.clientPhone ??
-        request?.phone ??
-        DEFAULT_REQUEST.clientPhone ??
-        ''
-
-      let sanitizedPhone = `${rawPhone}`.replace(/[^0-9]/g, '')
-
-      if (sanitizedPhone.length === 10)
-        sanitizedPhone = `7${sanitizedPhone}`
-      else if (sanitizedPhone.length === 11 && sanitizedPhone.startsWith('8'))
-        sanitizedPhone = `7${sanitizedPhone.slice(1)}`
-
-      const clientPhoneValue =
-        sanitizedPhone.length > 0 ? Number(sanitizedPhone) : null
-
-      const contactSources = Array.isArray(request?.contactChannels)
-        ? request.contactChannels
-        : request?.contact
-        ? [request.contact]
-        : Array.isArray(DEFAULT_REQUEST.contactChannels)
-        ? DEFAULT_REQUEST.contactChannels
-        : []
-
-      const contactChannelsValue = contactSources
-        .filter((item) => typeof item === 'string' && item.trim().length > 0)
-        .map((item) => item.trim())
-        .join('\n')
+      const createdAtValue =
+        request?.createdAt ??
+        (clone || !requestId
+          ? new Date().toISOString()
+          : DEFAULT_REQUEST.createdAt)
 
       const eventDateValue =
         request?.eventDate ??
@@ -115,63 +108,85 @@ const requestFunc = (requestId, clone = false) => {
         typeof request?.yandexAim === 'string' ? request.yandexAim : ''
 
       return {
-        clientName: originalName,
-        clientPhone: clientPhoneValue,
-        contactChannels: contactChannelsValue,
+        clientId: clientIdValue,
+        createdAt: createdAtValue,
         eventDate: eventDateValue,
         location: locationValue,
         contractSum: contractSumValue,
         comment: commentValue,
         yandexAim: yandexAimValue,
       }
-    }, [request])
+    }, [request, clone, requestId])
 
     useEffect(() => {
-      setClientName(originalValues.clientName)
-      setClientPhone(originalValues.clientPhone)
-      setContactChannels(originalValues.contactChannels)
+      initializedRef.current = false
+    }, [requestId, clone])
+
+    useEffect(() => {
+      if (initializedRef.current) return
+      if (requestId && !request) return
+      setClientId(originalValues.clientId)
+      setCreatedAt(originalValues.createdAt)
       setEventDate(originalValues.eventDate)
       setLocation(originalValues.location)
       setContractSum(originalValues.contractSum)
       setComment(originalValues.comment)
       setYandexAim(originalValues.yandexAim)
-    }, [originalValues])
+      initializedRef.current = true
+    }, [clone, originalValues, request, requestId])
 
-    const [errors, checkErrors, addError, removeError] = useErrors()
+    const [errors, , addError, removeError] = useErrors()
+
+    const selectedClient = useMemo(
+      () =>
+        clientId && clients.length
+          ? clients.find((client) => client._id === clientId)
+          : null,
+      [clientId, clients]
+    )
+
+    const openClientSelectModal = () => {
+      modalsFunc.client?.select((newClientId) => {
+        setClientId(newClientId)
+        removeError('clientId')
+      })
+    }
 
     const onClickConfirm = useCallback(async () => {
-      const hasPhoneError = checkErrors({ phone: clientPhone })
-
       let hasCustomError = false
 
-      if (!clientName || !clientName.trim()) {
-        addError({ clientName: 'Укажите имя клиента' })
+      if (!clientId) {
+        addError({ clientId: 'Выберите клиента' })
         hasCustomError = true
       }
 
-      if (!hasPhoneError && !hasCustomError) {
+      if (!selectedClient?.phone) {
+        addError({ clientId: 'У клиента не указан телефон' })
+        hasCustomError = true
+      }
+
+      if (!hasCustomError) {
         closeModal()
         const normalizedLocation = location ? location.trim() : ''
         const normalizedContractSum =
           typeof contractSum === 'number' && !Number.isNaN(contractSum)
             ? contractSum
             : 0
-        const normalizedPhone =
-          typeof clientPhone === 'number' && !Number.isNaN(clientPhone)
-            ? clientPhone
-            : null
+        const normalizedCreatedAt =
+          createdAt || (clone || !requestId ? new Date().toISOString() : null)
         const normalizedEventDate = eventDate ?? null
+
+        const clientNameValue = [selectedClient?.firstName, selectedClient?.secondName]
+          .filter(Boolean)
+          .join(' ')
 
         setRequest(
           {
             _id: request?._id,
-            clientId: request?.clientId ?? null,
-            clientName: clientName.trim(),
-            clientPhone: normalizedPhone,
-            contactChannels: contactChannels
-              .split(/[\n,;]/)
-              .map((value) => value.trim())
-              .filter(Boolean),
+            clientId,
+            clientName: clientNameValue || selectedClient?._id,
+            clientPhone: selectedClient?.phone ?? null,
+            createdAt: normalizedCreatedAt,
             eventDate: normalizedEventDate,
             location: normalizedLocation,
             contractSum: normalizedContractSum,
@@ -180,104 +195,87 @@ const requestFunc = (requestId, clone = false) => {
           },
           clone
         )
-        // if (direction && !clone) {
-        //   await putData(
-        //     `/api/directions/${direction._id}`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //     },
-        //     refreshPage
-        //   )
-        // } else {
-        //   await postData(
-        //     `/api/directions`,
-        //     {
-        //       title,
-        //       description,
-        //       showOnSite,
-        //       image,
-        //     },
-        //     refreshPage
-        //   )
-        // }
       }
     }, [
       request,
-      clientName,
-      clientPhone,
-      contactChannels,
+      clientId,
       eventDate,
       location,
       contractSum,
       comment,
       yandexAim,
-      checkErrors,
       closeModal,
       setRequest,
       addError,
+      selectedClient,
     ])
 
-    useEffect(() => {
-      const isFormChanged =
-        originalValues.clientName !== clientName ||
-        (originalValues.clientPhone ?? null) !== (clientPhone ?? null) ||
-        originalValues.contactChannels !== contactChannels ||
+    const isFormChanged = useMemo(
+      () =>
+        (originalValues.clientId ?? null) !== (clientId ?? null) ||
+        originalValues.createdAt !== createdAt ||
         (originalValues.eventDate ?? null) !== (eventDate ?? null) ||
         originalValues.location !== location ||
         originalValues.contractSum !== contractSum ||
         originalValues.comment !== comment ||
-        originalValues.yandexAim !== yandexAim
+        originalValues.yandexAim !== yandexAim,
+      [
+        originalValues,
+        clientId,
+        createdAt,
+        eventDate,
+        location,
+        contractSum,
+        comment,
+        yandexAim,
+      ]
+    )
 
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
+    const onConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
+    useEffect(() => {
+      setOnConfirmFunc(
+        isFormChanged ? () => onConfirmRef.current?.() : undefined
+      )
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [
-      originalValues,
-      clientName,
-      clientPhone,
-      contactChannels,
-      eventDate,
-      location,
-      contractSum,
-      comment,
-      yandexAim,
-      onClickConfirm,
+      isFormChanged,
       setDisableConfirm,
       setOnShowOnCloseConfirmDialog,
       setOnConfirmFunc,
     ])
     return (
       <FormWrapper>
-        <Input
-          label="Имя клиента"
-          type="text"
-          value={clientName}
-          onChange={(value) => {
-            removeError('clientName')
-            setClientName(value)
-          }}
+        <ClientPicker
+          selectedClient={selectedClient}
+          selectedClientId={clientId}
+          onSelectClick={openClientSelectModal}
+          onCreateClick={() =>
+            modalsFunc.client?.add((newClient) => {
+              if (!newClient?._id) return
+              setClientId(newClient._id)
+              removeError('clientId')
+            })
+          }
+          label="Клиент"
           required
-          error={errors.clientName}
+          error={errors.clientId}
+          paddingY
+          fullWidth
         />
-        <PhoneInput
-          required
-          label="Телефон клиента"
-          value={clientPhone}
+        <DateTimePicker
+          value={createdAt}
           onChange={(value) => {
-            removeError('phone')
-            setClientPhone(value)
+            removeError('createdAt')
+            setCreatedAt(value ?? null)
           }}
-          error={errors.phone}
-        />
-        <Textarea
-          label="Способы связи"
-          onChange={setContactChannels}
-          value={contactChannels}
-          rows={2}
-          comment="Каждый способ с новой строки или через запятую"
+          label="Дата заявки"
+          error={errors.createdAt}
         />
         <DateTimePicker
           value={eventDate}
@@ -312,6 +310,7 @@ const requestFunc = (requestId, clone = false) => {
           type="text"
           value={yandexAim}
           onChange={setYandexAim}
+          dataList={{ name: 'yandex-aim', list: yandexAimOptions }}
         />
         <ErrorsList errors={errors} />
       </FormWrapper>

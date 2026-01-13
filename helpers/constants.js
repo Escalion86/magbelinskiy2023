@@ -1,18 +1,12 @@
 import {
   faBan,
-  faBriefcase,
   faCalendarAlt,
-  faCertificate,
   faCheck,
   faClock,
   faGenderless,
-  faHome,
   faLock,
   faMars,
   faPlay,
-  faShare,
-  faShoppingBag,
-  faSignInAlt,
   faVenus,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,11 +16,7 @@ import {
   faUser,
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  faCalendar,
-  faCalendarCheck,
-  faCreditCard,
-} from '@fortawesome/free-regular-svg-icons'
+import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 
 import {
   faInstagram,
@@ -319,40 +309,6 @@ export const DAYS_OF_WEEK_FULL = [
   'суббота',
 ]
 
-export const SECTORS = [
-  {
-    name: 'Мероприятие',
-    value: 'event',
-    icon: faCalendarAlt,
-    color: 'orange-400',
-  },
-  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
-  { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
-  {
-    name: 'Внутренние',
-    value: 'internal',
-    icon: faBriefcase,
-    color: 'general',
-  },
-]
-
-export const SECTORS2 = [
-  {
-    name: 'Главная страница',
-    value: 'home',
-    icon: faHome,
-    color: 'general',
-  },
-  {
-    name: 'Мероприятие',
-    value: 'event',
-    icon: faCalendarAlt,
-    color: 'orange-400',
-  },
-  { name: 'Пользователь', value: 'user', icon: faUser, color: 'blue-400' },
-  { name: 'Услуга', value: 'service', icon: faHeart, color: 'purple-400' },
-  // { name: 'Товар', value: 'product', icon: faShoppingBag, color: 'blue-400' },
-]
 
 export const AUDIENCE = [
   { value: 'adults', name: 'Взрослые (18-99 лет)' },
@@ -426,7 +382,6 @@ export const DEFAULT_ADDRESS = Object.freeze({
 })
 
 export const DEFAULT_EVENT = Object.freeze({
-  directionId: null,
   organizerId: null,
   requestId: null,
   clientId: null,
@@ -441,7 +396,7 @@ export const DEFAULT_EVENT = Object.freeze({
   status: 'active',
   contractSum: 0,
   isTransferred: false,
-  comment: '',
+  isByContract: false,
   importedFromCalendar: false,
   calendarImportChecked: false,
   colleagueId: null,
@@ -459,13 +414,22 @@ export const DEFAULT_CLIENT = Object.freeze({
   secondName: '',
   priorityContact: '',
   phone: null,
+  clientType: 'none',
 })
+
+export const CLIENT_TYPES = Object.freeze([
+  { value: 'none', name: 'Без типа' },
+  { value: 'host', name: 'Ведущий' },
+  { value: 'organizer', name: 'Организатор' },
+  { value: 'colleague', name: 'Коллега' },
+])
 
 export const DEFAULT_REQUEST = Object.freeze({
   clientId: null,
   clientName: '',
   clientPhone: '',
   contactChannels: [],
+  createdAt: null,
   eventDate: null,
   location: '',
   contractSum: 0,
@@ -477,9 +441,9 @@ export const DEFAULT_REQUEST = Object.freeze({
 export const DEFAULT_TRANSACTION = Object.freeze({
   eventId: null,
   clientId: null,
-  requestId: null,
   amount: 0,
   type: 'expense',
+  category: 'other',
   date: null,
   comment: '',
 })
@@ -524,39 +488,6 @@ export const DEFAULT_IMAGE_CONSTRUCTOR_ITEM = Object.freeze({
   show: true,
 })
 
-export const DEFAULT_DIRECTION = Object.freeze({
-  title: '',
-  shortDescription: '',
-  description: '',
-  image: null,
-  showOnSite: true,
-  rules: {
-    userStatus: 'select',
-    userRelationship: 'select',
-  },
-})
-
-export const DEFAULT_REVIEW = Object.freeze({
-  author: '',
-  review: '',
-  authorAge: null,
-  showOnSite: true,
-})
-
-export const DEFAULT_PAYMENT = Object.freeze({
-  sector: 'event',
-  payDirection: null,
-  userId: null,
-  eventId: null,
-  serviceId: null,
-  productId: null,
-  payType: null,
-  sum: 0,
-  status: 'created',
-  payAt: undefined,
-  comment: '',
-})
-
 export const REQUEST_STATUSES = Object.freeze([
   { value: 'new', name: 'Новая', color: 'blue' },
   { value: 'in_progress', name: 'В работе', color: 'amber' },
@@ -575,6 +506,22 @@ export const TRANSACTION_TYPES = Object.freeze([
   { value: 'income', name: 'Доход', color: 'green' },
 ])
 
+export const TRANSACTION_CATEGORIES = Object.freeze([
+  { value: 'client_payment', name: 'Оплата клиента', type: 'income' },
+  { value: 'advance', name: 'Задаток', type: 'income' },
+  { value: 'tips', name: 'Чаевые', type: 'income' },
+  {
+    value: 'colleague_percent',
+    name: 'Процент от коллеги',
+    type: 'income',
+  },
+  { value: 'refund', name: 'Возврат клиенту', type: 'expense' },
+  { value: 'organizer', name: 'Организатору', type: 'expense' },
+  { value: 'travel', name: 'Дорога', type: 'expense' },
+  { value: 'taxes', name: 'Налоги', type: 'expense' },
+  { value: 'expense', name: 'Расходники', type: 'expense' },
+  { value: 'other', name: 'Другое', type: 'both' },
+])
 export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
   title: '',
   description: '',
@@ -803,139 +750,6 @@ export const pagesGroups = [
     name: 'Разработчик',
     icon: faBug,
     // accessRoles: ['dev']
-  },
-]
-
-export const PAY_TYPES = [
-  { value: 'card', name: 'Картой', color: 'blue-400', icon: faCreditCard },
-  { value: 'cash', name: 'Наличными', color: 'green-400', icon: faMoneyBill },
-  {
-    value: 'remittance',
-    name: 'Перевод',
-    color: 'yellow-400',
-    icon: faSignInAlt,
-  },
-  {
-    value: 'coupon',
-    name: 'Купон',
-    color: 'general',
-    icon: faCertificate,
-  },
-]
-// var arr = [{key:"11", value:"1100"},{key:"22", value:"2200"}];
-// var object = arr.reduce(
-//   (obj, item) => Object.assign(obj, { [item.key]: item.value }), {})
-
-export const PAY_TYPES_OBJECT = PAY_TYPES.reduce(
-  (obj, item) => Object.assign(obj, { [item.value]: item.name }),
-  {}
-)
-
-export const PAY_DIRECTIONS = [
-  {
-    value: 'toUser',
-    name: 'Пользователю (за помощь / возврат)',
-    color: 'red-400',
-    icon: faMoneyBill, // faUserAlt,
-  },
-  {
-    value: 'toEvent',
-    name: 'Затраты организатора',
-    color: 'red-400',
-    icon: faMoneyBill, //faCalendar,
-  },
-  {
-    value: 'fromUser',
-    name: 'Оплата мероприятия',
-    color: 'green-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'fromEvent',
-    name: 'Доп. доходы',
-    color: 'green-400',
-    icon: faMoneyBill, //faCalendar,
-  },
-]
-
-export const EVENT_PAY_DIRECTIONS = [
-  {
-    value: 'toUser',
-    name: 'Пользователю (за помощь)',
-    color: 'red-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'toEvent',
-    name: 'Затраты на мероприятие',
-    color: 'red-400',
-    icon: faMoneyBill, //faCalendar,
-  },
-  {
-    value: 'fromUser',
-    name: 'Оплата мероприятия',
-    color: 'green-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'fromEvent',
-    name: 'Доп. доходы',
-    color: 'green-400',
-    icon: faMoneyBill, //faCalendar,
-  },
-]
-
-export const SERVICE_PAY_DIRECTIONS = [
-  {
-    value: 'toUser',
-    name: 'Специалисту',
-    color: 'red-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'toService',
-    name: 'Затраты на услугу',
-    color: 'red-400',
-    icon: faMoneyBill, //faHeart,
-  },
-  {
-    value: 'fromUser',
-    name: 'Оплата услуги',
-    color: 'green-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'fromService',
-    name: 'Доп. доходы',
-    color: 'green-400',
-    icon: faMoneyBill, //faHeart,
-  },
-]
-
-export const PRODUCT_PAY_DIRECTIONS = [
-  // {
-  //   value: 'toUser',
-  //   name: 'Покупателю (возврат)',
-  //   color: 'red-400',
-  //   icon: faUserAlt,
-  // },
-  {
-    value: 'toProduct',
-    name: 'Затраты на продукт',
-    color: 'red-400',
-    icon: faMoneyBill, //faHeart,
-  },
-  {
-    value: 'fromUser',
-    name: 'Оплата товара',
-    color: 'green-400',
-    icon: faMoneyBill, //faUserAlt,
-  },
-  {
-    value: 'fromProduct',
-    name: 'Доп. доходы',
-    color: 'green-400',
-    icon: faMoneyBill, //faHeart,
   },
 ]
 

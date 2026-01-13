@@ -1,9 +1,10 @@
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
+import InputWrapper from '@components/InputWrapper'
 import PhoneInput from '@components/PhoneInput'
 import Textarea from '@components/Textarea'
-import { DEFAULT_CLIENT } from '@helpers/constants'
+import { CLIENT_TYPES, DEFAULT_CLIENT } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import clientSelector from '@state/selectors/clientSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -32,6 +33,9 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
       client?.priorityContact ?? DEFAULT_CLIENT.priorityContact
     )
     const [phone, setPhone] = useState(client?.phone ?? DEFAULT_CLIENT.phone)
+    const [clientType, setClientType] = useState(
+      client?.clientType ?? DEFAULT_CLIENT.clientType
+    )
     const [errors, checkErrors, addError, removeError] = useErrors()
 
     const isFormChanged = useMemo(
@@ -40,8 +44,9 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
         (client?.secondName ?? DEFAULT_CLIENT.secondName) !== secondName ||
         (client?.priorityContact ?? DEFAULT_CLIENT.priorityContact) !==
           priorityContact ||
-        (client?.phone ?? DEFAULT_CLIENT.phone) !== phone,
-      [firstName, phone, priorityContact, secondName]
+        (client?.phone ?? DEFAULT_CLIENT.phone) !== phone ||
+        (client?.clientType ?? DEFAULT_CLIENT.clientType) !== clientType,
+      [firstName, phone, priorityContact, secondName, clientType]
     )
 
     const onClickConfirm = useCallback(async () => {
@@ -59,6 +64,7 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
               secondName: secondName.trim(),
               priorityContact: priorityContact.trim(),
               phone: phone ?? null,
+              clientType,
             },
             clone
           )
@@ -120,6 +126,24 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
           onChange={setPriorityContact}
           rows={2}
         />
+        <InputWrapper label="Тип клиента" paddingY fitWidth>
+          <div className="flex flex-wrap gap-2">
+            {CLIENT_TYPES.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                className={`rounded border px-3 py-2 text-sm font-semibold transition ${
+                  clientType === item.value
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+                onClick={() => setClientType(item.value)}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </InputWrapper>
         <ErrorsList errors={errors} />
       </FormWrapper>
     )

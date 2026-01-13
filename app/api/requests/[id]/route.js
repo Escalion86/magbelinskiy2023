@@ -30,7 +30,7 @@ const REQUEST_STATUSES = new Set([
 ])
 
 export const PUT = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
 
   await dbConnect()
@@ -49,19 +49,35 @@ export const PUT = async (req, { params }) => {
         { status: 400 }
       )
 
+    const eventData = body.eventData ?? {}
+
+    const normalizedContractSum =
+      typeof eventData.contractSum === 'number' &&
+      !Number.isNaN(eventData.contractSum)
+        ? eventData.contractSum
+        : request.contractSum
+
+    const isTransferred = Boolean(eventData.isTransferred)
+
     const event = await Events.create({
       requestId: request._id,
-      clientId: request.clientId,
-      eventDate: request.eventDate,
+      clientId: eventData.clientId ?? request.clientId,
+      eventDate: eventData.eventDate ?? request.eventDate,
       requestDate: request.createdAt,
-      location: request.location,
-      contractSum: request.contractSum,
-      comment: request.comment,
-      status: 'planned',
-      title: request.clientName
-        ? `Мероприятие для ${request.clientName}`
-        : 'Мероприятие',
-      description: request.comment ?? '',
+      dateEnd: eventData.dateEnd ?? null,
+      location: eventData.location ?? request.location,
+      contractSum: normalizedContractSum,
+      status: eventData.status ?? 'planned',
+      isByContract: Boolean(eventData.isByContract),
+      isTransferred,
+      colleagueId: isTransferred ? eventData.colleagueId ?? null : null,
+      calendarImportChecked: Boolean(eventData.calendarImportChecked),
+      title:
+        eventData.title ??
+        (request.clientName
+          ? `Мероприятие для ${request.clientName}`
+          : 'Мероприятие'),
+      description: eventData.description ?? request.comment ?? '',
     })
 
     const updatedRequest = await Requests.findByIdAndUpdate(
@@ -145,8 +161,13 @@ export const PUT = async (req, { params }) => {
 }
 
 export const DELETE = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   await dbConnect()
-  await Requests.findByIdAndDelete(id)
+  const deleted = await Requests.findByIdAndDelete(id)
+  if (!deleted)
+    return NextResponse.json(
+      { success: false, error: 'Заявка не найдена' },
+      { status: 404 }
+    )
   return NextResponse.json({ success: true }, { status: 200 })
 }

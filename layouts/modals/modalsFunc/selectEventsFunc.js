@@ -2,7 +2,7 @@ import EventStatusToggleButtons from '@components/IconToggleButtons/EventStatusT
 import { EventItem } from '@components/ItemCards'
 import Search from '@components/Search'
 import filterItems from '@helpers/filterItems'
-import isEventExpiredFunc from '@helpers/isEventExpired'
+import eventStatusFunc from '@helpers/eventStatus'
 import isObject from '@helpers/isObject'
 import sortFunctions from '@helpers/sortFunctions'
 import ListWrapper from '@layouts/lists/ListWrapper'
@@ -40,22 +40,20 @@ const selectEventsFunc = (
 
     const [filter, setFilter] = useState({
       active: true,
-      finished: false,
-      closed: false,
-      canceled: false,
+      finished: true,
+      closed: true,
+      canceled: true,
     })
 
     const [searchText, setSearchText] = useState('')
 
     var filteredEvents = filterItems(
       events.filter((event) => {
-        const isEventExpired = isEventExpiredFunc(event)
-        if (event.status === 'active') {
-          if (filter.active && !isEventExpired) return true
-          if (filter.finished && isEventExpired) return true
-          return false
-        }
-        return filter[event.status]
+        const status = eventStatusFunc(event)
+        if (status === 'canceled') return filter.canceled
+        if (status === 'closed') return filter.closed
+        if (status === 'finished') return filter.finished
+        return filter.active
       }),
       searchText,
       exceptedIds,

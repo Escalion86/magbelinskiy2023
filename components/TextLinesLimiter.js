@@ -4,6 +4,7 @@ const TextLinesLimiter = ({
   className,
   textClassName,
   lines = 1,
+  textCenter = false,
   children,
   ...props
 }) => {
@@ -11,7 +12,11 @@ const TextLinesLimiter = ({
     <div className={className}>
       <div className="flex items-center w-full h-full">
         <div
-          className={cn('w-full overflow-hidden', textClassName)}
+          className={cn(
+            'w-full overflow-hidden',
+            textCenter ? 'text-center' : '',
+            textClassName
+          )}
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',

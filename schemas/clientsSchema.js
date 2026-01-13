@@ -49,7 +49,6 @@ const clientsSchema = {
   },
   phone: {
     type: Number,
-    required: [true, 'Введите Телефон'],
     default: null,
   },
   whatsapp: {
@@ -79,6 +78,10 @@ const clientsSchema = {
   role: {
     type: String,
     default: 'client',
+  },
+  clientType: {
+    type: String,
+    default: 'none',
   },
   lastActivityAt: {
     type: Date,

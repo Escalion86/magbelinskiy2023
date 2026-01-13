@@ -18,41 +18,44 @@ const requestStatusEditFunc = (requestId) => {
     const [status, setStatus] = useState(
       request?.status ?? DEFAULT_REQUEST.status
     )
-
-    if (!requestId || !request)
-      return (
-        <div className="flex w-full justify-center text-lg">
-          ОШИБКА! Заявка не найдена!
-        </div>
-      )
+    const hasRequest = Boolean(requestId && request)
 
     const handleConfirm = useCallback(async () => {
+      if (!hasRequest) return
       closeModal()
       if (status === 'convert') {
-        await itemsFunc?.request?.convert?.(request._id)
+        await itemsFunc?.request?.convert?.(request?._id)
         return
       }
 
-      if (status !== request.status) {
+      if (status !== request?.status) {
         await itemsFunc?.request?.set(
           {
-            _id: request._id,
+            _id: request?._id,
             status,
           },
           false,
           true
         )
       }
-    }, [closeModal, itemsFunc, request._id, request.status, status])
+    }, [closeModal, hasRequest, itemsFunc, request?._id, request?.status, status])
 
     useEffect(() => {
+      if (!hasRequest) return
       const isConvert = status === 'convert'
-      const hasChanges = isConvert || status !== request.status
+      const hasChanges = isConvert || status !== request?.status
 
       setConfirmButtonName(isConvert ? 'Преобразовать' : 'Применить')
       setDisableConfirm(!hasChanges)
       setOnConfirmFunc(hasChanges ? handleConfirm : undefined)
-    }, [handleConfirm, request.status, setConfirmButtonName, setDisableConfirm, setOnConfirmFunc, status])
+    }, [handleConfirm, hasRequest, request?.status, setConfirmButtonName, setDisableConfirm, setOnConfirmFunc, status])
+
+    if (!hasRequest)
+      return (
+        <div className="flex w-full justify-center text-lg">
+          ОШИБКА! Заявка не найдена!
+        </div>
+      )
 
     return (
       <div className="flex flex-col gap-y-3">

@@ -10,7 +10,6 @@ import formatDateTime from '@helpers/formatDateTime'
 import formatMinutes from '@helpers/formatMinutes'
 import getEventDuration from '@helpers/getEventDuration'
 import isEventClosedFunc from '@helpers/isEventClosed'
-import directionSelector from '@state/selectors/directionSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
@@ -39,7 +38,6 @@ const eventViewFunc = (eventId) => {
   }) => {
     const event = useAtomValue(eventSelector(eventId))
 
-    const direction = useAtomValue(directionSelector(event?.directionId))
     const organizer = useAtomValue(userSelector(event?.organizerId))
 
     const duration = getEventDuration(event)
@@ -91,9 +89,6 @@ const eventViewFunc = (eventId) => {
             />
             <Divider thin light />
             <TextLine label="ID">{event?._id}</TextLine>
-            {direction?.title && (
-              <TextLine label="Направление">{direction.title}</TextLine>
-            )}
             <TextLine label="Начало">
               {formatDateTime(event?.dateStart)}
             </TextLine>

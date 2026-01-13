@@ -1,4 +1,3 @@
-import { faMoneyBill } from '@fortawesome/free-solid-svg-icons/faMoneyBill'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
@@ -6,22 +5,14 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import filterWithRules from '@helpers/filterWithRules'
 import { modalsFuncAtom } from '@state/atoms'
-import directionsAtom from '@state/atoms/directionsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import InputWrapper from './InputWrapper'
-import {
-  DirectionItem,
-  EventItem,
-  PaymentItem,
-  ServiceItem,
-  UserItem,
-} from './ItemCards'
+import { EventItem, ServiceItem, UserItem } from './ItemCards'
 import Tooltip from './Tooltip'
-import asyncPaymentsAtom from '@state/async/asyncPaymentsAtom'
 
 export const SelectItem = ({
   items,
@@ -388,7 +379,6 @@ export const SelectEvent = ({
   modalTitle,
   rounded = true,
   readOnly,
-  showPaymentsButton = false,
   showEventUsersButton = false,
   showEditButton = false,
 }) => {
@@ -466,140 +456,7 @@ export const SelectEvent = ({
           />
         </div>
       )}
-      {selectedId && showPaymentsButton && (
-        <div
-          className="group flex w-7 cursor-pointer items-center justify-center border-l border-gray-700 bg-gray-100 text-amber-500"
-          onClick={() => {
-            modalsFunc.event.payments(selectedId)
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faMoneyBill}
-            className={cn('h-4 w-4 duration-300 group-hover:scale-125')}
-          />
-        </div>
-      )}
     </SelectItemContainer>
   )
 }
 
-export const SelectDirection = ({
-  onChange,
-  onDelete,
-  selectedId = null,
-  exceptedIds = [],
-  required = false,
-  clearButton = null,
-  error,
-  bordered = true,
-  modalTitle,
-  rounded = true,
-}) => {
-  const modalsFunc = useAtomValue(modalsFuncAtom)
-  const directions = useAtomValue(directionsAtom)
-
-  return (
-    <SelectItemContainer
-      required={required}
-      label="Направление"
-      onClickClearButton={
-        selectedId && clearButton
-          ? onDelete
-            ? () => onDelete()
-            : () => onChange(null)
-          : null
-      }
-      error={error}
-      bordered={bordered}
-      rounded={rounded}
-      selectedId={selectedId}
-    >
-      <SelectItem
-        items={directions}
-        itemComponent={DirectionItem}
-        componentHeight={50}
-        selectedId={selectedId}
-        className={cn(
-          'flex-1',
-          selectedId && clearButton ? 'rounded-l' : 'rounded'
-        )}
-        onClick={
-          onChange
-            ? () =>
-                modalsFunc.selectDirections(
-                  [selectedId],
-                  [],
-                  (data) => onChange(data[0]),
-                  [],
-                  null,
-                  1,
-                  false,
-                  modalTitle
-                )
-            : (direction) => modalsFunc.direction.view(direction._id)
-        }
-        exceptedIds={exceptedIds}
-      />
-    </SelectItemContainer>
-  )
-}
-
-export const SelectPayment = ({
-  onChange,
-  onDelete,
-  label = 'Транзакция',
-  selectedId = null,
-  exceptedIds = [],
-  required = false,
-  clearButton = null,
-  error,
-  bordered = true,
-  rounded = true,
-  readOnly,
-  showUser,
-  showEvent,
-  showSectorIcon,
-}) => {
-  const modalsFunc = useAtomValue(modalsFuncAtom)
-  const payments = useAtomValue(asyncPaymentsAtom)
-
-  return (
-    <SelectItemContainer
-      required={required}
-      label={label}
-      onClickClearButton={
-        selectedId && clearButton
-          ? onDelete
-            ? () => onDelete()
-            : () => onChange(null)
-          : null
-      }
-      error={error}
-      bordered={bordered}
-      rounded={rounded}
-      selectedId={selectedId}
-    >
-      <SelectItem
-        items={payments}
-        itemComponent={(props) => (
-          <PaymentItem
-            {...props}
-            showUser={showUser}
-            showEvent={showEvent}
-            showSectorIcon={showSectorIcon}
-          />
-        )}
-        componentHeight={50}
-        selectedId={selectedId}
-        className={cn(
-          'flex-1',
-          selectedId && clearButton ? ' rounded-l' : ' rounded'
-        )}
-        onClick={
-          !readOnly ? (payment) => modalsFunc.payment.edit(payment._id) : null
-        }
-        exceptedIds={exceptedIds}
-      />
-    </SelectItemContainer>
-  )
-}

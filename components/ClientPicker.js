@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import InputWrapper from '@components/InputWrapper'
 import { useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
@@ -9,6 +10,7 @@ const ClientPicker = ({
   selectedClient,
   selectedClientId,
   onSelectClick,
+  onCreateClick,
   disabled,
   label,
   required,
@@ -56,11 +58,21 @@ const ClientPicker = ({
         {selectedClientId && !disabled && (
           <button
             type="button"
-            className="flex h-[50px] w-[50px] items-center justify-center rounded border border-orange-600 bg-orange-50 text-orange-500 shadow-sm transition hover:bg-orange-100 hover:text-orange-600"
+            className="flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded border border-orange-600 bg-orange-50 text-orange-500 shadow-sm transition hover:bg-orange-100 hover:text-orange-600"
             onClick={handleEdit}
             title="Редактировать клиента"
           >
             <FontAwesomeIcon className="h-5 w-5" icon={faPencilAlt} />
+          </button>
+        )}
+        {!disabled && (
+          <button
+            type="button"
+            className="flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded border border-emerald-600 bg-emerald-50 text-emerald-600 shadow-sm transition hover:bg-emerald-100 hover:text-emerald-700"
+            onClick={onCreateClick}
+            title="Создать нового клиента"
+          >
+            <FontAwesomeIcon className="h-5 w-5" icon={faPlus} />
           </button>
         )}
       </div>
@@ -77,6 +89,7 @@ ClientPicker.propTypes = {
   }),
   selectedClientId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSelectClick: PropTypes.func.isRequired,
+  onCreateClick: PropTypes.func,
   disabled: PropTypes.bool,
   label: PropTypes.string,
   required: PropTypes.bool,
@@ -94,6 +107,7 @@ ClientPicker.defaultProps = {
   error: null,
   paddingY: true,
   fullWidth: false,
+  onCreateClick: null,
 }
 
 export default ClientPicker

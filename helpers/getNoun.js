@@ -33,14 +33,7 @@ export const getNounServices = (number) =>
 export const getNounUsers = (number) =>
   getNoun(number, 'пользователь', 'пользователя', 'пользователей')
 
-export const getNounDirections = (number) =>
-  getNoun(number, 'направление', 'направления', 'направлений')
 
-export const getNounReviews = (number) =>
-  getNoun(number, 'отзыв', 'отзыва', 'отзывов')
-
-export const getNounPayments = (number) =>
-  getNoun(number, 'транзакция', 'транзакции', 'транзакций')
 
 export const getNounYears = (number) => getNoun(number, 'год', 'года', 'лет')
 

@@ -88,7 +88,9 @@ const DropDown = ({
             setIsOpen(false)
             return
           }
-          if (element.contains(event.relatedTarget)) return
+          const relatedTarget = event.relatedTarget
+          if (relatedTarget instanceof Node && element.contains(relatedTarget))
+            return
           setIsOpen(false)
         },
       }

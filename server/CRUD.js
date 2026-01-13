@@ -245,13 +245,28 @@ const updateEventInCalendar = async (event, req) => {
   //     }
   //   }
   // )
-  var preparedText = event.description
+  const CALENDAR_RESPONSE_MARKER = '--- Google Calendar Response ---'
+  const stripCalendarResponse = (text = '') => {
+    const markerIndex = text.indexOf(`\n\n${CALENDAR_RESPONSE_MARKER}\n`)
+    if (markerIndex === -1) return text.trim()
+    return text.slice(0, markerIndex).trim()
+  }
+
+  var preparedText = stripCalendarResponse(event.description ?? '')
   const aTags = event.description.match(/<a[^>]*>([^<]+)<\/a>/g)
   // const linksReformated = []
   if (aTags?.length > 0) {
     for (let i = 0; i < aTags.length; i++)
       preparedText = preparedText.replaceAll(aTags[i], linkAReformer(aTags[i]))
   }
+
+  const startDateTime = event.dateStart ?? event.eventDate ?? event.dateEnd ?? null
+  const endDateTime =
+    event.dateEnd ??
+    (startDateTime
+      ? new Date(new Date(startDateTime).getTime() + 60 * 60 * 1000)
+      : null)
+  const calendarLocation = formatAddress(event.address, event.location)
 
   const calendarEvent = {
     summary: `${event.showOnSite ? '' : '[СКРЫТО] '}${
@@ -279,14 +294,14 @@ const updateEventInCalendar = async (event, req) => {
         process.env.DOMAIN + '/event/' + event._id
       }`,
     start: {
-      dateTime: event.dateStart,
+      dateTime: startDateTime,
       timeZone: 'Asia/Krasnoyarsk',
     },
     end: {
-      dateTime: event.dateEnd,
+      dateTime: endDateTime,
       timeZone: 'Asia/Krasnoyarsk',
     },
-    location: formatAddress(event.address),
+    location: calendarLocation,
     attendees: [],
     reminders: {
       useDefault: false,
@@ -304,6 +319,36 @@ const updateEventInCalendar = async (event, req) => {
   })
 
   const authProcess = await auth.getClient()
+
+  const stripCalendarResponseFromDescription = (description = '') => {
+    const markerIndex = description.indexOf(`\n\n${CALENDAR_RESPONSE_MARKER}\n`)
+    if (markerIndex === -1) return description.trim()
+    return description.slice(0, markerIndex).trim()
+  }
+  const buildCalendarResponseBlock = (responseData) =>
+    `\n\n${CALENDAR_RESPONSE_MARKER}\n${JSON.stringify(responseData, null, 2)}`
+  const updateEventDescriptionWithCalendarResponse = async (
+    eventId,
+    responseData
+  ) => {
+    if (!eventId || !responseData) return
+    await dbConnect()
+    const current = await Events.findById(eventId)
+      .select('description')
+      .lean()
+    if (!current) return
+    const baseDescription = stripCalendarResponseFromDescription(
+      current.description ?? ''
+    )
+    const newDescription = `${baseDescription}${buildCalendarResponseBlock(
+      responseData
+    )}`
+    await Events.findByIdAndUpdate(
+      eventId,
+      { description: newDescription },
+      { new: true, runValidators: true }
+    )
+  }
 
   if (!event.googleCalendarId) {
     console.log('Создаем новое событие в календаре')
@@ -344,6 +389,11 @@ const updateEventInCalendar = async (event, req) => {
       }
     ).lean()
 
+    await updateEventDescriptionWithCalendarResponse(
+      event._id,
+      createdCalendarEvent.data
+    )
+
     return createdCalendarEvent
   }
 
@@ -375,6 +425,11 @@ const updateEventInCalendar = async (event, req) => {
       }
     )
   })
+
+  await updateEventDescriptionWithCalendarResponse(
+    event._id,
+    updatedCalendarEvent.data
+  )
 
   return updatedCalendarEvent
 }

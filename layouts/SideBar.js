@@ -75,15 +75,15 @@ const MenuItem = ({ item, active = false, badge }) => {
       )}
     >
       <div className={cn('flex w-full items-center gap-x-2 px-3 py-1 ')}>
-        <FontAwesomeIcon icon={item.icon} className="min-w-5 h-5 w-5" />
+        <FontAwesomeIcon icon={item.icon} className="h-5 w-5 min-w-5" />
         <span className={'whitespace-nowrap text-sm font-medium'}>
           {item.name}
         </span>
         {item.num !== null && (
-          <span className="text-general text-xs font-semibold">{item.num}</span>
+          <span className="text-xs font-semibold text-general">{item.num}</span>
         )}
         {typeof badge === 'number' && badge > 0 && (
-          <div className="min-w-5 min-h-5 bg-danger flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+          <div className="flex h-5 min-h-5 w-5 min-w-5 items-center justify-center rounded-full bg-danger text-xs text-white">
             {badge <= 99 ? badge : '!'}
           </div>
         )}
@@ -136,8 +136,8 @@ const Menu = ({ menuCfg, activePage }) => {
                   className={cn(
                     'group rounded-lg duration-300',
                     groupIsActive
-                      ? 'text-general bg-white'
-                      : 'hover:text-general text-white hover:bg-white'
+                      ? 'bg-white text-general'
+                      : 'text-white hover:bg-white hover:text-general'
                   )}
                   key={'groupMenu' + index}
                 >
@@ -145,7 +145,7 @@ const Menu = ({ menuCfg, activePage }) => {
                     <Link
                       href={`/cabinet/${item.items[0].href}`}
                       className={cn(
-                        'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                        'flex min-h-12 w-full min-w-12 items-center gap-x-2 overflow-hidden px-2 py-2'
                         // groupIsActive ? 'text-ganeral' : 'text-white'
                       )}
                       onClick={() => {
@@ -154,7 +154,7 @@ const Menu = ({ menuCfg, activePage }) => {
                     >
                       <div
                         className={cn(
-                          'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
+                          'relative flex max-h-8 min-h-8 min-w-8 max-w-8 justify-center'
                           // groupIsActive ? 'text-ganeral' : 'text-white'
                         )}
                       >
@@ -176,7 +176,7 @@ const Menu = ({ menuCfg, activePage }) => {
                   ) : (
                     <button
                       className={cn(
-                        'min-w-12 min-h-12 flex w-full items-center gap-x-2 overflow-hidden px-2 py-2'
+                        'flex min-h-12 w-full min-w-12 items-center gap-x-2 overflow-hidden px-2 py-2'
                         // groupIsActive ? 'text-ganeral' : 'text-white'
                       )}
                       onClick={() => {
@@ -188,7 +188,7 @@ const Menu = ({ menuCfg, activePage }) => {
                     >
                       <div
                         className={cn(
-                          'min-w-8 max-w-8 min-h-8 relative flex max-h-8 justify-center'
+                          'relative flex max-h-8 min-h-8 min-w-8 max-w-8 justify-center'
                           // groupIsActive ? 'text-ganeral' : 'text-white'
                         )}
                       >
@@ -251,7 +251,6 @@ const mobileVariants = {
 }
 
 const SideBar = ({ page }) => {
-  console.log('page :>> ', page)
   const wrapperRef = useRef(null)
   const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useAtom(menuOpenAtom)
@@ -312,8 +311,8 @@ const SideBar = ({ page }) => {
       className={cn(
         'bottom-0 top-0 z-50 flex max-h-full flex-col',
         isMobile
-          ? 'fixed left-0 min-w-0 max-w-[320px] overflow-hidden top-16 bottom-0 max-h-[calc(100vh-4rem)] bg-transparent'
-          : 'relative min-w-16 tablet:min-w-16 w-0 tablet:w-16 bg-blue-200'
+          ? 'fixed bottom-0 left-0 top-16 max-h-[calc(100vh-4rem)] min-w-0 max-w-[320px] overflow-hidden bg-transparent'
+          : 'relative w-0 min-w-16 bg-blue-200 tablet:w-16 tablet:min-w-16'
       )}
       // style={{ gridArea: 'sidebar' }}
       ref={wrapperRef}
@@ -356,7 +355,7 @@ const SideBar = ({ page }) => {
           {scrollPos > 0 && (
             <div
               onClick={() => handleScrollPosition(-120)}
-              className="bg-general absolute left-0 right-0 top-0 z-50 h-10 w-full cursor-pointer rounded-b-2xl border-t"
+              className="absolute left-0 right-0 top-0 z-50 h-10 w-full cursor-pointer rounded-b-2xl border-t bg-general"
             >
               <div className="flex h-full w-full items-center justify-center rounded-2xl border-b border-white">
                 <FontAwesomeIcon
@@ -371,7 +370,7 @@ const SideBar = ({ page }) => {
             scrollPos && (
             <div
               onClick={() => handleScrollPosition(120)}
-              className="bg-general absolute bottom-0 left-0 right-0 z-50 h-10 w-full cursor-pointer rounded-t-2xl border-b"
+              className="absolute bottom-0 left-0 right-0 z-50 h-10 w-full cursor-pointer rounded-t-2xl border-b bg-general"
             >
               <div className="flex h-full w-full items-center justify-center rounded-2xl border-t border-white">
                 <FontAwesomeIcon

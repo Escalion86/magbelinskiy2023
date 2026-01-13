@@ -58,7 +58,7 @@ const Button = forwardRef(
           className,
           disabled
             ? 'cursor-not-allowed bg-gray-300 text-white'
-            : cn(classHoverBgColor, classBgColor),
+            : cn('cursor-pointer', classHoverBgColor, classBgColor),
           collapsing ? 'px-2' : 'min-w-max px-3'
         )}
       >

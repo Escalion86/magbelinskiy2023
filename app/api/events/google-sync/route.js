@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import Clients from '@models/Clients'
 import Events from '@models/Events'
+import Transactions from '@models/Transactions'
 import SiteSettings from '@models/SiteSettings'
 import { parseGoogleEvent } from '@helpers/googleCalendarParsers'
 import dbConnect from '@server/dbConnect'
@@ -11,6 +12,7 @@ import {
 
 const DEFAULT_TIME_MIN = '2000-01-01T00:00:00.000Z'
 const EMPTY_CLIENT_NAME = 'Клиент из Google Calendar'
+const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -29,12 +31,20 @@ const pickPriorityContact = (contactChannels = [], clientPhone = null) => {
   return contactChannels.find(Boolean) ?? null
 }
 
-const findExistingClient = async (numericPhone, priorityContact) => {
+const findExistingClient = async (numericPhone, priorityContact, email, name) => {
   const conditions = []
   if (numericPhone) conditions.push({ phone: numericPhone })
   if (priorityContact)
     conditions.push({
       priorityContact: new RegExp(`^${escapeRegExp(priorityContact)}$`, 'i'),
+    })
+  if (email)
+    conditions.push({
+      email: new RegExp(`^${escapeRegExp(email)}$`, 'i'),
+    })
+  if (name)
+    conditions.push({
+      firstName: new RegExp(`^${escapeRegExp(name)}$`, 'i'),
     })
 
   if (!conditions.length) return null
@@ -47,16 +57,30 @@ const ensureSiteSettings = async () => {
   return SiteSettings.create({})
 }
 
-const ensureClientFromCalendar = async (clientName, clientPhone, contactChannels) => {
+const ensureClientFromCalendar = async (
+  clientName,
+  clientPhone,
+  contactChannels,
+  { allowNameOnly = false } = {}
+) => {
   const numericPhone = normalizePhoneNumber(clientPhone)
   const priorityContact = pickPriorityContact(contactChannels, clientPhone)
+  const primaryEmail = contactChannels.find((item) => EMAIL_REGEX.test(item ?? ''))
+  const normalizedName = clientName?.trim() ?? ''
+  const canUseName = allowNameOnly && normalizedName && normalizedName !== EMPTY_CLIENT_NAME
 
-  const existingClient = await findExistingClient(numericPhone, priorityContact)
+  const existingClient = await findExistingClient(
+    numericPhone,
+    priorityContact,
+    primaryEmail,
+    canUseName ? normalizedName : null
+  )
   if (existingClient) {
     const update = {}
     if (numericPhone && !existingClient.phone) update.phone = numericPhone
     if (priorityContact && !existingClient.priorityContact)
       update.priorityContact = priorityContact
+    if (primaryEmail && !existingClient.email) update.email = primaryEmail
     if (
       clientName &&
       existingClient.firstName === EMPTY_CLIENT_NAME &&
@@ -72,13 +96,14 @@ const ensureClientFromCalendar = async (clientName, clientPhone, contactChannels
     return existingClient
   }
 
-  if (!numericPhone) return null
+  if (!numericPhone && !priorityContact && !primaryEmail && !canUseName) return null
 
   const createPayload = {
-    firstName: clientName || EMPTY_CLIENT_NAME,
-    phone: numericPhone,
+    firstName: normalizedName || EMPTY_CLIENT_NAME,
   }
+  if (numericPhone) createPayload.phone = numericPhone
   if (priorityContact) createPayload.priorityContact = priorityContact
+  if (primaryEmail) createPayload.email = primaryEmail
 
   return Clients.create(createPayload)
 }
@@ -153,9 +178,9 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) =
   if (parsedEvent.eventDate) setPayload.eventDate = parsedEvent.eventDate
   if (parsedEvent.contractSum !== null && parsedEvent.contractSum !== undefined)
     setPayload.contractSum = parsedEvent.contractSum
-  if (parsedEvent.comment) setPayload.comment = parsedEvent.comment
   if (parsedEvent.clientData && Object.keys(parsedEvent.clientData).length > 0)
     setPayload.clientData = parsedEvent.clientData
+  if (parsedEvent.isTransferred) setPayload.isTransferred = true
   if (clientId) setPayload.clientId = clientId
 
   return {
@@ -217,14 +242,27 @@ export const POST = async (req) => {
   }
 
   const results = []
+  const skipped = []
   const calendarItems = Array.isArray(googleEvents.items) ? googleEvents.items : []
 
   for (const item of calendarItems) {
+    const summary = item?.summary ?? ''
+    if (/заявк/i.test(summary)) {
+      skipped.push({
+        googleId: item?.id ?? null,
+        title: summary || 'Без названия',
+        reason: 'Заявка в названии',
+      })
+      continue
+    }
+
     const parsed = parseGoogleEvent(item)
+    const allowNameOnly = Number(parsed.clientData?.deposit?.amount) > 0
     const client = await ensureClientFromCalendar(
       parsed.clientName,
       parsed.clientPhone,
-      parsed.contactChannels
+      parsed.contactChannels,
+      { allowNameOnly }
     )
 
     const update = buildEventUpdate(parsed, item.id, client?._id, item)
@@ -240,12 +278,52 @@ export const POST = async (req) => {
       }
     )
 
+    let eventId = dbResult.value?._id ?? null
+    if (!eventId) {
+      const freshEvent = await Events.findOne({
+        googleCalendarId: item.id,
+      })
+        .select('_id')
+        .lean()
+      eventId = freshEvent?._id ?? null
+    }
+
+    const depositAmount = parsed.clientData?.deposit?.amount
+    const depositDate = parsed.clientData?.deposit?.date
+    let depositTransaction = null
+    if (Number(depositAmount) > 0) {
+      depositTransaction = await ensureDepositTransaction({
+        eventId,
+        clientId: client?._id,
+        amount: depositAmount,
+        date: depositDate,
+      })
+    }
+
     results.push({
       googleId: item.id,
-      eventId: dbResult.value?._id ?? null,
+      eventId,
       action: dbResult.lastErrorObject?.updatedExisting ? 'updated' : 'created',
       title: parsed.title,
+      clientId: client?._id ?? null,
+      depositAmount: Number(depositAmount) > 0 ? depositAmount : null,
+      depositCreated: Boolean(depositTransaction),
+      warning: client
+        ? null
+        : 'Клиент не создан: нет контактных данных для привязки',
     })
+
+    if (!client) {
+      console.warn(
+        `[google-sync] Клиент не создан для события ${parsed.title} (${item.id})`
+      )
+    }
+  }
+
+  if (skipped.length) {
+    console.warn(
+      `[google-sync] Пропущено событий (заявки в названии): ${skipped.length}`
+    )
   }
 
   return NextResponse.json(
@@ -254,9 +332,59 @@ export const POST = async (req) => {
       data: {
         imported: results.length,
         nextSyncToken: googleEvents.nextSyncToken,
+        skipped: skipped.length,
+        skippedItems: skipped,
         results,
       },
     },
     { status: 200 }
   )
+}
+
+const DEPOSIT_TRANSACTION_COMMENT = 'Импорт из календаря: задаток'
+
+const ensureDepositTransaction = async ({
+  eventId,
+  clientId,
+  amount,
+  date,
+}) => {
+  if (!eventId || !clientId || !amount) return null
+
+  const existing = await Transactions.findOne({
+    eventId,
+    type: 'income',
+    category: 'advance',
+  }).lean()
+
+  const normalizedDate = date ? new Date(date) : new Date()
+
+  if (existing) {
+    if (existing.comment !== DEPOSIT_TRANSACTION_COMMENT) return existing
+    const shouldUpdate =
+      Number(existing.amount ?? 0) !== Number(amount) ||
+      (existing.date && normalizedDate
+        ? new Date(existing.date).getTime() !== normalizedDate.getTime()
+        : Boolean(existing.date) !== Boolean(normalizedDate))
+
+    if (shouldUpdate) {
+      return Transactions.findByIdAndUpdate(
+        existing._id,
+        { amount, date: normalizedDate },
+        { new: true }
+      )
+    }
+
+    return existing
+  }
+
+  return Transactions.create({
+    eventId,
+    clientId,
+    amount,
+    type: 'income',
+    category: 'advance',
+    date: normalizedDate,
+    comment: DEPOSIT_TRANSACTION_COMMENT,
+  })
 }

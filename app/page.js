@@ -13,6 +13,7 @@ const SectionFallback = () => (
 )
 
 const AboutBlock = dynamic(() => import('@blocks/AboutBlock'), {
+  ssr: false,
   loading: SectionFallback,
 })
 const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
@@ -28,9 +29,6 @@ const FocusBlock = dynamic(() => import('@blocks/FocusBlock'), {
   loading: SectionFallback,
 })
 const GalleryBlock2 = dynamic(() => import('@blocks/GalleryBlock2'), {
-  loading: SectionFallback,
-})
-const ReviewsBlock = dynamic(() => import('@blocks/ReviewsBlock'), {
   loading: SectionFallback,
 })
 const AnketaBlock = dynamic(() => import('@blocks/AnketaBlock'), {
@@ -77,8 +75,6 @@ export default function Home() {
           <FocusBlock />
           <Section id="fotos" />
           <GalleryBlock2 />
-          <Section id="reviews" />
-          <ReviewsBlock />
           <Section id="zakaz" />
           <AnketaBlock />
           <FooterBlock />

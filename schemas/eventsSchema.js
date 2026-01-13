@@ -1,10 +1,6 @@
 import { Schema } from 'mongoose'
 
 const eventsSchema = {
-  directionId: {
-    type: String,
-    default: null,
-  },
   clientId: {
     type: Schema.Types.ObjectId,
     ref: 'Clients',
@@ -57,7 +53,7 @@ const eventsSchema = {
   },
   colleagueId: {
     type: Schema.Types.ObjectId,
-    ref: 'Colleagues',
+    ref: 'Clients',
     default: null,
   },
   images: {
@@ -92,13 +88,13 @@ const eventsSchema = {
     type: Number,
     default: 0,
   },
+  isByContract: {
+    type: Boolean,
+    default: false,
+  },
   clientData: {
     type: {},
     default: {},
-  },
-  comment: {
-    type: String,
-    default: '',
   },
 }
 

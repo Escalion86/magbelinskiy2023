@@ -4,7 +4,8 @@ import { modalsFuncAtom } from '@state/atoms'
 import { useState } from 'react'
 import { useAtomValue } from 'jotai'
 
-const clientSelectFunc = (onSelect, title = 'Выбор клиента') => {
+const clientSelectFunc = (onSelect, title = 'Выбор клиента', options = {}) => {
+  const { clientTypes } = options
   const ClientSelectModal = ({ closeModal }) => {
     const clients = useAtomValue(clientsAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -12,6 +13,9 @@ const clientSelectFunc = (onSelect, title = 'Выбор клиента') => {
 
     const filteredClients = clients
       .filter((client) => {
+        if (Array.isArray(clientTypes) && clientTypes.length > 0) {
+          if (!clientTypes.includes(client.clientType ?? 'none')) return false
+        }
         if (!search.trim()) return true
         const text = search.trim().toLowerCase()
         return [

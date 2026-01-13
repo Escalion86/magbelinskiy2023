@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import CardButtons from '@components/CardButtons'
+import { TRANSACTION_CATEGORIES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 
 const typeClassNames = {
@@ -52,16 +53,21 @@ const TransactionCard = ({
     ? `${eventTitle} - ${eventDateTime}`
     : eventTitle
 
+  const categoryLabel =
+    TRANSACTION_CATEGORIES.find(
+      (item) => item.value === transaction.category
+    )?.name ?? null
+
   return (
     <div style={style} className="px-2 py-2">
       <div
         role="button"
         tabIndex={0}
         onClick={onEdit}
-        className="group relative flex h-full w-full cursor-pointer overflow-visible rounded-xl border border-gray-200 bg-white p-4 pr-4 text-left shadow-sm transition hover:border-gray-300 hover:shadow"
+        className="relative flex w-full h-full p-3 pr-4 overflow-visible text-left transition bg-white border border-gray-200 shadow-sm cursor-pointer group rounded-xl hover:border-gray-300 hover:shadow"
       >
         <div
-          className="absolute right-2 top-2 z-10"
+          className="absolute z-10 right-2 top-2"
           onClick={(event) => event.stopPropagation()}
         >
           <CardButtons
@@ -79,20 +85,25 @@ const TransactionCard = ({
           }`}
         />
 
-        <div className="flex h-full w-full flex-col gap-2 pl-3">
+        <div className="flex flex-col w-full h-full pl-3">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="text-sm font-semibold text-gray-900">
               {formatTransactionDate(transaction.date)}
             </div>
+            {categoryLabel && (
+              <div className="text-xs font-medium text-gray-500">
+                {categoryLabel}
+              </div>
+            )}
           </div>
-          <div className="grid gap-2 text-sm text-gray-700 tablet:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="grid text-sm text-gray-700 tablet:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="truncate">
-              <div className="truncate font-medium text-gray-800">
+              <div className="font-medium text-gray-800 truncate">
                 {clientName || '-'}
               </div>
             </div>
             <div className="truncate">
-              <div className="truncate font-medium text-gray-800">
+              <div className="font-medium text-gray-800 truncate">
                 {eventTitleWithDate}
               </div>
             </div>
@@ -103,7 +114,7 @@ const TransactionCard = ({
             </div>
           )}
         </div>
-        <div className="mt-auto self-end whitespace-nowrap text-right text-lg font-semibold text-gray-900">
+        <div className="self-end mt-auto text-lg font-semibold text-right text-gray-900 whitespace-nowrap">
           {transaction.amount
             ? `${transaction.amount.toLocaleString()} ₽`
             : '0 ₽'}
@@ -126,6 +137,7 @@ TransactionCard.propTypes = {
     eventId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     comment: PropTypes.string,
     amount: PropTypes.number,
+    category: PropTypes.string,
   }).isRequired,
   client: PropTypes.shape({
     firstName: PropTypes.string,

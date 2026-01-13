@@ -1,5 +1,4 @@
 import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
-import DirectionTitleById from '@components/DirectionTitleById'
 import InputImages from '@components/InputImages'
 import UserNameById from '@components/UserNameById'
 import { EVENT_STATUSES } from '@helpers/constants'
@@ -18,8 +17,6 @@ const EventKeyValueItem = ({ objKey, value }) =>
         __html: DOMPurify.sanitize(value),
       }}
     />
-  ) : objKey === 'directionId' ? (
-    <DirectionTitleById directionId={value} className="flex-1" />
   ) : objKey === 'tags' ? (
     <EventTagsChipsLine tags={value} className="flex-1" />
   ) : objKey === 'organizerId' ? (

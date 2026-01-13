@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../tailwind.config.js";
+@source "../app/**/*.{js,jsx}";
+@source "../pages/**/*.{js,jsx}";
+@source "../components/**/*.{js,jsx}";
+@source "../helpers/**/*.{js,jsx}";
+@source "../layouts/**/*.{js,jsx}";
+@source "../blocks/**/*.{js,jsx}";
+@source "../node_modules/preline/dist/*.js";
+@layer theme, base, mui, components, utilities;
+@import 'tailwindcss';
 
 /* @layer components {
   .transparentsides {
@@ -31,6 +38,13 @@ body {
       transparent,
       rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb)); */
   font-family: 'Inter Tight', sans-serif;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* body .modalshow {

@@ -9,17 +9,8 @@ import setErrorSelector from './selectors/setErrorSelector'
 import setNotErrorSelector from './selectors/setNotErrorSelector'
 import eventEditSelector from './selectors/eventEditSelector'
 import eventDeleteSelector from './selectors/eventDeleteSelector'
-import directionEditSelector from './selectors/directionEditSelector'
-import directionDeleteSelector from './selectors/directionDeleteSelector'
-// import additionalBlockEditSelector from './selectors/additionalBlockEditSelector'
-// import additionalBlockDeleteSelector from './selectors/additionalBlockDeleteSelector'
 // import userDeleteSelector from './selectors/userDeleteSelector'
 // import userEditSelector from './selectors/userEditSelector'
-// import reviewEditSelector from './selectors/reviewEditSelector'
-// import reviewDeleteSelector from './selectors/reviewDeleteSelector'
-import paymentsAddSelector from './selectors/paymentsAddSelector'
-import paymentEditSelector from './selectors/paymentEditSelector'
-import paymentsDeleteSelector from './selectors/paymentsDeleteSelector'
 import requestEditSelector from './selectors/requestEditSelector'
 import requestDeleteSelector from './selectors/requestDeleteSelector'
 import clientEditSelector from './selectors/clientEditSelector'
@@ -72,20 +63,6 @@ const messages = {
       error: 'Не удалось удалить мероприятие',
     },
   },
-  direction: {
-    update: {
-      success: 'Направление обновлено',
-      error: 'Не удалось обновить направление',
-    },
-    add: {
-      success: 'Направление создано',
-      error: 'Не удалось создать направление',
-    },
-    delete: {
-      success: 'Направление удалено',
-      error: 'Не удалось удалить направление',
-    },
-  },
   client: {
     update: {
       success: 'Клиент обновлен',
@@ -98,20 +75,6 @@ const messages = {
     delete: {
       success: 'Клиент удален',
       error: 'Не удалось удалить клиента',
-    },
-  },
-  payment: {
-    update: {
-      success: 'Транзакция обновлена',
-      error: 'Не удалось обновить транзакцию',
-    },
-    add: {
-      success: 'Транзакция создана',
-      error: 'Не удалось создать транзакцию',
-    },
-    delete: {
-      success: 'Транзакция удалена',
-      error: 'Не удалось удалить транзакцию',
     },
   },
   service: {
@@ -172,14 +135,9 @@ const props = {
   setNotErrorCard: setFunc(setNotErrorSelector),
   setEvent: setFunc(eventEditSelector),
   deleteEvent: setFunc(eventDeleteSelector),
-  setDirection: setFunc(directionEditSelector),
-  deleteDirection: setFunc(directionDeleteSelector),
   setRequest: setFunc(requestEditSelector),
   deleteRequest: setFunc(requestDeleteSelector),
   setClient: setFunc(clientEditSelector),
-  addPayments: setFunc(paymentsAddSelector),
-  setPayment: setFunc(paymentEditSelector),
-  deletePayment: setFunc(paymentsDeleteSelector),
 
   // setEventsUsers: setFamilyFunc(setEventsUsersSelector),
   // updateEventsUsers: setFamilyFunc(updateEventsUsersSelector),
@@ -207,11 +165,7 @@ const itemsFuncGenerator = (
     'event',
     'client',
     // 'eventsUser',
-    'direction',
-    // 'additionalBlock',
     // 'user',
-    // 'review',
-    'payment',
     // 'questionnaire',
     // 'questionnairesUser',
     // 'service',
@@ -320,15 +274,6 @@ const itemsFuncGenerator = (
       }
     })
 
-  // obj['additionalBlock'].up = async (itemId) => {
-  //   // Сначала получаем список элементов которые можно поднять
-  //   toggleLoading('additionalBlock' + itemId)
-  //   await putData(
-  //     `/api/additionalblocks/${itemId}`,
-  //     () => props['setAdditionalBlock'](itemId)
-  //     //  deleteEvent(itemId)
-  //   )
-  // }
 
   obj.event.cancel = async (eventId) => {
     setLoadingCard('event' + eventId)
@@ -393,59 +338,6 @@ const itemsFuncGenerator = (
   //   )
   // }
 
-  obj.payment.link = async (paymentId, eventId) => {
-    setLoadingCard('payment' + paymentId)
-    return await putData(
-      `/api/payments/${paymentId}`,
-      { eventId },
-      (data) => {
-        snackbar.success('Транзакция привязана к мероприятию')
-        setNotLoadingCard('payment' + paymentId)
-        props.setPayment(data)
-      },
-      (error) => {
-        snackbar.error('Не удалось привязать транзакцию к мероприятию')
-        setErrorCard('payment' + paymentId)
-        const data = {
-          errorPlace: 'PAYMENT LINK ERROR',
-          paymentId,
-          eventId,
-          error,
-        }
-        addErrorModal(data)
-        console.log(data)
-      },
-      false,
-      loggedUser?._id
-    )
-  }
-
-  obj.payment.unlink = async (paymentId) => {
-    setLoadingCard('payment' + paymentId)
-    return await putData(
-      `/api/payments/${paymentId}`,
-      { eventId: null },
-      (data) => {
-        snackbar.success('Транзакция отвязана от мероприятия')
-        setNotLoadingCard('payment' + paymentId)
-        props.setPayment(data)
-      },
-      (error) => {
-        snackbar.error('Не удалось отвязать транзакцию от мероприятия')
-        setErrorCard('payment' + paymentId)
-        const data = {
-          errorPlace: 'PAYMENT UNLINK ERROR',
-          paymentId,
-          error,
-        }
-        addErrorModal(data)
-        console.log(data)
-      },
-      false,
-      loggedUser?._id
-    )
-  }
-
   obj.event.uncancel = async (eventId) => {
     setLoadingCard('event' + eventId)
     return await putData(
@@ -469,11 +361,11 @@ const itemsFuncGenerator = (
   }
 
   if (obj.request) {
-    obj.request.convert = async (requestId) => {
+    obj.request.convert = async (requestId, eventData = null) => {
       setLoadingCard('request' + requestId)
       return await putData(
         `/api/requests/${requestId}`,
-        { convertToEvent: true },
+        { convertToEvent: true, eventData },
         (data) => {
           const { request, event, client } = data ?? {}
           snackbar.success('Мероприятие создано из заявки')

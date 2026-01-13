@@ -5,7 +5,7 @@ import dbConnect from '@server/dbConnect'
 const TRANSACTION_TYPES = new Set(['income', 'expense'])
 
 export const PUT = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
   await dbConnect()
 
@@ -29,8 +29,13 @@ export const PUT = async (req, { params }) => {
 }
 
 export const DELETE = async (req, { params }) => {
-  const { id } = params
+  const { id } = await params
   await dbConnect()
-  await Transactions.findByIdAndDelete(id)
+  const deleted = await Transactions.findByIdAndDelete(id)
+  if (!deleted)
+    return NextResponse.json(
+      { success: false, error: 'Транзакция не найдена' },
+      { status: 404 }
+    )
   return NextResponse.json({ success: true }, { status: 200 })
 }

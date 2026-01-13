@@ -1,21 +1,4 @@
-export const paymentKeys = {
-  sector: 'Сектор', //
-  payDirection: 'Направление',
-  userId: 'Пользователь', //
-  eventId: 'Мероприятие', //
-  serviceId: 'Услуга', //
-  productId: 'Продукт',
-  serviceUserId: 'Заявка на покупку услуги',
-  productUserId: 'Заявка на покупку товара',
-  payType: 'Тип оплаты', //
-  sum: 'Сумма', //
-  status: 'Статус',
-  payAt: 'Дата и время оплаты', //
-  comment: 'Комментарий', //
-}
-
 export const eventKeys = {
-  directionId: 'Направление',
   title: 'Заголовок',
   description: 'Описание',
   dateStart: 'Дата и время начала',

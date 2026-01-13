@@ -1,13 +1,11 @@
 import { useAtom, useSetAtom } from 'jotai'
 
-import directionsAtom from '@state/atoms/directionsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import clientsAtom from '@state/atoms/clientsAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
-import colleaguesAtom from '@state/atoms/colleaguesAtom'
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -39,14 +37,8 @@ const StateLoader = (props) => {
 
   const setRequestsState = useSetAtom(requestsAtom)
   const setEventsState = useSetAtom(eventsAtom)
-  const setDirectionsState = useSetAtom(directionsAtom)
   const setClientsState = useSetAtom(clientsAtom)
   const setTransactionsState = useSetAtom(transactionsAtom)
-  const setColleaguesState = useSetAtom(colleaguesAtom)
-  // const setAdditionalBlocksState = useSetAtom(additionalBlocksAtom)
-  // const setUsersState = useSetAtom(usersAtom)
-  // const setReviewsState = useSetAtom(reviewsAtom)
-  // const setPaymentsState = useSetAtom(paymentsAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useAtom(siteSettingsAtom)
   // const setRolesSettingsState = useSetAtom(rolesAtom)
@@ -78,30 +70,24 @@ const StateLoader = (props) => {
     setLoggedUser(props.loggedUser)
     setRequestsState(props.requests)
     setEventsState(props.events)
-    setDirectionsState(props.directions)
     setClientsState(props.clients)
     setTransactionsState(props.transactions ?? [])
-    setColleaguesState(props.colleagues ?? [])
     setSiteSettingsState(props.siteSettings)
     setIsSiteLoading(false)
   }, [
-    props.colleagues,
     props.clients,
-    props.directions,
     props.events,
     props.loggedUser,
     props.requests,
     props.siteSettings,
     props.transactions,
     setClientsState,
-    setDirectionsState,
     setEventsState,
     setIsSiteLoading,
     setLoggedUser,
     setRequestsState,
     setSiteSettingsState,
     setTransactionsState,
-    setColleaguesState,
   ])
 
   // useEffect(() => {

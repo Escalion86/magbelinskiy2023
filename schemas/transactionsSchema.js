@@ -11,11 +11,6 @@ const transactionsSchema = {
     ref: 'Clients',
     required: true,
   },
-  requestId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Requests',
-    default: null,
-  },
   amount: {
     type: Number,
     required: [true, 'Укажите сумму транзакции'],
@@ -24,6 +19,10 @@ const transactionsSchema = {
     type: String,
     enum: ['income', 'expense'],
     default: 'expense',
+  },
+  category: {
+    type: String,
+    default: 'other',
   },
   date: {
     type: Date,

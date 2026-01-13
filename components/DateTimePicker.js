@@ -1,3 +1,5 @@
+'use client'
+
 import { useWindowDimensionsTailwindNum } from '@helpers/useWindowDimensions'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import { DateTimePicker as MUIDateTimePicker } from '@mui/x-date-pickers'
@@ -36,8 +38,8 @@ const DateTimePicker = ({
         fullWidth
           ? ''
           : widthNum <= 2
-          ? 'w-[20rem] max-w-[20rem]'
-          : 'w-58 max-w-58',
+          ? 'w-[14rem] max-w-[14rem]'
+          : 'w-70 max-w-70',
         className
       )}
       required={required}
@@ -66,8 +68,8 @@ const DateTimePicker = ({
       >
         <MUIDateTimePicker
           className={cn(
-            'outline-hidden border-0 pl-4 ring-0',
-            widthNum <= 2 ? 'w-[12rem]' : 'w-[9rem]'
+            'outline-hidden border-0 ring-0',
+            widthNum <= 2 ? 'w-[14rem]' : 'w-[14rem]'
           )}
           sx={{
             '.MuiPickersOutlinedInput-notchedOutline': {
@@ -121,7 +123,7 @@ const DateTimePicker = ({
         />
         {widthNum > 2 && (
           <MUIDateTimePicker
-            className="outline-hidden w-[7rem] border-0 pl-4 ring-0"
+            className="outline-hidden w-[10rem] border-0 ring-0"
             sx={{
               '.MuiOutlinedInput-notchedOutline': {
                 borderStyle: 'none',

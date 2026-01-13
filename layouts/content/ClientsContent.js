@@ -1,15 +1,19 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { FixedSizeList as List } from 'react-window'
 import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
 import Input from '@components/Input'
+import ClientCard from '@layouts/cards/ClientCard'
 import clientsAtom from '@state/atoms/clientsAtom'
 import requestsAtom from '@state/atoms/requestsAtom'
 import eventsAtom from '@state/atoms/eventsAtom'
 import { useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
-import formatDate from '@helpers/formatDate'
+
+const ITEM_HEIGHT = 140
 
 const ClientsContent = () => {
   const clients = useAtomValue(clientsAtom)
@@ -29,6 +33,10 @@ const ClientsContent = () => {
         const clientEvents = events.filter(
           (event) => event.clientId === client._id
         )
+        const canceledEventsCount = clientEvents.filter(
+          (event) => event.status === 'canceled'
+        ).length
+        const activeEventsCount = clientEvents.length - canceledEventsCount
         const lastRequest = clientRequests.reduce((latest, request) => {
           if (!request.createdAt) return latest
           const requestDate = new Date(request.createdAt)
@@ -37,7 +45,8 @@ const ClientsContent = () => {
         return {
           ...client,
           requestsCount: clientRequests.length,
-          eventsCount: clientEvents.length,
+          eventsCount: activeEventsCount,
+          canceledEventsCount,
           lastRequest,
         }
       })
@@ -62,11 +71,25 @@ const ClientsContent = () => {
       })
   }, [clients, events, requests, search])
 
+  const renderRow = useCallback(
+    ({ index, style }) => {
+      const client = clientsWithStats[index]
+      return (
+        <ClientCard
+          style={style}
+          client={client}
+          onEdit={() => modalsFunc.client?.edit(client._id)}
+        />
+      )
+    },
+    [clientsWithStats, modalsFunc.client]
+  )
+
   return (
-    <div className="flex h-full flex-col gap-4 p-4">
+    <div className="flex h-full flex-col">
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
-          <h2 className="text-xl font-semibold">Клиенты</h2>
+          <div />
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <span>Всего: {clients.length}</span>
             <Button
@@ -79,79 +102,35 @@ const ClientsContent = () => {
           </div>
         </div>
       </ContentHeader>
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="p-2">
         <Input
           label="Поиск клиента"
           value={search}
           onChange={setSearch}
           placeholder="Введите имя, телефон или контакт"
+          noMargin
         />
       </div>
-      <div className="flex-1 overflow-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
-                Клиент
-              </th>
-              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
-                Телефон
-              </th>
-              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
-                Контакты
-              </th>
-              <th className="px-4 py-3 text-right font-semibold uppercase tracking-wide text-gray-500">
-                Заявки
-              </th>
-              <th className="px-4 py-3 text-right font-semibold uppercase tracking-wide text-gray-500">
-                Мероприятия
-              </th>
-              <th className="px-4 py-3 text-left font-semibold uppercase tracking-wide text-gray-500">
-                Последняя заявка
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {clientsWithStats.map((client) => (
-              <tr
-                key={client._id}
-                className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => modalsFunc.client?.edit(client._id)}
+      <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        {clientsWithStats.length > 0 ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <List
+                height={height}
+                width={width}
+                itemCount={clientsWithStats.length}
+                itemSize={ITEM_HEIGHT}
+                itemKey={(index) => clientsWithStats[index]._id ?? index}
               >
-                <td className="px-4 py-3 text-gray-900 underline">
-                  {client.firstName || '-'} {client.secondName || ''}
-                </td>
-                <td className="px-4 py-3 text-gray-700 underline">
-                  {client.phone ? `+${client.phone}` : '-'}
-                </td>
-                <td className="px-4 py-3 text-gray-700 underline">
-                  {client.priorityContact || '-'}
-                </td>
-                <td className="px-4 py-3 text-right text-gray-700">
-                  {client.requestsCount}
-                </td>
-                <td className="px-4 py-3 text-right text-gray-700">
-                  {client.eventsCount}
-                </td>
-                <td className="px-4 py-3 text-gray-700">
-                  {client.lastRequest
-                    ? formatDate(client.lastRequest.toISOString(), false, true)
-                    : '—'}
-                </td>
-              </tr>
-            ))}
-            {clientsWithStats.length === 0 && (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-4 py-6 text-center text-sm text-gray-500"
-                >
-                  Клиенты не найдены
-                </td>
-              </tr>
+                {renderRow}
+              </List>
             )}
-          </tbody>
-        </table>
+          </AutoSizer>
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-gray-500">
+            Клиенты не найдены
+          </div>
+        )}
       </div>
     </div>
   )

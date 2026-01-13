@@ -35,17 +35,14 @@ const EventsContent = ({ filter = 'all' }) => {
     })
   }, [events, filter])
 
-  const sortedEvents = useMemo(
-    () => {
-      const sorter = (a, b) => {
-        const dateA = a.eventDate ? new Date(a.eventDate).getTime() : 0
-        const dateB = b.eventDate ? new Date(b.eventDate).getTime() : 0
-        return filter === 'upcoming' ? dateA - dateB : dateB - dateA
-      }
-      return [...filteredEvents].sort(sorter)
-    },
-    [filteredEvents, filter]
-  )
+  const sortedEvents = useMemo(() => {
+    const sorter = (a, b) => {
+      const dateA = a.eventDate ? new Date(a.eventDate).getTime() : 0
+      const dateB = b.eventDate ? new Date(b.eventDate).getTime() : 0
+      return filter === 'upcoming' ? dateA - dateB : dateB - dateA
+    }
+    return [...filteredEvents].sort(sorter)
+  }, [filteredEvents, filter])
 
   const filterName =
     filter === 'upcoming'
@@ -69,10 +66,10 @@ const EventsContent = ({ filter = 'all' }) => {
   )
 
   return (
-    <div className="flex h-full flex-col gap-4 p-4">
+    <div className="flex h-full flex-col gap-4">
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
-          <h2 className="text-xl font-semibold">Мероприятия</h2>
+          <div />
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <span>
               {filterName}: {sortedEvents.length}
@@ -88,7 +85,7 @@ const EventsContent = ({ filter = 'all' }) => {
           </div>
         </div>
       </ContentHeader>
-      <div className="flex-1 min-h-0 overflow-hidden">
+      <div className="min-h-0 flex-1 overflow-hidden">
         {sortedEvents.length > 0 ? (
           <AutoSizer>
             {({ height, width }) => (
