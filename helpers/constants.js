@@ -24,6 +24,7 @@ import {
   faVk,
   faWhatsapp,
 } from '@fortawesome/free-brands-svg-icons'
+import { faChartLine, faCog } from '@fortawesome/free-solid-svg-icons'
 
 const colors = [
   'border-blue-400',
@@ -379,6 +380,12 @@ export const DEFAULT_ADDRESS = Object.freeze({
   floor: '',
   flat: '',
   comment: '',
+  latitude: '',
+  longitude: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
 })
 
 export const DEFAULT_EVENT = Object.freeze({
@@ -392,7 +399,6 @@ export const DEFAULT_EVENT = Object.freeze({
   dateStart: null,
   dateEnd: null,
   address: DEFAULT_ADDRESS,
-  location: '',
   status: 'active',
   contractSum: 0,
   isTransferred: false,
@@ -414,6 +420,10 @@ export const DEFAULT_CLIENT = Object.freeze({
   secondName: '',
   priorityContact: '',
   phone: null,
+  whatsapp: null,
+  telegram: '',
+  instagram: '',
+  vk: '',
   clientType: 'none',
 })
 
@@ -431,7 +441,7 @@ export const DEFAULT_REQUEST = Object.freeze({
   contactChannels: [],
   createdAt: null,
   eventDate: null,
-  location: '',
+  address: DEFAULT_ADDRESS,
   contractSum: 0,
   comment: '',
   status: 'new',
@@ -705,6 +715,20 @@ export const pages = [
     icon: faMoneyBill,
   },
   {
+    id: 12,
+    group: 7,
+    name: 'Статистика',
+    href: 'statistics',
+    icon: faChartLine,
+  },
+  {
+    id: 20,
+    group: 6,
+    name: 'Настройки',
+    href: 'settings',
+    icon: faCog,
+  },
+  {
     id: 99,
     group: 99,
     name: 'Разработчик',
@@ -739,12 +763,16 @@ export const pagesGroups = [
     name: 'Транзакции',
     icon: faMoneyBill,
   },
-  // {
-  //   id: 10,
-  //   name: 'Настройки',
-  //   icon: faCog,
-  //   // accessRoles: ['supervisor', 'dev'],
-  // },
+  {
+    id: 7,
+    name: 'Статистика',
+    icon: faChartLine,
+  },
+  {
+    id: 6,
+    name: 'Настройки',
+    icon: faCog,
+  },
   {
     id: 99,
     name: 'Разработчик',

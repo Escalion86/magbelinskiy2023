@@ -8,6 +8,8 @@ const siteSettingsAtom = atom({
   telegram: null,
   instagram: null,
   vk: null,
+  towns: [],
+  defaultTown: '',
 })
 
 export default siteSettingsAtom

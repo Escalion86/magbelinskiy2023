@@ -38,6 +38,14 @@ const siteSettingsSchema = {
     type: [{ text: String, color: String }],
     default: [],
   },
+  towns: {
+    type: [String],
+    default: [],
+  },
+  defaultTown: {
+    type: String,
+    default: '',
+  },
   custom: {
     type: Map,
     of: Schema.Types.Mixed,

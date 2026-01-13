@@ -2,16 +2,20 @@ import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import Textarea from '@components/Textarea'
-import { DEFAULT_REQUEST } from '@helpers/constants'
+import { DEFAULT_ADDRESS, DEFAULT_REQUEST } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import requestSelector from '@state/selectors/requestSelector'
 import DateTimePicker from '@components/DateTimePicker'
 import clientsAtom from '@state/atoms/clientsAtom'
 import ClientPicker from '@components/ClientPicker'
 import { modalsFuncAtom } from '@state/atoms'
+import AddressPicker from '@components/AddressPicker'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import { postData } from '@helpers/CRUD'
 
 const requestFunc = (requestId, clone = false) => {
   const RequestModal = ({
@@ -26,6 +30,8 @@ const requestFunc = (requestId, clone = false) => {
     const request = useAtomValue(requestSelector(requestId))
     const setRequest = useAtomValue(itemsFuncAtom).request.set
     const clients = useAtomValue(clientsAtom)
+    const loggedUser = useAtomValue(loggedUserAtom)
+    const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
 
     const [clientId, setClientId] = useState(
@@ -35,9 +41,7 @@ const requestFunc = (requestId, clone = false) => {
     const [eventDate, setEventDate] = useState(
       DEFAULT_REQUEST.eventDate ?? null
     )
-    const [location, setLocation] = useState(
-      DEFAULT_REQUEST.location ?? ''
-    )
+    const [address, setAddress] = useState(DEFAULT_ADDRESS)
     const [contractSum, setContractSum] = useState(
       DEFAULT_REQUEST.contractSum ?? 0
     )
@@ -61,6 +65,25 @@ const requestFunc = (requestId, clone = false) => {
       []
     )
 
+    const normalizeAddress = useCallback((rawAddress, legacyLocation) => {
+      const normalized = {
+        ...DEFAULT_ADDRESS,
+        ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+      }
+
+      const hasMainFields =
+        normalized.town ||
+        normalized.street ||
+        normalized.house ||
+        normalized.flat
+
+      if (legacyLocation && !normalized.comment && !hasMainFields) {
+        normalized.comment = legacyLocation
+      }
+
+      return normalized
+    }, [])
+
     const originalValues = useMemo(() => {
       const clientIdValue =
         request?.clientId ?? DEFAULT_REQUEST.clientId ?? null
@@ -77,18 +100,27 @@ const requestFunc = (requestId, clone = false) => {
         DEFAULT_REQUEST.eventDate ??
         null
 
-      const legacyLocation = [request?.town, request?.address]
+      const legacyLocation = [
+        request?.town,
+        request?.address,
+        request?.location,
+      ]
         .map((value) => (typeof value === 'string' ? value.trim() : ''))
         .filter(Boolean)
         .join(', ')
 
-      const locationValue =
-        (typeof request?.location === 'string' && request.location.trim().length
-          ? request.location.trim()
-          : legacyLocation) ||
-        (typeof DEFAULT_REQUEST.location === 'string'
-          ? DEFAULT_REQUEST.location
-          : '')
+      const addressValue = normalizeAddress(
+        request?.address,
+        legacyLocation
+      )
+
+      if (
+        (!requestId || clone) &&
+        !addressValue.town &&
+        siteSettings?.defaultTown
+      ) {
+        addressValue.town = siteSettings.defaultTown
+      }
 
       const contractSumValue =
         typeof request?.contractSum === 'number'
@@ -111,12 +143,12 @@ const requestFunc = (requestId, clone = false) => {
         clientId: clientIdValue,
         createdAt: createdAtValue,
         eventDate: eventDateValue,
-        location: locationValue,
+        address: addressValue,
         contractSum: contractSumValue,
         comment: commentValue,
         yandexAim: yandexAimValue,
       }
-    }, [request, clone, requestId])
+    }, [normalizeAddress, request, clone, requestId, siteSettings?.defaultTown])
 
     useEffect(() => {
       initializedRef.current = false
@@ -128,7 +160,7 @@ const requestFunc = (requestId, clone = false) => {
       setClientId(originalValues.clientId)
       setCreatedAt(originalValues.createdAt)
       setEventDate(originalValues.eventDate)
-      setLocation(originalValues.location)
+      setAddress(originalValues.address)
       setContractSum(originalValues.contractSum)
       setComment(originalValues.comment)
       setYandexAim(originalValues.yandexAim)
@@ -144,6 +176,35 @@ const requestFunc = (requestId, clone = false) => {
           : null,
       [clientId, clients]
     )
+
+    const townOptions = useMemo(() => {
+      const townsSet = new Set(
+        (siteSettings?.towns ?? [])
+          .map((town) => (typeof town === 'string' ? town.trim() : ''))
+          .filter(Boolean)
+      )
+      if (address?.town && typeof address.town === 'string')
+        townsSet.add(address.town.trim())
+
+      return Array.from(townsSet).sort((a, b) => a.localeCompare(b, 'ru'))
+    }, [address?.town, siteSettings?.towns])
+
+    const handleCreateTown = async (town) => {
+      const normalizedTown =
+        typeof town === 'string' ? town.trim() : ''
+      if (!normalizedTown) return
+      const nextTowns = Array.from(
+        new Set([...(siteSettings?.towns ?? []), normalizedTown])
+      )
+      await postData(
+        '/api/site',
+        { towns: nextTowns },
+        (data) => setSiteSettings(data),
+        null,
+        false,
+        loggedUser?._id
+      )
+    }
 
     const openClientSelectModal = () => {
       modalsFunc.client?.select((newClientId) => {
@@ -167,7 +228,7 @@ const requestFunc = (requestId, clone = false) => {
 
       if (!hasCustomError) {
         closeModal()
-        const normalizedLocation = location ? location.trim() : ''
+        const normalizedAddress = normalizeAddress(address)
         const normalizedContractSum =
           typeof contractSum === 'number' && !Number.isNaN(contractSum)
             ? contractSum
@@ -188,7 +249,7 @@ const requestFunc = (requestId, clone = false) => {
             clientPhone: selectedClient?.phone ?? null,
             createdAt: normalizedCreatedAt,
             eventDate: normalizedEventDate,
-            location: normalizedLocation,
+            address: normalizedAddress,
             contractSum: normalizedContractSum,
             comment: comment.trim(),
             yandexAim: yandexAim.trim(),
@@ -200,7 +261,7 @@ const requestFunc = (requestId, clone = false) => {
       request,
       clientId,
       eventDate,
-      location,
+      address,
       contractSum,
       comment,
       yandexAim,
@@ -208,14 +269,25 @@ const requestFunc = (requestId, clone = false) => {
       setRequest,
       addError,
       selectedClient,
+      normalizeAddress,
     ])
+
+    const originalAddressSignature = useMemo(
+      () => JSON.stringify(originalValues.address ?? {}),
+      [originalValues.address]
+    )
+
+    const addressSignature = useMemo(
+      () => JSON.stringify(address ?? {}),
+      [address]
+    )
 
     const isFormChanged = useMemo(
       () =>
         (originalValues.clientId ?? null) !== (clientId ?? null) ||
         originalValues.createdAt !== createdAt ||
         (originalValues.eventDate ?? null) !== (eventDate ?? null) ||
-        originalValues.location !== location ||
+        originalAddressSignature !== addressSignature ||
         originalValues.contractSum !== contractSum ||
         originalValues.comment !== comment ||
         originalValues.yandexAim !== yandexAim,
@@ -224,7 +296,8 @@ const requestFunc = (requestId, clone = false) => {
         clientId,
         createdAt,
         eventDate,
-        location,
+        originalAddressSignature,
+        addressSignature,
         contractSum,
         comment,
         yandexAim,
@@ -255,6 +328,7 @@ const requestFunc = (requestId, clone = false) => {
           selectedClient={selectedClient}
           selectedClientId={clientId}
           onSelectClick={openClientSelectModal}
+          onViewClick={() => modalsFunc.client?.view(clientId)}
           onCreateClick={() =>
             modalsFunc.client?.add((newClient) => {
               if (!newClient?._id) return
@@ -286,11 +360,14 @@ const requestFunc = (requestId, clone = false) => {
           label="Дата мероприятия"
           error={errors.eventDate}
         />
-        <Input
+        <AddressPicker
+          address={address}
+          onChange={setAddress}
           label="Локация"
-          type="text"
-          value={location}
-          onChange={setLocation}
+          required={false}
+          errors={errors}
+          townOptions={townOptions}
+          onCreateTown={handleCreateTown}
         />
         <Input
           label="Договорная сумма"

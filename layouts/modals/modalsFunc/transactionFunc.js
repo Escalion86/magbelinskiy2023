@@ -300,6 +300,7 @@ const transactionFunc = ({ eventId, transactionId, contractSum } = {}) => {
                   setSelectedClientId(newClientId)
                 })
               }
+              onViewClick={() => modalsFunc.client?.view(selectedClientId)}
               label="Клиент"
               required
               disabled={isReadOnly}

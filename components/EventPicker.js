@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt'
 import InputWrapper from '@components/InputWrapper'
 import formatDate from '@helpers/formatDate'
+import formatAddress from '@helpers/formatAddress'
 import { useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
 
@@ -61,7 +62,10 @@ const EventPicker = ({
                     : eventDateLabel || '-'}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {selectedEvent?.location || 'Локация не указана'}
+                  {formatAddress(
+                    selectedEvent?.address,
+                    'Локация не указана'
+                  )}
                 </div>
               </>
             )}
@@ -90,7 +94,19 @@ EventPicker.propTypes = {
       PropTypes.number,
       PropTypes.instanceOf(Date),
     ]),
-    location: PropTypes.string,
+    address: PropTypes.shape({
+      town: PropTypes.string,
+      street: PropTypes.string,
+      house: PropTypes.string,
+      entrance: PropTypes.string,
+      floor: PropTypes.string,
+      flat: PropTypes.string,
+      comment: PropTypes.string,
+      link2Gis: PropTypes.string,
+      linkYandexNavigator: PropTypes.string,
+      link2GisShow: PropTypes.bool,
+      linkYandexShow: PropTypes.bool,
+    }),
   }),
   selectedEventId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSelectClick: PropTypes.func.isRequired,

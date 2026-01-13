@@ -6,7 +6,7 @@ import transactionsAtom from '@state/atoms/transactionsAtom'
 import eventSelector from '@state/selectors/eventSelector'
 // import expectedIncomeOfEventSelector from '@state/selectors/expectedIncomeOfEventSelector'
 // import totalIncomeOfEventSelector from '@state/selectors/totalIncomeOfEventSelector'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const eventStatusEditFunc = (eventId) => {
@@ -68,12 +68,20 @@ const eventStatusEditFunc = (eventId) => {
       })
     }
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
     useEffect(() => {
       if (!hasEvent) return
       const isFormChanged = event?.status !== status
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
-    }, [event?.status, hasEvent, onClickConfirm, setDisableConfirm, setOnConfirmFunc, status])
+      setOnConfirmFunc(
+        isFormChanged ? () => onClickConfirmRef.current() : undefined
+      )
+    }, [event?.status, hasEvent, setDisableConfirm, setOnConfirmFunc, status])
 
     if (!hasEvent)
       return (

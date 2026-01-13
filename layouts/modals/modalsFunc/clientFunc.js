@@ -8,7 +8,8 @@ import { CLIENT_TYPES, DEFAULT_CLIENT } from '@helpers/constants'
 import useErrors from '@helpers/useErrors'
 import clientSelector from '@state/selectors/clientSelector'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import clientsAtom from '@state/atoms/clientsAtom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const clientFunc = (clientId, clone = false, onSuccess) => {
@@ -22,6 +23,7 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
   }) => {
     const client = useAtomValue(clientSelector(clientId))
     const setClient = useAtomValue(itemsFuncAtom).client.set
+    const clients = useAtomValue(clientsAtom)
 
     const [firstName, setFirstName] = useState(
       client?.firstName ?? DEFAULT_CLIENT.firstName
@@ -33,10 +35,30 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
       client?.priorityContact ?? DEFAULT_CLIENT.priorityContact
     )
     const [phone, setPhone] = useState(client?.phone ?? DEFAULT_CLIENT.phone)
+    const [whatsapp, setWhatsapp] = useState(
+      client?.whatsapp ?? DEFAULT_CLIENT.whatsapp
+    )
+    const [telegram, setTelegram] = useState(
+      client?.telegram ?? DEFAULT_CLIENT.telegram
+    )
+    const [instagram, setInstagram] = useState(
+      client?.instagram ?? DEFAULT_CLIENT.instagram
+    )
+    const [vk, setVk] = useState(client?.vk ?? DEFAULT_CLIENT.vk)
     const [clientType, setClientType] = useState(
       client?.clientType ?? DEFAULT_CLIENT.clientType
     )
     const [errors, checkErrors, addError, removeError] = useErrors()
+
+    const normalizePhoneValue = useCallback((value) => {
+      if (!value) return null
+      const digits = String(value).replace(/[^\d]/g, '')
+      if (digits.length < 11) return null
+      const normalized = digits.slice(0, 11)
+      if (normalized.startsWith('8')) return `7${normalized.slice(1)}`
+      if (normalized.startsWith('7')) return normalized
+      return null
+    }, [])
 
     const isFormChanged = useMemo(
       () =>
@@ -45,12 +67,26 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
         (client?.priorityContact ?? DEFAULT_CLIENT.priorityContact) !==
           priorityContact ||
         (client?.phone ?? DEFAULT_CLIENT.phone) !== phone ||
+        (client?.whatsapp ?? DEFAULT_CLIENT.whatsapp) !== whatsapp ||
+        (client?.telegram ?? DEFAULT_CLIENT.telegram) !== telegram ||
+        (client?.instagram ?? DEFAULT_CLIENT.instagram) !== instagram ||
+        (client?.vk ?? DEFAULT_CLIENT.vk) !== vk ||
         (client?.clientType ?? DEFAULT_CLIENT.clientType) !== clientType,
-      [firstName, phone, priorityContact, secondName, clientType]
+      [
+        firstName,
+        phone,
+        priorityContact,
+        secondName,
+        whatsapp,
+        telegram,
+        instagram,
+        vk,
+        clientType,
+      ]
     )
 
     const onClickConfirm = useCallback(async () => {
-        const hasPhoneError = checkErrors({ phone: phone })
+        const hasPhoneError = checkErrors({ phone: phone, whatsapp: whatsapp })
         let customError = false
         if (!firstName || !firstName.trim()) {
           addError({ firstName: 'Укажите имя' })
@@ -64,6 +100,10 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
               secondName: secondName.trim(),
               priorityContact: priorityContact.trim(),
               phone: phone ?? null,
+              whatsapp: whatsapp ?? null,
+              telegram: telegram.trim(),
+              instagram: instagram.trim(),
+              vk: vk.trim(),
               clientType,
             },
             clone
@@ -81,20 +121,74 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
         phone,
         priorityContact,
         secondName,
+        whatsapp,
+        telegram,
+        instagram,
+        vk,
         setClient,
         onSuccess,
       ])
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
+    const handleCheckPhone = useCallback(() => {
+      removeError('phone')
+      const normalizedPhone = normalizePhoneValue(phone)
+      if (!normalizedPhone) {
+        addError({ phone: 'Укажите корректный номер телефона' })
+        return
+      }
+
+      const existingClient = clients.find(
+        (item) =>
+          item?.phone &&
+          normalizePhoneValue(item.phone) === normalizedPhone &&
+          item._id !== client?._id
+      )
+
+      if (!existingClient) {
+        addError({ phone: 'Клиент с таким номером не найден' })
+        return
+      }
+
+      if (typeof onSuccess === 'function') {
+        const confirmed = window.confirm(
+          `Найден клиент: ${existingClient.firstName || 'Без имени'}. Выбрать его?`
+        )
+        if (confirmed) {
+          onSuccess(existingClient)
+          closeModal()
+        }
+        return
+      }
+
+      addError({ phone: 'Клиент с таким номером уже существует' })
+    }, [
+      addError,
+      client?._id,
+      clients,
+      closeModal,
+      normalizePhoneValue,
+      onSuccess,
+      phone,
+      removeError,
+    ])
+
     useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
+      setOnConfirmFunc(
+        isFormChanged ? () => onClickConfirmRef.current() : undefined
+      )
     }, [
       setDisableConfirm,
       setOnConfirmFunc,
       setOnShowOnCloseConfirmDialog,
       isFormChanged,
-      onClickConfirm,
     ])
 
     return (
@@ -110,22 +204,67 @@ const clientFunc = (clientId, clone = false, onSuccess) => {
           error={errors.firstName}
         />
         <Input label="Фамилия" value={secondName} onChange={setSecondName} />
-        <PhoneInput
-          label="Телефон"
-          value={phone}
-          onChange={(value) => {
-            removeError('phone')
-            setPhone(value)
-          }}
-          required
-          error={errors.phone}
-        />
+        <div className="flex items-end gap-2">
+          <PhoneInput
+            label="Телефон"
+            value={phone}
+            onChange={(value) => {
+              removeError('phone')
+              setPhone(value)
+            }}
+            required
+            error={errors.phone}
+            className="w-full"
+            noMargin
+          />
+          <button
+            type="button"
+            className="mb-1 whitespace-nowrap rounded border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 cursor-pointer"
+            onClick={handleCheckPhone}
+          >
+            Проверить
+          </button>
+        </div>
         <Textarea
           label="Контакт (whatsapp/telegram и др.)"
           value={priorityContact}
           onChange={setPriorityContact}
           rows={2}
         />
+        <div className="grid gap-0 sm:grid-cols-2">
+          <PhoneInput
+            label="Whatsapp"
+            value={whatsapp}
+            onChange={(value) => {
+              removeError('whatsapp')
+              setWhatsapp(value)
+            }}
+            error={errors.whatsapp}
+            className="w-full"
+            smallMargin
+          />
+          <Input
+            label="Telegram"
+            value={telegram}
+            onChange={setTelegram}
+            className="w-full"
+            smallMargin
+          />
+          <Input
+            label="Instagram"
+            value={instagram}
+            onChange={setInstagram}
+            className="w-full"
+            smallMargin
+          />
+          <Input
+            label="VK"
+            value={vk}
+            onChange={setVk}
+            className="w-full"
+            smallMargin
+          />
+        </div>
         <InputWrapper label="Тип клиента" paddingY fitWidth>
           <div className="flex flex-wrap gap-2">
             {CLIENT_TYPES.map((item) => (

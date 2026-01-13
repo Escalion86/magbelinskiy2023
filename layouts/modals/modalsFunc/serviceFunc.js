@@ -26,7 +26,7 @@ import { modalsFuncAtom } from '@state/atoms'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
 import serviceSelector from '@state/selectors/serviceSelector'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
 const Questionnaire = ({ data, onChange }) => {
@@ -178,6 +178,12 @@ const serviceFunc = (serviceId, clone = false) => {
       }
     }
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
     useEffect(() => {
       const isFormChanged =
         service?.title !== title ||
@@ -191,7 +197,9 @@ const serviceFunc = (serviceId, clone = false) => {
         !compareObjects(defaultUsersStatusDiscount, usersStatusDiscount) ||
         service?.questionnaire !== questionnaire
 
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(
+        isFormChanged ? () => onClickConfirmRef.current() : undefined
+      )
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [

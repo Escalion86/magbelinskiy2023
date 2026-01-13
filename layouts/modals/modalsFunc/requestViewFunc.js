@@ -1,4 +1,5 @@
 import { AUDIENCE, EVENT_TYPES } from '@helpers/constants'
+import formatAddress from '@helpers/formatAddress'
 import requestSelector from '@state/selectors/requestSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
@@ -43,25 +44,22 @@ const requestViewFunc = (requestId) => {
             <div className="font-bold">Кол-во зрителей:</div>
             <div>{request?.spectators}</div>
           </div>
-          {(request?.town || request?.address) && (
+          {(request?.address || request?.location) && (
             <div className="flex gap-x-1">
               <div className="font-bold">Адрес:</div>
-              <div>
-                {request?.town}
-                {request?.address ? ' ' + request?.address : ''}
-              </div>
+              <div>{formatAddress(request?.address, request?.location)}</div>
             </div>
           )}
-          {request?.contact && (
+          {request?.contactChannels?.length > 0 && (
             <div className="flex gap-x-1">
               <div className="font-bold">Способ связи:</div>
-              <div>{request.contact}</div>
+              <div>{request.contactChannels.join(', ')}</div>
             </div>
           )}
-          {request?.phone && (
+          {request?.clientPhone && (
             <div className="flex gap-x-1">
               <div className="font-bold">Телефон:</div>
-              <div>+{request.phone}</div>
+              <div>+{request.clientPhone}</div>
             </div>
           )}
           {request?.comment && (

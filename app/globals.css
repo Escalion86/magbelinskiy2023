@@ -40,6 +40,51 @@ body {
   font-family: 'Inter Tight', sans-serif;
 }
 
+body.theme-dark {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.theme-dark .bg-white {
+  background-color: #111827;
+}
+
+body.theme-dark .bg-gray-50 {
+  background-color: #0b1220;
+}
+
+body.theme-dark .bg-gray-100 {
+  background-color: #0f172a;
+}
+
+body.theme-dark .border-gray-200 {
+  border-color: #1f2937;
+}
+
+body.theme-dark .border-gray-300 {
+  border-color: #374151;
+}
+
+body.theme-dark .text-gray-900 {
+  color: #f8fafc;
+}
+
+body.theme-dark .text-gray-800 {
+  color: #e2e8f0;
+}
+
+body.theme-dark .text-gray-700 {
+  color: #cbd5e1;
+}
+
+body.theme-dark .text-gray-600 {
+  color: #94a3b8;
+}
+
+body.theme-dark .text-gray-500 {
+  color: #64748b;
+}
+
 @layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {

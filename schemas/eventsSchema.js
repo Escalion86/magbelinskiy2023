@@ -36,12 +36,22 @@ const eventsSchema = {
     default: null,
   },
   address: {
-    type: Map,
-    of: String,
-  },
-  location: {
-    type: String,
-    default: '',
+    type: {
+      town: { type: String, default: '' },
+      street: { type: String, default: '' },
+      house: { type: String, default: '' },
+      entrance: { type: String, default: '' },
+      floor: { type: String, default: '' },
+      flat: { type: String, default: '' },
+      comment: { type: String, default: '' },
+      latitude: { type: String, default: '' },
+      longitude: { type: String, default: '' },
+      link2Gis: { type: String, default: '' },
+      linkYandexNavigator: { type: String, default: '' },
+      link2GisShow: { type: Boolean, default: true },
+      linkYandexShow: { type: Boolean, default: true },
+    },
+    default: () => ({}),
   },
   status: {
     type: String,

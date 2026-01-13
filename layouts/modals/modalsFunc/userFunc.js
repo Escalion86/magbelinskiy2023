@@ -18,7 +18,7 @@ import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import usersAtom from '@state/atoms/usersAtom'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
 import userSelector from '@state/selectors/userSelector'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 
 const userFunc = (userId, clone = false) => {
@@ -207,6 +207,12 @@ const userFunc = (userId, clone = false) => {
       }
     }
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
     useEffect(() => {
       const isFormChanged =
         user?.firstName !== firstName ||
@@ -233,7 +239,9 @@ const userFunc = (userId, clone = false) => {
         user?.status !== status ||
         user?.role !== role
 
-      setOnConfirmFunc(onClickConfirm)
+      setOnConfirmFunc(
+        isFormChanged ? () => onClickConfirmRef.current() : undefined
+      )
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
     }, [

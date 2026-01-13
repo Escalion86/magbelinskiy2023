@@ -5,6 +5,7 @@ import {
   faCalendarAlt,
   faCode,
   faEllipsisV,
+  faExternalLinkAlt,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -49,6 +50,8 @@ const CardButtons = ({
   onEdit,
   onDelete,
   minimalActions = false,
+  calendarLink,
+  onOpenCalendar,
 }) => {
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const device = useAtomValue(windowDimensionsTailwindSelector)
@@ -69,6 +72,8 @@ const CardButtons = ({
   const show = minimalActions
     ? {
         editBtn: showEditButton,
+        cloneBtn: typeOfItem !== 'user',
+        openCalendar: typeOfItem === 'event' && Boolean(calendarLink),
         deleteBtn: showDeleteButton && item.status !== 'closed',
       }
     : {
@@ -77,6 +82,7 @@ const CardButtons = ({
         setPasswordBtn: true,
         addToCalendar: typeOfItem === 'event',
         eventUsersBtn: typeOfItem === 'event',
+        openCalendar: typeOfItem === 'event' && Boolean(calendarLink),
         upBtn: onUpClick && upDownSee,
         downBtn: onDownClick && upDownSee,
         editBtn: showEditButton,
@@ -100,6 +106,13 @@ const CardButtons = ({
       ['phoneV', 'phoneH', 'tablet'].includes(device))
 
   const ItemComponent = isCompact ? MenuItem : CardButton
+  const handleOpenCalendar = () => {
+    if (onOpenCalendar) {
+      onOpenCalendar()
+      return
+    }
+    if (calendarLink) window.open(calendarLink, '_blank', 'noreferrer')
+  }
 
   const items = (
     <>
@@ -141,6 +154,14 @@ const CardButtons = ({
           tooltipText="Мероприятия с пользователем"
         />
       )}
+      {show.openCalendar && (
+        <ItemComponent
+          icon={faExternalLinkAlt}
+          onClick={handleOpenCalendar}
+          color="blue"
+          tooltipText="Открыть в календаре"
+        />
+      )}
       {show.editBtn && (
         <ItemComponent
           icon={faPencilAlt}
@@ -159,7 +180,7 @@ const CardButtons = ({
             modalsFunc[typeOfItem].add(item._id)
           }}
           color="blue"
-          tooltipText="Клонировать"
+          tooltipText={typeOfItem === 'event' ? 'Сделать копию' : 'Клонировать'}
         />
       )}
       {show.statusBtn

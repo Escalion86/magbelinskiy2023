@@ -13,6 +13,21 @@ import {
 const DEFAULT_TIME_MIN = '2000-01-01T00:00:00.000Z'
 const EMPTY_CLIENT_NAME = 'Клиент из Google Calendar'
 const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
+const KNOWN_TOWNS = [
+  'Красноярск',
+  'Норильск',
+  'Москва',
+  'Дивногорск',
+  'Сосновоборск',
+  'Ульяновск',
+  'Саранск',
+  'Сочи',
+  'Екатеринбург',
+  'Канск',
+  'Абакан',
+  'Сорск',
+  'Новосибирск',
+]
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -115,6 +130,26 @@ const formatCalendarDate = (date) => {
   return Number.isNaN(parsed.getTime()) ? String(date) : parsed.toISOString()
 }
 
+const normalizeTown = (value) => {
+  if (typeof value !== 'string') return ''
+  const trimmed = value.trim()
+  return trimmed.toLowerCase() === 'null' ? '' : trimmed
+}
+
+const isValidTown = (value) => /[A-Za-zА-Яа-я]/.test(value ?? '')
+const isKnownTown = (value) =>
+  KNOWN_TOWNS.some((town) => town.toLowerCase() === value.toLowerCase())
+
+const detectTownFromText = (text) => {
+  if (!text) return ''
+  const normalized = String(text).toLowerCase()
+  return (
+    KNOWN_TOWNS.find((town) =>
+      normalized.includes(town.toLowerCase())
+    ) ?? ''
+  )
+}
+
 const buildDescriptionFromCalendar = (parsedEvent, calendarEvent) => {
   const details = []
   const addLine = (label, value) => {
@@ -162,16 +197,24 @@ const buildDescriptionFromCalendar = (parsedEvent, calendarEvent) => {
   return [baseDescription, descriptionHeader].filter(Boolean).join('\n\n')
 }
 
+const hasAddressValues = (address) =>
+  address &&
+  Object.values(address).some(
+    (value) => typeof value === 'string' && value.trim().length > 0
+  )
+
 const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) => {
   const setPayload = {
     googleCalendarId: googleEventId,
     title: parsedEvent.title,
     description: buildDescriptionFromCalendar(parsedEvent, calendarEvent),
-    location: parsedEvent.location,
     status: parsedEvent.status,
     importedFromCalendar: true,
     calendarImportChecked: false,
   }
+
+  if (hasAddressValues(parsedEvent.address))
+    setPayload.address = parsedEvent.address
 
   if (parsedEvent.dateStart) setPayload.dateStart = parsedEvent.dateStart
   if (parsedEvent.dateEnd) setPayload.dateEnd = parsedEvent.dateEnd
@@ -214,6 +257,9 @@ export const POST = async (req) => {
 
   const settings = await ensureSiteSettings()
   const storedSyncToken = settings?.custom?.get('googleCalendarSyncToken')
+  const settingsTowns = Array.isArray(settings?.towns) ? settings.towns : []
+  const townsToAdd = new Set()
+  const defaultTown = normalizeTown(settings?.defaultTown ?? '')
   const syncToken = forceFullSync ? null : body.syncToken ?? storedSyncToken ?? null
   const timeMin = body.timeMin ?? (syncToken ? undefined : DEFAULT_TIME_MIN)
   const timeMax = body.timeMax ?? undefined
@@ -255,8 +301,46 @@ export const POST = async (req) => {
       })
       continue
     }
+    if (/встреча/i.test(summary)) {
+      skipped.push({
+        googleId: item?.id ?? null,
+        title: summary || 'Без названия',
+        reason: 'Встреча в названии',
+      })
+      continue
+    }
+    if (/репетиция|доставка|форум|сделать акт/i.test(summary)) {
+      skipped.push({
+        googleId: item?.id ?? null,
+        title: summary || 'Без названия',
+        reason: 'Служебное событие в названии',
+      })
+      continue
+    }
 
     const parsed = parseGoogleEvent(item)
+    const parsedTown = normalizeTown(parsed?.address?.town)
+    const detectedTown =
+      (isValidTown(parsedTown) && isKnownTown(parsedTown) ? parsedTown : '') ||
+      detectTownFromText(
+        [
+          item?.location,
+          item?.summary,
+          item?.description,
+          parsed?.description,
+        ]
+          .filter(Boolean)
+          .join('\n')
+      ) ||
+      defaultTown
+
+    if (detectedTown) {
+      parsed.address = {
+        ...(parsed.address ?? {}),
+        town: detectedTown,
+      }
+      if (!settingsTowns.includes(detectedTown)) townsToAdd.add(detectedTown)
+    }
     const allowNameOnly = Number(parsed.clientData?.deposit?.amount) > 0
     const client = await ensureClientFromCalendar(
       parsed.clientName,
@@ -300,6 +384,24 @@ export const POST = async (req) => {
       })
     }
 
+    const eventCompletedAt =
+      parsed.dateEnd ?? parsed.eventDate ?? parsed.dateStart ?? null
+    const isCompleted =
+      parsed.status !== 'canceled' &&
+      eventCompletedAt &&
+      new Date(eventCompletedAt).getTime() <= new Date().getTime()
+
+    let finalPaymentTransaction = null
+    if (isCompleted && Number(parsed.contractSum) > 0) {
+      finalPaymentTransaction = await ensureFinalPaymentTransaction({
+        eventId,
+        clientId: client?._id,
+        contractSum: parsed.contractSum,
+        depositAmount,
+        date: eventCompletedAt,
+      })
+    }
+
     results.push({
       googleId: item.id,
       eventId,
@@ -308,6 +410,7 @@ export const POST = async (req) => {
       clientId: client?._id ?? null,
       depositAmount: Number(depositAmount) > 0 ? depositAmount : null,
       depositCreated: Boolean(depositTransaction),
+      finalPaymentCreated: Boolean(finalPaymentTransaction),
       warning: client
         ? null
         : 'Клиент не создан: нет контактных данных для привязки',
@@ -326,6 +429,13 @@ export const POST = async (req) => {
     )
   }
 
+  if (townsToAdd.size > 0) {
+    settings.towns = Array.from(
+      new Set([...settingsTowns, ...Array.from(townsToAdd)])
+    )
+    await settings.save()
+  }
+
   return NextResponse.json(
     {
       success: true,
@@ -342,6 +452,7 @@ export const POST = async (req) => {
 }
 
 const DEPOSIT_TRANSACTION_COMMENT = 'Импорт из календаря: задаток'
+const FINAL_PAYMENT_TRANSACTION_COMMENT = 'Импорт из календаря: оплата остатка'
 
 const ensureDepositTransaction = async ({
   eventId,
@@ -386,5 +497,58 @@ const ensureDepositTransaction = async ({
     category: 'advance',
     date: normalizedDate,
     comment: DEPOSIT_TRANSACTION_COMMENT,
+  })
+}
+
+const ensureFinalPaymentTransaction = async ({
+  eventId,
+  clientId,
+  contractSum,
+  depositAmount,
+  date,
+}) => {
+  if (!eventId || !clientId || !contractSum) return null
+
+  const remaining = Math.max(
+    Number(contractSum) - Number(depositAmount ?? 0),
+    0
+  )
+  if (!remaining) return null
+
+  const normalizedDate = date ? new Date(date) : new Date()
+
+  const existing = await Transactions.findOne({
+    eventId,
+    type: 'income',
+    category: 'client_payment',
+  }).lean()
+
+  if (existing) {
+    if (existing.comment !== FINAL_PAYMENT_TRANSACTION_COMMENT) return existing
+    const shouldUpdate =
+      Number(existing.amount ?? 0) !== Number(remaining) ||
+      (existing.date && normalizedDate
+        ? new Date(existing.date).getTime() !== normalizedDate.getTime()
+        : Boolean(existing.date) !== Boolean(normalizedDate))
+
+    if (shouldUpdate) {
+      return Transactions.findByIdAndUpdate(
+        existing._id,
+        { amount: remaining, date: normalizedDate },
+        { new: true }
+      )
+    }
+
+    return existing
+  }
+
+  return Transactions.create({
+    eventId,
+    clientId,
+    amount: remaining,
+    type: 'income',
+    category: 'client_payment',
+    date: normalizedDate,
+    comment: FINAL_PAYMENT_TRANSACTION_COMMENT,
   })
 }

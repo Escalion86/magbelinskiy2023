@@ -13,6 +13,7 @@ import eventStatusEditFunc from './modalsFunc/eventStatusEditFunc'
 import eventViewFunc from './modalsFunc/eventViewFunc'
 import transactionFunc from './modalsFunc/transactionFunc'
 import eventsTagsFunc from './modalsFunc/eventsTagsFunc'
+import townsFunc from './modalsFunc/townsFunc'
 import jsonFunc from './modalsFunc/jsonFunc'
 // import questionnaireConstructorFunc from './modalsFunc/questionnaireConstructorFunc'
 import selectEventsFunc from './modalsFunc/selectEventsFunc'
@@ -37,6 +38,8 @@ import serviceViewFunc from './modalsFunc/serviceViewFunc'
 // import browseLocationFunc from './modalsFunc/browseLocationFunc'
 import eventHistoryFunc from './modalsFunc/eventHistoryFunc'
 import clientFunc from './modalsFunc/clientFunc'
+import clientViewFunc from './modalsFunc/clientViewFunc'
+import clientTransactionsFunc from './modalsFunc/clientTransactionsFunc'
 import clientSelectFunc from './modalsFunc/clientSelectFunc'
 // import userHistoryFunc from './modalsFunc/userHistoryFunc'
 // import userActionsHistoryFunc from './modalsFunc/userActionsHistoryFunc'
@@ -166,6 +169,9 @@ const modalsFuncGenerator = (
     eventsTags: {
       edit: () => addModal(eventsTagsFunc()),
     },
+    settings: {
+      towns: () => addModal(townsFunc()),
+    },
     transaction: {
       add: (eventId, props) =>
         addModal(
@@ -288,6 +294,8 @@ const modalsFuncGenerator = (
       add: (onSuccess) => addModal(clientFunc(null, true, onSuccess)),
       select: (onSelect, title, options) =>
         addModal(clientSelectFunc(onSelect, title, options)),
+      view: (clientId) => addModal(clientViewFunc(clientId)),
+      transactions: (clientId) => addModal(clientTransactionsFunc(clientId)),
     },
     // serviceUser: {
     //   add: (serviceId) => addModal(serviceUserFunc(serviceId, true)),

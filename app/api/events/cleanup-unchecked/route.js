@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import Events from '@models/Events'
 import Transactions from '@models/Transactions'
 import Clients from '@models/Clients'
+import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@server/dbConnect'
 
 export const POST = async () => {
@@ -35,6 +36,27 @@ export const POST = async () => {
   }
 
   const result = await Events.deleteMany(filter)
+
+  const settings = await SiteSettings.findOne()
+  if (settings) {
+    const remainingEvents = await Events.find({})
+      .select('address.town')
+      .lean()
+    const townsSet = new Set(
+      remainingEvents
+        .map((event) => event?.address?.town)
+        .filter((town) => typeof town === 'string' && town.trim())
+        .map((town) => town.trim())
+    )
+    const towns = Array.from(townsSet).sort((a, b) => a.localeCompare(b, 'ru'))
+    const defaultTown =
+      settings.defaultTown && towns.includes(settings.defaultTown)
+        ? settings.defaultTown
+        : ''
+    settings.towns = towns
+    settings.defaultTown = defaultTown
+    await settings.save()
+  }
 
   return NextResponse.json(
     {

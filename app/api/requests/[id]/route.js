@@ -22,6 +22,39 @@ const sanitizeContacts = (contacts) => {
   return undefined
 }
 
+const DEFAULT_ADDRESS = {
+  town: '',
+  street: '',
+  house: '',
+  entrance: '',
+  floor: '',
+  flat: '',
+  comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
+}
+
+const normalizeAddress = (rawAddress, legacyLocation) => {
+  const normalized = {
+    ...DEFAULT_ADDRESS,
+    ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+  }
+
+  const hasMainFields =
+    normalized.town ||
+    normalized.street ||
+    normalized.house ||
+    normalized.flat
+
+  if (legacyLocation && !normalized.comment && !hasMainFields) {
+    normalized.comment = legacyLocation
+  }
+
+  return normalized
+}
+
 const REQUEST_STATUSES = new Set([
   'new',
   'in_progress',
@@ -58,6 +91,7 @@ export const PUT = async (req, { params }) => {
         : request.contractSum
 
     const isTransferred = Boolean(eventData.isTransferred)
+    const legacyLocation = eventData.location ?? request.location ?? ''
 
     const event = await Events.create({
       requestId: request._id,
@@ -65,7 +99,10 @@ export const PUT = async (req, { params }) => {
       eventDate: eventData.eventDate ?? request.eventDate,
       requestDate: request.createdAt,
       dateEnd: eventData.dateEnd ?? null,
-      location: eventData.location ?? request.location,
+      address: normalizeAddress(
+        eventData.address ?? request.address,
+        legacyLocation
+      ),
       contractSum: normalizedContractSum,
       status: eventData.status ?? 'planned',
       isByContract: Boolean(eventData.isByContract),
@@ -130,7 +167,13 @@ export const PUT = async (req, { params }) => {
 
   if (body.eventDate !== undefined)
     update.eventDate = body.eventDate ? new Date(body.eventDate) : null
-  if (body.location !== undefined) update.location = body.location ?? ''
+  if (body.address !== undefined) {
+    if (typeof body.address === 'string')
+      update.address = normalizeAddress({}, body.address)
+    else update.address = normalizeAddress(body.address)
+  } else if (body.location !== undefined) {
+    update.address = normalizeAddress({}, body.location ?? '')
+  }
   if (body.contractSum !== undefined)
     update.contractSum = Number(body.contractSum) || 0
   if (body.comment !== undefined) update.comment = body.comment ?? ''

@@ -1,10 +1,14 @@
-import Button from './Button'
-import CheckBox from './CheckBox'
+'use client'
+
 import FormWrapper from './FormWrapper'
 import ImageCheckBox from './ImageCheckBox'
 import Input from './Input'
 import InputWrapper from './InputWrapper'
 import Note from './Note'
+import ComboBox from './ComboBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useMemo } from 'react'
 
 const AddressPicker = ({
   address,
@@ -14,7 +18,29 @@ const AddressPicker = ({
   wrapperClassName,
   errors,
   required,
+  townOptions = [],
+  onCreateTown,
+  allowTownCreate = true,
 }) => {
+  const townItems = useMemo(() => {
+    const items = new Set()
+    townOptions.forEach((town) => {
+      if (typeof town === 'string' && town.trim()) items.add(town.trim())
+    })
+    if (address?.town && typeof address.town === 'string')
+      items.add(address.town.trim())
+    return Array.from(items).sort((a, b) => a.localeCompare(b, 'ru'))
+  }, [address?.town, townOptions])
+
+  const handleCreateTown = () => {
+    if (!allowTownCreate) return
+    const newTown = window.prompt('Новый город')
+    const trimmedTown = newTown?.trim()
+    if (!trimmedTown) return
+    onCreateTown?.(trimmedTown)
+    onChange({ ...address, town: trimmedTown })
+  }
+
   return (
     <InputWrapper
       label={label}
@@ -25,28 +51,43 @@ const AddressPicker = ({
       paddingY={false}
       paddingX="small"
     >
-      <div className="flex-1 mt-0.5">
-        <FormWrapper className="flex flex-wrap mt-3 mb-1 gap-x-1 gap-y-3">
-          <Input
-            label="Город"
-            type="text"
-            value={address.town}
-            onChange={(town) => onChange({ ...address, town })}
-            error={errors?.address?.town}
-            noMargin
-            className="flex-1 min-w-48"
-          />
-          <Input
-            label="Улица"
-            type="text"
-            value={address.street}
-            onChange={(street) => onChange({ ...address, street })}
-            error={errors?.address?.street}
-            noMargin
-            className="flex-1 min-w-48"
-          />
+      <div className="mt-0.5 flex-1">
+        <FormWrapper className="mt-3 mb-1 flex flex-wrap gap-x-2 gap-y-3">
+          <div className="flex flex-1 items-center gap-x-1">
+            <ComboBox
+              label="Город"
+              items={townItems}
+              value={address.town}
+              onChange={(town) => onChange({ ...address, town: town ?? '' })}
+              placeholder="Выберите город"
+              noMargin
+              fullWidth
+              error={errors?.address?.town}
+              className="min-w-38 flex-1"
+            />
+            {allowTownCreate && (
+              <button
+                type="button"
+                className="flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded border border-emerald-600 bg-emerald-50 text-emerald-600 shadow-sm transition hover:bg-emerald-100"
+                onClick={handleCreateTown}
+                title="Добавить город"
+              >
+                <FontAwesomeIcon className="h-4 w-4" icon={faPlus} />
+              </button>
+            )}
+          </div>
+          <div className="flex-1">
+            <Input
+              label="Улица"
+              type="text"
+              value={address.street}
+              onChange={(street) => onChange({ ...address, street })}
+              error={errors?.address?.street}
+              noMargin
+            />
+          </div>
         </FormWrapper>
-        <FormWrapper className="flex flex-wrap mt-3 mb-1 gap-x-1 gap-y-3">
+        <FormWrapper className="mt-3 mb-1 flex flex-wrap gap-x-2 gap-y-3">
           <Input
             label="Дом"
             type="text"
@@ -54,7 +95,7 @@ const AddressPicker = ({
             onChange={(house) => onChange({ ...address, house })}
             error={errors?.address?.house}
             noMargin
-            className="flex-1 min-w-48"
+            className="min-w-48 flex-1"
           />
           <Input
             label="Подъезд"
@@ -63,10 +104,10 @@ const AddressPicker = ({
             onChange={(entrance) => onChange({ ...address, entrance })}
             error={errors?.address?.entrance}
             noMargin
-            className="flex-1 min-w-48"
+            className="min-w-48 flex-1"
           />
         </FormWrapper>
-        <FormWrapper className="flex flex-wrap mt-3 mb-1 gap-x-1 gap-y-3">
+        <FormWrapper className="mt-3 mb-1 flex flex-wrap gap-x-2 gap-y-3">
           <Input
             label="Этаж"
             type="text"
@@ -74,7 +115,7 @@ const AddressPicker = ({
             onChange={(floor) => onChange({ ...address, floor })}
             error={errors?.address?.floor}
             noMargin
-            className="flex-1 min-w-48"
+            className="min-w-48 flex-1"
           />
           <Input
             label="Кв. / Офис"
@@ -83,7 +124,27 @@ const AddressPicker = ({
             onChange={(flat) => onChange({ ...address, flat })}
             error={errors?.address?.flat}
             noMargin
-            className="flex-1 min-w-48"
+            className="min-w-48 flex-1"
+          />
+        </FormWrapper>
+        <FormWrapper className="mt-3 mb-1 flex flex-wrap gap-x-2 gap-y-3">
+          <Input
+            label="Широта"
+            type="text"
+            value={address.latitude}
+            onChange={(latitude) => onChange({ ...address, latitude })}
+            error={errors?.address?.latitude}
+            noMargin
+            className="min-w-48 flex-1"
+          />
+          <Input
+            label="Долгота"
+            type="text"
+            value={address.longitude}
+            onChange={(longitude) => onChange({ ...address, longitude })}
+            error={errors?.address?.longitude}
+            noMargin
+            className="min-w-48 flex-1"
           />
         </FormWrapper>
         <Input
@@ -102,10 +163,11 @@ const AddressPicker = ({
             label="Показывать ссылку 2ГИС"
             src="/img/navigators/2gis.png"
             big
+            alt="2gis"
           />
           {address.link2GisShow &&
             (address.link2Gis || (address?.town && address?.street)) && (
-              <div className="flex justify-end flex-1">
+              <div className="flex flex-1 justify-end">
                 <a
                   data-tip="Открыть адрес в 2ГИС"
                   href={
@@ -114,7 +176,7 @@ const AddressPicker = ({
                       address.street
                     }%20${address.house.replaceAll('/', '%2F')}`
                   }
-                  className="text-sm underline whitespace-nowrap"
+                  className="text-sm whitespace-nowrap underline"
                   target="_blank"
                 >
                   Проверить ссылку
@@ -142,11 +204,12 @@ const AddressPicker = ({
             label="Показывать ссылку Yandex Navigator"
             src="/img/navigators/yandex.png"
             big
+            alt="yandex_nav"
           />
           {address.linkYandexShow &&
             (address.linkYandexNavigator ||
               (address?.town && address?.street)) && (
-              <div className="flex justify-end flex-1">
+              <div className="flex flex-1 justify-end">
                 <a
                   data-tip="Открыть адрес в 2ГИС"
                   href={
@@ -155,7 +218,7 @@ const AddressPicker = ({
                       address.street
                     }%20${address.house.replaceAll('/', '%2F')}`
                   }
-                  className="text-sm underline whitespace-nowrap"
+                  className="text-sm whitespace-nowrap underline"
                   target="_blank"
                 >
                   Проверить ссылку

@@ -11,6 +11,7 @@ const PhoneInput = ({
   labelClassName,
   className,
   noMargin,
+  smallMargin,
   error,
   showErrorText,
 }) => (
@@ -22,6 +23,7 @@ const PhoneInput = ({
     className={cn('w-48', className)}
     disabled={disabled}
     noMargin={noMargin}
+    smallMargin={smallMargin}
     error={error}
     showErrorText={showErrorText}
     wrapperClassName={

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import CardButtons from '@components/CardButtons'
 import { REQUEST_STATUSES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
+import formatAddress from '@helpers/formatAddress'
 import { modalsFuncAtom } from '@state/atoms'
 import { useAtomValue } from 'jotai'
 
@@ -88,7 +89,10 @@ const RequestCardCompact = ({ request, style, onEdit, onStatusEdit }) => {
           <div className="grid gap-0.5 text-sm text-gray-700 tablet:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="truncate">
               <div className="font-medium text-gray-800 truncate">
-                {request.location || 'Место не указано'}
+                {formatAddress(
+                  request.address,
+                  request.location || 'Место не указано'
+                )}
               </div>
             </div>
             <div className="truncate">
@@ -152,6 +156,19 @@ RequestCardCompact.propTypes = {
       PropTypes.instanceOf(Date),
     ]),
     location: PropTypes.string,
+    address: PropTypes.shape({
+      town: PropTypes.string,
+      street: PropTypes.string,
+      house: PropTypes.string,
+      entrance: PropTypes.string,
+      floor: PropTypes.string,
+      flat: PropTypes.string,
+      comment: PropTypes.string,
+      link2Gis: PropTypes.string,
+      linkYandexNavigator: PropTypes.string,
+      link2GisShow: PropTypes.bool,
+      linkYandexShow: PropTypes.bool,
+    }),
     contractSum: PropTypes.number,
     status: PropTypes.string,
     comment: PropTypes.string,

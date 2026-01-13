@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 import { EVENT_STATUSES, EVENT_STATUSES_SIMPLE } from '@helpers/constants'
 import { getEventStatusBadgeClasses } from '@helpers/eventStatusStyles'
 import formatDate from '@helpers/formatDate'
+import formatAddress from '@helpers/formatAddress'
 import { modalsFuncAtom } from '@state/atoms'
 import requestsAtom from '@state/atoms/requestsAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
@@ -46,6 +47,15 @@ const EventCard = ({ eventId, style }) => {
     [event?.requestId, requests]
   )
 
+  const calendarLink = useMemo(() => {
+    if (!event?.description) return null
+    const match = event.description.match(
+      /https?:\/\/(?:www\.)?google\.com\/calendar\/event\?eid=\S+|https?:\/\/calendar\.google\.com\/calendar\/\S+/i
+    )
+    if (!match?.[0]) return null
+    return match[0].replace(/[),.]+$/, '')
+  }, [event?.description])
+
   const { contractSum, paid, leftToPay, status } = useMemo(() => {
     if (!event) return { contractSum: 0, paid: 0, leftToPay: 0, status: null }
 
@@ -82,6 +92,9 @@ const EventCard = ({ eventId, style }) => {
   const eventStart = event.eventDate ? new Date(event.eventDate) : null
   const eventEnd = event.dateEnd ? new Date(event.dateEnd) : eventStart
   const now = new Date()
+  const eventDateLabel = event.eventDate
+    ? formatDate(event.eventDate, false, true)
+    : '-'
 
   const rawStatus = status?.value ?? event.status
   const isActiveLike =
@@ -96,6 +109,22 @@ const EventCard = ({ eventId, style }) => {
       : 'Запланировано'
     : status?.name ?? 'Не указан'
 
+  const coordsLink =
+    event?.address?.latitude && event?.address?.longitude
+      ? `dgis://2gis.ru/geo/${event.address.longitude},${event.address.latitude}`
+      : null
+  const searchAddress =
+    event?.address?.town && event?.address?.street && event?.address?.house
+      ? `${event.address.town}, ${event.address.street}, ${event.address.house}`
+      : null
+  const searchLink = searchAddress
+    ? `https://2gis.ru/search/${encodeURIComponent(searchAddress).replaceAll(
+        '%20',
+        ''
+      )}`
+    : null
+  const mapLink = event?.address?.link2Gis || coordsLink || searchLink
+
   return (
     <div style={style} className="px-2 py-1">
       <div
@@ -103,7 +132,7 @@ const EventCard = ({ eventId, style }) => {
         onClick={() => modalsFunc.event?.edit(event._id)}
       >
         <div
-          className="absolute right-2 top-2 z-10"
+          className="absolute top-2 right-2 z-10"
           onClick={(event) => event.stopPropagation()}
         >
           <CardButtons
@@ -111,6 +140,7 @@ const EventCard = ({ eventId, style }) => {
             typeOfItem="event"
             minimalActions
             alwaysCompact
+            calendarLink={calendarLink}
             onEdit={() => modalsFunc.event?.edit(event._id)}
           />
         </div>
@@ -150,7 +180,10 @@ const EventCard = ({ eventId, style }) => {
         </div>
         <div className="flex gap-x-1">
           <div className="flex min-w-0 flex-1 flex-col gap-1 pr-2">
-            <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
+            <div className="text-lg font-semibold text-gray-700">
+              {eventDateLabel}
+            </div>
+            <div className="flex flex-nowrap items-center gap-x-3 text-sm text-gray-600">
               <span className="font-medium">Клиент:</span>
               <span className="truncate">
                 {client
@@ -161,17 +194,11 @@ const EventCard = ({ eventId, style }) => {
                 {client?.phone ? ` ( +${client.phone} )` : ''}
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
-              <span className="font-medium">Дата мероприятия:</span>
-              <span>
-                {event.eventDate
-                  ? formatDate(event.eventDate, false, true)
-                  : '-'}
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
+            <div className="flex flex-nowrap items-center gap-x-3 text-sm text-gray-600">
               <span className="font-medium">Место:</span>
-              <span className="truncate">{event.location || '-'}</span>
+              <span className="truncate">
+                {formatAddress(event.address, '-')}
+              </span>
             </div>
             {event.requestId && (
               <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
@@ -199,6 +226,24 @@ const EventCard = ({ eventId, style }) => {
                     {event.requestId}
                   </button>
                 )}
+              </div>
+            )}
+            {mapLink && (
+              <div className="mt-1">
+                <a
+                  href={mapLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Открыть в 2ГИС"
+                  onClick={(event) => event.stopPropagation()}
+                  className="flex h-8 w-8 items-center justify-center transition-transform hover:scale-110"
+                >
+                  <img
+                    src="/img/navigators/2gis.png"
+                    alt="2gis"
+                    className="h-5 w-5"
+                  />
+                </a>
               </div>
             )}
           </div>

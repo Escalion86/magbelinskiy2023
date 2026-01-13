@@ -3,17 +3,19 @@
 import { useState } from 'react'
 import Button from '@components/Button'
 import ContentHeader from '@components/ContentHeader'
-import Input from '@components/Input'
 
 const DevContent = () => {
-  const [calendarId, setCalendarId] = useState('')
-  const [forceFullSync, setForceFullSync] = useState(false)
+  const forceFullSync = true
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
   const [cleanupLoading, setCleanupLoading] = useState(false)
   const [cleanupError, setCleanupError] = useState('')
   const [cleanupResult, setCleanupResult] = useState(null)
+  const [exportLoading, setExportLoading] = useState(false)
+  const [exportError, setExportError] = useState('')
+  const [exportResult, setExportResult] = useState(null)
+  const [exportCopied, setExportCopied] = useState(false)
 
   const handleSync = async () => {
     setLoading(true)
@@ -23,12 +25,7 @@ const DevContent = () => {
       const response = await fetch('/api/events/google-sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: calendarId.trim()
-          ? JSON.stringify({
-              calendarId: calendarId.trim(),
-              forceFullSync,
-            })
-          : JSON.stringify({ forceFullSync }),
+        body: JSON.stringify({ forceFullSync }),
       })
       const rawText = await response.text()
       const data = rawText ? JSON.parse(rawText) : null
@@ -69,6 +66,34 @@ const DevContent = () => {
     }
   }
 
+  const handleExport = async () => {
+    setExportLoading(true)
+    setExportError('')
+    setExportResult(null)
+    setExportCopied(false)
+    try {
+      const response = await fetch('/api/events/google-export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      const rawText = await response.text()
+      const data = rawText ? JSON.parse(rawText) : null
+      if (!data) throw new Error('Пустой ответ от сервера')
+      if (!response.ok || !data.success)
+        throw new Error(data.error || 'Не удалось получить данные календаря')
+      setExportResult(data.data)
+      if (navigator?.clipboard && data.data?.text) {
+        await navigator.clipboard.writeText(data.data.text)
+        setExportCopied(true)
+      }
+    } catch (exportErr) {
+      setExportError(exportErr.message || 'Не удалось получить данные календаря')
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <ContentHeader>
@@ -78,21 +103,6 @@ const DevContent = () => {
       </ContentHeader>
       <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3">
-          <Input
-            label="ID календаря (необязательно)"
-            type="text"
-            value={calendarId}
-            onChange={setCalendarId}
-            placeholder="например, your-calendar-id@group.calendar.google.com"
-          />
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              checked={forceFullSync}
-              onChange={(event) => setForceFullSync(event.target.checked)}
-            />
-            Полная синхронизация (игнорировать syncToken)
-          </label>
           <Button
             name="Синхронизировать календарь"
             onClick={handleSync}
@@ -119,6 +129,47 @@ const DevContent = () => {
           {cleanupResult && (
             <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
               Удалено мероприятий: <b>{cleanupResult.deleted ?? 0}</b>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-3 rounded border border-sky-200 bg-sky-50 p-3">
+          <div className="text-sm text-sky-800">
+            Экспортировать данные мероприятий для проверки парсинга (без
+            организаторов, участников и ссылок).
+          </div>
+          <Button
+            name="Скопировать данные для проверки"
+            onClick={handleExport}
+            loading={exportLoading}
+            className="w-full sm:w-auto bg-sky-600 text-white hover:bg-sky-700"
+          />
+          {exportError && (
+            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+              {exportError}
+            </div>
+          )}
+          {exportResult && (
+            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+              <div>
+                Экспортировано событий: <b>{exportResult.count ?? 0}</b>
+              </div>
+              {exportResult.skipped ? (
+                <div>
+                  Пропущено (заявки в названии): <b>{exportResult.skipped}</b>
+                </div>
+              ) : null}
+              {exportCopied && (
+                <div className="mt-1 text-xs text-emerald-800">
+                  Данные скопированы в буфер обмена.
+                </div>
+              )}
+              {!exportCopied && exportResult.text && (
+                <textarea
+                  readOnly
+                  className="mt-2 max-h-48 w-full resize-none rounded border border-emerald-200 bg-white p-2 text-xs text-emerald-900"
+                  value={exportResult.text}
+                />
+              )}
             </div>
           )}
         </div>

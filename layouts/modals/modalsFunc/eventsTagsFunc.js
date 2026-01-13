@@ -13,7 +13,7 @@ import compareObjects from '@helpers/compareObjects'
 import { PASTEL_COLORS } from '@helpers/constants'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 
 function randomIntFromInterval(min, max) {
@@ -89,10 +89,18 @@ const eventsTagsFunc = () => {
       )
     }
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
     useEffect(() => {
       const isTagsChanged = !compareObjects(siteSettings.eventsTags ?? [], tags)
       setDisableConfirm(!isTagsChanged)
-      setOnConfirmFunc(isTagsChanged ? onClickConfirm : undefined)
+      setOnConfirmFunc(
+        isTagsChanged ? () => onClickConfirmRef.current() : undefined
+      )
     }, [tags])
 
     return (

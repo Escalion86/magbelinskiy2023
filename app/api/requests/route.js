@@ -3,6 +3,7 @@ import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import dbConnect from '@server/dbConnect'
 import formatDate from '@helpers/formatDate'
+import formatAddress from '@helpers/formatAddress'
 import telegramPost from '@server/telegramApi'
 
 const normalizePhone = (phone) =>
@@ -21,6 +22,39 @@ const sanitizeContacts = (contacts) => {
       .map((item) => item.trim())
       .filter(Boolean)
   return []
+}
+
+const DEFAULT_ADDRESS = {
+  town: '',
+  street: '',
+  house: '',
+  entrance: '',
+  floor: '',
+  flat: '',
+  comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
+}
+
+const normalizeAddress = (rawAddress, legacyLocation) => {
+  const normalized = {
+    ...DEFAULT_ADDRESS,
+    ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+  }
+
+  const hasMainFields =
+    normalized.town ||
+    normalized.street ||
+    normalized.house ||
+    normalized.flat
+
+  if (legacyLocation && !normalized.comment && !hasMainFields) {
+    normalized.comment = legacyLocation
+  }
+
+  return normalized
 }
 
 const sendTelegramMassage = async (text, url) =>
@@ -62,11 +96,12 @@ export const POST = async (req) => {
   const contactChannels =
     body.contactChannels ?? body.contact ?? body.priorityContact ?? ''
   const eventDate = body.eventDate ?? body.date ?? null
-  const location =
+  const legacyLocation =
     body.location ??
     [body.town, body.address]
       .filter((value) => typeof value === 'string' && value.trim().length > 0)
       .join(', ')
+  const address = normalizeAddress(body.address, legacyLocation)
   const contractSum = body.contractSum ?? body.price ?? 0
   const comment = body.comment ?? ''
   const yandexAim = body.yandexAim ?? ''
@@ -86,6 +121,7 @@ export const POST = async (req) => {
   const normalizedPhone = normalizePhone(rawPhone)
   const contacts = sanitizeContacts(contactChannels)
   const numericContractSum = Number(contractSum) || 0
+  const formattedAddress = formatAddress(address, null)
   const displayPhone =
     typeof rawPhone === 'string' && rawPhone.trim().length > 0
       ? rawPhone.trim()
@@ -102,7 +138,7 @@ export const POST = async (req) => {
     eventDate
       ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
       : null,
-    location ? `<b>Локация:</b> ${location}` : null,
+    formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
     numericContractSum
       ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
           'ru-RU'
@@ -157,7 +193,7 @@ export const POST = async (req) => {
     clientPhone: normalizedPhone,
     contactChannels: contacts,
     eventDate: eventDate ? new Date(eventDate) : null,
-    location: location ?? '',
+    address,
     contractSum: numericContractSum,
     comment: comment ?? '',
     yandexAim,

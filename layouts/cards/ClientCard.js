@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import CardButtons from '@components/CardButtons'
 import formatDate from '@helpers/formatDate'
 
-const ClientCard = ({ client, style, onEdit }) => {
+const ClientCard = ({ client, style, onEdit, onView }) => {
   const lastRequestLabel = client.lastRequest
     ? formatDate(client.lastRequest.toISOString(), false, true)
     : '-'
@@ -14,7 +14,7 @@ const ClientCard = ({ client, style, onEdit }) => {
       <div
         role="button"
         tabIndex={0}
-        onClick={onEdit}
+        onClick={onView}
         className="group relative flex h-full w-full cursor-pointer overflow-visible rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:border-gray-300 hover:shadow"
       >
         <div
@@ -78,6 +78,7 @@ ClientCard.propTypes = {
   }).isRequired,
   style: PropTypes.shape({}),
   onEdit: PropTypes.func.isRequired,
+  onView: PropTypes.func.isRequired,
 }
 
 ClientCard.defaultProps = {

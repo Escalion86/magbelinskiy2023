@@ -8,6 +8,39 @@ const EVENT_STATUSES = new Set([
   'closed',
 ])
 
+const DEFAULT_ADDRESS = {
+  town: '',
+  street: '',
+  house: '',
+  entrance: '',
+  floor: '',
+  flat: '',
+  comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
+}
+
+const normalizeAddress = (rawAddress, legacyLocation) => {
+  const normalized = {
+    ...DEFAULT_ADDRESS,
+    ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+  }
+
+  const hasMainFields =
+    normalized.town ||
+    normalized.street ||
+    normalized.house ||
+    normalized.flat
+
+  if (legacyLocation && !normalized.comment && !hasMainFields) {
+    normalized.comment = legacyLocation
+  }
+
+  return normalized
+}
+
 export const PUT = async (req, { params }) => {
   const { id } = await params
   const body = await req.json()
@@ -17,7 +50,11 @@ export const PUT = async (req, { params }) => {
   if (body.eventDate !== undefined)
     update.eventDate = body.eventDate ? new Date(body.eventDate) : null
   if (body.clientId !== undefined) update.clientId = body.clientId
-  if (body.location !== undefined) update.location = body.location ?? ''
+  if (body.address !== undefined) {
+    if (typeof body.address === 'string')
+      update.address = normalizeAddress({}, body.address)
+    else update.address = normalizeAddress(body.address)
+  }
   if (body.contractSum !== undefined)
     update.contractSum = Number(body.contractSum) || 0
   if (body.description !== undefined) update.description = body.description ?? ''

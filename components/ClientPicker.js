@@ -11,6 +11,7 @@ const ClientPicker = ({
   selectedClientId,
   onSelectClick,
   onCreateClick,
+  onViewClick,
   disabled,
   label,
   required,
@@ -35,7 +36,13 @@ const ClientPicker = ({
       <div className="flex w-full flex-wrap items-center gap-2">
         <div
           className="flex flex-1 cursor-pointer justify-between rounded border border-gray-300 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow"
-          onClick={disabled ? undefined : onSelectClick}
+          onClick={
+            disabled
+              ? undefined
+              : selectedClientId && onViewClick
+              ? onViewClick
+              : onSelectClick
+          }
         >
           <div className="text-base font-semibold text-gray-900">
             {[selectedClient?.firstName, selectedClient?.secondName]
@@ -90,6 +97,7 @@ ClientPicker.propTypes = {
   selectedClientId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSelectClick: PropTypes.func.isRequired,
   onCreateClick: PropTypes.func,
+  onViewClick: PropTypes.func,
   disabled: PropTypes.bool,
   label: PropTypes.string,
   required: PropTypes.bool,
@@ -108,6 +116,7 @@ ClientPicker.defaultProps = {
   paddingY: true,
   fullWidth: false,
   onCreateClick: null,
+  onViewClick: null,
 }
 
 export default ClientPicker

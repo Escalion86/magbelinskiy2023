@@ -1,11 +1,13 @@
 'use client'
 
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
+import ComboBox from '@components/ComboBox'
 import eventsAtom from '@state/atoms/eventsAtom'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import { useAtomValue } from 'jotai'
 import { modalsFuncAtom } from '@state/atoms'
 import EventCard from '@layouts/cards/EventCard'
@@ -14,9 +16,11 @@ const ITEM_HEIGHT = 190
 
 const EventsContent = ({ filter = 'all' }) => {
   const events = useAtomValue(eventsAtom)
+  const siteSettings = useAtomValue(siteSettingsAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
+  const [selectedTown, setSelectedTown] = useState('')
 
-  const filteredEvents = useMemo(() => {
+  const baseEvents = useMemo(() => {
     if (filter === 'all') return events
 
     const now = new Date()
@@ -34,6 +38,28 @@ const EventsContent = ({ filter = 'all' }) => {
         : eventDate < startOfToday
     })
   }, [events, filter])
+
+  const townsOptions = useMemo(() => {
+    const townsSet = new Set()
+    baseEvents.forEach((event) => {
+      const town = event?.address?.town
+      if (typeof town === 'string' && town.trim()) townsSet.add(town.trim())
+    })
+    return Array.from(townsSet).sort((a, b) => a.localeCompare(b, 'ru'))
+  }, [baseEvents])
+
+  useEffect(() => {
+    if (!selectedTown) return
+    if (townsOptions.includes(selectedTown)) return
+    setSelectedTown('')
+  }, [selectedTown, townsOptions])
+
+  const filteredEvents = useMemo(() => {
+    if (!selectedTown) return baseEvents
+    return baseEvents.filter(
+      (event) => (event?.address?.town ?? '') === selectedTown
+    )
+  }, [baseEvents, selectedTown])
 
   const sortedEvents = useMemo(() => {
     const sorter = (a, b) => {
@@ -69,7 +95,17 @@ const EventsContent = ({ filter = 'all' }) => {
     <div className="flex h-full flex-col gap-4">
       <ContentHeader>
         <div className="flex flex-1 items-center justify-between">
-          <div />
+          <div className="w-52">
+            <ComboBox
+              label="Город"
+              items={townsOptions}
+              value={selectedTown}
+              onChange={(value) => setSelectedTown(value ?? '')}
+              placeholder="Все города"
+              fullWidth
+              noMargin
+            />
+          </div>
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <span>
               {filterName}: {sortedEvents.length}

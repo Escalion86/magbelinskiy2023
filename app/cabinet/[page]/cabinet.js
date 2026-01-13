@@ -20,7 +20,7 @@ import Head from 'next/head'
 // import { useRouter } from 'next/router'
 import { Provider } from 'jotai'
 import store from '@state/store'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 // import { useAtomValue } from 'jotai'
 
@@ -40,6 +40,11 @@ function CabinetPage(props) {
   }, [pathname])
 
   const currentPage = page || pageFromPath || 'requests'
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme')
+    document.body.classList.toggle('theme-dark', storedTheme === 'dark')
+  }, [])
   // const router = useRouter()
   // const page = router.asPath.replace('/cabinet/', '').split('?')[0]
   // const loggedUser = useAtomValue(loggedUserAtom)

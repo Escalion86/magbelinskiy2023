@@ -79,6 +79,7 @@ const ClientsContent = () => {
           style={style}
           client={client}
           onEdit={() => modalsFunc.client?.edit(client._id)}
+          onView={() => modalsFunc.client?.view(client._id)}
         />
       )
     },
@@ -96,8 +97,8 @@ const ClientsContent = () => {
               name="+"
               collapsing
               className="h-9 w-9 rounded-full text-lg"
-              onClick={() => modalsFunc.request?.add()}
-              disabled={!modalsFunc.request?.add}
+              onClick={() => modalsFunc.client?.add()}
+              disabled={!modalsFunc.client?.add}
             />
           </div>
         </div>

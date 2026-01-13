@@ -2,13 +2,13 @@ import DateTimePicker from '@components/DateTimePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import IconCheckBox from '@components/IconCheckBox'
-import Input from '@components/Input'
 import Textarea from '@components/Textarea'
 import EventStatusPicker from '@components/ValuePicker/EventStatusPicker'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import ClientPicker from '@components/ClientPicker'
 import ColleaguePicker from '@components/ColleaguePicker'
 import {
+  DEFAULT_ADDRESS,
   DEFAULT_EVENT,
   TRANSACTION_CATEGORIES,
   TRANSACTION_TYPES,
@@ -16,7 +16,7 @@ import {
 import TabContext from '@components/Tabs/TabContext'
 import TabPanel from '@components/Tabs/TabPanel'
 import transactionsAtom from '@state/atoms/transactionsAtom'
-import { deleteData } from '@helpers/CRUD'
+import { deleteData, postData } from '@helpers/CRUD'
 import useErrors from '@helpers/useErrors'
 import clientsAtom from '@state/atoms/clientsAtom'
 import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
@@ -24,7 +24,20 @@ import { modalsFuncAtom } from '@state/atoms'
 import eventSelector from '@state/selectors/eventSelector'
 import requestSelector from '@state/selectors/requestSelector'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import Input from '@components/Input'
+import AddressPicker from '@components/AddressPicker'
+import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
+
+const normalizeAddressValue = (rawAddress) => {
+  const normalized = {
+    ...DEFAULT_ADDRESS,
+    ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+  }
+
+  return normalized
+}
 
 const eventFunc = (eventId, clone = false, requestId = null) => {
   const EventModal = ({
@@ -41,6 +54,8 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     const setEvent = itemsFunc?.event?.set
     const convertRequest = itemsFunc?.request?.convert
     const clients = useAtomValue(clientsAtom)
+    const loggedUser = useAtomValue(loggedUserAtom)
+    const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
     const colleagues = useMemo(
       () => clients.filter((client) => client.clientType === 'colleague'),
       [clients]
@@ -57,6 +72,12 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     const [clientId, setClientId] = useState(
       event?.clientId ?? request?.clientId ?? DEFAULT_EVENT.clientId
     )
+    const [title, setTitle] = useState(
+      event?.title ??
+        (request?.clientName
+          ? `Мероприятие для ${request.clientName}`
+          : DEFAULT_EVENT.title ?? '')
+    )
     const [status, setStatus] = useState(
       event?.status ?? (requestId ? 'planned' : DEFAULT_EVENT.status)
     )
@@ -67,9 +88,20 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       event?.dateEnd ?? DEFAULT_EVENT.dateEnd ?? null
     )
     const [dateEndTouched, setDateEndTouched] = useState(false)
-    const [location, setLocation] = useState(
-      event?.location ?? request?.location ?? DEFAULT_EVENT.location
-    )
+    const [address, setAddress] = useState(() => {
+      const normalized = normalizeAddressValue(
+        event?.address ?? request?.address
+      )
+      if (
+        !normalized.town &&
+        siteSettings?.defaultTown &&
+        !eventId &&
+        !request?.address?.town
+      ) {
+        normalized.town = siteSettings.defaultTown
+      }
+      return normalized
+    })
     const [contractSum, setContractSum] = useState(
       event?.contractSum ?? request?.contractSum ?? DEFAULT_EVENT.contractSum ?? 0
     )
@@ -106,13 +138,32 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       closeModalRef.current = closeModal
     }, [addError, clearErrors, closeModal])
 
-    const initialEventValues = useMemo(
-      () => ({
+    const initialEventValues = useMemo(() => {
+      return {
         clientId: event?.clientId ?? request?.clientId ?? DEFAULT_EVENT.clientId,
+        title:
+          event?.title ??
+          (request?.clientName
+            ? `Мероприятие для ${request.clientName}`
+            : DEFAULT_EVENT.title),
         status: event?.status ?? (requestId ? 'planned' : DEFAULT_EVENT.status),
         eventDate:
           event?.eventDate ?? request?.eventDate ?? DEFAULT_EVENT.eventDate,
-        location: event?.location ?? request?.location ?? DEFAULT_EVENT.location,
+        address: (() => {
+          const normalized = normalizeAddressValue(
+            event?.address ?? request?.address
+          )
+          if (
+            !normalized.town &&
+            siteSettings?.defaultTown &&
+            !eventId &&
+            !event?.address?.town &&
+            !request?.address?.town
+          ) {
+            normalized.town = siteSettings.defaultTown
+          }
+          return normalized
+        })(),
         contractSum:
           event?.contractSum ?? request?.contractSum ?? DEFAULT_EVENT.contractSum,
         isByContract: event?.isByContract ?? DEFAULT_EVENT.isByContract,
@@ -126,35 +177,48 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked,
         colleagueId: event?.colleagueId ?? DEFAULT_EVENT.colleagueId,
         isTransferred: initialIsTransferred,
-      }),
-      [
-        event?.clientId,
-        event?.status,
-        event?.eventDate,
-        event?.location,
-        event?.contractSum,
-        event?.description,
-        event?.comment,
-        event?.dateEnd,
-        event?.calendarImportChecked,
-        event?.colleagueId,
-        initialIsTransferred,
-        requestId,
-        request?.clientId,
-        request?.eventDate,
-        request?.location,
-        request?.contractSum,
-        request?.comment,
-      ]
+      }
+    }, [
+      event?.clientId,
+      event?.title,
+      event?.status,
+      event?.eventDate,
+      event?.address,
+      event?.contractSum,
+      event?.description,
+      event?.comment,
+      event?.dateEnd,
+      event?.calendarImportChecked,
+      event?.colleagueId,
+      initialIsTransferred,
+      requestId,
+      request?.clientId,
+      request?.clientName,
+      request?.eventDate,
+      request?.address,
+      request?.comment,
+      request?.contractSum,
+      siteSettings?.defaultTown,
+    ])
+
+    const initialAddressSignature = useMemo(
+      () => JSON.stringify(initialEventValues.address ?? {}),
+      [initialEventValues.address]
+    )
+
+    const addressSignature = useMemo(
+      () => JSON.stringify(address ?? {}),
+      [address]
     )
 
     const isFormChanged = useMemo(
       () =>
         initialEventValues.clientId !== clientId ||
+        initialEventValues.title !== title ||
         initialEventValues.status !== status ||
         initialEventValues.eventDate !== eventDate ||
         initialEventValues.dateEnd !== dateEnd ||
-        initialEventValues.location !== location ||
+        initialAddressSignature !== addressSignature ||
         initialEventValues.contractSum !== contractSum ||
         initialEventValues.isByContract !== isByContract ||
         initialEventValues.isTransferred !== isTransferred ||
@@ -163,10 +227,12 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
         initialEventValues.calendarImportChecked !== calendarImportChecked,
       [
         clientId,
+        title,
         status,
         eventDate,
         dateEnd,
-        location,
+        initialAddressSignature,
+        addressSignature,
         contractSum,
         isByContract,
         isTransferred,
@@ -176,6 +242,10 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
         initialEventValues,
       ]
     )
+
+    useEffect(() => {
+      setAddress(initialEventValues.address)
+    }, [initialEventValues.address])
 
     const eventTransactions = useMemo(
       () =>
@@ -262,8 +332,8 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           typeof contractSum === 'number' && !Number.isNaN(contractSum)
             ? contractSum
             : 0
-        const title =
-          event?.title ??
+        const normalizedTitle =
+          title?.trim() ||
           (request?.clientName
             ? `Мероприятие для ${request.clientName}`
             : DEFAULT_EVENT.title)
@@ -276,12 +346,12 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           colleagueId: isTransferred ? colleagueId : null,
           eventDate,
           dateEnd,
-          location: location ? location.trim() : '',
+          address: normalizeAddressValue(address),
           contractSum: normalizedContractSum,
           isByContract,
           description: description?.trim() ?? '',
           calendarImportChecked,
-          title,
+          title: normalizedTitle,
         }
         if (!event?._id && requestId && convertRequest) {
           convertRequest(requestId, payload)
@@ -307,7 +377,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       eventDate,
       isTransferred,
       initialEventValues.status,
-      location,
+      address,
       request?.clientName,
       requestId,
       convertRequest,
@@ -315,13 +385,20 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       status,
     ])
 
+    const onClickConfirmRef = useRef(onClickConfirm)
+
+    useEffect(() => {
+      onClickConfirmRef.current = onClickConfirm
+    }, [onClickConfirm])
+
     useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
       setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(isFormChanged ? onClickConfirm : undefined)
+      setOnConfirmFunc(
+        isFormChanged ? () => onClickConfirmRef.current() : undefined
+      )
     }, [
       isFormChanged,
-      onClickConfirm,
       setDisableConfirm,
       setOnConfirmFunc,
       setOnShowOnCloseConfirmDialog,
@@ -334,6 +411,35 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           : null,
       [clientId, clients]
     )
+
+    const townOptions = useMemo(() => {
+      const townsSet = new Set(
+        (siteSettings?.towns ?? [])
+          .map((town) => (typeof town === 'string' ? town.trim() : ''))
+          .filter(Boolean)
+      )
+      if (address?.town && typeof address.town === 'string')
+        townsSet.add(address.town.trim())
+
+      return Array.from(townsSet).sort((a, b) => a.localeCompare(b, 'ru'))
+    }, [address?.town, siteSettings?.towns])
+
+    const handleCreateTown = async (town) => {
+      const normalizedTown =
+        typeof town === 'string' ? town.trim() : ''
+      if (!normalizedTown) return
+      const nextTowns = Array.from(
+        new Set([...(siteSettings?.towns ?? []), normalizedTown])
+      )
+      await postData(
+        '/api/site',
+        { towns: nextTowns },
+        (data) => setSiteSettings(data),
+        null,
+        false,
+        loggedUser?._id
+      )
+    }
 
     const [financeError, setFinanceError] = useState('')
     const [financeLoading, setFinanceLoading] = useState(false)
@@ -395,11 +501,18 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               selectedClient={selectedClient}
               selectedClientId={clientId}
               onSelectClick={openClientSelectModal}
+              onViewClick={() => modalsFunc.client?.view(clientId)}
               label="Клиент"
               required
               error={errors.clientId}
               paddingY
               fullWidth
+            />
+            <Input
+              label="Заголовок мероприятия"
+              type="text"
+              value={title}
+              onChange={setTitle}
             />
             <EventStatusPicker
               status={status}
@@ -433,11 +546,14 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               }}
               label="Дата окончания"
             />
-            <Input
+            <AddressPicker
+              address={address}
+              onChange={setAddress}
               label="Локация"
-              type="text"
-              value={location}
-              onChange={setLocation}
+              required={false}
+              errors={errors}
+              townOptions={townOptions}
+              onCreateTown={handleCreateTown}
             />
             <Textarea
               label="Описание"

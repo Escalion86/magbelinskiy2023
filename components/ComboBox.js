@@ -58,7 +58,7 @@ const ComboBox = ({
     >
       <select
         className={cn(
-          'flex-1 cursor-pointer bg-transparent px-1 outline-none',
+          'h-7 flex-1 cursor-pointer bg-transparent px-1 outline-none',
           (
             defaultValue !== undefined && !value
               ? defaultValue === null || defaultValue === ''

@@ -1,5 +1,6 @@
 const formatAddress = (address, textIfNoAddress) => {
-  if (!address?.town && !address?.street) return textIfNoAddress ?? ''
+  if (!address?.town && !address?.street)
+    return address?.comment || (textIfNoAddress ?? '')
 
   return (
     [
