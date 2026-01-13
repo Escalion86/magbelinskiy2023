@@ -6,12 +6,11 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import BackLight from './components/BackLight'
 // import Image from 'next/image'
-import { AutoplayVideo } from '@wethegit/react-autoplay-video'
 
 const Title = ({ className }) => (
   <div
     className={cn(
-      'whitespace-nowrap text-center font-buyan text-[29px] font-bold leading-[100%] text-white phoneH:text-[32px] sm:text-[36px] md:text-[42px] tablet:text-[56px] lg:text-left',
+      'font-buyan phoneH:text-[32px] tablet:text-[56px] text-center text-[29px] leading-[100%] font-bold whitespace-nowrap text-white sm:text-[36px] md:text-[42px] lg:text-left',
       className
     )}
   >
@@ -140,7 +139,7 @@ const SpanGold = ({ children }) => (
 const List = ({ className }) => (
   <div
     className={cn(
-      'flex min-w-[340px] max-w-[400px] flex-col gap-y-[18px] sm:min-w-[460px] sm:max-w-[460px] md:min-w-[600px] md:max-w-[600px]',
+      'flex max-w-[400px] min-w-[340px] flex-col gap-y-[18px] sm:max-w-[460px] sm:min-w-[460px] md:max-w-[600px] md:min-w-[600px]',
       className
     )}
   >
@@ -153,8 +152,8 @@ const List = ({ className }) => (
       иллюзионного искусства — кубка Мерлина.
     </ListItem>
     <ListItem>
-      <SpanGold>Более 20 лет работы</SpanGold> и{' '}
-      <SpanGold>2000+ выступлений</SpanGold> разного масштаба: от семейного
+      <SpanGold>Более 22 лет работы</SpanGold> и{' '}
+      <SpanGold>3000+ выступлений</SpanGold> разного масштаба: от семейного
       формата до больших шоу-программ.
     </ListItem>
     <ListItem>
@@ -163,7 +162,7 @@ const List = ({ className }) => (
     </ListItem>
     <ListItem>
       Выступает и проводит <SpanGold>шоу за границей</SpanGold>: Болгария,
-      Вьетнам, Казахстан, Абхазия.
+      Вьетнам, Казахстан, Абхазия, Турция.
     </ListItem>
     <ListItem>
       Открыл единственную в России <SpanGold>школу по фокусам</SpanGold> и
@@ -200,7 +199,7 @@ const ImgPhone = ({
     /> */}
     <svg
       className={cn(
-        'absolute left-1/2 top-1/2 h-[113%] w-[113%] -translate-x-1/2 -translate-y-1/2 rotate-[5deg]'
+        'absolute top-1/2 left-1/2 h-[113%] w-[113%] -translate-x-1/2 -translate-y-1/2 rotate-[5deg]'
       )}
       viewBox="0 0 520 729"
       fill="none"
@@ -283,12 +282,12 @@ const ImgPhone = ({
 
     <div
       className={cn(
-        'relative aspect-[232/428] min-w-[calc(100%+12px)] overflow-hidden sm:min-w-[calc(100%+18px)] ',
+        'relative aspect-[232/428] min-w-[calc(100%+12px)] overflow-hidden sm:min-w-[calc(100%+18px)]',
         imgClassName,
         imgSizeClassName
       )}
     >
-      <AutoplayVideo
+      <video
         src="/img/promo2.mp4"
         style={{
           background:
@@ -302,13 +301,17 @@ const ImgPhone = ({
           imgSizeClassName
         )}
         loop
+        autoPlay
+        muted
+        playsInline
+        preload="metadata"
         controlsList="nodownload"
         width={width}
         height={height}
       />
       <img
         className={cn(
-          'absolute left-0 top-0 object-cover',
+          'absolute top-0 left-0 object-cover',
           imgClassName,
           imgSizeClassName
         )}
@@ -322,7 +325,7 @@ const ImgPhone = ({
       />
     </div>
     <img
-      className="absolute -left-[6px] -top-[22px] z-30 aspect-[232/428] min-w-[calc(100%+12px)] object-fill sm:-left-[8px] sm:-top-[36px] sm:min-w-[calc(100%+18px)]"
+      className="absolute -top-[22px] -left-[6px] z-30 aspect-[232/428] min-w-[calc(100%+12px)] object-fill sm:-top-[36px] sm:-left-[8px] sm:min-w-[calc(100%+18px)]"
       // className="absolute -left-[6px] -top-[22px] z-50 object-fill sm:-left-[8px] sm:-top-[36px]"
       // style={{ width: width - 8, minWidth: width - 8, height: height + 68 }}
       alt="phone"
@@ -350,17 +353,17 @@ const ImgPhone = ({
 
 const AboutBlock = () => {
   return (
-    <div className="relative flex justify-center w-full">
+    <div className="relative flex w-full justify-center">
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-        className="absolute left-0 top-0 w-[25%] object-cover opacity-20 md:-top-[290px] md:left-[min(calc(3%-60px),0px)] md:w-[320px] md:opacity-50"
+        className="absolute top-0 left-0 w-[25%] object-cover opacity-20 md:-top-[290px] md:left-[min(calc(3%-60px),0px)] md:w-[320px] md:opacity-50"
         alt="glass"
         src="/img/broken_glass_left.png"
         draggable={false}
       />
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-        className="absolute bottom-[350px] right-0 w-[25%] object-cover opacity-20 sm:bottom-[650px] md:bottom-[240px] md:right-[min(calc(3%-60px),0px)] md:w-[300px] md:opacity-50 xl:-bottom-[240px]"
+        className="absolute right-0 bottom-[350px] w-[25%] object-cover opacity-20 sm:bottom-[650px] md:right-[min(calc(3%-60px),0px)] md:bottom-[240px] md:w-[300px] md:opacity-50 xl:-bottom-[240px]"
         alt="glass"
         src="/img/broken_glass_right.png"
         draggable={false}
@@ -377,7 +380,7 @@ const AboutBlock = () => {
       {/* broken_glass_ */}
       <DivContent className="flex flex-col items-center gap-y-[20px]">
         <div className="flex flex-wrap justify-center gap-x-[100px] gap-y-[78px] xl:flex-nowrap">
-          <div className="flex flex-col items-center flex-1">
+          <div className="flex flex-1 flex-col items-center">
             <Title />
 
             {/* <div>

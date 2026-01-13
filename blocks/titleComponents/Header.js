@@ -34,7 +34,7 @@ const ContactButton = ({ children, href, onClick, big, ariaLabel }) => {
       href={href}
       target="_blank"
       className={cn(
-        'bg-size-200 bg-pos-50 hover:bg-pos-0 flex cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] p-[8px] transition-all duration-300 sm:h-[50px] sm:w-[50px] sm:p-[13px]',
+        'contact-button flex cursor-pointer items-center justify-center rounded-[7px] p-[8px] transition-all duration-300 sm:h-[50px] sm:w-[50px] sm:p-[13px]',
         big ? 'h-[40px] w-[40px]' : 'h-[36px] w-[36px]'
       )}
       style={{
@@ -168,34 +168,21 @@ const Header = () => {
   const setShowModalZakaz = useSetAtom(showModalZakazAtom)
   const setYandexAim = useSetAtom(yandexAimAtom)
   const [showMenu, setShowMenu] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isPastTitle, setIsPastTitle] = useState(false)
 
   useEffect(() => {
-    const headerComponent = document.querySelector('.header')
-    const titleBlockComponent = document.querySelector('.titleblock')
-    const headerWrapperComponent = document.querySelector('.headerwrapper')
     const onScrollFunc = () => {
       const scrollFromTop = window.scrollY
-      if (scrollFromTop > 60) {
-        headerComponent.classList.add('bg-opacity-90')
-        headerComponent.classList.add('hover:bg-opacity-100')
-        headerComponent.classList.remove('bg-opacity-0')
-        if (scrollFromTop > titleBlockComponent.offsetHeight) {
-          headerWrapperComponent.classList.add('xl:-top-[13px]')
-          headerWrapperComponent.classList.remove('xl:-top-[100px]')
-          headerComponent.classList.remove('xl:bg-opacity-0')
-        } else {
-          headerWrapperComponent.classList.add('xl:-top-[100px]')
-          headerWrapperComponent.classList.remove('xl:-top-[13px]')
-          headerComponent.classList.add('xl:bg-opacity-0')
-        }
-      } else {
-        headerComponent.classList.add('bg-opacity-0')
-        headerComponent.classList.remove('hover:bg-opacity-100')
-        headerComponent.classList.remove('bg-opacity-90')
+      setIsScrolled(scrollFromTop > 60)
+      const titleBlockComponent = document.querySelector('.titleblock')
+      if (titleBlockComponent) {
+        setIsPastTitle(scrollFromTop > titleBlockComponent.offsetHeight)
       }
     }
-    window.addEventListener('scroll', onScrollFunc)
+    window.addEventListener('scroll', onScrollFunc, { passive: true })
     onScrollFunc()
+    return () => window.removeEventListener('scroll', onScrollFunc)
   }, [])
 
   const BurgerMenuItem = ({ children, href }) => {
@@ -217,7 +204,13 @@ const Header = () => {
   }
 
   return (
-    <div className="headerwrapper sticky -top-[13px] z-50 flex h-0 w-full justify-center duration-300">
+    <div
+      className={cn(
+        'headerwrapper sticky z-50 flex h-0 w-full justify-center duration-300',
+        isPastTitle ? 'xl:-top-[13px]' : 'xl:-top-[100px]',
+        '-top-[13px]'
+      )}
+    >
       <nav
         className={cn(
           'fixed top-0 right-0 flex h-screen items-center justify-center overflow-hidden duration-500 xl:hidden',
@@ -243,7 +236,13 @@ const Header = () => {
           <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
         </ul>
       </nav>
-      <div className="header bg-opacity-0 absolute top-0 right-0 left-1/2 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center bg-[#131323] px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]">
+      <div
+        className={cn(
+          'header absolute top-0 right-0 left-1/2 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]',
+          isScrolled ? 'bg-[#131323]/90 hover:bg-[#131323]' : 'bg-[#131323]/0',
+          isPastTitle ? 'xl:bg-[#131323]/90' : 'xl:bg-[#131323]/0'
+        )}
+      >
         <div className="flex w-full max-w-[1264px] justify-between gap-x-[10px]">
           <div className="flex flex-1 items-center gap-x-[19px]">
             <Image

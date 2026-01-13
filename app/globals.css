@@ -40,6 +40,30 @@ body {
   font-family: 'Inter Tight', sans-serif;
 }
 
+.contact-button {
+  position: relative;
+  background: linear-gradient(45deg, #0b0b15 0%, #1a1a32 100%);
+  overflow: hidden;
+}
+
+.contact-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(225deg, #ffca4585 0%, #1a1a32 60%);
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.contact-button:hover::after {
+  opacity: 1;
+}
+
+.contact-button>* {
+  position: relative;
+  z-index: 1;
+}
+
 body.theme-dark {
   background: #0f172a;
   color: #e2e8f0;
@@ -86,6 +110,7 @@ body.theme-dark .text-gray-500 {
 }
 
 @layer base {
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
