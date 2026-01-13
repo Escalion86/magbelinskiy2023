@@ -13,7 +13,7 @@ const Social = ({ text, href, yandexAim }) => {
   return (
     <Link
       href={href}
-      className="text-[12px] font-medium leading-[135%] text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
+      className="text-[12px] leading-[135%] font-medium text-white underline duration-300 hover:text-[#FFCA45] md:text-[19px]"
       target="_blank"
       onClick={yandexAim ? () => reachGoal(yandexAim) : undefined}
       prefetch={false}
@@ -30,7 +30,7 @@ const FooterBlock = () => {
 
   return (
     <div
-      className="z-10 flex w-full justify-center bg-opacity-70 pb-[15px] pt-[10px] md:pb-[60px] md:pt-[60px]"
+      className="bg-opacity-70 z-10 flex w-full justify-center pt-[10px] pb-[15px] md:pt-[60px] md:pb-[60px]"
       style={{
         background:
           'linear-gradient(343deg, rgba(96, 139, 246, 0.10) 0%, rgba(96, 139, 246, 0.00) 83.72%), #191929',
@@ -51,7 +51,7 @@ const FooterBlock = () => {
                 width={60}
                 height={60}
               />
-              <div className="flex flex-col whitespace-nowrap text-[15px] font-normal leading-[125%] text-white">
+              <div className="flex flex-col text-[15px] leading-[125%] font-normal whitespace-nowrap text-white">
                 <span>Алексей Белинский</span>
                 <span
                   style={{
@@ -62,7 +62,7 @@ const FooterBlock = () => {
                 </span>
               </div>
             </div>
-            <div className="mt-[15px] text-[16px] font-medium leading-[135%] text-[#A8A8CA] md:mt-[20px]">
+            <div className="mt-[15px] text-[16px] leading-[135%] font-medium text-[#A8A8CA] md:mt-[20px]">
               Опытный иллюзионист Алексей Белинский, международный лауреат и
               победитель Всероссийских конкурсов превратит обычный праздник в
               современное и престижное событие, которое запомнится на долго.
@@ -76,18 +76,18 @@ const FooterBlock = () => {
             <a
               href="/doc/privacy.doc"
               download
-              className="mt-[25px] hidden cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:mt-[20px] md:block md:text-[16px] xl:mt-[45px]"
+              className="mt-[25px] hidden cursor-pointer text-[13px] leading-[135%] font-normal text-white duration-300 hover:text-[#FFCA45] md:mt-[20px] md:block md:text-[16px] xl:mt-[45px]"
             >
               Политика конфиденциальности
             </a>
           </div>
         </div>
-        <div className="flex justify-start flex-1 md:justify-center tablet:justify-end">
-          <div className="mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] tablet:w-[460px] xl:w-[460px] xl:max-w-[460px]">
-            <div className="font-buyan text-[29px] font-bold leading-[100%] text-white md:text-[64px]">
+        <div className="tablet:justify-end flex flex-1 justify-start md:justify-center">
+          <div className="tablet:w-[460px] mt-[30px] max-w-full md:mt-0 md:w-[212px] md:max-w-[460px] xl:w-[460px] xl:max-w-[460px]">
+            <div className="font-buyan text-[29px] leading-[100%] font-bold text-white md:text-[64px]">
               Контакты
             </div>
-            <div className="mt-[15px] hidden text-[19px] font-medium leading-[135%] text-[#A8A8CA] md:mt-[20px] md:block">
+            <div className="mt-[15px] hidden text-[19px] leading-[135%] font-medium text-[#A8A8CA] md:mt-[20px] md:block">
               Красноярск
               <br />
               круглосуточно
@@ -95,7 +95,7 @@ const FooterBlock = () => {
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
               <Link
                 href="tel:+79138370020"
-                className="cursor-pointer text-[15px] font-bold leading-[135%] text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
+                className="cursor-pointer text-[15px] leading-[135%] font-bold text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                 target="_blank"
                 onClick={() => reachGoal('klick_nomber')}
                 prefetch={false}
@@ -103,7 +103,7 @@ const FooterBlock = () => {
                 +7-913-837-00-20
               </Link>
               <button
-                className="h-[40px] cursor-pointer rounded-[10px] border border-white border-opacity-20 px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"
+                className="border-opacity-20 h-[40px] cursor-pointer rounded-[10px] border border-white px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"
                 onClick={() => {
                   setYandexAim('zakaz_zvonok')
                   setShowModalZakaz(true)
@@ -112,7 +112,7 @@ const FooterBlock = () => {
                 Заказать звонок
               </button>
             </div>
-            <div className="mt-[20px] text-[16px] font-medium leading-[135%] text-[#A8A8CA] md:mt-[30px]">
+            <div className="mt-[20px] text-[16px] leading-[135%] font-medium text-[#A8A8CA] md:mt-[30px]">
               Социальные сети:
             </div>
             <div className="mt-[5px] flex flex-wrap gap-x-[20px] gap-y-[10px] md:mt-[10px] md:gap-x-[30px]">
@@ -139,7 +139,7 @@ const FooterBlock = () => {
             <Link
               href="/doc/privacy.doc"
               download
-              className="mt-[25px] block w-fit cursor-pointer text-[13px] font-normal leading-[135%] text-white duration-300 hover:text-[#FFCA45] md:hidden"
+              className="mt-[25px] block w-fit cursor-pointer text-[13px] leading-[135%] font-normal text-white duration-300 hover:text-[#FFCA45] md:hidden"
             >
               Политика конфиденциальности
             </Link>

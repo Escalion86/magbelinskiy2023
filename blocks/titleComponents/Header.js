@@ -12,7 +12,7 @@ import { reachGoal } from 'app/components/metrika'
 const MenuItem = ({ name, active, href }) => (
   <li
     className={cn(
-      'cursor-pointer text-center text-[16px] font-medium leading-[125%] duration-300 hover:text-[#FFCA45]',
+      'cursor-pointer text-center text-[16px] leading-[125%] font-medium duration-300 hover:text-[#FFCA45]',
       active ? 'text-white' : 'text-[#A8A8CA]'
     )}
   >
@@ -34,7 +34,7 @@ const ContactButton = ({ children, href, onClick, big, ariaLabel }) => {
       href={href}
       target="_blank"
       className={cn(
-        'flex cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] bg-size-200 bg-pos-50 p-[8px] transition-all duration-300 hover:bg-pos-0 sm:h-[50px] sm:w-[50px] sm:p-[13px]',
+        'bg-size-200 bg-pos-50 hover:bg-pos-0 flex cursor-pointer items-center justify-center rounded-[7px] bg-gradient-to-tr from-[#0B0B15] via-[#1A1A32] to-[#ebb42a] p-[8px] transition-all duration-300 sm:h-[50px] sm:w-[50px] sm:p-[13px]',
         big ? 'h-[40px] w-[40px]' : 'h-[36px] w-[36px]'
       )}
       style={{
@@ -201,7 +201,7 @@ const Header = () => {
   const BurgerMenuItem = ({ children, href }) => {
     return (
       <li
-        className="cursor-pointer whitespace-nowrap bg-gradient-to-r from-[#fff] to-[#fff] duration-300 hover:from-[#C17C0E] hover:via-[#FFCA45] hover:via-[63.68%] hover:to-[#FFCA45]"
+        className="cursor-pointer bg-gradient-to-r from-[#fff] to-[#fff] whitespace-nowrap duration-300 hover:from-[#C17C0E] hover:via-[#FFCA45] hover:via-[63.68%] hover:to-[#FFCA45]"
         style={{
           // background: 'linear-gradient(67deg, #C17C0E 0%, #FFCA45 63.68%)',
           backgroundClip: 'text',
@@ -220,7 +220,7 @@ const Header = () => {
     <div className="headerwrapper sticky -top-[13px] z-50 flex h-0 w-full justify-center duration-300">
       <nav
         className={cn(
-          'fixed right-0 top-0 flex h-screen items-center justify-center overflow-hidden duration-500 xl:hidden',
+          'fixed top-0 right-0 flex h-screen items-center justify-center overflow-hidden duration-500 xl:hidden',
           showMenu ? 'w-full' : 'w-[0px]'
         )}
         style={{
@@ -229,7 +229,7 @@ const Header = () => {
         }}
       >
         <ul
-          className="flex min-w-fit flex-col gap-y-[10px] text-center text-[28px] font-bold leading-[100%] text-white md:text-[38px]"
+          className="flex min-w-fit flex-col gap-y-[10px] text-center text-[28px] leading-[100%] font-bold text-white md:text-[38px]"
           style={{
             fontFamily: 'Buyan',
           }}
@@ -239,10 +239,11 @@ const Header = () => {
           <BurgerMenuItem href="#video">Посмотреть видео</BurgerMenuItem>
           <BurgerMenuItem href="#quiz">Пройти квиз</BurgerMenuItem>
           <BurgerMenuItem href="#fotos">Фотографии</BurgerMenuItem>
+          <BurgerMenuItem href="#reviews">Отзывы</BurgerMenuItem>
           <BurgerMenuItem href="#zakaz">Оставить заявку</BurgerMenuItem>
         </ul>
       </nav>
-      <div className="header absolute left-1/2 right-0 top-0 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center bg-[#131323] bg-opacity-0 px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]">
+      <div className="header bg-opacity-0 absolute top-0 right-0 left-1/2 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center bg-[#131323] px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]">
         <div className="flex w-full max-w-[1264px] justify-between gap-x-[10px]">
           <div className="flex flex-1 items-center gap-x-[19px]">
             <Image
@@ -259,7 +260,7 @@ const Header = () => {
               width={60}
               height={60}
             />
-            <div className="hidden flex-col whitespace-nowrap text-[15px] font-normal leading-[125%] text-white md:flex tablet:text-[16px]">
+            <div className="tablet:text-[16px] hidden flex-col text-[15px] leading-[125%] font-normal whitespace-nowrap text-white md:flex">
               <span>Алексей Белинский</span>
               <span
                 style={{
@@ -278,16 +279,17 @@ const Header = () => {
           >
             <MenuItem name="Об иллюзионисте" href="#about" />
             <MenuItem name="Где уместно?" href="#why" />
+            <MenuItem name="Отзывы" href="#reviews" />
           </ol>
           <div className="flex flex-1 items-center justify-end gap-x-[13px] md:gap-x-[20px]">
             <div className="flex items-center gap-x-[3px] md:gap-x-[10px]">
               <WhatsappButton />
               <TelegramButton />
             </div>
-            <div className="flex flex-col justify-center whitespace-nowrap text-right text-[15px] sm:text-[22px]">
+            <div className="flex flex-col justify-center text-right text-[15px] whitespace-nowrap sm:text-[22px]">
               <Link
                 href="tel:+79138370020"
-                className="cursor-pointer font-medium leading-[125%] text-white duration-300 hover:text-[#FFCA45]"
+                className="cursor-pointer leading-[125%] font-medium text-white duration-300 hover:text-[#FFCA45]"
                 onClick={() => reachGoal('klick_nomber')}
                 target="_blank"
                 prefetch={false}
@@ -295,7 +297,7 @@ const Header = () => {
                 8(913)837-00-20
               </Link>
               <button
-                className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] font-normal leading-[125%] text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
+                className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] leading-[125%] font-normal text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
                 style={{
                   WebkitBackgroundClip: 'padding-box',
                   backgroundClip: 'padding-box',

@@ -6,6 +6,7 @@ import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
 import BackLight from './components/BackLight'
 // import Image from 'next/image'
+import { AutoplayVideo } from '@wethegit/react-autoplay-video'
 
 const Title = ({ className }) => (
   <div
@@ -287,7 +288,7 @@ const ImgPhone = ({
         imgSizeClassName
       )}
     >
-      <video
+      <AutoplayVideo
         src="/img/promo2.mp4"
         style={{
           background:
@@ -301,10 +302,6 @@ const ImgPhone = ({
           imgSizeClassName
         )}
         loop
-        autoPlay
-        muted
-        playsInline
-        preload="metadata"
         controlsList="nodownload"
         width={width}
         height={height}
