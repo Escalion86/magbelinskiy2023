@@ -3,6 +3,7 @@ import SiteSettings from '@models/SiteSettings'
 import Clients from '@models/Clients'
 import Requests from '@models/Requests'
 import Transactions from '@models/Transactions'
+import Services from '@models/Services'
 import dbConnect from './dbConnect'
 
 const fetchProps = async (user) => {
@@ -15,6 +16,7 @@ const fetchProps = async (user) => {
     const siteSettings = await SiteSettings.find({}).lean()
     const requests = await Requests.find({}).lean()
     const transactions = await Transactions.find({}).lean()
+    const services = await Services.find({}).lean()
 
     const fetchResult = {
       clients: JSON.parse(JSON.stringify(clients)),
@@ -24,6 +26,7 @@ const fetchProps = async (user) => {
       ),
       requests: JSON.parse(JSON.stringify(requests)),
       transactions: JSON.parse(JSON.stringify(transactions)),
+      services: JSON.parse(JSON.stringify(services)),
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,
@@ -39,6 +42,7 @@ const fetchProps = async (user) => {
       siteSettings: {},
       requests: [],
       transactions: [],
+      services: [],
       serverSettings: JSON.parse(
         JSON.stringify({
           dateTime: serverDateTime,

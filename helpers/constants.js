@@ -14,7 +14,7 @@ import {
   faBug,
   faMoneyBill,
   faUser,
-  faHeart,
+  faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons'
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 
@@ -392,12 +392,14 @@ export const DEFAULT_EVENT = Object.freeze({
   organizerId: null,
   requestId: null,
   clientId: null,
-  title: '',
   description: '',
   eventDate: null,
   requestDate: null,
   dateStart: null,
   dateEnd: null,
+  invoiceLinks: [],
+  receiptLinks: [],
+  servicesIds: [],
   address: DEFAULT_ADDRESS,
   status: 'active',
   contractSum: 0,
@@ -441,6 +443,7 @@ export const DEFAULT_REQUEST = Object.freeze({
   contactChannels: [],
   createdAt: null,
   eventDate: null,
+  servicesIds: [],
   address: DEFAULT_ADDRESS,
   contractSum: 0,
   comment: '',
@@ -544,15 +547,7 @@ export const DEFAULT_ADDITIONAL_BLOCK = Object.freeze({
 export const DEFAULT_SERVICE = Object.freeze({
   title: '',
   description: '',
-  shortDescription: '',
-  images: [],
-  menuName: '',
-  index: null,
-  showOnSite: true,
-  price: 0,
-  questionnaire: null,
-  usersStatusAccess: {},
-  usersStatusDiscount: {},
+  duration: 0,
 })
 
 export const DEFAULT_PRODUCT = Object.freeze({
@@ -585,6 +580,7 @@ export const DEFAULT_SITE_SETTINGS = Object.freeze({
   instagram: '',
   vk: '',
   codeSendService: 'telefonip',
+  timeZone: 'Asia/Krasnoyarsk',
 })
 
 export const EVENT_RELATIONSHIP_ACCESS = [
@@ -693,6 +689,13 @@ export const pages = [
     href: 'eventsPast',
     icon: faClock,
   },
+  {
+    id: 6,
+    group: 3,
+    name: 'Услуги',
+    href: 'services',
+    icon: faWandMagicSparkles,
+  },
   // {
   //   id: 5,
   //   group: 3,
@@ -752,6 +755,11 @@ export const pagesGroups = [
     id: 2,
     name: 'Мероприятия',
     icon: faCalendarCheck,
+  },
+  {
+    id: 3,
+    name: 'Услуги',
+    icon: faWandMagicSparkles,
   },
   {
     id: 4,

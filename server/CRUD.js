@@ -1,6 +1,7 @@
 import formatAddress from '@helpers/formatAddress'
 import Events from '@models/Events'
 import Histories from '@models/Histories'
+import SiteSettings from '@models/SiteSettings'
 import dbConnect from './dbConnect'
 import DOMPurify from 'isomorphic-dompurify'
 // import { DEFAULT_ROLES } from '@helpers/constants'
@@ -8,6 +9,7 @@ import DOMPurify from 'isomorphic-dompurify'
 import mongoose from 'mongoose'
 import compareObjectsWithDif from '@helpers/compareObjectsWithDif'
 import { NextResponse } from 'next/server'
+import { getCalendarClient } from '@server/googleCalendarClient'
 
 function isJson(str) {
   try {
@@ -81,6 +83,7 @@ const linkAReformer = (link) => {
 
 const { google } = require('googleapis')
 const SCOPES = ['https://www.googleapis.com/auth/calendar']
+const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
 const {
   GOOGLE_PRIVATE_KEY,
   GOOGLE_CLIENT_EMAIL,
@@ -113,20 +116,29 @@ const connectToGoogleCalendar = () => {
   return calendar
 }
 
+const getSiteTimeZone = async () => {
+  await dbConnect()
+  const settings = await SiteSettings.findOne({})
+    .select('timeZone')
+    .lean()
+  return settings?.timeZone || DEFAULT_TIME_ZONE
+}
+
 const addBlankEventToCalendar = async () => {
-  const calendar = connectToGoogleCalendar()
+  const calendar = await getCalendarClient(SCOPES)
   if (!calendar) return undefined
+  const timeZone = await getSiteTimeZone()
 
   const calendarEvent = {
     summary: '[blank]',
     description: '',
     start: {
       dateTime: new Date(),
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     end: {
       dateTime: new Date(),
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     attendees: [],
     reminders: {
@@ -138,17 +150,9 @@ const addBlankEventToCalendar = async () => {
     },
   }
 
-  const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
-
   const calendarEventData = await new Promise((resolve, reject) => {
     calendar.events.insert(
       {
-        auth: authProcess,
         calendarId: GOOGLE_CALENDAR_ID,
         resource: calendarEvent,
       },
@@ -178,20 +182,12 @@ const addBlankEventToCalendar = async () => {
 const deleteEventFromCalendar = async (googleCalendarId) => {
   if (!googleCalendarId) return
 
-  const calendar = connectToGoogleCalendar()
+  const calendar = await getCalendarClient(SCOPES)
   if (!calendar) return undefined
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
 
   const calendarEventData = await new Promise((resolve, reject) => {
     calendar.events.delete(
       {
-        auth: authProcess,
         calendarId: GOOGLE_CALENDAR_ID,
         eventId: googleCalendarId,
       },
@@ -219,8 +215,9 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
 }
 
 const updateEventInCalendar = async (event, req) => {
-  const calendar = connectToGoogleCalendar()
+  const calendar = await getCalendarClient(SCOPES)
   if (!calendar) return undefined
+  const timeZone = await getSiteTimeZone()
 
   // calendar.events.list(
   //   {
@@ -260,18 +257,21 @@ const updateEventInCalendar = async (event, req) => {
       preparedText = preparedText.replaceAll(aTags[i], linkAReformer(aTags[i]))
   }
 
-  const startDateTime = event.dateStart ?? event.eventDate ?? event.dateEnd ?? null
+  const startDateTime =
+    event.dateStart ?? event.eventDate ?? event.dateEnd ?? null
   const endDateTime =
     event.dateEnd ??
     (startDateTime
       ? new Date(new Date(startDateTime).getTime() + 60 * 60 * 1000)
       : null)
   const calendarLocation = formatAddress(event.address, event.location)
+  const calendarTitle =
+    formatAddress(event.address, event.location) || 'Адрес не указан'
 
   const calendarEvent = {
-    summary: `${event.showOnSite ? '' : '[СКРЫТО] '}${
+    summary: `${
       event.status === 'canceled' ? '[ОТМЕНЕНО] ' : ''
-    }${event.title}`,
+    }${calendarTitle}`,
     description:
       DOMPurify.sanitize(
         preparedText
@@ -295,11 +295,11 @@ const updateEventInCalendar = async (event, req) => {
       }`,
     start: {
       dateTime: startDateTime,
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     end: {
       dateTime: endDateTime,
-      timeZone: 'Asia/Krasnoyarsk',
+      timeZone,
     },
     location: calendarLocation,
     attendees: [],
@@ -312,13 +312,6 @@ const updateEventInCalendar = async (event, req) => {
     },
     // visibility: event.showOnSite ? 'default' : 'private',
   }
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile: './google_calendar_token.json',
-    scopes: SCOPES,
-  })
-
-  const authProcess = await auth.getClient()
 
   const stripCalendarResponseFromDescription = (description = '') => {
     const markerIndex = description.indexOf(`\n\n${CALENDAR_RESPONSE_MARKER}\n`)
@@ -333,9 +326,7 @@ const updateEventInCalendar = async (event, req) => {
   ) => {
     if (!eventId || !responseData) return
     await dbConnect()
-    const current = await Events.findById(eventId)
-      .select('description')
-      .lean()
+    const current = await Events.findById(eventId).select('description').lean()
     if (!current) return
     const baseDescription = stripCalendarResponseFromDescription(
       current.description ?? ''
@@ -355,7 +346,6 @@ const updateEventInCalendar = async (event, req) => {
     const createdCalendarEvent = await new Promise((resolve, reject) => {
       calendar.events.insert(
         {
-          auth: authProcess,
           calendarId: GOOGLE_CALENDAR_ID,
           resource: calendarEvent,
         },
@@ -401,7 +391,6 @@ const updateEventInCalendar = async (event, req) => {
   const updatedCalendarEvent = await new Promise((resolve, reject) => {
     calendar.events.update(
       {
-        auth: authProcess,
         calendarId: GOOGLE_CALENDAR_ID,
         eventId: event.googleCalendarId ?? undefined,
         resource: calendarEvent,
@@ -432,6 +421,12 @@ const updateEventInCalendar = async (event, req) => {
   )
 
   return updatedCalendarEvent
+}
+
+export {
+  addBlankEventToCalendar,
+  deleteEventFromCalendar,
+  updateEventInCalendar,
 }
 
 export default async function handler(Schema, req, res, params = null) {

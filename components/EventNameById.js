@@ -7,6 +7,7 @@ import cn from 'classnames'
 import { useAtomValue } from 'jotai'
 import TextLinesLimiter from './TextLinesLimiter'
 import eventSelector from '@state/selectors/eventSelector'
+import formatAddress from '@helpers/formatAddress'
 
 const EventNameById = ({ eventId, showStatus, className }) => {
   const event = useAtomValue(eventSelector(eventId))
@@ -35,7 +36,9 @@ const EventNameById = ({ eventId, showStatus, className }) => {
           />
         </div>
       )}
-      <TextLinesLimiter lines={1}>{event.title}</TextLinesLimiter>
+      <TextLinesLimiter lines={1}>
+        {formatAddress(event?.address, 'Мероприятие')}
+      </TextLinesLimiter>
     </div>
   )
 }

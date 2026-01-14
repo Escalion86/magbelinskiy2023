@@ -12,6 +12,7 @@ import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import { modalsFuncAtom } from '@state/atoms'
 import dateToDateTimeStr from '@helpers/dateToDateTimeStr'
 import eventSelector from '@state/selectors/eventSelector'
+import formatAddress from '@helpers/formatAddress'
 
 const eventHistoryFunc = (eventId) => {
   const EventHistoryModal = ({
@@ -50,7 +51,9 @@ const eventHistoryFunc = (eventId) => {
 
     return (
       <div className="flex flex-col items-center flex-1 gap-y-2">
-        <div className="text-lg font-bold">{event.title}</div>
+        <div className="text-lg font-bold">
+          {formatAddress(event?.address, 'Мероприятие')}
+        </div>
         <DateTimeEvent
           wrapperClassName="text-base laptop:text-lg font-bold leading-4 laptop:leading-5 justify-center laptop:justify-start"
           dateClassName="text-general"

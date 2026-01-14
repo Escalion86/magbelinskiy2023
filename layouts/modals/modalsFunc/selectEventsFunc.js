@@ -7,6 +7,7 @@ import isObject from '@helpers/isObject'
 import sortFunctions from '@helpers/sortFunctions'
 import ListWrapper from '@layouts/lists/ListWrapper'
 import eventsAtom from '@state/atoms/eventsAtom'
+import formatAddress from '@helpers/formatAddress'
 import { useCallback, useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -47,8 +48,13 @@ const selectEventsFunc = (
 
     const [searchText, setSearchText] = useState('')
 
+    const preparedEvents = events.map((event) => ({
+      ...event,
+      addressString: formatAddress(event.address, event.location ?? ''),
+    }))
+
     var filteredEvents = filterItems(
-      events.filter((event) => {
+      preparedEvents.filter((event) => {
         const status = eventStatusFunc(event)
         if (status === 'canceled') return filter.canceled
         if (status === 'closed') return filter.closed
@@ -58,7 +64,7 @@ const selectEventsFunc = (
       searchText,
       exceptedIds,
       {},
-      ['title']
+      ['addressString']
     )
 
     if (exceptedIds) {

@@ -16,6 +16,9 @@ import AddressPicker from '@components/AddressPicker'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import { postData } from '@helpers/CRUD'
+import servicesAtom from '@state/atoms/servicesAtom'
+import CheckBox from '@components/CheckBox'
+import InputWrapper from '@components/InputWrapper'
 
 const requestFunc = (requestId, clone = false) => {
   const RequestModal = ({
@@ -30,6 +33,7 @@ const requestFunc = (requestId, clone = false) => {
     const request = useAtomValue(requestSelector(requestId))
     const setRequest = useAtomValue(itemsFuncAtom).request.set
     const clients = useAtomValue(clientsAtom)
+    const services = useAtomValue(servicesAtom)
     const loggedUser = useAtomValue(loggedUserAtom)
     const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
     const modalsFunc = useAtomValue(modalsFuncAtom)
@@ -49,21 +53,10 @@ const requestFunc = (requestId, clone = false) => {
       DEFAULT_REQUEST.comment ?? ''
     )
     const [yandexAim, setYandexAim] = useState('')
-    const initializedRef = useRef(false)
-    const yandexAimOptions = useMemo(
-      () => [
-        'poluchit_zvonok',
-        'zakaz_show',
-        'zakaz_zvonok',
-        'after_focus_form',
-        'form_test',
-        'klick_nomber',
-        'klick_WA',
-        'klick_TG',
-        'after_focus_click_number',
-      ],
-      []
+    const [servicesIds, setServicesIds] = useState(
+      DEFAULT_REQUEST.servicesIds ?? []
     )
+    const initializedRef = useRef(false)
 
     const normalizeAddress = useCallback((rawAddress, legacyLocation) => {
       const normalized = {
@@ -147,6 +140,9 @@ const requestFunc = (requestId, clone = false) => {
         contractSum: contractSumValue,
         comment: commentValue,
         yandexAim: yandexAimValue,
+        servicesIds: Array.isArray(request?.servicesIds)
+          ? request.servicesIds
+          : DEFAULT_REQUEST.servicesIds ?? [],
       }
     }, [normalizeAddress, request, clone, requestId, siteSettings?.defaultTown])
 
@@ -164,6 +160,7 @@ const requestFunc = (requestId, clone = false) => {
       setContractSum(originalValues.contractSum)
       setComment(originalValues.comment)
       setYandexAim(originalValues.yandexAim)
+      setServicesIds(originalValues.servicesIds)
       initializedRef.current = true
     }, [clone, originalValues, request, requestId])
 
@@ -226,6 +223,15 @@ const requestFunc = (requestId, clone = false) => {
         hasCustomError = true
       }
 
+      if (!eventDate) {
+        addError({ eventDate: 'Укажите дату мероприятия' })
+        hasCustomError = true
+      }
+      if (!servicesIds || servicesIds.length === 0) {
+        addError({ servicesIds: 'Выберите услугу' })
+        hasCustomError = true
+      }
+
       if (!hasCustomError) {
         closeModal()
         const normalizedAddress = normalizeAddress(address)
@@ -253,6 +259,7 @@ const requestFunc = (requestId, clone = false) => {
             contractSum: normalizedContractSum,
             comment: comment.trim(),
             yandexAim: yandexAim.trim(),
+            servicesIds,
           },
           clone
         )
@@ -290,7 +297,9 @@ const requestFunc = (requestId, clone = false) => {
         originalAddressSignature !== addressSignature ||
         originalValues.contractSum !== contractSum ||
         originalValues.comment !== comment ||
-        originalValues.yandexAim !== yandexAim,
+        originalValues.yandexAim !== yandexAim ||
+        JSON.stringify(originalValues.servicesIds) !==
+          JSON.stringify(servicesIds),
       [
         originalValues,
         clientId,
@@ -301,7 +310,13 @@ const requestFunc = (requestId, clone = false) => {
         contractSum,
         comment,
         yandexAim,
+        servicesIds,
       ]
+    )
+
+    const requiredMissing = useMemo(
+      () => !clientId || !eventDate || !servicesIds || servicesIds.length === 0,
+      [clientId, eventDate, servicesIds]
     )
 
     const onConfirmRef = useRef(onClickConfirm)
@@ -311,19 +326,45 @@ const requestFunc = (requestId, clone = false) => {
     }, [onClickConfirm])
 
     useEffect(() => {
-      setOnConfirmFunc(
-        isFormChanged ? () => onConfirmRef.current?.() : undefined
-      )
+      setOnConfirmFunc(() => onConfirmRef.current?.())
       setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!isFormChanged)
+      setDisableConfirm(!isFormChanged || requiredMissing)
     }, [
       isFormChanged,
+      requiredMissing,
       setDisableConfirm,
       setOnShowOnCloseConfirmDialog,
       setOnConfirmFunc,
     ])
     return (
       <FormWrapper>
+        <InputWrapper label="Услуги" required error={errors.servicesIds}>
+          <div className="flex flex-col gap-1">
+            {services.length === 0 ? (
+              <div className="text-sm text-gray-500">Услуги не добавлены</div>
+            ) : (
+              services.map((service) => {
+                const checked = servicesIds.includes(service._id)
+                return (
+                  <CheckBox
+                    key={service._id}
+                    checked={checked}
+                    label={service.title}
+                    noMargin
+                    onClick={() => {
+                      removeError('servicesIds')
+                      setServicesIds((prev) =>
+                        checked
+                          ? prev.filter((id) => id !== service._id)
+                          : [...prev, service._id]
+                      )
+                    }}
+                  />
+                )
+              })
+            )}
+          </div>
+        </InputWrapper>
         <ClientPicker
           selectedClient={selectedClient}
           selectedClientId={clientId}
@@ -381,13 +422,6 @@ const requestFunc = (requestId, clone = false) => {
           onChange={setComment}
           value={comment}
           rows={3}
-        />
-        <Input
-          label="Яндекс цель"
-          type="text"
-          value={yandexAim}
-          onChange={setYandexAim}
-          dataList={{ name: 'yandex-aim', list: yandexAimOptions }}
         />
         <ErrorsList errors={errors} />
       </FormWrapper>

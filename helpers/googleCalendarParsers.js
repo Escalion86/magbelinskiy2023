@@ -522,7 +522,6 @@ export const parseGoogleEvent = (event) => {
   }
 
   return {
-    title: summary?.trim() || 'Мероприятие из Google Calendar',
     description: description.trim(),
     address,
     clientName,

@@ -103,18 +103,18 @@ const EventsContent = ({ filter = 'all' }) => {
               onChange={(value) => setSelectedTown(value ?? '')}
               placeholder="Все города"
               fullWidth
-              noMargin
+              smallMargin
             />
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <span>
               {filterName}: {sortedEvents.length}
             </span>
-            <span className="hidden tablet:inline">Всего: {events.length}</span>
+            <span className="tablet:inline hidden">Всего: {events.length}</span>
             <Button
               name="+"
               collapsing
-              className="h-9 w-9 rounded-full text-lg"
+              className="action-icon-button h-9 w-9 rounded-full text-lg"
               onClick={() => modalsFunc.event?.add()}
               disabled={!modalsFunc.event?.add}
             />

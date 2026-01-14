@@ -14,6 +14,8 @@ import eventDeleteSelector from './selectors/eventDeleteSelector'
 import requestEditSelector from './selectors/requestEditSelector'
 import requestDeleteSelector from './selectors/requestDeleteSelector'
 import clientEditSelector from './selectors/clientEditSelector'
+import serviceEditSelector from './selectors/serviceEditSelector'
+import serviceDeleteSelector from './selectors/serviceDeleteSelector'
 // import siteSettingsAtom from './atoms/siteSettingsAtom'
 // import questionnaireEditSelector from './selectors/questionnaireEditSelector'
 // import questionnaireDeleteSelector from './selectors/questionnaireDeleteSelector'
@@ -150,8 +152,8 @@ const props = {
   // deleteQuestionnaire: setFunc(questionnaireDeleteSelector),
   // setQuestionnaireUsers: setFunc(questionnaireUsersEditSelector),
   // deleteQuestionnaireUsers: setFunc(questionnaireUsersDeleteSelector),
-  // setService: setFunc(serviceEditSelector),
-  // deleteService: setFunc(serviceDeleteSelector),
+  setService: setFunc(serviceEditSelector),
+  deleteService: setFunc(serviceDeleteSelector),
   // setServicesUser: setFunc(servicesUsersEditSelector),
   // deleteServicesUser: setFunc(servicesUsersDeleteSelector),
   // setRoles: setFunc(rolesAtom),
@@ -164,6 +166,7 @@ const itemsFuncGenerator = (
     'request',
     'event',
     'client',
+    'service',
     // 'eventsUser',
     // 'user',
     // 'questionnaire',
@@ -196,7 +199,14 @@ const itemsFuncGenerator = (
                 setNotLoadingCard(itemName + item._id)
                 if (!noSnackbar && messages[itemName]?.update?.success)
                   snackbar.success(messages[itemName].update.success)
-                props['set' + capitalizeFirstLetter(itemName)](data)
+                if (itemName === 'request') {
+                  if (data?.request)
+                    props['set' + capitalizeFirstLetter(itemName)](data.request)
+                  else props['set' + capitalizeFirstLetter(itemName)](data)
+                  if (data?.client) props.setClient(data.client)
+                } else {
+                  props['set' + capitalizeFirstLetter(itemName)](data)
+                }
                 // setEvent(data)
               },
               (error) => {
@@ -223,7 +233,14 @@ const itemsFuncGenerator = (
               (data) => {
                 if (!noSnackbar && messages[itemName]?.add?.success)
                   snackbar.success(messages[itemName].add.success)
-                props['set' + capitalizeFirstLetter(itemName)](data)
+                if (itemName === 'request') {
+                  if (data?.request)
+                    props['set' + capitalizeFirstLetter(itemName)](data.request)
+                  else props['set' + capitalizeFirstLetter(itemName)](data)
+                  if (data?.client) props.setClient(data.client)
+                } else {
+                  props['set' + capitalizeFirstLetter(itemName)](data)
+                }
                 // setEvent(data)
               },
               (error) => {

@@ -29,14 +29,39 @@ import Input from '@components/Input'
 import AddressPicker from '@components/AddressPicker'
 import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
+import servicesAtom from '@state/atoms/servicesAtom'
+import CheckBox from '@components/CheckBox'
+import InputWrapper from '@components/InputWrapper'
 
 const normalizeAddressValue = (rawAddress) => {
-  const normalized = {
-    ...DEFAULT_ADDRESS,
-    ...(rawAddress && typeof rawAddress === 'object' ? rawAddress : {}),
+  const normalized = { ...DEFAULT_ADDRESS }
+
+  if (!rawAddress) return normalized
+
+  if (typeof rawAddress === 'string') {
+    return { ...normalized, comment: rawAddress }
   }
 
+  if (typeof rawAddress !== 'object') return normalized
+
+  Object.keys(DEFAULT_ADDRESS).forEach((key) => {
+    if (
+      key in rawAddress &&
+      rawAddress[key] !== undefined &&
+      rawAddress[key] !== null
+    ) {
+      normalized[key] = rawAddress[key]
+    }
+  })
+
   return normalized
+}
+
+const normalizeLinksList = (links) => {
+  if (!Array.isArray(links)) return []
+  return links
+    .map((value) => (typeof value === 'string' ? value.trim() : ''))
+    .filter(Boolean)
 }
 
 const eventFunc = (eventId, clone = false, requestId = null) => {
@@ -54,6 +79,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     const setEvent = itemsFunc?.event?.set
     const convertRequest = itemsFunc?.request?.convert
     const clients = useAtomValue(clientsAtom)
+    const services = useAtomValue(servicesAtom)
     const loggedUser = useAtomValue(loggedUserAtom)
     const [siteSettings, setSiteSettings] = useAtom(siteSettingsAtom)
     const colleagues = useMemo(
@@ -72,12 +98,6 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     const [clientId, setClientId] = useState(
       event?.clientId ?? request?.clientId ?? DEFAULT_EVENT.clientId
     )
-    const [title, setTitle] = useState(
-      event?.title ??
-        (request?.clientName
-          ? `Мероприятие для ${request.clientName}`
-          : DEFAULT_EVENT.title ?? '')
-    )
     const [status, setStatus] = useState(
       event?.status ?? (requestId ? 'planned' : DEFAULT_EVENT.status)
     )
@@ -88,10 +108,17 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       event?.dateEnd ?? DEFAULT_EVENT.dateEnd ?? null
     )
     const [dateEndTouched, setDateEndTouched] = useState(false)
+    const [invoiceLinks, setInvoiceLinks] = useState(
+      event?.invoiceLinks ?? DEFAULT_EVENT.invoiceLinks ?? []
+    )
+    const [receiptLinks, setReceiptLinks] = useState(
+      event?.receiptLinks ?? DEFAULT_EVENT.receiptLinks ?? []
+    )
     const [address, setAddress] = useState(() => {
       const normalized = normalizeAddressValue(
         event?.address ?? request?.address
       )
+
       if (
         !normalized.town &&
         siteSettings?.defaultTown &&
@@ -102,8 +129,12 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       }
       return normalized
     })
+
     const [contractSum, setContractSum] = useState(
-      event?.contractSum ?? request?.contractSum ?? DEFAULT_EVENT.contractSum ?? 0
+      event?.contractSum ??
+        request?.contractSum ??
+        DEFAULT_EVENT.contractSum ??
+        0
     )
     const [isByContract, setIsByContract] = useState(
       event?.isByContract ?? DEFAULT_EVENT.isByContract ?? false
@@ -124,6 +155,12 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
         DEFAULT_EVENT.calendarImportChecked ??
         false
     )
+    const [servicesIds, setServicesIds] = useState(
+      event?.servicesIds ??
+        request?.servicesIds ??
+        DEFAULT_EVENT.servicesIds ??
+        []
+    )
 
     const importedFromCalendar =
       event?.importedFromCalendar ?? DEFAULT_EVENT.importedFromCalendar
@@ -140,12 +177,8 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
 
     const initialEventValues = useMemo(() => {
       return {
-        clientId: event?.clientId ?? request?.clientId ?? DEFAULT_EVENT.clientId,
-        title:
-          event?.title ??
-          (request?.clientName
-            ? `Мероприятие для ${request.clientName}`
-            : DEFAULT_EVENT.title),
+        clientId:
+          event?.clientId ?? request?.clientId ?? DEFAULT_EVENT.clientId,
         status: event?.status ?? (requestId ? 'planned' : DEFAULT_EVENT.status),
         eventDate:
           event?.eventDate ?? request?.eventDate ?? DEFAULT_EVENT.eventDate,
@@ -165,7 +198,9 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           return normalized
         })(),
         contractSum:
-          event?.contractSum ?? request?.contractSum ?? DEFAULT_EVENT.contractSum,
+          event?.contractSum ??
+          request?.contractSum ??
+          DEFAULT_EVENT.contractSum,
         isByContract: event?.isByContract ?? DEFAULT_EVENT.isByContract,
         description:
           event?.description ??
@@ -173,14 +208,20 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           request?.comment ??
           DEFAULT_EVENT.description,
         dateEnd: event?.dateEnd ?? DEFAULT_EVENT.dateEnd,
+        invoiceLinks: event?.invoiceLinks ?? DEFAULT_EVENT.invoiceLinks ?? [],
+        receiptLinks: event?.receiptLinks ?? DEFAULT_EVENT.receiptLinks ?? [],
         calendarImportChecked:
           event?.calendarImportChecked ?? DEFAULT_EVENT.calendarImportChecked,
+        servicesIds:
+          event?.servicesIds ??
+          request?.servicesIds ??
+          DEFAULT_EVENT.servicesIds ??
+          [],
         colleagueId: event?.colleagueId ?? DEFAULT_EVENT.colleagueId,
         isTransferred: initialIsTransferred,
       }
     }, [
       event?.clientId,
-      event?.title,
       event?.status,
       event?.eventDate,
       event?.address,
@@ -198,6 +239,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       request?.address,
       request?.comment,
       request?.contractSum,
+      request?.servicesIds,
       siteSettings?.defaultTown,
     ])
 
@@ -214,7 +256,6 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     const isFormChanged = useMemo(
       () =>
         initialEventValues.clientId !== clientId ||
-        initialEventValues.title !== title ||
         initialEventValues.status !== status ||
         initialEventValues.eventDate !== eventDate ||
         initialEventValues.dateEnd !== dateEnd ||
@@ -224,10 +265,15 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
         initialEventValues.isTransferred !== isTransferred ||
         initialEventValues.colleagueId !== colleagueId ||
         initialEventValues.description !== description ||
-        initialEventValues.calendarImportChecked !== calendarImportChecked,
+        JSON.stringify(initialEventValues.invoiceLinks ?? []) !==
+          JSON.stringify(invoiceLinks) ||
+        JSON.stringify(initialEventValues.receiptLinks ?? []) !==
+          JSON.stringify(receiptLinks) ||
+        initialEventValues.calendarImportChecked !== calendarImportChecked ||
+        JSON.stringify(initialEventValues.servicesIds ?? []) !==
+          JSON.stringify(servicesIds),
       [
         clientId,
-        title,
         status,
         eventDate,
         dateEnd,
@@ -238,7 +284,10 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
         isTransferred,
         colleagueId,
         description,
+        invoiceLinks,
+        receiptLinks,
         calendarImportChecked,
+        servicesIds,
         initialEventValues,
       ]
     )
@@ -285,6 +334,11 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       return []
     }, [canClose, status])
 
+    const requiredMissing = useMemo(
+      () => !clientId || !eventDate || !servicesIds || servicesIds.length === 0,
+      [clientId, eventDate, servicesIds]
+    )
+
     const addHourToDate = (value) => {
       if (!value) return null
       const date = new Date(value)
@@ -307,6 +361,14 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
 
       if (!clientId) {
         addErrorRef.current({ clientId: 'Выберите клиента' })
+        hasError = true
+      }
+      if (!eventDate) {
+        addErrorRef.current({ eventDate: 'Укажите дату мероприятия' })
+        hasError = true
+      }
+      if (!servicesIds || servicesIds.length === 0) {
+        addErrorRef.current({ servicesIds: 'Выберите услугу' })
         hasError = true
       }
       if (isTransferred && !colleagueId) {
@@ -332,11 +394,8 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           typeof contractSum === 'number' && !Number.isNaN(contractSum)
             ? contractSum
             : 0
-        const normalizedTitle =
-          title?.trim() ||
-          (request?.clientName
-            ? `Мероприятие для ${request.clientName}`
-            : DEFAULT_EVENT.title)
+        const normalizedInvoiceLinks = normalizeLinksList(invoiceLinks)
+        const normalizedReceiptLinks = normalizeLinksList(receiptLinks)
         const payload = {
           _id: event?._id,
           clientId,
@@ -350,8 +409,10 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           contractSum: normalizedContractSum,
           isByContract,
           description: description?.trim() ?? '',
+          invoiceLinks: normalizedInvoiceLinks,
+          receiptLinks: normalizedReceiptLinks,
           calendarImportChecked,
-          title: normalizedTitle,
+          servicesIds,
         }
         if (!event?._id && requestId && convertRequest) {
           convertRequest(requestId, payload)
@@ -378,10 +439,10 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       isTransferred,
       initialEventValues.status,
       address,
-      request?.clientName,
       requestId,
       convertRequest,
       setEvent,
+      servicesIds,
       status,
     ])
 
@@ -393,12 +454,11 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
 
     useEffect(() => {
       setOnShowOnCloseConfirmDialog(isFormChanged)
-      setDisableConfirm(!isFormChanged)
-      setOnConfirmFunc(
-        isFormChanged ? () => onClickConfirmRef.current() : undefined
-      )
+      setDisableConfirm(!isFormChanged || requiredMissing)
+      setOnConfirmFunc(() => onClickConfirmRef.current())
     }, [
       isFormChanged,
+      requiredMissing,
       setDisableConfirm,
       setOnConfirmFunc,
       setOnShowOnCloseConfirmDialog,
@@ -425,8 +485,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
     }, [address?.town, siteSettings?.towns])
 
     const handleCreateTown = async (town) => {
-      const normalizedTown =
-        typeof town === 'string' ? town.trim() : ''
+      const normalizedTown = typeof town === 'string' ? town.trim() : ''
       if (!normalizedTown) return
       const nextTowns = Array.from(
         new Set([...(siteSettings?.towns ?? []), normalizedTown])
@@ -497,6 +556,35 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
       <TabContext value="Общие">
         <TabPanel tabName="Общие">
           <FormWrapper>
+            <InputWrapper label="Услуги" error={errors.servicesIds}>
+              <div className="flex flex-col gap-1">
+                {services.length === 0 ? (
+                  <div className="text-sm text-gray-500">
+                    Услуги не добавлены
+                  </div>
+                ) : (
+                  services.map((service) => {
+                    const checked = servicesIds.includes(service._id)
+                    return (
+                      <CheckBox
+                        key={service._id}
+                        checked={checked}
+                        label={service.title}
+                        noMargin
+                        onClick={() => {
+                          removeError('servicesIds')
+                          setServicesIds((prev) =>
+                            checked
+                              ? prev.filter((id) => id !== service._id)
+                              : [...prev, service._id]
+                          )
+                        }}
+                      />
+                    )
+                  })
+                )}
+              </div>
+            </InputWrapper>
             <ClientPicker
               selectedClient={selectedClient}
               selectedClientId={clientId}
@@ -507,12 +595,6 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               error={errors.clientId}
               paddingY
               fullWidth
-            />
-            <Input
-              label="Заголовок мероприятия"
-              type="text"
-              value={title}
-              onChange={setTitle}
             />
             <EventStatusPicker
               status={status}
@@ -556,7 +638,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               onCreateTown={handleCreateTown}
             />
             <Textarea
-              label="Описание"
+              label="Комментарий"
               onChange={setDescription}
               value={description}
               rows={3}
@@ -584,13 +666,6 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               />
             )}
             <IconCheckBox
-              checked={isByContract}
-              onClick={() => setIsByContract((prev) => !prev)}
-              label="По договору"
-              checkedIcon={faCircleCheck}
-              checkedIconColor="#2563EB"
-            />
-            <IconCheckBox
               checked={calendarImportChecked}
               onClick={() => setCalendarImportChecked((checked) => !checked)}
               label={
@@ -605,7 +680,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
           </FormWrapper>
         </TabPanel>
 
-        <TabPanel tabName="Финансы">
+        <TabPanel tabName="Финансы и Документы">
           <div className="flex flex-col gap-4">
             <Input
               label="Договорная сумма"
@@ -614,6 +689,117 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
               onChange={setContractSum}
               min={0}
             />
+            <IconCheckBox
+              checked={isByContract}
+              onClick={() => setIsByContract((prev) => !prev)}
+              label="По договору"
+              checkedIcon={faCircleCheck}
+              checkedIconColor="#2563EB"
+            />
+            {isByContract && (
+              <div className="flex flex-col gap-3">
+                <InputWrapper label="Ссылки на счета">
+                  <div className="flex flex-col gap-2">
+                    {invoiceLinks.length === 0 && (
+                      <div className="text-sm text-gray-500">
+                        Ссылки не добавлены
+                      </div>
+                    )}
+                    {invoiceLinks.map((link, index) => (
+                      <div
+                        key={`invoice-link-${index}`}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          className="h-8 w-full rounded border border-gray-200 px-2 text-sm text-gray-900 focus:border-general focus:outline-none"
+                          type="text"
+                          value={link}
+                          placeholder="Введите ссылку"
+                          onChange={(event) => {
+                            const value = event.target.value
+                            setInvoiceLinks((prev) =>
+                              prev.map((item, idx) =>
+                                idx === index ? value : item
+                              )
+                            )
+                          }}
+                        />
+                        <button
+                          type="button"
+                          className="h-8 rounded border border-gray-200 px-2 text-xs font-semibold text-gray-600 hover:bg-gray-100"
+                          onClick={() =>
+                            setInvoiceLinks((prev) =>
+                              prev.filter((_, idx) => idx !== index)
+                            )
+                          }
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="h-8 w-fit rounded border border-gray-300 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      onClick={() =>
+                        setInvoiceLinks((prev) => [...prev, ''])
+                      }
+                    >
+                      Добавить ссылку
+                    </button>
+                  </div>
+                </InputWrapper>
+                <InputWrapper label="Ссылки на чеки">
+                  <div className="flex flex-col gap-2">
+                    {receiptLinks.length === 0 && (
+                      <div className="text-sm text-gray-500">
+                        Ссылки не добавлены
+                      </div>
+                    )}
+                    {receiptLinks.map((link, index) => (
+                      <div
+                        key={`receipt-link-${index}`}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          className="h-8 w-full rounded border border-gray-200 px-2 text-sm text-gray-900 focus:border-general focus:outline-none"
+                          type="text"
+                          value={link}
+                          placeholder="Введите ссылку"
+                          onChange={(event) => {
+                            const value = event.target.value
+                            setReceiptLinks((prev) =>
+                              prev.map((item, idx) =>
+                                idx === index ? value : item
+                              )
+                            )
+                          }}
+                        />
+                        <button
+                          type="button"
+                          className="h-8 rounded border border-gray-200 px-2 text-xs font-semibold text-gray-600 hover:bg-gray-100"
+                          onClick={() =>
+                            setReceiptLinks((prev) =>
+                              prev.filter((_, idx) => idx !== index)
+                            )
+                          }
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="h-8 w-fit rounded border border-gray-300 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      onClick={() =>
+                        setReceiptLinks((prev) => [...prev, ''])
+                      }
+                    >
+                      Добавить ссылку
+                    </button>
+                  </div>
+                </InputWrapper>
+              </div>
+            )}
 
             <div className="flex items-center justify-between gap-3">
               <div className="text-base font-semibold text-gray-900">
@@ -642,7 +828,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">
-                  <div className="px-3 py-2 text-xs font-semibold uppercase text-gray-500">
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
                     Поступления
                   </div>
                   {incomeTransactions.length === 0 ? (
@@ -711,7 +897,7 @@ const eventFunc = (eventId, clone = false, requestId = null) => {
                       </div>
                     ))
                   )}
-                  <div className="px-3 py-2 text-xs font-semibold uppercase text-gray-500">
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
                     Расходы
                   </div>
                   {expenseTransactions.length === 0 ? (

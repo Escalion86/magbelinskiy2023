@@ -3,6 +3,7 @@ import {
   faArrowDown,
   faArrowUp,
   faCalendarAlt,
+  faClipboardList,
   faCode,
   faEllipsisV,
   faExternalLinkAlt,
@@ -46,7 +47,6 @@ const CardButtons = ({
   alwaysCompactOnPhone,
   showEditButton = true,
   showDeleteButton = true,
-  onEditQuestionnaire,
   onEdit,
   onDelete,
   minimalActions = false,
@@ -59,9 +59,7 @@ const CardButtons = ({
   const copyId = useCopyToClipboard(item._id, 'ID скопирован в буфер обмена')
 
   const upDownSee =
-    (!forForm && typeOfItem === 'service') ||
-    typeOfItem === 'product' ||
-    false
+    (!forForm && typeOfItem === 'service') || typeOfItem === 'product' || false
   // (typeOfItem === 'event' && loggedUserActiveRole.events.edit) ||
   // (typeOfItem === 'user' && loggedUserActiveRole.users.edit) ||
   // (typeOfItem === 'service' && loggedUserActiveRole.services.edit) ||
@@ -73,7 +71,10 @@ const CardButtons = ({
     ? {
         editBtn: showEditButton,
         cloneBtn: typeOfItem !== 'user',
-        openCalendar: typeOfItem === 'event' && Boolean(calendarLink),
+        openCalendar:
+          (typeOfItem === 'event' || typeOfItem === 'request') &&
+          Boolean(calendarLink),
+        viewRequest: typeOfItem === 'event' && Boolean(item?.requestId),
         deleteBtn: showDeleteButton && item.status !== 'closed',
       }
     : {
@@ -82,7 +83,10 @@ const CardButtons = ({
         setPasswordBtn: true,
         addToCalendar: typeOfItem === 'event',
         eventUsersBtn: typeOfItem === 'event',
-        openCalendar: typeOfItem === 'event' && Boolean(calendarLink),
+        openCalendar:
+          (typeOfItem === 'event' || typeOfItem === 'request') &&
+          Boolean(calendarLink),
+        viewRequest: typeOfItem === 'event' && Boolean(item?.requestId),
         upBtn: onUpClick && upDownSee,
         downBtn: onDownClick && upDownSee,
         editBtn: showEditButton,
@@ -162,6 +166,14 @@ const CardButtons = ({
           tooltipText="Открыть в календаре"
         />
       )}
+      {show.viewRequest && (
+        <ItemComponent
+          icon={faClipboardList}
+          onClick={() => modalsFunc.request?.view(item.requestId)}
+          color="blue"
+          tooltipText="Посмотреть заявку"
+        />
+      )}
       {show.editBtn && (
         <ItemComponent
           icon={faPencilAlt}
@@ -224,8 +236,8 @@ const CardButtons = ({
   return isCompact ? (
     <DropDown
       trigger={
-        <div className="flex flex-col items-center justify-center cursor-pointer h-9 w-9 min-h-9 text-general">
-          <FontAwesomeIcon icon={faEllipsisV} className="h-7 w-7 min-h-7" />
+        <div className="text-general flex h-9 min-h-9 w-9 cursor-pointer flex-col items-center justify-center">
+          <FontAwesomeIcon icon={faEllipsisV} className="h-7 min-h-7 w-7" />
         </div>
       }
       className={className}

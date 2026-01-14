@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
+import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@server/dbConnect'
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
 import telegramPost from '@server/telegramApi'
+import { getCalendarClient } from '@server/googleCalendarClient'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -82,11 +84,140 @@ const sendTelegramMassage = async (text, url) =>
     true
   )
 
+const WRITE_SCOPE = ['https://www.googleapis.com/auth/calendar']
+const { GOOGLE_CALENDAR_ID } = process.env
+const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
+
+const getSiteTimeZone = async () => {
+  const settings = await SiteSettings.findOne({})
+    .select('timeZone')
+    .lean()
+  return settings?.timeZone || DEFAULT_TIME_ZONE
+}
+
+const formatDateInTimeZone = (date, timeZone) => {
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(date)
+  } catch (error) {
+    return date.toISOString().slice(0, 10)
+  }
+}
+
+const base64Url = (value) =>
+  Buffer.from(value)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+
+const buildCalendarLink = (googleEventId) => {
+  if (!googleEventId || !GOOGLE_CALENDAR_ID) return null
+  const payload = `${googleEventId} ${GOOGLE_CALENDAR_ID}`
+  return `https://www.google.com/calendar/event?eid=${base64Url(payload)}`
+}
+
+const buildRequestCalendarPayload = (request, timeZone = DEFAULT_TIME_ZONE) => {
+  const hasEventDate = Boolean(request.eventDate)
+  const fallbackDate = request.createdAt ? new Date(request.createdAt) : new Date()
+  const startDate = hasEventDate ? new Date(request.eventDate) : fallbackDate
+  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
+  const location = formatAddress(request.address, null)
+  const addressTitle = formatAddress(
+    request.address,
+    request.location ?? 'Адрес не указан'
+  )
+  const phone = request.clientPhone ? `+${request.clientPhone}` : ''
+  const contacts =
+    request.contactChannels?.length > 0
+      ? request.contactChannels.join(', ')
+      : ''
+  const descriptionParts = [
+    request.clientName ? `Клиент: ${request.clientName}` : null,
+    phone ? `Телефон: ${phone}` : null,
+    contacts ? `Контакты: ${contacts}` : null,
+    request.contractSum
+      ? `Сумма: ${Number(request.contractSum).toLocaleString('ru-RU')}`
+      : null,
+    request.comment ? `Комментарий: ${request.comment}` : null,
+  ].filter(Boolean)
+
+  const payload = {
+    summary: `(Заявка) ${addressTitle}`,
+    description: descriptionParts.join('\n'),
+    location,
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 },
+        { method: 'popup', minutes: 10 },
+      ],
+    },
+  }
+
+  if (hasEventDate) {
+    payload.start = {
+      dateTime: startDate.toISOString(),
+      timeZone,
+    }
+    payload.end = {
+      dateTime: endDate.toISOString(),
+      timeZone,
+    }
+  } else {
+    const allDayDate = formatDateInTimeZone(startDate, timeZone)
+    payload.start = { date: allDayDate }
+    const nextDay = new Date(startDate)
+    nextDay.setDate(nextDay.getDate() + 1)
+    payload.end = { date: formatDateInTimeZone(nextDay, timeZone) }
+  }
+
+  return payload
+}
+
+const createRequestCalendarEvent = async (request, timeZone) => {
+  const calendarId = GOOGLE_CALENDAR_ID
+  if (!calendarId) return null
+  const calendar = await getCalendarClient(WRITE_SCOPE)
+  if (!calendar) return null
+
+  const resource = buildRequestCalendarPayload(request, timeZone)
+  try {
+    const response = await calendar.events.insert({
+      calendarId,
+      resource,
+    })
+    console.log('Google Calendar request create response', {
+      status: response?.status,
+      id: response?.data?.id,
+      htmlLink: response?.data?.htmlLink,
+    })
+    return response?.data?.id ?? null
+  } catch (error) {
+    console.log('Google Calendar request create failed', {
+      message: error?.message,
+      status: error?.code ?? error?.response?.status,
+      errors: error?.errors ?? error?.response?.data?.error?.errors,
+      calendarId,
+    })
+    throw error
+  }
+}
+
 export const GET = async () => {
   await dbConnect()
+  const timeZone = await getSiteTimeZone()
   const requests = await Requests.find({}).sort({ createdAt: -1 }).lean()
+  const prepared = requests.map((request) => ({
+    ...request,
+    calendarLink: buildCalendarLink(request.googleCalendarId),
+  }))
 
-  return NextResponse.json({ success: true, data: requests }, { status: 200 })
+  return NextResponse.json({ success: true, data: prepared }, { status: 200 })
 }
 
 export const POST = async (req) => {
@@ -105,12 +236,43 @@ export const POST = async (req) => {
   const contractSum = body.contractSum ?? body.price ?? 0
   const comment = body.comment ?? ''
   const yandexAim = body.yandexAim ?? ''
+  const servicesIds = Array.isArray(body.servicesIds) ? body.servicesIds : []
+
+  const referer = req.headers.get('referer') ?? ''
+  const isCabinetRequest = referer.includes('/cabinet')
 
   if (!rawPhone) {
     return NextResponse.json(
       {
         success: false,
         error: 'Укажите телефон клиента',
+      },
+      { status: 400 }
+    )
+  }
+  if (isCabinetRequest && !body.clientId) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Укажите клиента',
+      },
+      { status: 400 }
+    )
+  }
+  if (isCabinetRequest && !eventDate) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Укажите дату мероприятия',
+      },
+      { status: 400 }
+    )
+  }
+  if (isCabinetRequest && servicesIds.length === 0) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Укажите услугу',
       },
       { status: 400 }
     )
@@ -148,10 +310,12 @@ export const POST = async (req) => {
     yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
   ].filter(Boolean)
   // const telegramResult = await
-  sendTelegramMassage(
-    messageParts.join('\n'),
-    normalizedPhone ? `tel:+${normalizedPhone}` : undefined
-  )
+  if (!isCabinetRequest) {
+    sendTelegramMassage(
+      messageParts.join('\n'),
+      normalizedPhone ? `tel:+${normalizedPhone}` : undefined
+    )
+  }
   // if (!telegramResult?.ok) {
   //   return NextResponse.json(
   //     {
@@ -197,7 +361,23 @@ export const POST = async (req) => {
     contractSum: numericContractSum,
     comment: comment ?? '',
     yandexAim,
+    servicesIds,
   })
+
+  let googleCalendarId = null
+  let calendarLink = null
+  try {
+    googleCalendarId = await createRequestCalendarEvent(request, timeZone)
+    calendarLink = buildCalendarLink(googleCalendarId)
+  } catch (error) {
+    console.log('Google Calendar request create error', error)
+  }
+
+  if (googleCalendarId) {
+    await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
+    request.googleCalendarId = googleCalendarId
+  }
+  request.calendarLink = calendarLink
 
   return NextResponse.json(
     {

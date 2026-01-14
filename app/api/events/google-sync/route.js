@@ -206,7 +206,6 @@ const hasAddressValues = (address) =>
 const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) => {
   const setPayload = {
     googleCalendarId: googleEventId,
-    title: parsedEvent.title,
     description: buildDescriptionFromCalendar(parsedEvent, calendarEvent),
     status: parsedEvent.status,
     importedFromCalendar: true,
@@ -228,6 +227,9 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) =
 
   return {
     $set: setPayload,
+    $unset: {
+      title: '',
+    },
   }
 }
 
@@ -402,11 +404,12 @@ export const POST = async (req) => {
       })
     }
 
+    const calendarTitle = item?.summary ?? 'Без названия'
     results.push({
       googleId: item.id,
       eventId,
       action: dbResult.lastErrorObject?.updatedExisting ? 'updated' : 'created',
-      title: parsed.title,
+      title: calendarTitle,
       clientId: client?._id ?? null,
       depositAmount: Number(depositAmount) > 0 ? depositAmount : null,
       depositCreated: Boolean(depositTransaction),
@@ -418,7 +421,7 @@ export const POST = async (req) => {
 
     if (!client) {
       console.warn(
-        `[google-sync] Клиент не создан для события ${parsed.title} (${item.id})`
+        `[google-sync] Клиент не создан для события ${calendarTitle} (${item.id})`
       )
     }
   }

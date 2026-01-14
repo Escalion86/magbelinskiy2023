@@ -44,6 +44,8 @@ export const POST = async (req) => {
   if (body.telegram !== undefined) update.telegram = body.telegram ?? null
   if (body.instagram !== undefined) update.instagram = body.instagram ?? null
   if (body.vk !== undefined) update.vk = body.vk ?? null
+  if (body.timeZone !== undefined)
+    update.timeZone = body.timeZone ?? 'Asia/Krasnoyarsk'
 
   const siteSettings = await SiteSettings.findOneAndUpdate(
     {},

@@ -46,6 +46,10 @@ const siteSettingsSchema = {
     type: String,
     default: '',
   },
+  timeZone: {
+    type: String,
+    default: 'Asia/Krasnoyarsk',
+  },
   custom: {
     type: Map,
     of: Schema.Types.Mixed,

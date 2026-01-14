@@ -42,7 +42,7 @@ const ContactIconBtnWithTitle = ({
     <div className="flex w-6 items-center justify-center">
       <FontAwesomeIcon
         className={cn(
-          'group-hover:text-toxic group-hover:scale-115 h-6 duration-300',
+          'group-hover:text-toxic h-6 duration-300 group-hover:scale-115',
           className
         )}
         icon={icon}
@@ -60,8 +60,7 @@ const ContactsIconsButtons = ({
   className,
   message,
   smsViaPhone,
-  forceWhatsApp,
-  forceShowAll,
+  forceWhatsApp = true,
 }) => {
   const Btn = withTitle ? ContactIconBtnWithTitle : ContactIconBtn
 
@@ -88,9 +87,9 @@ const ContactsIconsButtons = ({
   return (
     <div
       className={cn(
-        ' my-1 items-center gap-y-2',
+        'my-1 items-center gap-y-2',
         grid
-          ? 'laptop:grid-cols-3 grid grid-cols-1 tablet:grid-cols-2'
+          ? 'laptop:grid-cols-3 tablet:grid-cols-2 grid grid-cols-1'
           : 'flex flex-wrap',
         withTitle ? 'gap-x-3' : 'gap-x-2',
         className

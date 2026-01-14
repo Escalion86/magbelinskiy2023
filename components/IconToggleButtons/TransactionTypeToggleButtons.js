@@ -22,14 +22,16 @@ const TransactionTypeToggleButtons = ({ value, onChange }) => {
         variant={value.income ? 'contained' : 'outlined'}
         color="inherit"
         sx={{
-          color: value.income ? '#ffffff' : '#22c55e',
-          borderColor: '#22c55e',
-          backgroundColor: value.income ? '#22c55e' : 'transparent',
+          color: value.income
+            ? 'var(--tx-income-text)'
+            : 'var(--tx-income-outline)',
+          borderColor: 'var(--tx-income)',
+          backgroundColor: value.income ? 'var(--tx-income)' : 'transparent',
           '&:hover': {
-            borderColor: '#16a34a',
+            borderColor: 'var(--tx-income-hover)',
             backgroundColor: value.income
-              ? '#16a34a'
-              : 'rgba(34, 197, 94, 0.08)',
+              ? 'var(--tx-income-hover)'
+              : 'var(--tx-income-hover-bg)',
           },
         }}
       >
@@ -40,14 +42,16 @@ const TransactionTypeToggleButtons = ({ value, onChange }) => {
         variant={value.expense ? 'contained' : 'outlined'}
         color="inherit"
         sx={{
-          color: value.expense ? '#ffffff' : '#ef4444',
-          borderColor: '#ef4444',
-          backgroundColor: value.expense ? '#ef4444' : 'transparent',
+          color: value.expense
+            ? 'var(--tx-expense-text)'
+            : 'var(--tx-expense-outline)',
+          borderColor: 'var(--tx-expense)',
+          backgroundColor: value.expense ? 'var(--tx-expense)' : 'transparent',
           '&:hover': {
-            borderColor: '#dc2626',
+            borderColor: 'var(--tx-expense-hover)',
             backgroundColor: value.expense
-              ? '#dc2626'
-              : 'rgba(239, 68, 68, 0.08)',
+              ? 'var(--tx-expense-hover)'
+              : 'var(--tx-expense-hover-bg)',
           },
         }}
       >

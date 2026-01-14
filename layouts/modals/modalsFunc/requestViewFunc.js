@@ -3,6 +3,7 @@ import formatAddress from '@helpers/formatAddress'
 import requestSelector from '@state/selectors/requestSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useAtomValue } from 'jotai'
+import servicesAtom from '@state/atoms/servicesAtom'
 
 const requestViewFunc = (requestId) => {
   const RequestViewModal = ({
@@ -15,6 +16,7 @@ const requestViewFunc = (requestId) => {
     setTopLeftComponent,
   }) => {
     const request = useAtomValue(requestSelector(requestId))
+    const services = useAtomValue(servicesAtom)
 
     if (!requestId || !request)
       return (
@@ -28,6 +30,10 @@ const requestViewFunc = (requestId) => {
       undefined
     const requestType =
       EVENT_TYPES.find((item) => item.value === request.type)?.name ?? undefined
+    const serviceTitles = (request?.servicesIds ?? [])
+      .map((serviceId) => services.find((item) => item._id === serviceId))
+      .filter(Boolean)
+      .map((service) => service.title)
 
     return (
       <div className="flex flex-col">
@@ -48,6 +54,12 @@ const requestViewFunc = (requestId) => {
             <div className="flex gap-x-1">
               <div className="font-bold">Адрес:</div>
               <div>{formatAddress(request?.address, request?.location)}</div>
+            </div>
+          )}
+          {serviceTitles.length > 0 && (
+            <div className="flex gap-x-1">
+              <div className="font-bold">Услуги:</div>
+              <div>{serviceTitles.join(', ')}</div>
             </div>
           )}
           {request?.contactChannels?.length > 0 && (

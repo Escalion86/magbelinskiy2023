@@ -8,10 +8,10 @@ import { getEventStatusBadgeClasses } from '@helpers/eventStatusStyles'
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
 import { modalsFuncAtom } from '@state/atoms'
-import requestsAtom from '@state/atoms/requestsAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
 import eventSelector from '@state/selectors/eventSelector'
 import clientSelector from '@state/selectors/clientSelector'
+import servicesAtom from '@state/atoms/servicesAtom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClock,
@@ -24,6 +24,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import SvgSigma from 'svg/SvgSigma'
 import CardButtons from '@components/CardButtons'
+import ContactsIconsButtons from '@components/ContactsIconsButtons'
 
 const CALENDAR_RESPONSE_MARKER = '--- Google Calendar Response ---'
 
@@ -38,14 +39,8 @@ const EventCard = ({ eventId, style }) => {
   const event = useAtomValue(eventSelector(eventId))
   const client = useAtomValue(clientSelector(event?.clientId))
   const transactions = useAtomValue(transactionsAtom)
-  const requests = useAtomValue(requestsAtom)
+  const services = useAtomValue(servicesAtom)
   const modalsFunc = useAtomValue(modalsFuncAtom)
-
-  const request = useMemo(
-    () =>
-      event?.requestId ? requests.find((r) => r._id === event.requestId) : null,
-    [event?.requestId, requests]
-  )
 
   const calendarLink = useMemo(() => {
     if (!event?.description) return null
@@ -55,6 +50,16 @@ const EventCard = ({ eventId, style }) => {
     if (!match?.[0]) return null
     return match[0].replace(/[),.]+$/, '')
   }, [event?.description])
+
+  const servicesTitle = useMemo(() => {
+    const servicesIds = event?.servicesIds ?? []
+    if (!servicesIds.length) return 'Услуга не указана'
+    const titles = services
+      .filter((service) => servicesIds.includes(service._id))
+      .map((service) => service.title)
+      .filter(Boolean)
+    return titles.length > 0 ? titles.join(', ') : 'Услуга не указана'
+  }, [event?.servicesIds, services])
 
   const { contractSum, paid, leftToPay, status } = useMemo(() => {
     if (!event) return { contractSum: 0, paid: 0, leftToPay: 0, status: null }
@@ -87,13 +92,16 @@ const EventCard = ({ eventId, style }) => {
     }
   }, [event, transactions])
 
-  if (!event) return null
-
   const eventStart = event.eventDate ? new Date(event.eventDate) : null
   const eventEnd = event.dateEnd ? new Date(event.dateEnd) : eventStart
   const now = new Date()
   const eventDateLabel = event.eventDate
-    ? formatDate(event.eventDate, false, true)
+    ? `${formatDate(event.eventDate, false, true)} ${new Date(
+        event.eventDate
+      ).toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}`
     : '-'
 
   const rawStatus = status?.value ?? event.status
@@ -125,10 +133,12 @@ const EventCard = ({ eventId, style }) => {
     : null
   const mapLink = event?.address?.link2Gis || coordsLink || searchLink
 
+  if (!event) return null
+
   return (
     <div style={style} className="px-2 py-1">
       <div
-        className="laptop:flex-row laptop:items-start laptop:gap-4 relative flex h-full cursor-pointer flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+        className="laptop:flex-row laptop:items-start laptop:gap-4 relative flex cursor-pointer flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         onClick={() => modalsFunc.event?.edit(event._id)}
       >
         <div
@@ -154,10 +164,7 @@ const EventCard = ({ eventId, style }) => {
               />
             )}
             <div className="truncate text-lg font-semibold text-gray-900">
-              {event.title ||
-                `Мероприятие${
-                  client ? ` для ${client.firstName ?? 'клиента'}` : ''
-                }`}
+              {servicesTitle}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -179,11 +186,33 @@ const EventCard = ({ eventId, style }) => {
           </div>
         </div>
         <div className="flex gap-x-1">
-          <div className="flex min-w-0 flex-1 flex-col gap-1 pr-2">
-            <div className="text-lg font-semibold text-gray-700">
-              {eventDateLabel}
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5 pr-2 text-sm text-gray-700">
+            <div className="font-medium text-gray-800">{eventDateLabel}</div>
+            <div className="flex flex-nowrap items-center gap-x-3">
+              <span className="font-medium">Место:</span>
+              <span className="flex min-w-0 items-center gap-2 truncate">
+                <span className="truncate">
+                  {formatAddress(event.address, '-')}
+                </span>
+                {mapLink && (
+                  <a
+                    href={mapLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Открыть в 2ГИС"
+                    onClick={(event) => event.stopPropagation()}
+                    className="flex h-7 w-7 items-center justify-center transition-transform hover:scale-110"
+                  >
+                    <img
+                      src="/img/navigators/2gis.png"
+                      alt="2gis"
+                      className="h-4 w-4"
+                    />
+                  </a>
+                )}
+              </span>
             </div>
-            <div className="flex flex-nowrap items-center gap-x-3 text-sm text-gray-600">
+            <div className="flex flex-nowrap items-center gap-x-3">
               <span className="font-medium">Клиент:</span>
               <span className="truncate">
                 {client
@@ -194,58 +223,7 @@ const EventCard = ({ eventId, style }) => {
                 {client?.phone ? ` ( +${client.phone} )` : ''}
               </span>
             </div>
-            <div className="flex flex-nowrap items-center gap-x-3 text-sm text-gray-600">
-              <span className="font-medium">Место:</span>
-              <span className="truncate">
-                {formatAddress(event.address, '-')}
-              </span>
-            </div>
-            {event.requestId && (
-              <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-600">
-                <span className="font-medium">Заявка:</span>
-                {request ? (
-                  <button
-                    type="button"
-                    className="font-medium text-blue-600 underline underline-offset-2"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      modalsFunc.request?.view(request._id)
-                    }}
-                  >
-                    {request.clientName || request._id}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-gray-400 underline underline-offset-2"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      modalsFunc.request?.view(event.requestId)
-                    }}
-                  >
-                    {event.requestId}
-                  </button>
-                )}
-              </div>
-            )}
-            {mapLink && (
-              <div className="mt-1">
-                <a
-                  href={mapLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="Открыть в 2ГИС"
-                  onClick={(event) => event.stopPropagation()}
-                  className="flex h-8 w-8 items-center justify-center transition-transform hover:scale-110"
-                >
-                  <img
-                    src="/img/navigators/2gis.png"
-                    alt="2gis"
-                    className="h-5 w-5"
-                  />
-                </a>
-              </div>
-            )}
+            {client && <ContactsIconsButtons user={client} />}
           </div>
 
           <div className="laptop:min-w-[240px] laptop:self-start flex shrink-0">

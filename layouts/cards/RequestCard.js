@@ -1,4 +1,5 @@
 import CardButtons from '@components/CardButtons'
+import ContactsIconsButtons from '@components/ContactsIconsButtons'
 import { CardWrapper } from '@components/CardWrapper'
 // import EventTagsChipsLine from '@components/Chips/EventTagsChipsLine'
 // import DateTimeEvent from '@components/DateTimeEvent'
@@ -20,6 +21,7 @@ import errorAtom from '@state/atoms/errorAtom'
 // import itemsFuncAtom from '@state/atoms/itemsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
 import requestSelector from '@state/selectors/requestSelector'
+import clientSelector from '@state/selectors/clientSelector'
 import windowDimensionsNumSelector from '@state/selectors/windowDimensionsNumSelector'
 import cn from 'classnames'
 import { useAtomValue } from 'jotai'
@@ -36,6 +38,7 @@ const RequestCard = ({
 
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const request = useAtomValue(requestSelector(requestId))
+  const client = useAtomValue(clientSelector(request?.clientId))
 
   const loading = useAtomValue(loadingAtom('request' + requestId))
   const error = useAtomValue(errorAtom('request' + requestId))
@@ -44,6 +47,11 @@ const RequestCard = ({
 
   if (!request) return null
   const requestStatus = 'active' //eventStatusFunc(event)
+  const contactUser =
+    client || (request.clientPhone ? { phone: request.clientPhone } : null)
+  const requestTitle = request.createdAt
+    ? formatDate(request.createdAt, false, true)
+    : 'Дата заявки не указана'
 
   const requestAudience =
     AUDIENCE.find((item) => item.value === request.audience)?.name ?? undefined
@@ -92,13 +100,14 @@ const RequestCard = ({
           <div className="flex pl-2">
             <div className="flex h-[36px] flex-1 items-center gap-x-1">
               <div className="flex-1 font-bold text-general">
-                {formatDate(request.date, false, true)}
+                {requestTitle}
               </div>
               {!noButtons && (
                 <CardButtons
                   item={request}
                   typeOfItem="request"
                   showEditButton={false}
+                  calendarLink={request.calendarLink}
                 />
               )}
             </div>
@@ -148,12 +157,7 @@ const RequestCard = ({
                   <div>{request.contactChannels.join(', ')}</div>
                 </div>
               )}
-              {request?.clientPhone && (
-                <div className="flex gap-x-1">
-                  <div className="font-bold">Телефон заявителя:</div>
-                  <div>+{request.clientPhone}</div>
-                </div>
-              )}
+              {contactUser && <ContactsIconsButtons user={contactUser} />}
               {request?.comment && (
                 <div className="flex gap-x-1">
                   <div className="font-bold">Комментарий:</div>

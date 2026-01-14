@@ -52,7 +52,9 @@ const EventPicker = ({
         >
           <div className="flex flex-col gap-0.5">
             <div className="text-base font-semibold text-gray-900">
-              {selectedEvent?.title || 'Не выбрано'}
+              {selectedEvent
+                ? formatAddress(selectedEvent?.address, 'Мероприятие')
+                : 'Не выбрано'}
             </div>
             {selectedEvent && (
               <>
@@ -74,7 +76,7 @@ const EventPicker = ({
         {showEditButton && selectedEventId && !disabled && (
           <button
             type="button"
-            className="flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded border border-orange-600 bg-orange-50 text-orange-500 shadow-sm transition hover:bg-orange-100 hover:text-orange-600"
+            className="action-icon-button flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded border border-orange-600 bg-orange-50 text-orange-500 shadow-sm transition hover:bg-orange-100 hover:text-orange-600"
             onClick={handleEdit}
             title="Редактировать мероприятие"
           >
@@ -88,7 +90,6 @@ const EventPicker = ({
 
 EventPicker.propTypes = {
   selectedEvent: PropTypes.shape({
-    title: PropTypes.string,
     eventDate: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,

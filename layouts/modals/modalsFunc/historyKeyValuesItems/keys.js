@@ -1,5 +1,4 @@
 export const eventKeys = {
-  title: 'Заголовок',
   description: 'Описание',
   dateStart: 'Дата и время начала',
   dateEnd: 'Дата и время завершения',

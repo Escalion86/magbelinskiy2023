@@ -96,7 +96,7 @@ const ClientsContent = () => {
             <Button
               name="+"
               collapsing
-              className="h-9 w-9 rounded-full text-lg"
+              className="action-icon-button h-9 w-9 rounded-full text-lg"
               onClick={() => modalsFunc.client?.add()}
               disabled={!modalsFunc.client?.add}
             />

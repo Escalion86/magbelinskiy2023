@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import CardButtons from '@components/CardButtons'
 import { TRANSACTION_CATEGORIES } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
+import formatAddress from '@helpers/formatAddress'
 
 const typeClassNames = {
   income: 'bg-green-500',
@@ -35,10 +36,10 @@ const TransactionCard = ({
     : '-'
 
   const eventTitle =
-    event?.title?.trim() ||
+    formatAddress(event?.address, '') ||
     (event?.eventDate
       ? `Мероприятие ${formatDate(event.eventDate, false, true)}`
-      : '-')
+      : 'Мероприятие')
 
   const eventDateTime = event?.eventDate
     ? `${formatDate(event.eventDate, false, true)} ${new Date(
@@ -144,12 +145,24 @@ TransactionCard.propTypes = {
     secondName: PropTypes.string,
   }),
   event: PropTypes.shape({
-    title: PropTypes.string,
     eventDate: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
       PropTypes.instanceOf(Date),
     ]),
+    address: PropTypes.shape({
+      town: PropTypes.string,
+      street: PropTypes.string,
+      house: PropTypes.string,
+      entrance: PropTypes.string,
+      floor: PropTypes.string,
+      flat: PropTypes.string,
+      comment: PropTypes.string,
+      link2Gis: PropTypes.string,
+      linkYandexNavigator: PropTypes.string,
+      link2GisShow: PropTypes.bool,
+      linkYandexShow: PropTypes.bool,
+    }),
   }),
   type: PropTypes.shape({
     value: PropTypes.string,

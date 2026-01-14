@@ -2,7 +2,118 @@ import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Events from '@models/Events'
 import Clients from '@models/Clients'
+import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@server/dbConnect'
+import { updateEventInCalendar } from '@server/CRUD'
+import { getCalendarClient } from '@server/googleCalendarClient'
+import formatAddress from '@helpers/formatAddress'
+
+const { GOOGLE_CALENDAR_ID } = process.env
+const WRITE_SCOPE = ['https://www.googleapis.com/auth/calendar']
+const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
+
+const getSiteTimeZone = async () => {
+  const settings = await SiteSettings.findOne({})
+    .select('timeZone')
+    .lean()
+  return settings?.timeZone || DEFAULT_TIME_ZONE
+}
+
+const formatDateInTimeZone = (date, timeZone) => {
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(date)
+  } catch (error) {
+    return date.toISOString().slice(0, 10)
+  }
+}
+
+const base64Url = (value) =>
+  Buffer.from(value)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+
+const buildCalendarLink = (googleEventId) => {
+  if (!googleEventId || !GOOGLE_CALENDAR_ID) return null
+  const payload = `${googleEventId} ${GOOGLE_CALENDAR_ID}`
+  return `https://www.google.com/calendar/event?eid=${base64Url(payload)}`
+}
+
+const buildRequestCalendarPayload = (request, timeZone = DEFAULT_TIME_ZONE) => {
+  const hasEventDate = Boolean(request.eventDate)
+  const fallbackDate = request.createdAt ? new Date(request.createdAt) : new Date()
+  const startDate = hasEventDate ? new Date(request.eventDate) : fallbackDate
+  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
+  const location = formatAddress(request.address, null)
+  const addressTitle = formatAddress(
+    request.address,
+    request.location ?? 'Адрес не указан'
+  )
+  const phone = request.clientPhone ? `+${request.clientPhone}` : ''
+  const contacts =
+    request.contactChannels?.length > 0
+      ? request.contactChannels.join(', ')
+      : ''
+  const descriptionParts = [
+    request.clientName ? `Клиент: ${request.clientName}` : null,
+    phone ? `Телефон: ${phone}` : null,
+    contacts ? `Контакты: ${contacts}` : null,
+    request.contractSum
+      ? `Сумма: ${Number(request.contractSum).toLocaleString('ru-RU')}`
+      : null,
+    request.comment ? `Комментарий: ${request.comment}` : null,
+  ].filter(Boolean)
+
+  const payload = {
+    summary: `(Заявка) ${addressTitle}`,
+    description: descriptionParts.join('\n'),
+    location,
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 },
+        { method: 'popup', minutes: 10 },
+      ],
+    },
+  }
+
+  if (hasEventDate) {
+    payload.start = {
+      dateTime: startDate.toISOString(),
+      timeZone,
+    }
+    payload.end = {
+      dateTime: endDate.toISOString(),
+      timeZone,
+    }
+  } else {
+    const allDayDate = formatDateInTimeZone(startDate, timeZone)
+    payload.start = { date: allDayDate }
+    const nextDay = new Date(startDate)
+    nextDay.setDate(nextDay.getDate() + 1)
+    payload.end = { date: formatDateInTimeZone(nextDay, timeZone) }
+  }
+
+  return payload
+}
+
+const updateRequestCalendarEvent = async (request, timeZone) => {
+  if (!request?.googleCalendarId || !GOOGLE_CALENDAR_ID) return
+  const calendar = await getCalendarClient(WRITE_SCOPE)
+  if (!calendar) return
+  const resource = buildRequestCalendarPayload(request, timeZone)
+  await calendar.events.update({
+    calendarId: GOOGLE_CALENDAR_ID,
+    eventId: request.googleCalendarId,
+    resource,
+  })
+}
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -67,6 +178,7 @@ export const PUT = async (req, { params }) => {
   const body = await req.json()
 
   await dbConnect()
+  const timeZone = await getSiteTimeZone()
 
   const request = await Requests.findById(id)
   if (!request)
@@ -74,6 +186,13 @@ export const PUT = async (req, { params }) => {
       { success: false, error: 'Заявка не найдена' },
       { status: 404 }
     )
+
+  if (request.status === 'converted' && !body.convertToEvent) {
+    return NextResponse.json(
+      { success: false, error: 'Заявка уже преобразована в мероприятие' },
+      { status: 400 }
+    )
+  }
 
   if (body.convertToEvent) {
     if (request.eventId)
@@ -83,6 +202,33 @@ export const PUT = async (req, { params }) => {
       )
 
     const eventData = body.eventData ?? {}
+    const servicesIds =
+      Array.isArray(eventData.servicesIds) && eventData.servicesIds.length > 0
+        ? eventData.servicesIds
+        : Array.isArray(request.servicesIds)
+        ? request.servicesIds
+        : []
+    const clientId = eventData.clientId ?? request.clientId ?? null
+    const eventDate = eventData.eventDate ?? request.eventDate ?? null
+
+    if (!clientId) {
+      return NextResponse.json(
+        { success: false, error: 'Укажите клиента для мероприятия' },
+        { status: 400 }
+      )
+    }
+    if (!eventDate) {
+      return NextResponse.json(
+        { success: false, error: 'Укажите дату мероприятия' },
+        { status: 400 }
+      )
+    }
+    if (!servicesIds || servicesIds.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Укажите услугу для мероприятия' },
+        { status: 400 }
+      )
+    }
 
     const normalizedContractSum =
       typeof eventData.contractSum === 'number' &&
@@ -91,31 +237,46 @@ export const PUT = async (req, { params }) => {
         : request.contractSum
 
     const isTransferred = Boolean(eventData.isTransferred)
-    const legacyLocation = eventData.location ?? request.location ?? ''
+    const rawAddress = eventData.address ?? request.address ?? null
+    const legacyLocation = [
+      eventData.location,
+      request.location,
+      typeof rawAddress === 'string' ? rawAddress : '',
+      request?.town,
+    ]
+      .filter((value) => typeof value === 'string' && value.trim().length > 0)
+      .join(', ')
+    const normalizedAddress = normalizeAddress(
+      typeof rawAddress === 'string' ? null : rawAddress,
+      legacyLocation
+    )
 
     const event = await Events.create({
       requestId: request._id,
-      clientId: eventData.clientId ?? request.clientId,
-      eventDate: eventData.eventDate ?? request.eventDate,
+      clientId,
+      eventDate,
       requestDate: request.createdAt,
       dateEnd: eventData.dateEnd ?? null,
-      address: normalizeAddress(
-        eventData.address ?? request.address,
-        legacyLocation
-      ),
+      googleCalendarId: request.googleCalendarId ?? null,
+      address: normalizedAddress,
       contractSum: normalizedContractSum,
       status: eventData.status ?? 'planned',
       isByContract: Boolean(eventData.isByContract),
       isTransferred,
       colleagueId: isTransferred ? eventData.colleagueId ?? null : null,
       calendarImportChecked: Boolean(eventData.calendarImportChecked),
-      title:
-        eventData.title ??
-        (request.clientName
-          ? `Мероприятие для ${request.clientName}`
-          : 'Мероприятие'),
+      servicesIds,
       description: eventData.description ?? request.comment ?? '',
     })
+
+    let updatedEvent = event
+    try {
+      await updateEventInCalendar(event, req)
+      const refreshedEvent = await Events.findById(event._id).lean()
+      if (refreshedEvent) updatedEvent = refreshedEvent
+    } catch (error) {
+      console.log('Google Calendar convert error', error)
+    }
 
     const updatedRequest = await Requests.findByIdAndUpdate(
       id,
@@ -134,8 +295,11 @@ export const PUT = async (req, { params }) => {
       {
         success: true,
         data: {
-          request: updatedRequest,
-          event,
+          request: {
+            ...updatedRequest.toJSON(),
+            calendarLink: buildCalendarLink(updatedRequest.googleCalendarId),
+          },
+          event: updatedEvent,
           client,
         },
       },
@@ -167,6 +331,10 @@ export const PUT = async (req, { params }) => {
 
   if (body.eventDate !== undefined)
     update.eventDate = body.eventDate ? new Date(body.eventDate) : null
+  if (body.servicesIds !== undefined)
+    update.servicesIds = Array.isArray(body.servicesIds)
+      ? body.servicesIds
+      : []
   if (body.address !== undefined) {
     if (typeof body.address === 'string')
       update.address = normalizeAddress({}, body.address)
@@ -187,6 +355,14 @@ export const PUT = async (req, { params }) => {
     new: true,
   })
 
+  if (updatedRequest?.googleCalendarId) {
+    try {
+      await updateRequestCalendarEvent(updatedRequest, timeZone)
+    } catch (error) {
+      console.log('Google Calendar request update error', error)
+    }
+  }
+
   let client = null
   if (request.clientId) {
     if (body.clientName !== undefined) {
@@ -198,7 +374,16 @@ export const PUT = async (req, { params }) => {
   }
 
   return NextResponse.json(
-    { success: true, data: { request: updatedRequest, client } },
+    {
+      success: true,
+      data: {
+        request: {
+          ...updatedRequest.toJSON(),
+          calendarLink: buildCalendarLink(updatedRequest.googleCalendarId),
+        },
+        client,
+      },
+    },
     { status: 200 }
   )
 }

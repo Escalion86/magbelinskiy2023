@@ -15,6 +15,7 @@ import userSelector from '@state/selectors/userSelector'
 import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
+import servicesAtom from '@state/atoms/servicesAtom'
 
 const CardButtonsComponent = ({ event, isEventClosed }) => (
   <CardButtons
@@ -37,12 +38,17 @@ const eventViewFunc = (eventId) => {
     setTopLeftComponent,
   }) => {
     const event = useAtomValue(eventSelector(eventId))
+    const services = useAtomValue(servicesAtom)
 
     const organizer = useAtomValue(userSelector(event?.organizerId))
 
     const duration = getEventDuration(event)
 
     const isEventClosed = isEventClosedFunc(event)
+    const serviceTitles = (event?.servicesIds ?? [])
+      .map((serviceId) => services.find((item) => item._id === serviceId))
+      .filter(Boolean)
+      .map((service) => service.title)
 
     useEffect(() => {
       if (setTopLeftComponent) {
@@ -79,7 +85,7 @@ const eventViewFunc = (eventId) => {
               )}
             </div>
             <div className="flex w-full justify-center text-3xl font-bold">
-              {event?.title}
+              {formatAddress(event?.address, 'Мероприятие')}
             </div>
             <div
               className="textarea ql w-full max-w-full list-disc overflow-hidden"
@@ -103,6 +109,9 @@ const eventViewFunc = (eventId) => {
               <TextLine label="Адрес">
                 {formatAddress(event?.address, '[не указан]')}
               </TextLine>
+            )}
+            {serviceTitles.length > 0 && (
+              <TextLine label="Услуги">{serviceTitles.join(', ')}</TextLine>
             )}
             {event?.address && event.address?.town && event.address?.street && (
               <TextLine label="Ссылки для навигатора">

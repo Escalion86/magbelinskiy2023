@@ -11,10 +11,6 @@ const eventsSchema = {
     ref: 'Requests',
     default: null,
   },
-  title: {
-    type: String,
-    default: 'Новое мероприятие',
-  },
   description: {
     type: String,
     default: 'Описание мероприятия',
@@ -27,6 +23,11 @@ const eventsSchema = {
     type: Date,
     default: null,
   },
+  servicesIds: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Services',
+    default: [],
+  },
   dateStart: {
     type: Date,
     default: null,
@@ -34,6 +35,14 @@ const eventsSchema = {
   dateEnd: {
     type: Date,
     default: null,
+  },
+  invoiceLinks: {
+    type: [String],
+    default: [],
+  },
+  receiptLinks: {
+    type: [String],
+    default: [],
   },
   address: {
     type: {
@@ -69,6 +78,10 @@ const eventsSchema = {
   images: {
     type: Array,
     default: [],
+  },
+  showOnSite: {
+    type: Boolean,
+    default: true,
   },
   tags: {
     type: Array,

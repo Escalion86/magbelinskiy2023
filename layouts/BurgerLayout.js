@@ -3,7 +3,7 @@ import Burger from '@components/Burger'
 function BurgerLayout() {
   return (
     <div
-      className="flex items-center justify-center h-16 bg-general"
+      className="burger-layout flex items-center justify-center h-16 bg-general"
       style={{ gridArea: 'burger' }}
     >
       <Burger />

@@ -23,6 +23,11 @@ const requestsSchema = {
     type: Date,
     default: null,
   },
+  servicesIds: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Services',
+    default: [],
+  },
   address: {
     type: {
       town: { type: String, default: '' },
@@ -62,6 +67,10 @@ const requestsSchema = {
     type: Schema.Types.ObjectId,
     ref: 'Events',
     default: null,
+  },
+  googleCalendarId: {
+    type: String,
+    default: '',
   },
 }
 

@@ -47,6 +47,7 @@ const ModalButtons = ({
             <Button
               name={confirmName2}
               classBgColor="bg-general"
+              className="modal-action-button"
               onClick={onConfirm2Click}
               disabled={disableConfirm}
             />
@@ -55,6 +56,7 @@ const ModalButtons = ({
             <Button
               name={confirmName}
               classBgColor="bg-general"
+              className="modal-action-button"
               onClick={onConfirmClick}
               disabled={disableConfirm}
             />
@@ -64,6 +66,7 @@ const ModalButtons = ({
             <Button
               name={declineName}
               classBgColor={declineButtonBgClassName}
+              className="modal-action-button"
               onClick={
                 typeof onDeclineClick === 'function'
                   ? onDeclineClick
@@ -76,6 +79,7 @@ const ModalButtons = ({
               <Button
                 name={closeButtonName}
                 classBgColor="bg-general"
+                className="modal-action-button"
                 onClick={closeModal}
               />
             )

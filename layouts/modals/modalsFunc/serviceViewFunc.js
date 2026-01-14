@@ -1,12 +1,7 @@
-import Button from '@components/Button'
 import CardButtons from '@components/CardButtons'
 import Divider from '@components/Divider'
-import ImageGallery from '@components/ImageGallery'
-import PriceDiscount from '@components/PriceDiscount'
 import TextLine from '@components/TextLine'
-import { modalsFuncAtom } from '@state/atoms'
 import serviceSelector from '@state/selectors/serviceSelector'
-import DOMPurify from 'isomorphic-dompurify'
 import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 
@@ -24,7 +19,6 @@ const serviceViewFunc = (serviceId) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const modalsFunc = useAtomValue(modalsFuncAtom)
     const service = useAtomValue(serviceSelector(serviceId))
 
     useEffect(() => {
@@ -37,11 +31,10 @@ const serviceViewFunc = (serviceId) => {
         <div className="flex w-full justify-center text-lg ">
           ОШИБКА! Услуга не найдена!
         </div>
-      )
+    )
 
     return (
       <div className="flex flex-col gap-y-2">
-        <ImageGallery images={service?.images} />
         <div className="flex flex-1 flex-col">
           <div className="relative flex w-full max-w-full flex-1 flex-col px-2 py-2">
             <div className="flex w-full justify-center text-3xl font-bold">
@@ -52,29 +45,17 @@ const serviceViewFunc = (serviceId) => {
                 <CardButtonsComponent service={service} />
               </div>
             )}
-            <div
-              className="ql textarea w-full max-w-full list-disc overflow-hidden"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(service?.description),
-              }}
-            />
+            <div className="whitespace-pre-line text-sm text-gray-700">
+              {service?.description || 'Описание отсутствует'}
+            </div>
 
             <Divider thin light />
             <TextLine label="ID">{service?._id}</TextLine>
-          </div>
-          <Divider thin light />
-          <div className="flex w-full flex-col items-center phoneH:flex-row phoneH:justify-between">
-            <PriceDiscount
-              item={service}
-              className="px-2"
-              prefix="Стоимость:"
-            />
-            <Button
-              name="Подать заявку"
-              stopPropagation
-              onClick={() => modalsFunc.service.apply(service._id)}
-              thin
-            />
+            {service?.duration !== undefined && (
+              <TextLine label="Продолжительность">
+                {service?.duration ? `${service.duration} мин.` : '-'}
+              </TextLine>
+            )}
           </div>
         </div>
       </div>
@@ -83,7 +64,7 @@ const serviceViewFunc = (serviceId) => {
 
   return {
     title: `Услуга`,
-    confirmButtonName: 'Подать заявку',
+    confirmButtonName: 'Закрыть',
     Children: ServiceViewModal,
   }
 }

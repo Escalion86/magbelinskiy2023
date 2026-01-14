@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 
 import Header from '@blocks/titleComponents/Header'
 import TitleBlock from '@blocks/TitleBlock'
@@ -69,6 +69,10 @@ const Section = memo(({ id }) => (
 Section.displayName = 'Section'
 
 export default function Home() {
+  useEffect(() => {
+    document.body.classList.remove('theme-dark')
+  }, [])
+
   return (
     <Provider store={store}>
       <div className="relative flex min-h-screen flex-col items-center justify-between scroll-smooth">

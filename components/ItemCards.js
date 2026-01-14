@@ -16,6 +16,7 @@ import UserName from './UserName'
 import serviceSelector from '@state/selectors/serviceSelector'
 import eventSelector from '@state/selectors/eventSelector'
 import Image from 'next/image'
+import formatAddress from '@helpers/formatAddress'
 
 const ItemContainer = ({
   onClick,
@@ -220,7 +221,7 @@ export const EventItem = ({
             className="-mb-[1px] font-bold text-general"
             lines={1}
           >
-            {item.title || 'Без названия'}
+            {formatAddress(item?.address, 'Мероприятие')}
           </TextLinesLimiter>
         </div>
         <div className="gap-x-2 text-gray-600">
@@ -273,15 +274,6 @@ export const ServiceItem = ({
     noBorder={noBorder}
     style={style}
   >
-    {item?.images && item?.images.length > 0 && (
-      <Image
-        className="aspect-1 h-[50px] object-cover"
-        src={item.images[0]}
-        alt="Изображение услуги"
-        width={50}
-        height={50}
-      />
-    )}
     <div className="px-1">
       <div className="h-5 truncate text-sm font-bold text-gray-800">
         {item.title}
@@ -291,7 +283,7 @@ export const ServiceItem = ({
           className="textarea w-full max-w-full flex-1 overflow-hidden leading-[0.85rem]"
           lines={2}
         >
-          {item.shortDescription}
+          {item.description}
         </TextLinesLimiter>
       </div>
     </div>
