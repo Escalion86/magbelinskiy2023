@@ -3,7 +3,6 @@ import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
-import mongoose from 'mongoose'
 import dbConnect from '@server/dbConnect'
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
@@ -148,7 +147,7 @@ const sendPublicLeadToArtistCRM = async ({
 }) => {
   const baseUrl = process.env.PUBLIC_LEADS_API_BASE_URL
   const apiKey = process.env.PUBLIC_LEADS_API_KEY
-  if (!baseUrl || !apiKey) return
+  if (!baseUrl || !apiKey) return false
 
   const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/public/lead`
   const payload = {
@@ -184,12 +183,16 @@ const sendPublicLeadToArtistCRM = async ({
         endpoint,
         details,
       })
+      return false
     }
+
+    return true
   } catch (error) {
     console.log('Public Leads API request failed', {
       message: error?.message,
       endpoint,
     })
+    return false
   }
 }
 
@@ -205,20 +208,40 @@ const getSiteTimeZone = async (tenantId) => {
   return settings?.timeZone || DEFAULT_TIME_ZONE
 }
 
+const isValidObjectId = (value) =>
+  typeof value === 'string' && /^[a-f0-9]{24}$/i.test(value)
+
 const getDefaultTenantId = async () => {
   if (process.env.PUBLIC_TENANT_ID) {
-    if (mongoose.Types.ObjectId.isValid(process.env.PUBLIC_TENANT_ID)) {
+    if (isValidObjectId(process.env.PUBLIC_TENANT_ID)) {
       return process.env.PUBLIC_TENANT_ID
     }
     console.log('PUBLIC_TENANT_ID is invalid ObjectId, fallback to first admin')
   }
-  const user = await Users.findOne({
+
+  const adminOrDev = await Users.findOne({
     role: { $in: ['admin', 'dev'] },
   })
     .sort({ createdAt: 1 })
     .select('_id')
     .lean()
-  return user?._id ?? null
+
+  if (adminOrDev?._id) return adminOrDev._id
+
+  const anyUser = await Users.findOne({})
+    .sort({ createdAt: 1 })
+    .select('_id role')
+    .lean()
+
+  if (anyUser?._id) {
+    console.log('Fallback tenantId selected from first available user', {
+      tenantId: String(anyUser._id),
+      role: anyUser.role || null,
+    })
+    return anyUser._id
+  }
+
+  return null
 }
 
 const formatDateInTimeZone = (date, timeZone) => {
@@ -403,19 +426,46 @@ export const POST = async (req) => {
       : await getDefaultTenantId()
 
     if (!tenantId) {
+      console.log('POST /api/requests validation error', {
+        error: 'Не удалось определить владельца заявки',
+        isCabinetRequest,
+        hasSessionTenantId: Boolean(sessionTenantId),
+        referer,
+      })
       return errorResponse('Не удалось определить владельца заявки')
     }
 
     if (!rawPhone) {
+      console.log('POST /api/requests validation error', {
+        error: 'Укажите телефон клиента',
+        isCabinetRequest,
+        tenantId: String(tenantId),
+        rawPhone,
+      })
       return errorResponse('Укажите телефон клиента')
     }
     if (isCabinetRequest && !body.clientId) {
+      console.log('POST /api/requests validation error', {
+        error: 'Укажите клиента',
+        isCabinetRequest,
+        tenantId: String(tenantId),
+      })
       return errorResponse('Укажите клиента')
     }
     if (isCabinetRequest && !eventDate) {
+      console.log('POST /api/requests validation error', {
+        error: 'Укажите дату мероприятия',
+        isCabinetRequest,
+        tenantId: String(tenantId),
+      })
       return errorResponse('Укажите дату мероприятия')
     }
     if (isCabinetRequest && servicesIds.length === 0) {
+      console.log('POST /api/requests validation error', {
+        error: 'Укажите услугу',
+        isCabinetRequest,
+        tenantId: String(tenantId),
+      })
       return errorResponse('Укажите услугу')
     }
 
@@ -491,12 +541,16 @@ export const POST = async (req) => {
       yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
     ].filter(Boolean)
 
+    let telegramDelivered = false
+    let publicLeadDelivered = false
+
     if (!isCabinetRequest) {
       try {
-        await sendTelegramMassage(
+        const telegramResult = await sendTelegramMassage(
           messageParts.join('\n'),
           normalizedPhone ? `tel:+${normalizedPhone}` : undefined
         )
+        telegramDelivered = Boolean(telegramResult)
       } catch (error) {
         console.log('Telegram send error', error?.message || error)
       }
@@ -519,7 +573,7 @@ export const POST = async (req) => {
 
     if (!isCabinetRequest) {
       try {
-        await sendPublicLeadToArtistCRM({
+        publicLeadDelivered = await sendPublicLeadToArtistCRM({
           clientName,
           phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
           comment,
@@ -532,11 +586,24 @@ export const POST = async (req) => {
       } catch (error) {
         console.log('Public lead send unexpected error', error?.message || error)
       }
+
+      if (!telegramDelivered && !publicLeadDelivered) {
+        console.log('Lead delivery warning: both channels failed', {
+          requestId: String(request._id),
+          tenantId: String(tenantId),
+        })
+      }
     }
 
     return successResponse({
       request,
       client,
+      delivery: {
+        telegram: telegramDelivered,
+        externalApi: publicLeadDelivered,
+        atLeastOneDelivered:
+          isCabinetRequest || telegramDelivered || publicLeadDelivered,
+      },
     })
   } catch (error) {
     console.log('POST /api/requests fatal error', {

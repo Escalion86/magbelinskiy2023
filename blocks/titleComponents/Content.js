@@ -347,7 +347,6 @@ const Content = () => {
           <div className="relative flex items-center gap-x-[30px]">
             <Button
               className="-mt-[9px]"
-              href="#zakaz"
               onClick={() => {
                 setYandexAim('zakaz_show')
                 setShowModalZakaz(true)
