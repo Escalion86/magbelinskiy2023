@@ -3,6 +3,7 @@ import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import SiteSettings from '@models/SiteSettings'
 import Users from '@models/Users'
+import mongoose from 'mongoose'
 import dbConnect from '@server/dbConnect'
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
@@ -205,7 +206,12 @@ const getSiteTimeZone = async (tenantId) => {
 }
 
 const getDefaultTenantId = async () => {
-  if (process.env.PUBLIC_TENANT_ID) return process.env.PUBLIC_TENANT_ID
+  if (process.env.PUBLIC_TENANT_ID) {
+    if (mongoose.Types.ObjectId.isValid(process.env.PUBLIC_TENANT_ID)) {
+      return process.env.PUBLIC_TENANT_ID
+    }
+    console.log('PUBLIC_TENANT_ID is invalid ObjectId, fallback to first admin')
+  }
   const user = await Users.findOne({
     role: { $in: ['admin', 'dev'] },
   })
@@ -371,165 +377,173 @@ export const POST = async (req) => {
       ? formSuccessResponse()
       : NextResponse.json({ success: true, data }, { status: 201 })
 
-  const { tenantId: sessionTenantId } = await getTenantContext()
-  const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
-  const rawPhone = body.clientPhone ?? body.phone ?? ''
-  const contactChannels =
-    body.contactChannels ?? body.contact ?? body.priorityContact ?? ''
-  const eventDate = body.eventDate ?? body.date ?? null
-  const legacyLocation =
-    body.location ??
-    [body.town, body.address]
-      .filter((value) => typeof value === 'string' && value.trim().length > 0)
-      .join(', ')
-  const address = normalizeAddress(body.address, legacyLocation)
-  const contractSum = body.contractSum ?? body.price ?? 0
-  const comment = body.comment ?? ''
-  const yandexAim = body.yandexAim ?? ''
-  const servicesIds = Array.isArray(body.servicesIds) ? body.servicesIds : []
-
-  const referer = req.headers.get('referer') ?? ''
-  const isCabinetRequest = referer.includes('/cabinet')
-  await dbConnect()
-  const tenantId = isCabinetRequest
-    ? sessionTenantId
-    : await getDefaultTenantId()
-
-  if (!tenantId) {
-    return errorResponse('Не удалось определить владельца заявки')
-  }
-
-  if (!rawPhone) {
-    return errorResponse('Укажите телефон клиента')
-  }
-  if (isCabinetRequest && !body.clientId) {
-    return errorResponse('Укажите клиента')
-  }
-  if (isCabinetRequest && !eventDate) {
-    return errorResponse('Укажите дату мероприятия')
-  }
-  if (isCabinetRequest && servicesIds.length === 0) {
-    return errorResponse('Укажите услугу')
-  }
-
-  const timeZone = await getSiteTimeZone(tenantId)
-
-  const normalizedPhone = normalizePhone(rawPhone)
-  const contacts = sanitizeContacts(contactChannels)
-  const numericContractSum = Number(contractSum) || 0
-  const formattedAddress = formatAddress(address, null)
-  const displayPhone =
-    typeof rawPhone === 'string' && rawPhone.trim().length > 0
-      ? rawPhone.trim()
-      : normalizedPhone
-      ? `+${normalizedPhone}`
-      : ''
-
-  const messageParts = [
-    `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
-    '',
-    clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
-    displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
-    contacts.length > 0 ? `<b>Способы связи:</b> ${contacts.join(', ')}` : null,
-    eventDate
-      ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
-      : null,
-    formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
-    numericContractSum
-      ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
-          'ru-RU'
-        )} ₽`
-      : null,
-    comment ? `<b>Комментарий:</b> ${comment}` : null,
-    yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
-  ].filter(Boolean)
-  // const telegramResult = await
-  if (!isCabinetRequest) {
-    sendTelegramMassage(
-      messageParts.join('\n'),
-      normalizedPhone ? `tel:+${normalizedPhone}` : undefined
-    )
-  }
-  // if (!telegramResult?.ok) {
-  //   return NextResponse.json(
-  //     {
-  //       success: false,
-  //       error: 'Не удалось отправить уведомление в Telegram',
-  //     },
-  //     { status: 502 }
-  //   )
-  // }
-
-  const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
-
-  let client =
-    phoneAsNumber !== null
-      ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
-      : null
-
-  if (!client) {
-    client = await Clients.create({
-      tenantId,
-      firstName: clientName,
-      phone: phoneAsNumber,
-      priorityContact: contacts[0] ?? null,
-    })
-  } else {
-    const updates = {}
-    if (!client.firstName && clientName) updates.firstName = clientName
-    if (!client.priorityContact && contacts[0])
-      updates.priorityContact = contacts[0]
-    if (Object.keys(updates).length > 0) {
-      client = await Clients.findByIdAndUpdate(client._id, updates, {
-        new: true,
-      })
-    }
-  }
-
-  const request = await Requests.create({
-    tenantId,
-    clientId: client?._id ?? null,
-    clientName,
-    clientPhone: normalizedPhone,
-    contactChannels: contacts,
-    eventDate: eventDate ? new Date(eventDate) : null,
-    address,
-    contractSum: numericContractSum,
-    comment: comment ?? '',
-    yandexAim,
-    servicesIds,
-  })
-
-  let googleCalendarId = null
-  let calendarLink = null
   try {
-    googleCalendarId = await createRequestCalendarEvent(request, timeZone)
-    calendarLink = buildCalendarLink(googleCalendarId)
-  } catch (error) {
-    console.log('Google Calendar request create error', error)
-  }
+    const { tenantId: sessionTenantId } = await getTenantContext()
+    const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
+    const rawPhone = body.clientPhone ?? body.phone ?? ''
+    const contactChannels =
+      body.contactChannels ?? body.contact ?? body.priorityContact ?? ''
+    const eventDate = body.eventDate ?? body.date ?? null
+    const legacyLocation =
+      body.location ??
+      [body.town, body.address]
+        .filter((value) => typeof value === 'string' && value.trim().length > 0)
+        .join(', ')
+    const address = normalizeAddress(body.address, legacyLocation)
+    const contractSum = body.contractSum ?? body.price ?? 0
+    const comment = body.comment ?? ''
+    const yandexAim = body.yandexAim ?? ''
+    const servicesIds = Array.isArray(body.servicesIds) ? body.servicesIds : []
 
-  if (googleCalendarId) {
-    await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
-    request.googleCalendarId = googleCalendarId
-  }
-  request.calendarLink = calendarLink
+    const referer = req.headers.get('referer') ?? ''
+    const isCabinetRequest = referer.includes('/cabinet')
+    await dbConnect()
+    const tenantId = isCabinetRequest
+      ? sessionTenantId
+      : await getDefaultTenantId()
 
-  if (!isCabinetRequest) {
-    await sendPublicLeadToArtistCRM({
+    if (!tenantId) {
+      return errorResponse('Не удалось определить владельца заявки')
+    }
+
+    if (!rawPhone) {
+      return errorResponse('Укажите телефон клиента')
+    }
+    if (isCabinetRequest && !body.clientId) {
+      return errorResponse('Укажите клиента')
+    }
+    if (isCabinetRequest && !eventDate) {
+      return errorResponse('Укажите дату мероприятия')
+    }
+    if (isCabinetRequest && servicesIds.length === 0) {
+      return errorResponse('Укажите услугу')
+    }
+
+    const timeZone = await getSiteTimeZone(tenantId)
+    const normalizedPhone = normalizePhone(rawPhone)
+    const contacts = sanitizeContacts(contactChannels)
+    const numericContractSum = Number(contractSum) || 0
+    const formattedAddress = formatAddress(address, null)
+    const displayPhone =
+      typeof rawPhone === 'string' && rawPhone.trim().length > 0
+        ? rawPhone.trim()
+        : normalizedPhone
+        ? `+${normalizedPhone}`
+        : ''
+
+    const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
+    let client =
+      phoneAsNumber !== null
+        ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
+        : null
+
+    if (!client) {
+      client = await Clients.create({
+        tenantId,
+        firstName: clientName,
+        phone: phoneAsNumber,
+        priorityContact: contacts[0] ?? null,
+      })
+    } else {
+      const updates = {}
+      if (!client.firstName && clientName) updates.firstName = clientName
+      if (!client.priorityContact && contacts[0])
+        updates.priorityContact = contacts[0]
+      if (Object.keys(updates).length > 0) {
+        client = await Clients.findByIdAndUpdate(client._id, updates, {
+          new: true,
+        })
+      }
+    }
+
+    const request = await Requests.create({
+      tenantId,
+      clientId: client?._id ?? null,
       clientName,
-      phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
-      comment,
-      eventDate,
-      contractSum: numericContractSum,
+      clientPhone: normalizedPhone,
+      contactChannels: contacts,
+      eventDate: eventDate ? new Date(eventDate) : null,
       address,
-      source: body.source || yandexAim || 'site_form',
-      contacts,
+      contractSum: numericContractSum,
+      comment: comment ?? '',
+      yandexAim,
+      servicesIds,
     })
-  }
 
-  return successResponse({
-    request,
-    client,
-  })
+    const messageParts = [
+      `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
+      '',
+      clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
+      displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+      contacts.length > 0
+        ? `<b>Способы связи:</b> ${contacts.join(', ')}`
+        : null,
+      eventDate
+        ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
+        : null,
+      formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
+      numericContractSum
+        ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
+            'ru-RU'
+          )} ₽`
+        : null,
+      comment ? `<b>Комментарий:</b> ${comment}` : null,
+      yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+    ].filter(Boolean)
+
+    if (!isCabinetRequest) {
+      try {
+        await sendTelegramMassage(
+          messageParts.join('\n'),
+          normalizedPhone ? `tel:+${normalizedPhone}` : undefined
+        )
+      } catch (error) {
+        console.log('Telegram send error', error?.message || error)
+      }
+    }
+
+    let googleCalendarId = null
+    let calendarLink = null
+    try {
+      googleCalendarId = await createRequestCalendarEvent(request, timeZone)
+      calendarLink = buildCalendarLink(googleCalendarId)
+    } catch (error) {
+      console.log('Google Calendar request create error', error)
+    }
+
+    if (googleCalendarId) {
+      await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
+      request.googleCalendarId = googleCalendarId
+    }
+    request.calendarLink = calendarLink
+
+    if (!isCabinetRequest) {
+      try {
+        await sendPublicLeadToArtistCRM({
+          clientName,
+          phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
+          comment,
+          eventDate,
+          contractSum: numericContractSum,
+          address,
+          source: body.source || yandexAim || 'site_form',
+          contacts,
+        })
+      } catch (error) {
+        console.log('Public lead send unexpected error', error?.message || error)
+      }
+    }
+
+    return successResponse({
+      request,
+      client,
+    })
+  } catch (error) {
+    console.log('POST /api/requests fatal error', {
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+    })
+    return errorResponse('Не удалось сохранить заявку', 500)
+  }
 }
