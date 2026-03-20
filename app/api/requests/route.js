@@ -94,6 +94,10 @@ const parseBooleanEnv = (value, defaultValue = false) => {
 }
 
 const TELEGRAM_ENABLED = parseBooleanEnv(process.env.TELEGRAM_ENABLED, false)
+const REQUESTS_DB_ENABLED = parseBooleanEnv(
+  process.env.REQUESTS_DB_ENABLED,
+  true
+)
 
 const sendTelegramMassage = async (text, url) =>
   await telegramPost(
@@ -467,15 +471,21 @@ export const POST = async (req) => {
 
     const referer = req.headers.get('referer') ?? ''
     const isCabinetRequest = referer.includes('/cabinet')
-    await dbConnect()
-    const tenantId = isCabinetRequest
-      ? sessionTenantId
-      : await getDefaultTenantId()
+    const shouldPersistRequest = REQUESTS_DB_ENABLED || isCabinetRequest
+    let tenantId = null
 
-    if (!tenantId) {
+    if (shouldPersistRequest) {
+      await dbConnect()
+      tenantId = isCabinetRequest
+        ? sessionTenantId
+        : await getDefaultTenantId()
+    }
+
+    if (shouldPersistRequest && !tenantId) {
       console.log('POST /api/requests validation error', {
         error: 'Не удалось определить владельца заявки',
         isCabinetRequest,
+        shouldPersistRequest,
         hasSessionTenantId: Boolean(sessionTenantId),
         referer,
       })
@@ -516,7 +526,9 @@ export const POST = async (req) => {
       return errorResponse('Укажите услугу')
     }
 
-    const timeZone = await getSiteTimeZone(tenantId)
+    const timeZone = shouldPersistRequest
+      ? await getSiteTimeZone(tenantId)
+      : DEFAULT_TIME_ZONE
     const normalizedPhone = normalizePhone(rawPhone)
     const contacts = sanitizeContacts(contactChannels)
     const numericContractSum = Number(contractSum) || 0
@@ -529,43 +541,50 @@ export const POST = async (req) => {
         : ''
 
     const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
-    let client =
-      phoneAsNumber !== null
-        ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
-        : null
+    let client = null
+    let request = null
 
-    if (!client) {
-      client = await Clients.create({
+    if (shouldPersistRequest) {
+      client =
+        phoneAsNumber !== null
+          ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
+          : null
+
+      if (!client) {
+        client = await Clients.create({
+          tenantId,
+          firstName: clientName,
+          phone: phoneAsNumber,
+          priorityContact: contacts[0] ?? null,
+        })
+      } else {
+        const updates = {}
+        if (!client.firstName && clientName) updates.firstName = clientName
+        if (!client.priorityContact && contacts[0])
+          updates.priorityContact = contacts[0]
+        if (Object.keys(updates).length > 0) {
+          client = await Clients.findByIdAndUpdate(client._id, updates, {
+            new: true,
+          })
+        }
+      }
+
+      request = await Requests.create({
         tenantId,
-        firstName: clientName,
-        phone: phoneAsNumber,
-        priorityContact: contacts[0] ?? null,
+        clientId: client?._id ?? null,
+        clientName,
+        clientPhone: normalizedPhone,
+        contactChannels: contacts,
+        eventDate: eventDate ? new Date(eventDate) : null,
+        address,
+        contractSum: numericContractSum,
+        comment: comment ?? '',
+        yandexAim,
+        servicesIds,
       })
     } else {
-      const updates = {}
-      if (!client.firstName && clientName) updates.firstName = clientName
-      if (!client.priorityContact && contacts[0])
-        updates.priorityContact = contacts[0]
-      if (Object.keys(updates).length > 0) {
-        client = await Clients.findByIdAndUpdate(client._id, updates, {
-          new: true,
-        })
-      }
+      console.log('Requests DB persistence is disabled via REQUESTS_DB_ENABLED')
     }
-
-    const request = await Requests.create({
-      tenantId,
-      clientId: client?._id ?? null,
-      clientName,
-      clientPhone: normalizedPhone,
-      contactChannels: contacts,
-      eventDate: eventDate ? new Date(eventDate) : null,
-      address,
-      contractSum: numericContractSum,
-      comment: comment ?? '',
-      yandexAim,
-      servicesIds,
-    })
 
     let telegramDelivered = false
     let publicLeadDelivered = false
@@ -605,20 +624,22 @@ export const POST = async (req) => {
       console.log('Telegram notifications are temporarily disabled')
     }
 
-    let googleCalendarId = null
-    let calendarLink = null
-    try {
-      googleCalendarId = await createRequestCalendarEvent(request, timeZone)
-      calendarLink = buildCalendarLink(googleCalendarId)
-    } catch (error) {
-      console.log('Google Calendar request create error', error)
-    }
+    if (shouldPersistRequest && request) {
+      let googleCalendarId = null
+      let calendarLink = null
+      try {
+        googleCalendarId = await createRequestCalendarEvent(request, timeZone)
+        calendarLink = buildCalendarLink(googleCalendarId)
+      } catch (error) {
+        console.log('Google Calendar request create error', error)
+      }
 
-    if (googleCalendarId) {
-      await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
-      request.googleCalendarId = googleCalendarId
+      if (googleCalendarId) {
+        await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
+        request.googleCalendarId = googleCalendarId
+      }
+      request.calendarLink = calendarLink
     }
-    request.calendarLink = calendarLink
 
     if (!isCabinetRequest) {
       try {
@@ -638,8 +659,8 @@ export const POST = async (req) => {
 
       if (!telegramDelivered && !publicLeadDelivered) {
         console.log('Lead delivery warning: both channels failed', {
-          requestId: String(request._id),
-          tenantId: String(tenantId),
+          requestId: request?._id ? String(request._id) : null,
+          tenantId: tenantId ? String(tenantId) : null,
         })
       }
     }
@@ -652,6 +673,9 @@ export const POST = async (req) => {
         externalApi: publicLeadDelivered,
         atLeastOneDelivered:
           isCabinetRequest || telegramDelivered || publicLeadDelivered,
+      },
+      persistence: {
+        dbEnabled: shouldPersistRequest,
       },
     })
   } catch (error) {
