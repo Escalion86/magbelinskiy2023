@@ -1,4 +1,4 @@
-import { FixedSizeList as List } from 'react-window'
+import List from '@components/FixedSizeList'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useMemo, useEffect, useState, useCallback } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
@@ -183,3 +183,4 @@ const townsFunc = () => {
 }
 
 export default townsFunc
+

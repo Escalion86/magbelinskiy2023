@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeList as List } from 'react-window'
+import List from '@components/FixedSizeList'
 import TransactionTypeToggleButtons from '@components/IconToggleButtons/TransactionTypeToggleButtons'
 import TransactionCard from '@layouts/cards/TransactionCard'
 import transactionsAtom from '@state/atoms/transactionsAtom'
@@ -142,3 +142,4 @@ const clientTransactionsFunc = (clientId) => {
 }
 
 export default clientTransactionsFunc
+

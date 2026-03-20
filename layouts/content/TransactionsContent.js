@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeList as List } from 'react-window'
+import List from '@components/FixedSizeList'
 import ContentHeader from '@components/ContentHeader'
 import Button from '@components/Button'
 import TransactionTypeToggleButtons from '@components/IconToggleButtons/TransactionTypeToggleButtons'
@@ -179,3 +179,4 @@ const TransactionsContent = () => {
 }
 
 export default TransactionsContent
+
