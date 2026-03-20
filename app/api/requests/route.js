@@ -251,6 +251,43 @@ const getDefaultTenantId = async () => {
     return anyUser._id
   }
 
+  const siteSettings = await SiteSettings.findOne({})
+    .sort({ createdAt: 1 })
+    .select('tenantId')
+    .lean()
+  if (siteSettings?.tenantId) {
+    console.log('Fallback tenantId selected from site settings', {
+      tenantId: String(siteSettings.tenantId),
+    })
+    return siteSettings.tenantId
+  }
+
+  const requestTenant = await Requests.findOne({})
+    .sort({ createdAt: 1 })
+    .select('tenantId')
+    .lean()
+  if (requestTenant?.tenantId) {
+    console.log('Fallback tenantId selected from existing requests', {
+      tenantId: String(requestTenant.tenantId),
+    })
+    return requestTenant.tenantId
+  }
+
+  const clientTenant = await Clients.findOne({})
+    .sort({ createdAt: 1 })
+    .select('tenantId')
+    .lean()
+  if (clientTenant?.tenantId) {
+    console.log('Fallback tenantId selected from existing clients', {
+      tenantId: String(clientTenant.tenantId),
+    })
+    return clientTenant.tenantId
+  }
+
+  console.log(
+    'Could not resolve tenantId from PUBLIC_TENANT_ID, users, site settings, requests or clients'
+  )
+
   return null
 }
 
