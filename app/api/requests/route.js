@@ -85,6 +85,16 @@ const parseBody = async (req) => {
   }
 }
 
+const parseBooleanEnv = (value, defaultValue = false) => {
+  if (typeof value !== 'string') return defaultValue
+  const normalized = value.trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true
+  if (['0', 'false', 'no', 'off'].includes(normalized)) return false
+  return defaultValue
+}
+
+const TELEGRAM_ENABLED = parseBooleanEnv(process.env.TELEGRAM_ENABLED, false)
+
 const sendTelegramMassage = async (text, url) =>
   await telegramPost(
     `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
@@ -520,31 +530,31 @@ export const POST = async (req) => {
       servicesIds,
     })
 
-    const messageParts = [
-      `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
-      '',
-      clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
-      displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
-      contacts.length > 0
-        ? `<b>Способы связи:</b> ${contacts.join(', ')}`
-        : null,
-      eventDate
-        ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
-        : null,
-      formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
-      numericContractSum
-        ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
-            'ru-RU'
-          )} ₽`
-        : null,
-      comment ? `<b>Комментарий:</b> ${comment}` : null,
-      yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
-    ].filter(Boolean)
-
     let telegramDelivered = false
     let publicLeadDelivered = false
 
-    if (!isCabinetRequest) {
+    if (!isCabinetRequest && TELEGRAM_ENABLED) {
+      const messageParts = [
+        `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
+        '',
+        clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
+        displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+        contacts.length > 0
+          ? `<b>Способы связи:</b> ${contacts.join(', ')}`
+          : null,
+        eventDate
+          ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
+          : null,
+        formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
+        numericContractSum
+          ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
+              'ru-RU'
+            )} ₽`
+          : null,
+        comment ? `<b>Комментарий:</b> ${comment}` : null,
+        yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+      ].filter(Boolean)
+
       try {
         const telegramResult = await sendTelegramMassage(
           messageParts.join('\n'),
@@ -554,6 +564,8 @@ export const POST = async (req) => {
       } catch (error) {
         console.log('Telegram send error', error?.message || error)
       }
+    } else if (!isCabinetRequest) {
+      console.log('Telegram notifications are temporarily disabled')
     }
 
     let googleCalendarId = null
