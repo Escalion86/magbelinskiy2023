@@ -2,11 +2,13 @@ import { NextResponse } from 'next/server'
 import Requests from '@models/Requests'
 import Clients from '@models/Clients'
 import SiteSettings from '@models/SiteSettings'
+import Users from '@models/Users'
 import dbConnect from '@server/dbConnect'
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
 import telegramPost from '@server/telegramApi'
 import { getCalendarClient } from '@server/googleCalendarClient'
+import getTenantContext from '@server/getTenantContext'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -59,6 +61,30 @@ const normalizeAddress = (rawAddress, legacyLocation) => {
   return normalized
 }
 
+const parseBody = async (req) => {
+  const contentType = (req.headers.get('content-type') || '').toLowerCase()
+  if (contentType.includes('application/json')) {
+    return { body: await req.json(), isFormSubmit: false }
+  }
+
+  if (
+    contentType.includes('application/x-www-form-urlencoded') ||
+    contentType.includes('multipart/form-data')
+  ) {
+    const formData = await req.formData()
+    return {
+      body: Object.fromEntries(formData.entries()),
+      isFormSubmit: true,
+    }
+  }
+
+  try {
+    return { body: await req.json(), isFormSubmit: false }
+  } catch (error) {
+    return { body: {}, isFormSubmit: false }
+  }
+}
+
 const sendTelegramMassage = async (text, url) =>
   await telegramPost(
     `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
@@ -84,15 +110,109 @@ const sendTelegramMassage = async (text, url) =>
     true
   )
 
+const extractContactByType = (contacts, type) => {
+  if (!Array.isArray(contacts)) return ''
+  const prepared = contacts
+    .map((item) => String(item || '').trim())
+    .filter(Boolean)
+    .map((item) => item.toLowerCase())
+
+  if (type === 'telegram') {
+    const found = prepared.find(
+      (item) =>
+        item.includes('telegram') || item.includes('t.me') || item.includes('@')
+    )
+    return found || ''
+  }
+
+  if (type === 'whatsapp') {
+    const found = prepared.find(
+      (item) => item.includes('whatsapp') || item.includes('wa.me')
+    )
+    return found || ''
+  }
+
+  return ''
+}
+
+const sendPublicLeadToArtistCRM = async ({
+  clientName,
+  phone,
+  comment,
+  eventDate,
+  contractSum,
+  address,
+  source,
+  contacts,
+}) => {
+  const baseUrl = process.env.PUBLIC_LEADS_API_BASE_URL
+  const apiKey = process.env.PUBLIC_LEADS_API_KEY
+  if (!baseUrl || !apiKey) return
+
+  const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/public/lead`
+  const payload = {
+    name: clientName || undefined,
+    phone: phone || undefined,
+    comment: comment || undefined,
+    eventDate: eventDate ? new Date(eventDate).toISOString() : undefined,
+    contractSum: Number(contractSum) || undefined,
+    town: address?.town || undefined,
+    address: formatAddress(address, null) || undefined,
+    source: source || 'site_form',
+    telegram: extractContactByType(contacts, 'telegram') || undefined,
+    whatsapp: extractContactByType(contacts, 'whatsapp') || undefined,
+  }
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Public-Api-Key': apiKey,
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      let details = ''
+      try {
+        details = await response.text()
+      } catch (error) {}
+      console.log('Public Leads API error', {
+        status: response.status,
+        endpoint,
+        details,
+      })
+    }
+  } catch (error) {
+    console.log('Public Leads API request failed', {
+      message: error?.message,
+      endpoint,
+    })
+  }
+}
+
 const WRITE_SCOPE = ['https://www.googleapis.com/auth/calendar']
 const { GOOGLE_CALENDAR_ID } = process.env
 const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
 
-const getSiteTimeZone = async () => {
-  const settings = await SiteSettings.findOne({})
+const getSiteTimeZone = async (tenantId) => {
+  if (!tenantId) return DEFAULT_TIME_ZONE
+  const settings = await SiteSettings.findOne({ tenantId })
     .select('timeZone')
     .lean()
   return settings?.timeZone || DEFAULT_TIME_ZONE
+}
+
+const getDefaultTenantId = async () => {
+  if (process.env.PUBLIC_TENANT_ID) return process.env.PUBLIC_TENANT_ID
+  const user = await Users.findOne({
+    role: { $in: ['admin', 'dev'] },
+  })
+    .sort({ createdAt: 1 })
+    .select('_id')
+    .lean()
+  return user?._id ?? null
 }
 
 const formatDateInTimeZone = (date, timeZone) => {
@@ -209,9 +329,17 @@ const createRequestCalendarEvent = async (request, timeZone) => {
 }
 
 export const GET = async () => {
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
-  const timeZone = await getSiteTimeZone()
-  const requests = await Requests.find({}).sort({ createdAt: -1 }).lean()
+  const requests = await Requests.find({ tenantId })
+    .sort({ createdAt: -1 })
+    .lean()
   const prepared = requests.map((request) => ({
     ...request,
     calendarLink: buildCalendarLink(request.googleCalendarId),
@@ -221,7 +349,29 @@ export const GET = async () => {
 }
 
 export const POST = async (req) => {
-  const body = await req.json()
+  const { body, isFormSubmit } = await parseBody(req)
+  const getRedirectUrl = (status) =>
+    new URL(`/?request=${status}#zakaz`, req.url)
+  const formSuccessResponse = () =>
+    NextResponse.redirect(getRedirectUrl('success'), 303)
+  const formErrorResponse = (message) =>
+    NextResponse.redirect(
+      new URL(
+        `/?request=error&message=${encodeURIComponent(message)}#zakaz`,
+        req.url
+      ),
+      303
+    )
+  const errorResponse = (message, status = 400) =>
+    isFormSubmit
+      ? formErrorResponse(message)
+      : NextResponse.json({ success: false, error: message }, { status })
+  const successResponse = (data) =>
+    isFormSubmit
+      ? formSuccessResponse()
+      : NextResponse.json({ success: true, data }, { status: 201 })
+
+  const { tenantId: sessionTenantId } = await getTenantContext()
   const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
   const rawPhone = body.clientPhone ?? body.phone ?? ''
   const contactChannels =
@@ -240,45 +390,29 @@ export const POST = async (req) => {
 
   const referer = req.headers.get('referer') ?? ''
   const isCabinetRequest = referer.includes('/cabinet')
+  await dbConnect()
+  const tenantId = isCabinetRequest
+    ? sessionTenantId
+    : await getDefaultTenantId()
+
+  if (!tenantId) {
+    return errorResponse('Не удалось определить владельца заявки')
+  }
 
   if (!rawPhone) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Укажите телефон клиента',
-      },
-      { status: 400 }
-    )
+    return errorResponse('Укажите телефон клиента')
   }
   if (isCabinetRequest && !body.clientId) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Укажите клиента',
-      },
-      { status: 400 }
-    )
+    return errorResponse('Укажите клиента')
   }
   if (isCabinetRequest && !eventDate) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Укажите дату мероприятия',
-      },
-      { status: 400 }
-    )
+    return errorResponse('Укажите дату мероприятия')
   }
   if (isCabinetRequest && servicesIds.length === 0) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Укажите услугу',
-      },
-      { status: 400 }
-    )
+    return errorResponse('Укажите услугу')
   }
 
-  await dbConnect()
+  const timeZone = await getSiteTimeZone(tenantId)
 
   const normalizedPhone = normalizePhone(rawPhone)
   const contacts = sanitizeContacts(contactChannels)
@@ -330,11 +464,12 @@ export const POST = async (req) => {
 
   let client =
     phoneAsNumber !== null
-      ? await Clients.findOne({ phone: phoneAsNumber })
+      ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
       : null
 
   if (!client) {
     client = await Clients.create({
+      tenantId,
       firstName: clientName,
       phone: phoneAsNumber,
       priorityContact: contacts[0] ?? null,
@@ -352,6 +487,7 @@ export const POST = async (req) => {
   }
 
   const request = await Requests.create({
+    tenantId,
     clientId: client?._id ?? null,
     clientName,
     clientPhone: normalizedPhone,
@@ -379,14 +515,21 @@ export const POST = async (req) => {
   }
   request.calendarLink = calendarLink
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: {
-        request,
-        client,
-      },
-    },
-    { status: 201 }
-  )
+  if (!isCabinetRequest) {
+    await sendPublicLeadToArtistCRM({
+      clientName,
+      phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
+      comment,
+      eventDate,
+      contractSum: numericContractSum,
+      address,
+      source: body.source || yandexAim || 'site_form',
+      contacts,
+    })
+  }
+
+  return successResponse({
+    request,
+    client,
+  })
 }

@@ -1,6 +1,12 @@
 import { Schema } from 'mongoose'
 
 const requestsSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    index: true,
+    default: null,
+  },
   clientId: {
     type: Schema.Types.ObjectId,
     ref: 'Clients',

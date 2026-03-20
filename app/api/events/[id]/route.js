@@ -3,6 +3,7 @@ import Events from '@models/Events'
 import Requests from '@models/Requests'
 import dbConnect from '@server/dbConnect'
 import { updateEventInCalendar } from '@server/CRUD'
+import getTenantContext from '@server/getTenantContext'
 
 const EVENT_STATUSES = new Set([
   'canceled',
@@ -46,6 +47,13 @@ const normalizeAddress = (rawAddress, legacyLocation) => {
 export const PUT = async (req, { params }) => {
   const { id } = await params
   const body = await req.json()
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
 
   const update = {}
@@ -81,7 +89,11 @@ export const PUT = async (req, { params }) => {
   }
   if (body.status && EVENT_STATUSES.has(body.status)) update.status = body.status
 
-  const event = await Events.findByIdAndUpdate(id, update, { new: true })
+  const event = await Events.findOneAndUpdate(
+    { _id: id, tenantId },
+    update,
+    { new: true }
+  )
   if (!event)
     return NextResponse.json(
       { success: false, error: 'Мероприятие не найдено' },
@@ -101,18 +113,28 @@ export const PUT = async (req, { params }) => {
 
 export const DELETE = async (req, { params }) => {
   const { id } = await params
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
-  const deleted = await Events.findByIdAndDelete(id)
+  const deleted = await Events.findOneAndDelete({ _id: id, tenantId })
   if (!deleted)
     return NextResponse.json(
       { success: false, error: 'Мероприятие не найдено' },
       { status: 404 }
     )
   if (deleted.requestId) {
-    await Requests.findByIdAndUpdate(deleted.requestId, {
+    await Requests.findOneAndUpdate(
+      { _id: deleted.requestId, tenantId },
+      {
       status: 'canceled',
       eventId: null,
-    })
+      }
+    )
   }
   return NextResponse.json({ success: true }, { status: 200 })
 }

@@ -6,12 +6,10 @@ import TextLinesLimiter from '@components/TextLinesLimiter'
 import UserName from '@components/UserName'
 import { faGenderless } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import getUserAvatarSrc from '@helpers/getUserAvatarSrc'
 import modalsFuncAtom from '@state/atoms/modalsFuncAtom'
 import loadingAtom from '@state/atoms/loadingAtom'
-import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import userSelector from '@state/selectors/userSelector'
 import cn from 'classnames'
@@ -48,7 +46,6 @@ const FinishedCount = (props) => (
 )
 
 const UserCard = ({ userId, hidden = false, style }) => {
-  const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
   const modalsFunc = useAtomValue(modalsFuncAtom)
   const user = useAtomValue(userSelector(userId))
   const loading = useAtomValue(loadingAtom('user' + userId))
@@ -132,24 +129,6 @@ const UserCard = ({ userId, hidden = false, style }) => {
                           {user.personalStatus}
                         </TextLinesLimiter>
                       </div>
-                      {user.birthday && (
-                        <div className="flex gap-x-2 text-sm leading-4 ">
-                          <span className="flex items-center font-bold">
-                            Возраст:
-                          </span>
-                          <div className="flex items-center gap-x-2 whitespace-nowrap text-sm font-normal">
-                            <span className="leading-4">
-                              {birthDateToAge(
-                                user.birthday,
-                                serverDate,
-                                true,
-                                false,
-                                true
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      )}
 
                       {/* <div className="flex text-sm leading-4 gap-x-2 ">
                         <span className="font-bold">Зарегистрирован:</span>

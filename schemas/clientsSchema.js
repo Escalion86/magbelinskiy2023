@@ -2,6 +2,12 @@ import { DEFAULT_USERS_NOTIFICATIONS } from '@helpers/constants'
 import { Schema } from 'mongoose'
 
 const clientsSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    index: true,
+    default: null,
+  },
   firstName: {
     type: String,
     maxlength: [

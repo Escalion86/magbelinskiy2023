@@ -5,6 +5,12 @@ import {
 import { Schema } from 'mongoose'
 
 const usersSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    index: true,
+    default: null,
+  },
   firstName: {
     type: String,
     maxlength: [
@@ -29,18 +35,6 @@ const usersSchema = {
     ],
     default: '',
   },
-  firstname: {
-    type: String,
-    default: '',
-  },
-  secondname: {
-    type: String,
-    default: '',
-  },
-  thirdname: {
-    type: String,
-    default: '',
-  },
   email: {
     type: String,
     lowercase: true,
@@ -50,46 +44,13 @@ const usersSchema = {
     type: String,
     default: '',
   },
-  // image: {
-  //   type: String,
-  //   default: null,
-  // },
   images: {
     type: Array,
     default: [],
   },
-  gender: {
-    type: String,
-    default: null,
-  },
-  relationship: {
-    type: Boolean,
-    default: null,
-  },
-  personalStatus: {
-    type: String,
-    default: '',
-  },
-  about: {
-    type: String,
-    default: '',
-  },
-  interests: {
-    type: String,
-    default: '',
-  },
-  profession: {
-    type: String,
-    default: '',
-  },
-  orientation: {
-    type: String,
-    default: null,
-  },
   phone: {
-    type: Number,
-    // required: [true, 'Введите Телефон'],
-    default: null,
+    type: String,
+    default: '',
   },
   registrationType: {
     type: String,
@@ -115,17 +76,9 @@ const usersSchema = {
     type: String,
     default: '',
   },
-  birthday: {
-    type: Date,
-    default: null,
-  },
   role: {
     type: String,
-    default: 'client',
-  },
-  status: {
-    type: String,
-    default: 'novice',
+    default: 'user',
   },
   lastActivityAt: {
     type: Date,
@@ -139,31 +92,10 @@ const usersSchema = {
     type: Boolean,
     default: false,
   },
-  haveKids: {
-    type: Boolean,
-    default: null,
-  },
-  security: {
-    type: Map,
-    // of: Any,
-    default: DEFAULT_USERS_SECURITY,
-  },
   notifications: {
     type: Map,
     of: Schema.Types.Mixed,
     default: DEFAULT_USERS_NOTIFICATIONS,
-  },
-  soctag: {
-    type: String,
-    default: null,
-  },
-  custag: {
-    type: String,
-    default: null,
-  },
-  town: {
-    type: String,
-    default: null,
   },
 }
 

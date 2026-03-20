@@ -1,6 +1,6 @@
-import { postData } from '@helpers/CRUD'
 import Test from '@models/Test'
-import dbConnect from '@utils/dbConnect'
+import dbConnect from '@server/dbConnect'
+import telegramPost from '@server/telegramApi'
 
 export const sendMessageToTelegramId = async ({
   req,
@@ -18,17 +18,14 @@ export const sendMessageToTelegramId = async ({
         }
       })
     )
-    await postData(
+    await telegramPost(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMediaGroup`,
       {
         chat_id: telegramId,
         media,
       },
       null,
-      // (data) => console.log('data', data),
       (data) => console.log('error', data),
-      true,
-      null,
       true
     )
   }
@@ -39,7 +36,7 @@ export const sendMessageToTelegramId = async ({
         })
       : undefined
 
-    const result = await postData(
+    const result = await telegramPost(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
         chat_id: telegramId,
@@ -48,10 +45,7 @@ export const sendMessageToTelegramId = async ({
         reply_markup,
       },
       null,
-      // (data) => console.log('data', data),
       (data) => console.log('error', data),
-      true,
-      null,
       true
     )
     return result

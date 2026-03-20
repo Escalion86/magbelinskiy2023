@@ -6,6 +6,8 @@ import TransactionsContent from './TransactionsContent'
 import SettingsContent from './SettingsContent'
 import StatisticsContent from './StatisticsContent'
 import ServicesContent from './ServicesContent'
+import UsersContent from './UsersContent'
+import QuestionnaireContent from './QuestionnaireContent'
 
 const UpcomingEventsContent = () => <EventsContent filter="upcoming" />
 const PastEventsContent = () => <EventsContent filter="past" />
@@ -50,5 +52,13 @@ export const CONTENTS = Object.freeze({
   statistics: {
     Component: StatisticsContent,
     name: 'Статистика',
+  },
+  users: {
+    Component: UsersContent,
+    name: 'Пользователи',
+  },
+  questionnaire: {
+    Component: QuestionnaireContent,
+    name: 'Моя анкета',
   },
 })

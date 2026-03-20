@@ -116,18 +116,19 @@ const connectToGoogleCalendar = () => {
   return calendar
 }
 
-const getSiteTimeZone = async () => {
+const getSiteTimeZone = async (tenantId) => {
+  if (!tenantId) return DEFAULT_TIME_ZONE
   await dbConnect()
-  const settings = await SiteSettings.findOne({})
+  const settings = await SiteSettings.findOne({ tenantId })
     .select('timeZone')
     .lean()
   return settings?.timeZone || DEFAULT_TIME_ZONE
 }
 
-const addBlankEventToCalendar = async () => {
+const addBlankEventToCalendar = async (tenantId) => {
   const calendar = await getCalendarClient(SCOPES)
   if (!calendar) return undefined
-  const timeZone = await getSiteTimeZone()
+  const timeZone = await getSiteTimeZone(tenantId)
 
   const calendarEvent = {
     summary: '[blank]',
@@ -217,7 +218,7 @@ const deleteEventFromCalendar = async (googleCalendarId) => {
 const updateEventInCalendar = async (event, req) => {
   const calendar = await getCalendarClient(SCOPES)
   if (!calendar) return undefined
-  const timeZone = await getSiteTimeZone()
+  const timeZone = await getSiteTimeZone(event?.tenantId)
 
   // calendar.events.list(
   //   {
@@ -493,7 +494,9 @@ export default async function handler(Schema, req, res, params = null) {
 
           // Создаем пустой календарь и получаем его id
           if (Schema === Events) {
-            clearedBody.googleCalendarId = await addBlankEventToCalendar()
+            clearedBody.googleCalendarId = await addBlankEventToCalendar(
+              clearedBody?.tenantId
+            )
           }
 
           data = await Schema.create(clearedBody)

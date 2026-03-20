@@ -9,8 +9,8 @@ import setErrorSelector from './selectors/setErrorSelector'
 import setNotErrorSelector from './selectors/setNotErrorSelector'
 import eventEditSelector from './selectors/eventEditSelector'
 import eventDeleteSelector from './selectors/eventDeleteSelector'
-// import userDeleteSelector from './selectors/userDeleteSelector'
-// import userEditSelector from './selectors/userEditSelector'
+import userDeleteSelector from './selectors/userDeleteSelector'
+import userEditSelector from './selectors/userEditSelector'
 import requestEditSelector from './selectors/requestEditSelector'
 import requestDeleteSelector from './selectors/requestDeleteSelector'
 import clientEditSelector from './selectors/clientEditSelector'
@@ -93,6 +93,20 @@ const messages = {
       error: 'Не удалось удалить услугу',
     },
   },
+  user: {
+    update: {
+      success: 'Пользователь обновлен',
+      error: 'Не удалось обновить пользователя',
+    },
+    add: {
+      success: 'Пользователь создан',
+      error: 'Не удалось создать пользователя',
+    },
+    delete: {
+      success: 'Пользователь удален',
+      error: 'Не удалось удалить пользователя',
+    },
+  },
   // eventsUser: {
   //   update: {
   //     success: 'Пользователь на мероприятии обновлен',
@@ -140,6 +154,7 @@ const props = {
   setRequest: setFunc(requestEditSelector),
   deleteRequest: setFunc(requestDeleteSelector),
   setClient: setFunc(clientEditSelector),
+  setUser: setFunc(userEditSelector),
 
   // setEventsUsers: setFamilyFunc(setEventsUsersSelector),
   // updateEventsUsers: setFamilyFunc(updateEventsUsersSelector),
@@ -154,6 +169,7 @@ const props = {
   // deleteQuestionnaireUsers: setFunc(questionnaireUsersDeleteSelector),
   setService: setFunc(serviceEditSelector),
   deleteService: setFunc(serviceDeleteSelector),
+  deleteUser: setFunc(userDeleteSelector),
   // setServicesUser: setFunc(servicesUsersEditSelector),
   // deleteServicesUser: setFunc(servicesUsersDeleteSelector),
   // setRoles: setFunc(rolesAtom),
@@ -167,6 +183,7 @@ const itemsFuncGenerator = (
     'event',
     'client',
     'service',
+    'user',
     // 'eventsUser',
     // 'user',
     // 'questionnaire',

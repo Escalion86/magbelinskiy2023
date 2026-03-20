@@ -11,7 +11,6 @@ const PhoneInput = ({
   labelClassName,
   className,
   noMargin,
-  smallMargin,
   error,
   showErrorText,
 }) => (
@@ -23,23 +22,22 @@ const PhoneInput = ({
     className={cn('w-48', className)}
     disabled={disabled}
     noMargin={noMargin}
-    smallMargin={smallMargin}
     error={error}
     showErrorText={showErrorText}
     wrapperClassName={
-      disabled ? 'text-disabled cursor-not-allowed' : 'text-input '
+      disabled ? 'text-disabled cursor-not-allowed' : 'text-white'
     }
   >
     <div>+7</div>
     <MaskedInput
       disabled={disabled}
-      placeholder={label}
+      placeholder={' '}
       className={cn(
-        'w-full px-1 focus:outline-none bg-transparent peer placeholder-transparent',
+        'peer w-full bg-transparent px-1 placeholder-transparent focus:outline-hidden',
         required && (!value || value.toString().length !== 11)
           ? 'border-red-700'
           : 'border-gray-400',
-        disabled ? 'text-disabled cursor-not-allowed' : 'text-input '
+        disabled ? 'text-disabled cursor-not-allowed' : 'text-input'
       )}
       guide={false}
       // showMask={false}

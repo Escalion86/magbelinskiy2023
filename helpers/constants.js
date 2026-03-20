@@ -14,6 +14,7 @@ import {
   faBug,
   faMoneyBill,
   faUser,
+  faUsers,
   faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons'
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
@@ -365,7 +366,7 @@ export const DEFAULT_USER = Object.freeze({
   birthday: null,
   gender: null,
   images: [],
-  role: 'client',
+  role: 'user',
   town: '',
   lastActivityAt: null,
   prevActivityAt: null,
@@ -725,6 +726,13 @@ export const pages = [
     icon: faChartLine,
   },
   {
+    id: 13,
+    group: 8,
+    name: 'Пользователи',
+    href: 'users',
+    icon: faUsers,
+  },
+  {
     id: 20,
     group: 6,
     name: 'Настройки',
@@ -782,6 +790,11 @@ export const pagesGroups = [
     icon: faCog,
   },
   {
+    id: 8,
+    name: 'Пользователи',
+    icon: faUsers,
+  },
+  {
     id: 99,
     name: 'Разработчик',
     icon: faBug,
@@ -833,7 +846,7 @@ export const USERS_STATUSES = [
 ]
 
 export const USERS_ROLES = [
-  { value: 'client', name: 'Пользователь', color: 'blue-400' },
+  { value: 'user', name: 'Пользователь', color: 'blue-400' },
   { value: 'moder', name: 'Модератор', color: 'green-400' },
   { value: 'admin', name: 'Администратор', color: 'orange-400' },
   { value: 'supervisor', name: 'Руководитель', color: 'general' },

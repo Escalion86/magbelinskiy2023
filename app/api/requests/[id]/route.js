@@ -7,13 +7,15 @@ import dbConnect from '@server/dbConnect'
 import { updateEventInCalendar } from '@server/CRUD'
 import { getCalendarClient } from '@server/googleCalendarClient'
 import formatAddress from '@helpers/formatAddress'
+import getTenantContext from '@server/getTenantContext'
 
 const { GOOGLE_CALENDAR_ID } = process.env
 const WRITE_SCOPE = ['https://www.googleapis.com/auth/calendar']
 const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
 
-const getSiteTimeZone = async () => {
-  const settings = await SiteSettings.findOne({})
+const getSiteTimeZone = async (tenantId) => {
+  if (!tenantId) return DEFAULT_TIME_ZONE
+  const settings = await SiteSettings.findOne({ tenantId })
     .select('timeZone')
     .lean()
   return settings?.timeZone || DEFAULT_TIME_ZONE
@@ -176,11 +178,18 @@ const REQUEST_STATUSES = new Set([
 export const PUT = async (req, { params }) => {
   const { id } = await params
   const body = await req.json()
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
 
   await dbConnect()
-  const timeZone = await getSiteTimeZone()
+  const timeZone = await getSiteTimeZone(tenantId)
 
-  const request = await Requests.findById(id)
+  const request = await Requests.findOne({ _id: id, tenantId })
   if (!request)
     return NextResponse.json(
       { success: false, error: 'Заявка не найдена' },
@@ -252,6 +261,7 @@ export const PUT = async (req, { params }) => {
     )
 
     const event = await Events.create({
+      tenantId,
       requestId: request._id,
       clientId,
       eventDate,
@@ -278,8 +288,8 @@ export const PUT = async (req, { params }) => {
       console.log('Google Calendar convert error', error)
     }
 
-    const updatedRequest = await Requests.findByIdAndUpdate(
-      id,
+    const updatedRequest = await Requests.findOneAndUpdate(
+      { _id: id, tenantId },
       {
         status: 'converted',
         eventId: event._id,
@@ -288,7 +298,7 @@ export const PUT = async (req, { params }) => {
     )
 
     const client = request.clientId
-      ? await Clients.findById(request.clientId)
+      ? await Clients.findOne({ _id: request.clientId, tenantId })
       : null
 
     return NextResponse.json(
@@ -314,9 +324,12 @@ export const PUT = async (req, { params }) => {
     const normalizedPhone = normalizePhone(body.clientPhone)
     update.clientPhone = normalizedPhone
     if (request.clientId && normalizedPhone) {
-      await Clients.findByIdAndUpdate(request.clientId, {
-        $set: { phone: Number(normalizedPhone) },
-      })
+      await Clients.findOneAndUpdate(
+        { _id: request.clientId, tenantId },
+        {
+          $set: { phone: Number(normalizedPhone) },
+        }
+      )
     }
   }
 
@@ -324,9 +337,12 @@ export const PUT = async (req, { params }) => {
   if (contacts !== undefined) {
     update.contactChannels = contacts
     if (request.clientId)
-      await Clients.findByIdAndUpdate(request.clientId, {
-        $set: { priorityContact: contacts[0] ?? null },
-      })
+      await Clients.findOneAndUpdate(
+        { _id: request.clientId, tenantId },
+        {
+          $set: { priorityContact: contacts[0] ?? null },
+        }
+      )
   }
 
   if (body.eventDate !== undefined)
@@ -351,9 +367,13 @@ export const PUT = async (req, { params }) => {
     update.status = body.status
   }
 
-  const updatedRequest = await Requests.findByIdAndUpdate(id, update, {
-    new: true,
-  })
+  const updatedRequest = await Requests.findOneAndUpdate(
+    { _id: id, tenantId },
+    update,
+    {
+      new: true,
+    }
+  )
 
   if (updatedRequest?.googleCalendarId) {
     try {
@@ -366,11 +386,14 @@ export const PUT = async (req, { params }) => {
   let client = null
   if (request.clientId) {
     if (body.clientName !== undefined) {
-      await Clients.findByIdAndUpdate(request.clientId, {
+      await Clients.findOneAndUpdate(
+        { _id: request.clientId, tenantId },
+        {
         $set: { firstName: body.clientName },
-      })
+        }
+      )
     }
-    client = await Clients.findById(request.clientId)
+    client = await Clients.findOne({ _id: request.clientId, tenantId })
   }
 
   return NextResponse.json(
@@ -390,8 +413,15 @@ export const PUT = async (req, { params }) => {
 
 export const DELETE = async (req, { params }) => {
   const { id } = await params
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
-  const deleted = await Requests.findByIdAndDelete(id)
+  const deleted = await Requests.findOneAndDelete({ _id: id, tenantId })
   if (!deleted)
     return NextResponse.json(
       { success: false, error: 'Заявка не найдена' },

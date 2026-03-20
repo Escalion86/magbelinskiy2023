@@ -1,5 +1,15 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 import crypto from 'crypto'
+import bcrypt from 'bcryptjs'
+import dbConnect from '@server/dbConnect'
+import Users from '@models/Users'
+
+const normalizePhone = (phone) => {
+  if (!phone) return ''
+  return String(phone).replace(/[^0-9]/g, '')
+}
+
+const isHash = (value) => typeof value === 'string' && value.startsWith('$2')
 
 const getAuthSecret = () => {
   const existingSecret = process.env.NEXTAUTH_SECRET
@@ -48,8 +58,8 @@ const authOptions = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        name: {
-          label: 'Name',
+        phone: {
+          label: 'Phone',
           type: 'text',
         },
         password: {
@@ -59,19 +69,48 @@ const authOptions = {
       },
       async authorize(credentials) {
         try {
-          // const user = login(credentials)
-          // console.log({ credentials })
-          if (
-            credentials.name === process.env.LOGIN &&
-            credentials.password === process.env.PASSWORD
-          ) {
-            console.log('credentials :>> ', credentials)
-            console.log('success')
-            return credentials
+          const phone = normalizePhone(credentials?.phone)
+          const password = credentials?.password ?? ''
+
+          if (!phone || !password) return null
+
+          await dbConnect()
+
+          const numericPhone = Number(phone)
+          const phoneQuery = Number.isNaN(numericPhone)
+            ? { phone }
+            : { $or: [{ phone }, { phone: numericPhone }] }
+          const user = await Users.findOne(phoneQuery)
+          if (!user) return null
+
+          const passwordValue = user.password ?? ''
+          const passwordMatch = isHash(passwordValue)
+            ? await bcrypt.compare(password, passwordValue)
+            : passwordValue === password
+
+          if (!passwordMatch) return null
+
+          if (!isHash(passwordValue)) {
+            const hashed = await bcrypt.hash(password, 10)
+            await Users.findByIdAndUpdate(user._id, { password: hashed })
           }
 
-          return null
-          // return user
+          if (!user.tenantId) {
+            await Users.findByIdAndUpdate(user._id, { tenantId: user._id })
+          }
+
+          if (user.phone !== phone) {
+            await Users.findByIdAndUpdate(user._id, { phone })
+          }
+
+          return {
+            id: user._id.toString(),
+            phone,
+            role: user.role ?? 'user',
+            tenantId: user.tenantId?.toString() ?? user._id.toString(),
+            firstName: user.firstName ?? '',
+            secondName: user.secondName ?? '',
+          }
         } catch (error) {
           console.log({ error })
           return null
@@ -80,74 +119,29 @@ const authOptions = {
     }),
     // ...add more providers here
   ],
-  // callbacks: {
-  //   // async jwt({ token, user }) {
-  //   //   return { ...token, ...user }
-  //   // },
-  //   async session({ session, user, token }) {
-  //     // await fetchingLog(
-  //     //   { from: 'nextauth callback session', user: session?.user },
-  //     //   process.env.NEXTAUTH_SITE
-  //     // )
-
-  //     const userPhone = session.user.name
-
-  //     // Находим данные пользователя и обновляем время активности
-  //     // await fetchingLog(
-  //     //   { from: 'start dbConnect in nextauth' },
-  //     //   process.env.NEXTAUTH_SITE
-  //     // )
-  //     await dbConnect()
-  //     // await fetchingLog(
-  //     //   { from: 'finish dbConnect in nextauth' },
-  //     //   process.env.NEXTAUTH_SITE
-  //     // )
-
-  //     console.log('dbConnect')
-
-  //     const result = await Users.findOne({ phone: userPhone })
-  //     // const result = await Users.findOneAndUpdate(
-  //     //   { phone: userPhone },
-  //     //   {
-  //     //     lastActivityAt: Date.now(),
-  //     //     // prevActivityAt: session.user.lastActivityAt,
-  //     //   }
-  //     // )
-  //     // console.log('!!!!!!!!!!!result', result)
-
-  //     // const result = await fetchingUserByPhone(
-  //     //   userPhone,
-  //     //   process.env.NEXTAUTH_SITE
-  //     // )
-  //     // await fetchingLog(
-  //     //   { from: 'result in nextauth', result },
-  //     //   process.env.NEXTAUTH_SITE
-  //     // )
-
-  //     // Если пользователь есть в базе (а он должен быть)
-  //     if (result) {
-  //       // await fetchingLog(
-  //       //   {
-  //       //     from: 'user finded. update User activity time in nextauth authorize',
-  //       //   },
-  //       //   process.env.NEXTAUTH_SITE
-  //       // )
-  //       result.prevActivityAt = result.lastActivityAt
-  //       result.lastActivityAt = Date.now()
-  //       result.save()
-
-  //       // await fetchingLog(
-  //       //   { from: 'user activity time saved' },
-  //       //   process.env.NEXTAUTH_SITE
-  //       // )
-
-  //       // session.user._id = result._id
-  //       // session.user.role = result.role
-  //       // session.user.firstName = result.firstName
-  //     }
-  //     return Promise.resolve(session)
-  //   },
-  // },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id
+        token.phone = user.phone
+        token.role = user.role
+        token.tenantId = user.tenantId
+        token.firstName = user.firstName
+        token.secondName = user.secondName
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.user._id = token.userId
+      session.user.phone = token.phone
+      session.user.role = token.role
+      session.user.tenantId = token.tenantId
+      session.user.firstName = token.firstName
+      session.user.secondName = token.secondName
+      session.user.name = token.phone
+      return session
+    },
+  },
 }
 
 export default authOptions

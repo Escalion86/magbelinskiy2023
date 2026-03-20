@@ -15,8 +15,9 @@ import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import Avatar from './Avatar'
+import loggedUserAtom from '@state/atoms/loggedUserAtom'
 // import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 
 const variants = {
@@ -69,6 +70,7 @@ const UserMenu = () => {
   const setMenuOpen = useSetAtom(menuOpenAtom)
   const [isUserMenuOpened, setIsUserMenuOpened] = useState(false)
   const [turnOnHandleMouseOver, setTurnOnHandleMouseOver] = useState(true)
+  const loggedUser = useAtomValue(loggedUserAtom)
 
   // const router = useRouter()
 
@@ -96,7 +98,7 @@ const UserMenu = () => {
       }}
     >
       <div className="relative mt-2.5 flex w-12 flex-col items-end">
-        {/* <Avatar user={loggedUser} className="z-10" /> */}
+        <Avatar user={loggedUser} className="z-10" />
         {/* {router && ( */}
         <motion.div
           className={cn(
@@ -110,9 +112,9 @@ const UserMenu = () => {
           initial="hide"
           transition={{ duration: 0.2, type: 'tween' }}
         >
-          <div className="bg-general flex h-11 cursor-default flex-col justify-center rounded-tr-3xl border-b border-gray-800 px-3 py-1 font-bold leading-4 text-white">
-            <span>Алексей</span>
-            <span>Белинский</span>
+          <div className="bg-general flex h-11 cursor-default flex-col justify-center rounded-tr-3xl border-b border-gray-800 px-3 py-1 leading-4 font-bold text-white">
+            <span>{loggedUser?.firstName}</span>
+            <span>{loggedUser?.secondName}</span>
           </div>
           {/* <MenuItem
               href="/cabinet/events"

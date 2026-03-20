@@ -3,6 +3,7 @@ import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
 import { forwardRef } from 'react'
+import MaskedInput from 'react-text-mask'
 import InputWrapper from './InputWrapper'
 
 const Input = forwardRef(
@@ -40,6 +41,34 @@ const Input = forwardRef(
     },
     ref
   ) => {
+    const isPhone = type === 'phone'
+    const prefixValue = isPhone && prefix === undefined ? '+7' : prefix
+    const phoneMask = [
+      '(',
+      /[1-9]/,
+      /\d/,
+      /\d/,
+      ')',
+      ' ',
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+    ]
+    const phoneDisplayValue = (() => {
+      if (!isPhone) return value
+      if (value === null || value === undefined) return ''
+      const digits = String(value).replace(/[^\d]/g, '')
+      if (!digits || digits === '7') return ''
+      return digits[0] === '7' ? digits.slice(1, 11) : digits.slice(0, 10)
+    })()
+    const placeholderValue = floatingLabel ? ' ' : label
+
     return (
       <InputWrapper
         label={label}
@@ -53,7 +82,7 @@ const Input = forwardRef(
         paddingY={paddingY}
         paddingX={paddingX}
         postfix={postfix}
-        prefix={prefix}
+        prefix={prefixValue}
         ref={ref}
         disabled={disabled}
         fullWidth={fullWidth}
@@ -75,8 +104,8 @@ const Input = forwardRef(
             className={cn(
               'p-1 duration-300',
               typeof min === 'number' && value <= min
-                ? 'cursor-not-allowed text-disabled'
-                : 'cursor-pointer text-general hover:text-success'
+                ? 'text-disabled cursor-not-allowed'
+                : 'text-general hover:text-success cursor-pointer'
             )}
             onClick={() => {
               if (typeof min !== 'number')
@@ -88,47 +117,84 @@ const Input = forwardRef(
           </div>
         )}
 
-        <input
-          type={type}
-          step={step}
-          className={cn(
-            'peer h-7 flex-1 bg-transparent px-1 text-black placeholder-transparent focus:outline-none',
-            disabled ? 'cursor-not-allowed text-disabled' : '',
-            inputClassName
-          )}
-          onWheel={(e) => e.target.blur()}
-          min={min}
-          max={max}
-          disabled={disabled}
-          value={
-            value === null
-              ? ''
-              : typeof value === 'number'
-              ? String(value)
-              : value
-          }
-          defaultValue={defaultValue}
-          onChange={(e) => {
-            const { value } = e.target
-            if (type === 'number') {
+        {isPhone ? (
+          <MaskedInput
+            type="tel"
+            className={cn(
+              'peer h-7 flex-1 bg-transparent px-1 text-black placeholder-transparent focus:outline-none',
+              disabled ? 'text-disabled cursor-not-allowed' : '',
+              inputClassName
+            )}
+            guide={false}
+            mask={phoneMask}
+            value={phoneDisplayValue}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^\d]/g, '')
+              if (!raw) {
+                onChange(null)
+                return
+              }
+              if (raw.length === 1 && (raw === '7' || raw === '8')) {
+                onChange(null)
+                return
+              }
+              let digits = raw
               if (
-                (typeof min !== 'number' || value >= min) &&
-                (typeof max !== 'number' || value <= max)
+                digits.length === 11 &&
+                (digits.startsWith('7') || digits.startsWith('8'))
               ) {
-                if (value === '') onChange(0)
-                else onChange(parseInt(value))
-              } else if (typeof min === 'number' && value < min) onChange(min)
-              else if (typeof max === 'number' && value > max) onChange(max)
-            } else {
-              if (maxLength && value?.length > maxLength)
-                onChange(value.substring(0, maxLength))
-              else onChange(value)
+                digits = digits.slice(1)
+              }
+              if (digits.length > 10) digits = digits.slice(-10)
+              onChange(Number('7' + digits))
+            }}
+            placeholder={placeholderValue}
+            autoComplete={autoComplete}
+            disabled={disabled}
+          />
+        ) : (
+          <input
+            type={type}
+            step={step}
+            className={cn(
+              'peer h-7 flex-1 bg-transparent px-1 text-black placeholder-transparent focus:outline-none',
+              disabled ? 'text-disabled cursor-not-allowed' : '',
+              inputClassName
+            )}
+            onWheel={(e) => e.target.blur()}
+            min={min}
+            max={max}
+            disabled={disabled}
+            value={
+              value === null
+                ? ''
+                : typeof value === 'number'
+                ? String(value)
+                : value
             }
-          }}
-          placeholder={label}
-          autoComplete={autoComplete}
-          list={dataList?.name}
-        />
+            defaultValue={defaultValue}
+            onChange={(e) => {
+              const { value } = e.target
+              if (type === 'number') {
+                if (
+                  (typeof min !== 'number' || value >= min) &&
+                  (typeof max !== 'number' || value <= max)
+                ) {
+                  if (value === '') onChange(0)
+                  else onChange(parseInt(value))
+                } else if (typeof min === 'number' && value < min) onChange(min)
+                else if (typeof max === 'number' && value > max) onChange(max)
+              } else {
+                if (maxLength && value?.length > maxLength)
+                  onChange(value.substring(0, maxLength))
+                else onChange(value)
+              }
+            }}
+            placeholder={placeholderValue}
+            autoComplete={autoComplete}
+            list={dataList?.name}
+          />
+        )}
         {dataList?.list && (
           <datalist id={dataList?.name}>
             {dataList.list.map((item) => (
@@ -141,8 +207,8 @@ const Input = forwardRef(
             className={cn(
               'p-1 duration-300',
               typeof max === 'number' && value >= max
-                ? 'cursor-not-allowed text-disabled'
-                : 'cursor-pointer text-general hover:text-success'
+                ? 'text-disabled cursor-not-allowed'
+                : 'text-general hover:text-success cursor-pointer'
             )}
             onClick={() => {
               if (typeof max !== 'number')

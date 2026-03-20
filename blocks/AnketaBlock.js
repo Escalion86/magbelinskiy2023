@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import Button from './components/Button'
@@ -53,8 +53,13 @@ const AnketaBlock = () => {
   const setYandexAim = useSetAtom(yandexAimAtom)
   const [phone, setPhone] = useState()
   const [name, setName] = useState()
+  const [isHydrated, setIsHydrated] = useState(false)
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  const submitRequest = async () => {
     if (phone == 79874565544) return
     setYandexAim(null)
     await postData(
@@ -88,7 +93,7 @@ const AnketaBlock = () => {
 
   const handleEnterKeyDown = (event) => {
     if (!isButtonDisabled && event.key === 'Enter') {
-      onSubmit()
+      submitRequest()
     }
   }
 
@@ -168,7 +173,16 @@ const AnketaBlock = () => {
             <Item num="01" text="Обсудим программу" />
             <Item num="02" text="Если необходимо, договоримся о встрече" />
           </div>
-          <div className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[10px] md:mt-[45px] md:items-start md:gap-y-[15px] xl:mt-[59px]">
+          <form
+            className="mt-[25px] flex w-full max-w-[490px] flex-col items-center gap-y-[10px] md:mt-[45px] md:items-start md:gap-y-[15px] xl:mt-[59px]"
+            action="/api/requests"
+            method="post"
+            onSubmit={(event) => {
+              event.preventDefault()
+              if (isButtonDisabled) return
+              submitRequest()
+            }}
+          >
             <input
               className="h-[60px] w-full rounded-[7px] bg-white px-[20px] text-[13px] font-normal leading-[125%] outline-none md:h-[85px] md:px-[35px] md:text-[19px]"
               style={{
@@ -177,6 +191,7 @@ const AnketaBlock = () => {
                 letterSpacing: '0.76px',
               }}
               placeholder="Введите имя"
+              name="name"
               onChange={(e) => setName(e.target.value)}
             />
             {/* <input
@@ -199,6 +214,8 @@ const AnketaBlock = () => {
               onKeyDown={handleEnterKeyDown}
               // showMask
               placeholder="Номер телефона"
+              name="phone"
+              required
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, '')
                 setPhone(
@@ -237,7 +254,11 @@ const AnketaBlock = () => {
                   : ''
               }
             />
-            <Button fullWidth onClick={onSubmit} disabled={isButtonDisabled}>
+            <Button
+              fullWidth
+              htmlType="submit"
+              disabled={isHydrated && isButtonDisabled}
+            >
               Получить звонок
             </Button>
             <div className="mt-[10px] w-[80%] text-center text-[11px] font-normal leading-[145%] text-[#A8A8CA] md:text-left md:text-[16px]">
@@ -250,7 +271,7 @@ const AnketaBlock = () => {
                 обработку персональных данных
               </a>
             </div>
-          </div>
+          </form>
         </div>
         <div
           className="mt-[30px] aspect-[1584/1021] w-[80%] opacity-100 xl:-mr-[200px] xl:mt-0 xl:w-[700px]"

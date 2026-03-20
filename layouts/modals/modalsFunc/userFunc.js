@@ -1,13 +1,10 @@
 import CardButtons from '@components/CardButtons'
-import RelationshipSelector from '@components/ComboBox/RelationshipSelector'
-import DatePicker from '@components/DatePicker'
 import ErrorsList from '@components/ErrorsList'
 import FormWrapper from '@components/FormWrapper'
 import Input from '@components/Input'
 import InputImages from '@components/InputImages'
 import PhoneInput from '@components/PhoneInput'
 import GenderPicker from '@components/ValuePicker/GenderPicker'
-import HaveKidsPicker from '@components/ValuePicker/HaveKidsPicker'
 import UserRolePicker from '@components/ValuePicker/UserRolePicker'
 import UserStatusPicker from '@components/ValuePicker/UserStatusPicker'
 import compareArrays from '@helpers/compareArrays'
@@ -20,6 +17,9 @@ import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleS
 import userSelector from '@state/selectors/userSelector'
 import { useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+
+const normalizePhone = (value) =>
+  value ? String(value).replace(/[^\d]/g, '') : ''
 
 const userFunc = (userId, clone = false) => {
   const UserModal = ({
@@ -59,9 +59,6 @@ const userFunc = (userId, clone = false) => {
     // const [profession, setProfession] = useState(user?.profession ?? DEFAULT_USER.profession)
     // const [orientation, setOrientation] = useState(user?.orientation ?? DEFAULT_USER.orientation)
     const [gender, setGender] = useState(user?.gender ?? DEFAULT_USER.gender)
-    const [relationship, setRelationship] = useState(
-      user?.relationship ?? DEFAULT_USER.relationship
-    )
     const [personalStatus, setPersonalStatus] = useState(
       user?.personalStatus ?? DEFAULT_USER.personalStatus
     )
@@ -80,15 +77,9 @@ const userFunc = (userId, clone = false) => {
     )
     const [vk, setVk] = useState(user?.vk ?? DEFAULT_USER.vk)
     const [images, setImages] = useState(user?.images ?? DEFAULT_USER.images)
-    const [birthday, setBirthday] = useState(
-      user?.birthday ?? DEFAULT_USER.birthday
-    )
     const [status, setStatus] = useState(user?.status ?? DEFAULT_USER.status)
     const [role, setRole] = useState(user?.role ?? DEFAULT_USER.role)
 
-    const [haveKids, setHaveKids] = useState(
-      user?.haveKids ?? DEFAULT_USER.haveKids
-    )
 
     const [errors, checkErrors, addError, removeError, clearErrors] =
       useErrors()
@@ -102,7 +93,10 @@ const userFunc = (userId, clone = false) => {
     const onClickConfirm = async () => {
       // Если создаем нового пользователя в ручную, то сначала проверим - нет ли уже такого номера телефона в системе
       if (!userId && phone) {
-        const existedUser = users.find((user) => user.phone === phone)
+        const normalizedPhone = normalizePhone(phone)
+        const existedUser = users.find(
+          (user) => normalizePhone(user.phone) === normalizedPhone
+        )
         if (existedUser) {
           addError({
             phone: 'Пользователь с таким номером телефона уже существует',
@@ -110,17 +104,16 @@ const userFunc = (userId, clone = false) => {
           return
         }
       }
+      if (!userId && !password) {
+        addError({ password: 'Введите пароль' })
+        return
+      }
       if (
         !checkErrors({
-          firstName,
-          secondName,
-          gender,
           phone,
           viber,
           whatsapp,
           email,
-          birthday,
-          relationship,
         })
       ) {
         closeModal()
@@ -136,7 +129,6 @@ const userFunc = (userId, clone = false) => {
             // orientation,
             password: userId ? undefined : password,
             gender,
-            relationship,
             personalStatus,
             email,
             phone,
@@ -146,10 +138,8 @@ const userFunc = (userId, clone = false) => {
             instagram,
             vk,
             images,
-            birthday,
             status,
             role,
-            haveKids,
           },
           clone
         )
@@ -224,7 +214,6 @@ const userFunc = (userId, clone = false) => {
         // user?.profession !== profession ||
         // user?.orientation !== orientation ||
         user?.gender !== gender ||
-        user?.relationship !== relationship ||
         user?.personalStatus !== personalStatus ||
         user?.email !== email ||
         user?.phone !== phone ||
@@ -234,8 +223,6 @@ const userFunc = (userId, clone = false) => {
         user?.instagram !== instagram ||
         user?.vk !== vk ||
         !compareArrays(user?.images, images) ||
-        user?.birthday !== birthday ||
-        user?.haveKids !== haveKids ||
         user?.status !== status ||
         user?.role !== role
 
@@ -254,7 +241,6 @@ const userFunc = (userId, clone = false) => {
       // profession,
       // orientation,
       gender,
-      relationship,
       personalStatus,
       email,
       phone,
@@ -264,10 +250,8 @@ const userFunc = (userId, clone = false) => {
       instagram,
       vk,
       images,
-      birthday,
       status,
       role,
-      haveKids,
     ])
 
     useEffect(() => {
@@ -312,7 +296,6 @@ const userFunc = (userId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.firstName}
-          required
           autoComplete="one-time-code"
         />
         <Input
@@ -325,7 +308,6 @@ const userFunc = (userId, clone = false) => {
           }}
           // labelClassName="w-40"
           error={errors.secondName}
-          required
           autoComplete="one-time-code"
         />
         <Input
@@ -353,7 +335,6 @@ const userFunc = (userId, clone = false) => {
           />
         )}
         <GenderPicker
-          required
           gender={gender}
           onChange={setGender}
           error={errors.gender}
@@ -362,29 +343,6 @@ const userFunc = (userId, clone = false) => {
           orientation={orientation}
           onChange={setOrientation}
         /> */}
-        <DatePicker
-          label="День рождения"
-          value={birthday}
-          onChange={setBirthday}
-          showYears
-          showZodiac
-          required
-          error={errors.birthday}
-        />
-        <RelationshipSelector
-          value={relationship}
-          onChange={(value) => {
-            removeError('relationship')
-            setRelationship(value)
-          }}
-          // placeholder={placeholder}
-          // activePlaceholder={activePlaceholder}
-          // smallMargin
-          className="w-80"
-          required
-          error={errors.relationship}
-          // fullWidth={fullWidth}
-        />
         <Input
           label="Статус (будет виден всем на карточке)"
           type="text"
@@ -392,12 +350,11 @@ const userFunc = (userId, clone = false) => {
           onChange={setPersonalStatus}
         />
         <FormWrapper twoColumns>
-          <PhoneInput
-            required
-            label="Телефон"
-            value={phone}
-            onChange={setPhone}
-            error={errors.phone}
+        <PhoneInput
+          label="Телефон"
+          value={phone}
+          onChange={setPhone}
+          error={errors.phone}
             copyPasteButtons
           />
           <PhoneInput
@@ -447,16 +404,8 @@ const userFunc = (userId, clone = false) => {
           error={errors.email}
           copyPasteButtons
         />
-        {/* <CheckBox
-          checked={haveKids}
-          labelPos="left"
-          onClick={() => setHaveKids((checked) => !checked)}
-          label="Есть дети"
-        /> */}
-        <HaveKidsPicker haveKids={haveKids} onChange={setHaveKids} />
         {canSetStatus && (
           <UserStatusPicker
-            required
             status={status}
             onChange={setStatus}
             error={errors.status}
@@ -464,7 +413,6 @@ const userFunc = (userId, clone = false) => {
         )}
         {canSetRole && (
           <UserRolePicker
-            required
             roleId={role}
             onChange={setRole}
             error={errors.role}

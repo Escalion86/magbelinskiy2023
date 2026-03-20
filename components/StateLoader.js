@@ -7,6 +7,7 @@ import siteSettingsAtom from '@state/atoms/siteSettingsAtom'
 import loggedUserAtom from '@state/atoms/loggedUserAtom'
 import transactionsAtom from '@state/atoms/transactionsAtom'
 import servicesAtom from '@state/atoms/servicesAtom'
+import usersAtom from '@state/atoms/usersAtom'
 import { useEffect } from 'react'
 import LoadingSpinner from '@components/LoadingSpinner'
 import ModalsPortal from '@layouts/modals/ModalsPortal'
@@ -42,6 +43,7 @@ const StateLoader = (props) => {
   const setTransactionsState = useSetAtom(transactionsAtom)
   const [siteSettingsState, setSiteSettingsState] =
     useAtom(siteSettingsAtom)
+  const setUsersState = useSetAtom(usersAtom)
   // const setRolesSettingsState = useSetAtom(rolesAtom)
   // const setHistoriesState = useSetAtom(historiesAtom)
   // const setQuestionnairesState = useSetAtom(questionnairesAtom)
@@ -74,6 +76,7 @@ const StateLoader = (props) => {
     setClientsState(props.clients)
     setTransactionsState(props.transactions ?? [])
     setServicesState(props.services ?? [])
+    setUsersState(props.users ?? [])
     setSiteSettingsState(props.siteSettings)
     setIsSiteLoading(false)
   }, [
@@ -84,12 +87,14 @@ const StateLoader = (props) => {
     props.siteSettings,
     props.services,
     props.transactions,
+    props.users,
     setClientsState,
     setEventsState,
     setIsSiteLoading,
     setLoggedUser,
     setRequestsState,
     setServicesState,
+    setUsersState,
     setSiteSettingsState,
     setTransactionsState,
   ])

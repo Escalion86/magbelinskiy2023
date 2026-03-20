@@ -198,11 +198,13 @@ const CardButtons = ({
       {show.statusBtn
         ? (() => {
             const status = item.status ?? 'active'
-            const { icon, color, name } = (
+            const statusConfig = (
               typeOfItem === 'serviceUser'
                 ? SERVICE_USER_STATUSES
                 : EVENT_STATUSES
             ).find(({ value }) => value === status)
+            if (!statusConfig) return null
+            const { icon, color, name } = statusConfig
             return (
               <ItemComponent
                 icon={icon}

@@ -1,6 +1,12 @@
 import { Schema } from 'mongoose'
 
 const transactionsSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    index: true,
+    default: null,
+  },
   eventId: {
     type: Schema.Types.ObjectId,
     ref: 'Events',

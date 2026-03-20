@@ -1,7 +1,5 @@
-import { TAILWIND_COLORS } from '@helpers/constants'
+import { USERS_ROLES } from '@helpers/constants'
 import ValuePicker from './ValuePicker'
-import { useAtomValue } from 'jotai'
-import rolesAtom from '@state/atoms/rolesAtom'
 
 const UserRolePicker = ({
   roleId,
@@ -10,18 +8,14 @@ const UserRolePicker = ({
   error = false,
   noDev = true,
 }) => {
-  const roles = useAtomValue(rolesAtom)
-
-  const rolesValues = roles.map(({ _id, name }, index) => ({
-    value: _id,
-    name,
-    color: TAILWIND_COLORS[index],
-  }))
+  const rolesValues = USERS_ROLES.filter(({ value }) =>
+    ['user', 'admin', 'dev'].includes(value)
+  )
   return (
     <ValuePicker
       value={roleId}
       valuesArray={
-        noDev ? rolesValues.filter(({ _id }) => _id !== 'dev') : rolesValues
+        noDev ? rolesValues.filter(({ value }) => value !== 'dev') : rolesValues
       }
       label="Роль"
       onChange={onChange}

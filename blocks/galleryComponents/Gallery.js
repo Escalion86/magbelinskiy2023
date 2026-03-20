@@ -247,6 +247,7 @@ const Gallery = ({
       {type === 1 ? (
         <div className="mt-[30px] flex w-full max-w-[270px] items-center justify-center sm:max-w-[400px] md:mt-[60px] md:max-w-[520px] md:justify-between tablet:max-w-[680px] xl:hidden">
           <Button
+            href="#zakaz"
             onClick={() => {
               setYandexAim('zakaz_show')
               setShowModalZakaz(true)

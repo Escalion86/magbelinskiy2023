@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import SiteSettings from '@models/SiteSettings'
 import dbConnect from '@server/dbConnect'
+import getTenantContext from '@server/getTenantContext'
 
 const normalizeTowns = (towns = []) =>
   Array.from(
@@ -12,8 +13,15 @@ const normalizeTowns = (towns = []) =>
   )
 
 export const GET = async () => {
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
-  const siteSettings = await SiteSettings.findOne({}).lean()
+  const siteSettings = await SiteSettings.findOne({ tenantId }).lean()
   return NextResponse.json(
     { success: true, data: siteSettings ?? {} },
     { status: 200 }
@@ -22,6 +30,13 @@ export const GET = async () => {
 
 export const POST = async (req) => {
   const body = await req.json().catch(() => ({}))
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   await dbConnect()
 
   const update = {}
@@ -48,8 +63,8 @@ export const POST = async (req) => {
     update.timeZone = body.timeZone ?? 'Asia/Krasnoyarsk'
 
   const siteSettings = await SiteSettings.findOneAndUpdate(
-    {},
-    { $set: update },
+    { tenantId },
+    { $set: { ...update, tenantId } },
     { new: true, upsert: true }
   )
 

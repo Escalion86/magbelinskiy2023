@@ -41,22 +41,22 @@ const InputWrapper = forwardRef(
     return (
       <div
         className={cn(
-          'relative flex h-fit items-stretch',
+          'relative flex h-fit items-stretch bg-white',
           paddingX === 'small' ? 'px-1' : paddingX ? 'px-2' : 'px-0',
-          noMargin ? '' : smallMargin ? 'mt-3' : 'mb-1 mt-3.5',
+          noMargin ? '' : smallMargin ? 'mt-3' : 'mt-3.5 mb-1',
           noBorder
-            ? 'min-h-[36px] tablet:min-h-[40px]'
-            : `min-h-[40px] rounded border-2 focus-within:border-general hover:border-general tablet:min-h-[44px] [&:not(:focus-within)]:hover:border-opacity-50 ${
-                error ? 'border-danger' : 'border-gray-300'
+            ? 'tablet:min-h-[40px] min-h-[36px]'
+            : `focus-within:border-general hover:border-general tablet:min-h-[44px] [&:not(:focus-within)]:hover:border-opacity-50 min-h-[40px] rounded border-2 ${
+                error ? 'border-danger' : 'border-input'
               }`,
           fullWidth ? 'w-full' : '',
           fitWidth ? 'w-fit' : '',
           paddingY === 'small'
-            ? 'pb-1 pt-1.5'
+            ? 'pt-1.5 pb-1'
             : paddingY === 'big'
-            ? 'pb-2 pt-2.5'
+            ? 'pt-2.5 pb-2'
             : paddingY
-            ? 'pb-1.5 pt-2'
+            ? 'pt-2 pb-1.5'
             : '',
           disabled ? 'cursor-not-allowed' : '',
           hidden ? 'hidden' : '',
@@ -68,7 +68,8 @@ const InputWrapper = forwardRef(
       >
         <div
           className={cn(
-            'flex min-h-[24px] w-full items-center tablet:min-h-[28px]',
+            '[&:has(:focus)_.groupe]:max-w-full',
+            'tablet:min-h-[28px] flex min-h-[24px] w-full items-center',
             wrapperClassName,
             disabled ? 'cursor-not-allowed' : ''
           )}
@@ -76,7 +77,8 @@ const InputWrapper = forwardRef(
           {prefix && (
             <div
               className={cn(
-                'flex items-center pl-1 text-disabled',
+                'groupe text-disabled items-center overflow-hidden pl-1 transition-all',
+                value ? 'max-w-full' : 'max-w-0',
                 prefixClassName
               )}
             >
@@ -84,27 +86,29 @@ const InputWrapper = forwardRef(
             </div>
           )}
           {children}
+
           {(postfix || disabled) && (
             <div
               className={cn(
-                'flex items-center gap-x-1 pr-1 text-disabled',
+                'text-disabled flex items-center gap-x-1 pr-1',
                 postfixClassName
               )}
             >
               {postfix}
               {disabled && showDisabledIcon && (
                 <FontAwesomeIcon
-                  className="h-4 w-4 text-disabled"
+                  className="text-disabled h-4 w-4"
                   icon={faBan}
                   size="1x"
                 />
               )}
             </div>
           )}
+
           {label && (
             <div
               className={cn(
-                'pointer-events-none absolute select-none rounded bg-white px-1 text-sm text-general transition-all peer-focus:leading-[12px] peer-focus:text-general',
+                'text-general peer-focus:text-general pointer-events-none absolute rounded bg-white px-1 text-sm transition-all select-none peer-focus:leading-[12px]',
                 'h-5 leading-[12px] peer-placeholder-shown:leading-[14px]',
                 'flex items-center',
                 required
@@ -112,7 +116,7 @@ const InputWrapper = forwardRef(
                   : '',
                 centerLabel ? 'left-1/2 -translate-x-1/2' : 'left-2',
                 floatingLabel
-                  ? `-top-[12px] peer-placeholder-shown:top-[calc(50%-10px)] peer-placeholder-shown:text-base peer-placeholder-shown:text-disabled peer-focus:-top-[12px] peer-focus:text-sm`
+                  ? `peer-placeholder-shown:text-disabled -top-[12px] peer-placeholder-shown:top-[calc(50%-10px)] peer-placeholder-shown:text-base peer-focus:-top-[12px] peer-focus:text-sm`
                   : '-top-[12px]',
                 disabled ? 'cursor-not-allowed' : '',
                 labelClassName
@@ -144,7 +148,7 @@ const InputWrapper = forwardRef(
         {error && showErrorText && (
           <div
             className={cn(
-              'absolute -bottom-[15px] left-1 whitespace-nowrap bg-white px-1 text-xs leading-[12px] text-danger'
+              'text-danger absolute -bottom-[15px] left-1 bg-white px-1 text-xs leading-[12px] whitespace-nowrap'
             )}
           >
             {error}
@@ -153,7 +157,7 @@ const InputWrapper = forwardRef(
         {comment && (
           <div
             className={cn(
-              'absolute -bottom-[15px] right-1 whitespace-nowrap bg-white px-1 text-xs leading-[12px]',
+              'absolute right-1 -bottom-[15px] bg-white px-1 text-xs leading-[12px] whitespace-nowrap',
               commentClassName
             )}
           >

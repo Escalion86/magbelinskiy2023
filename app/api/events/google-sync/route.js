@@ -9,6 +9,7 @@ import {
   getCalendarClient,
   listCalendarEvents,
 } from '@server/googleCalendarClient'
+import getTenantContext from '@server/getTenantContext'
 
 const DEFAULT_TIME_MIN = '2000-01-01T00:00:00.000Z'
 const EMPTY_CLIENT_NAME = 'Клиент из Google Calendar'
@@ -46,7 +47,13 @@ const pickPriorityContact = (contactChannels = [], clientPhone = null) => {
   return contactChannels.find(Boolean) ?? null
 }
 
-const findExistingClient = async (numericPhone, priorityContact, email, name) => {
+const findExistingClient = async (
+  tenantId,
+  numericPhone,
+  priorityContact,
+  email,
+  name
+) => {
   const conditions = []
   if (numericPhone) conditions.push({ phone: numericPhone })
   if (priorityContact)
@@ -63,16 +70,21 @@ const findExistingClient = async (numericPhone, priorityContact, email, name) =>
     })
 
   if (!conditions.length) return null
-  return Clients.findOne(conditions.length === 1 ? conditions[0] : { $or: conditions })
+  const filter = {
+    tenantId,
+    ...(conditions.length === 1 ? conditions[0] : { $or: conditions }),
+  }
+  return Clients.findOne(filter)
 }
 
-const ensureSiteSettings = async () => {
-  const current = await SiteSettings.findOne()
+const ensureSiteSettings = async (tenantId) => {
+  const current = await SiteSettings.findOne({ tenantId })
   if (current) return current
-  return SiteSettings.create({})
+  return SiteSettings.create({ tenantId })
 }
 
 const ensureClientFromCalendar = async (
+  tenantId,
   clientName,
   clientPhone,
   contactChannels,
@@ -85,6 +97,7 @@ const ensureClientFromCalendar = async (
   const canUseName = allowNameOnly && normalizedName && normalizedName !== EMPTY_CLIENT_NAME
 
   const existingClient = await findExistingClient(
+    tenantId,
     numericPhone,
     priorityContact,
     primaryEmail,
@@ -120,7 +133,7 @@ const ensureClientFromCalendar = async (
   if (priorityContact) createPayload.priorityContact = priorityContact
   if (primaryEmail) createPayload.email = primaryEmail
 
-  return Clients.create(createPayload)
+  return Clients.create({ ...createPayload, tenantId })
 }
 
 const formatCalendarDate = (date) => {
@@ -203,8 +216,15 @@ const hasAddressValues = (address) =>
     (value) => typeof value === 'string' && value.trim().length > 0
   )
 
-const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) => {
+const buildEventUpdate = (
+  parsedEvent,
+  googleEventId,
+  clientId,
+  calendarEvent,
+  tenantId
+) => {
   const setPayload = {
+    tenantId,
     googleCalendarId: googleEventId,
     description: buildDescriptionFromCalendar(parsedEvent, calendarEvent),
     status: parsedEvent.status,
@@ -235,6 +255,13 @@ const buildEventUpdate = (parsedEvent, googleEventId, clientId, calendarEvent) =
 
 export const POST = async (req) => {
   const body = await req.json().catch(() => ({}))
+  const { tenantId } = await getTenantContext()
+  if (!tenantId) {
+    return NextResponse.json(
+      { success: false, error: 'Не авторизован' },
+      { status: 401 }
+    )
+  }
   const calendarId = body.calendarId ?? process.env.GOOGLE_CALENDAR_ID
   const forceFullSync = Boolean(body.forceFullSync)
 
@@ -257,7 +284,7 @@ export const POST = async (req) => {
 
   await dbConnect()
 
-  const settings = await ensureSiteSettings()
+  const settings = await ensureSiteSettings(tenantId)
   const storedSyncToken = settings?.custom?.get('googleCalendarSyncToken')
   const settingsTowns = Array.isArray(settings?.towns) ? settings.towns : []
   const townsToAdd = new Set()
@@ -345,16 +372,23 @@ export const POST = async (req) => {
     }
     const allowNameOnly = Number(parsed.clientData?.deposit?.amount) > 0
     const client = await ensureClientFromCalendar(
+      tenantId,
       parsed.clientName,
       parsed.clientPhone,
       parsed.contactChannels,
       { allowNameOnly }
     )
 
-    const update = buildEventUpdate(parsed, item.id, client?._id, item)
+    const update = buildEventUpdate(
+      parsed,
+      item.id,
+      client?._id,
+      item,
+      tenantId
+    )
 
     const dbResult = await Events.findOneAndUpdate(
-      { googleCalendarId: item.id },
+      { googleCalendarId: item.id, tenantId },
       update,
       {
         new: true,
@@ -368,6 +402,7 @@ export const POST = async (req) => {
     if (!eventId) {
       const freshEvent = await Events.findOne({
         googleCalendarId: item.id,
+        tenantId,
       })
         .select('_id')
         .lean()
@@ -383,6 +418,7 @@ export const POST = async (req) => {
         clientId: client?._id,
         amount: depositAmount,
         date: depositDate,
+        tenantId,
       })
     }
 
@@ -401,6 +437,7 @@ export const POST = async (req) => {
         contractSum: parsed.contractSum,
         depositAmount,
         date: eventCompletedAt,
+        tenantId,
       })
     }
 
@@ -462,11 +499,13 @@ const ensureDepositTransaction = async ({
   clientId,
   amount,
   date,
+  tenantId,
 }) => {
   if (!eventId || !clientId || !amount) return null
 
   const existing = await Transactions.findOne({
     eventId,
+    tenantId,
     type: 'income',
     category: 'advance',
   }).lean()
@@ -493,6 +532,7 @@ const ensureDepositTransaction = async ({
   }
 
   return Transactions.create({
+    tenantId,
     eventId,
     clientId,
     amount,
@@ -509,6 +549,7 @@ const ensureFinalPaymentTransaction = async ({
   contractSum,
   depositAmount,
   date,
+  tenantId,
 }) => {
   if (!eventId || !clientId || !contractSum) return null
 
@@ -522,6 +563,7 @@ const ensureFinalPaymentTransaction = async ({
 
   const existing = await Transactions.findOne({
     eventId,
+    tenantId,
     type: 'income',
     category: 'client_payment',
   }).lean()
@@ -546,6 +588,7 @@ const ensureFinalPaymentTransaction = async ({
   }
 
   return Transactions.create({
+    tenantId,
     eventId,
     clientId,
     amount: remaining,

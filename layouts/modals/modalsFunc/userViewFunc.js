@@ -4,15 +4,11 @@ import FormWrapper from '@components/FormWrapper'
 import ImageGallery from '@components/ImageGallery'
 import TextLine from '@components/TextLine'
 import UserName from '@components/UserName'
-import UserRelationshipIcon from '@components/UserRelationshipIcon'
 import ValueItem from '@components/ValuePicker/ValueItem'
-import ZodiacIcon from '@components/ZodiacIcon'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
-import birthDateToAge from '@helpers/birthDateToAge'
 import { GENDERS } from '@helpers/constants'
 import formatDate from '@helpers/formatDate'
 import { modalsFuncAtom } from '@state/atoms'
-import serverSettingsAtom from '@state/atoms/serverSettingsAtom'
 import eventsUsersSignedUpWithEventStatusByUserIdCountSelector from '@state/selectors/eventsUsersSignedUpWithEventStatusByUserIdCountSelector'
 import isLoggedUserMemberSelector from '@state/selectors/isLoggedUserMemberSelector'
 import loggedUserActiveRoleSelector from '@state/selectors/loggedUserActiveRoleSelector'
@@ -34,12 +30,10 @@ const userViewFunc = (userId, params = {}) => {
     setDisableDecline,
     setTopLeftComponent,
   }) => {
-    const serverDate = new Date(useAtomValue(serverSettingsAtom)?.dateTime)
     const modalsFunc = useAtomValue(modalsFuncAtom)
     const isLoggedUserMember = useAtomValue(isLoggedUserMemberSelector)
     const loggedUserActiveRole = useAtomValue(loggedUserActiveRoleSelector)
     const isLoggedUserDev = loggedUserActiveRole?.dev
-    const seeBirthday = loggedUserActiveRole?.users?.seeBirthday
     const seeUserEvents = loggedUserActiveRole?.users?.seeUserEvents
 
     const user = useAtomValue(userSelector(userId))
@@ -108,44 +102,8 @@ const userViewFunc = (userId, params = {}) => {
                 }
               </span>
             </div> */}
-          {user.birthday &&
-            (seeBirthday ||
-              user.security?.showBirthday === true ||
-              user.security?.showBirthday === 'full' ||
-              user.security?.showBirthday === 'noYear') && (
-              <div className="flex items-center gap-x-1">
-                <span className="font-bold">Дата рождения:</span>
-                <span>
-                  {birthDateToAge(
-                    user.birthday,
-                    serverDate,
-                    true,
-                    true,
-                    seeBirthday ||
-                      user.security?.showBirthday === 'full' ||
-                      user.security?.showBirthday === true
-                  )}
-                </span>
-                <ZodiacIcon date={user.birthday} />
-              </div>
-            )}
           <TextLine label="Место проживания">
             {user.town ?? '[не указано]'}
-          </TextLine>
-          <TextLine label="Отношения">
-            <UserRelationshipIcon
-              size="m"
-              relationship={user.relationship}
-              showName
-            />
-          </TextLine>
-
-          <TextLine label="Дети">
-            {user?.haveKids === true
-              ? 'Есть'
-              : user?.haveKids === false
-              ? 'Нет'
-              : 'Не указано'}
           </TextLine>
           <ContactsIconsButtons
             user={user}
@@ -167,7 +125,8 @@ const userViewFunc = (userId, params = {}) => {
               </TextLine>
             </div>
 
-            {(seeUserEvents || isLoggedUserMember) &&
+            {Boolean(modalsFunc.user?.events) &&
+              (seeUserEvents || isLoggedUserMember) &&
               (eventsUsersSignedUpCount.finished > 0 ||
                 eventsUsersSignedUpCount.signUp > 0) && (
                 <ValueItem

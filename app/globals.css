@@ -101,6 +101,19 @@ body.theme-dark .bg-gray-100 {
   background-color: #0f172a;
 }
 
+body .border-input {
+  border-color: lab(85.1236 -0.612259 -3.7138);
+}
+
+body.theme-dark .border-input {
+  border-color: #1f2937;
+}
+
+body.theme-dark .border-input:hover,
+body.theme-dark .border-input:focus-within {
+  border-color: #AC80EC;
+}
+
 body.theme-dark .border-gray-200 {
   border-color: #1f2937;
 }

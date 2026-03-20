@@ -26,11 +26,11 @@ import serviceFunc from './modalsFunc/serviceFunc'
 // import serviceUserViewFunc from './modalsFunc/serviceUserViewFunc'
 import serviceViewFunc from './modalsFunc/serviceViewFunc'
 // import userDeleteFunc from './modalsFunc/userDeleteFunc'
-// import userFunc from './modalsFunc/userFunc'
+import userFunc from './modalsFunc/userFunc'
 // import userLoginHistoryFunc from './modalsFunc/userLoginHistoryFunc'
 // import userQuestionnaireFunc from './modalsFunc/userQuestionnaireFunc'
 // import userSignedUpEventsFunc from './modalsFunc/userSignedUpEventsFunc'
-// import userViewFunc from './modalsFunc/userViewFunc'
+import userViewFunc from './modalsFunc/userViewFunc'
 // import userSetPasswordFunc from './modalsFunc/userSetPasswordFunc'
 // import { asyncEventsUsersByEventIdSelector } from '@state/asyncSelectors/asyncEventsUsersByEventIdAtom'
 // import eventSignUpToReserveAfterError from './modalsFunc/eventSignUpToReserveAfterError'
@@ -245,26 +245,17 @@ const modalsFuncGenerator = (
     //     addModal(likeEditFunc(eventUser, adminView)),
     //   likesResult: (eventUser) => addModal(likeEditFunc(eventUser)),
     // },
-    // user: {
-    //   add: (userId) => addModal(userFunc(userId, true)),
-    //   edit: (userId) => addModal(userFunc(userId)),
-    //   history: (userId) => addModal(userHistoryFunc(userId)),
-    //   historyActions: (userId) => addModal(userActionsHistoryFunc(userId)),
-    //   editPersonalStatus: (userId) =>
-    //     addModal(userPersonalStatusEditFunc(userId)),
-    //   delete: (userId) =>
-    //     addModal(
-    //       userDeleteFunc(userId)
-    //       //   {
-    //       //   title: 'Удаление пользователя',
-    //       //   text: 'Вы уверены, что хотите удалить пользователя?',
-    //       //   onConfirm: async () => itemsFunc.user.delete(userId),
-    //       // }
-    //     ),
-    //   view: (userId, params) => addModal(userViewFunc(userId, params)),
-    //   events: (userId) => addModal(userSignedUpEventsFunc(userId)),
-    //   setPassword: (userId) => addModal(userSetPasswordFunc(userId)),
-    // },
+    user: {
+      add: (userId) => addModal(userFunc(userId, true)),
+      edit: (userId) => addModal(userFunc(userId)),
+      delete: (userId) =>
+        addModal({
+          title: 'Удаление пользователя',
+          text: 'Вы уверены, что хотите удалить пользователя?',
+          onConfirm: async () => itemsFunc.user.delete(userId),
+        }),
+      view: (userId, params) => addModal(userViewFunc(userId, params)),
+    },
     service: {
       add: (serviceId) => addModal(serviceFunc(serviceId, true)),
       edit: (serviceId) => addModal(serviceFunc(serviceId)),
