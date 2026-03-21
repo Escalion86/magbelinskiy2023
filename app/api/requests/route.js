@@ -98,6 +98,10 @@ const REQUESTS_DB_ENABLED = parseBooleanEnv(
   process.env.REQUESTS_DB_ENABLED,
   true
 )
+const GOOGLE_CALENDAR_ENABLED = parseBooleanEnv(
+  process.env.GOOGLE_CALENDAR_ENABLED,
+  true
+)
 
 const sendTelegramMassage = async (text, url) =>
   await telegramPost(
@@ -624,7 +628,7 @@ export const POST = async (req) => {
       console.log('Telegram notifications are temporarily disabled')
     }
 
-    if (shouldPersistRequest && request) {
+    if (shouldPersistRequest && request && GOOGLE_CALENDAR_ENABLED) {
       let googleCalendarId = null
       let calendarLink = null
       try {
@@ -639,6 +643,10 @@ export const POST = async (req) => {
         request.googleCalendarId = googleCalendarId
       }
       request.calendarLink = calendarLink
+    } else if (shouldPersistRequest && request) {
+      console.log(
+        'Google Calendar sync is disabled via GOOGLE_CALENDAR_ENABLED'
+      )
     }
 
     if (!isCabinetRequest) {
