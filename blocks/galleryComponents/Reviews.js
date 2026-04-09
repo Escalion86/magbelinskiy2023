@@ -312,6 +312,8 @@ const Reviews = ({ className }) => {
                       //   boxShadow: '4px 4px 25px 0px rgba(255, 255, 255, 0.15) inset',
                       // }}
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="flex flex-col gap-y-[2px] md:gap-y-[3px]">
                       <div className="whitespace-nowrap text-[16px] font-normal text-[#0E0E1C] md:text-[20px] tablet:text-[24px]">

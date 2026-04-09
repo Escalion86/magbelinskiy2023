@@ -5,45 +5,39 @@ import { memo, useEffect } from 'react'
 
 import Header from '@blocks/titleComponents/Header'
 import TitleBlock from '@blocks/TitleBlock'
+import LazySection from '@components/LazySection'
 import { Provider } from 'jotai'
 import store from '@state/store'
 
-const SectionFallback = () => (
-  <div
-    className="h-[320px] w-full animate-pulse rounded-3xl bg-zinc-900/40"
-    aria-hidden="true"
-  />
-)
-
 const AboutBlock = dynamic(() => import('@blocks/AboutBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const GalleryBlock = dynamic(() => import('@blocks/GalleryBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const QuizBlock = dynamic(() => import('@blocks/QuizBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const FocusBlock = dynamic(() => import('@blocks/FocusBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const GalleryBlock2 = dynamic(() => import('@blocks/GalleryBlock2'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const ReviewsBlock = dynamic(() => import('@blocks/ReviewsBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const AnketaBlock = dynamic(() => import('@blocks/AnketaBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const FooterBlock = dynamic(() => import('@blocks/FooterBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 const SubfooterBlock = dynamic(() => import('@blocks/SubfooterBlock'), {
-  loading: SectionFallback,
+  loading: () => null,
 })
 
 const ModalZakaz = dynamic(() => import('@blocks/ModalZakaz'), {
@@ -68,6 +62,14 @@ const Section = memo(({ id }) => (
 ))
 Section.displayName = 'Section'
 
+const DeferredSection = memo(({ id, children, placeholderHeight = 320 }) => (
+  <>
+    <Section id={id} />
+    <LazySection placeholderHeight={placeholderHeight}>{children}</LazySection>
+  </>
+))
+DeferredSection.displayName = 'DeferredSection'
+
 export default function Home() {
   useEffect(() => {
     document.body.classList.remove('theme-dark')
@@ -82,22 +84,31 @@ export default function Home() {
 
           <Section id="about" />
           <AboutBlock />
-          <Section id="video" />
-          <VideoBlock />
-          <Section id="why" />
-          <GalleryBlock />
-          <Section id="quiz" />
-          <QuizBlock />
-          <Section id="focus" />
-          <FocusBlock />
-          <Section id="fotos" />
-          <GalleryBlock2 />
-          <Section id="reviews" />
-          <ReviewsBlock />
-          <Section id="zakaz" />
-          <AnketaBlock />
-          <FooterBlock />
-          <SubfooterBlock />
+          <DeferredSection id="video" placeholderHeight={640}>
+            <VideoBlock />
+          </DeferredSection>
+          <DeferredSection id="why" placeholderHeight={900}>
+            <GalleryBlock />
+          </DeferredSection>
+          <DeferredSection id="quiz" placeholderHeight={700}>
+            <QuizBlock />
+          </DeferredSection>
+          <DeferredSection id="focus" placeholderHeight={800}>
+            <FocusBlock />
+          </DeferredSection>
+          <DeferredSection id="fotos" placeholderHeight={700}>
+            <GalleryBlock2 />
+          </DeferredSection>
+          <DeferredSection id="reviews" placeholderHeight={700}>
+            <ReviewsBlock />
+          </DeferredSection>
+          <DeferredSection id="zakaz" placeholderHeight={680}>
+            <AnketaBlock />
+          </DeferredSection>
+          <LazySection placeholderHeight={260}>
+            <FooterBlock />
+            <SubfooterBlock />
+          </LazySection>
         </main>
 
         {/* Фон */}

@@ -52,7 +52,7 @@ const authSecret = getAuthSecret()
 
 const authOptions = {
   // Configure one or more authentication providers
-  pages: { signIn: '/login' },
+  pages: { signIn: '/' },
   secret: authSecret,
   providers: [
     CredentialsProvider({

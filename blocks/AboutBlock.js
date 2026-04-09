@@ -320,6 +320,8 @@ const ImgPhone = ({
         alt="promo2_pic"
         src="/img/promo2.png"
         draggable={false}
+        loading="lazy"
+        decoding="async"
         width={width}
         height={height}
       />
@@ -331,6 +333,8 @@ const ImgPhone = ({
       alt="phone"
       src="/img/phone.png"
       draggable={false}
+      loading="lazy"
+      decoding="async"
       // width={width + 100}
       // height={height + 200}
     />
@@ -360,6 +364,8 @@ const AboutBlock = () => {
         alt="glass"
         src="/img/broken_glass_left.png"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
       <img
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
@@ -367,6 +373,8 @@ const AboutBlock = () => {
         alt="glass"
         src="/img/broken_glass_right.png"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
       <BackLight
         className="-top-[80px] left-[calc(7.5%-300px)] md:-top-[90px]"
