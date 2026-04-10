@@ -15,10 +15,10 @@ const Title = ({ className }) => (
     )}
   >
     <span className="hidden whitespace-nowrap lg:block">
-      <SpanGradientTitle>более 20 лет дарит эмоции</SpanGradientTitle> людям
+      <SpanGradientTitle>более 22 лет дарит эмоции</SpanGradientTitle> людям
     </span>
     <SpanGradientTitle className="lg:hidden">
-      более 20 лет
+      более 22 лет
       <br />
     </SpanGradientTitle>
     <span className="whitespace-nowrap lg:hidden">

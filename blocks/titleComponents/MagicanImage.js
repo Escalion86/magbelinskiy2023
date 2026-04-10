@@ -148,7 +148,7 @@ const MagicanImage = () => {
               Алексей Белинский
             </div>
             <div className="text-[7px] font-normal leading-[125%] text-[#A8A8CA] sm:text-[12.8px] xl:text-[16px]">
-              Иллюзионист с опытом 20 лет, снимается на телеканале ТНТ
+              Иллюзионист с опытом 22 года, снимается на телеканале ТНТ
             </div>
           </div>
         </div>
