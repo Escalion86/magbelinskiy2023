@@ -11,14 +11,26 @@ import Script from 'next/script'
 // import Head from 'next/head'
 
 export const metadata = {
-  title: 'Иллюзионист Алексей Белинский',
-  description: 'Уникальное шоу на любое мероприятие',
+  title: 'Фокусник-иллюзионист Алексей Белинский — заказать шоу в Красноярске',
+  description:
+    'Закажите шоу иллюзиониста в Красноярске. Обладатель Кубка Мерлина, 22 года опыта, 3000+ выступлений. Корпоративы, свадьбы, дни рождения. Выезд в Абакан, Новосибирск. Тел: 8(913)837-00-20',
+  keywords:
+    'фокусник Красноярск, иллюзионист Красноярск, заказать фокусника, шоу иллюзиониста, корпоратив фокусник, фокусник на свадьбу, детский фокусник Красноярск',
+  openGraph: {
+    title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
+    description:
+      'Кубок Мерлина · 22 года опыта · 3000+ выступлений. Корпоративы, свадьбы, детские праздники. Красноярск.',
+    url: 'https://cigam.ru',
+    siteName: 'cigam.ru',
+    locale: 'ru_RU',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({ children }) {
   const isProduction = process.env.NODE_ENV !== 'development'
   return (
-    <html lang="ru" className="scroll-smooth">
+    <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth">
       <body>
         {isProduction && (
           <>

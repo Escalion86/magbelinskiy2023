@@ -82,8 +82,8 @@ const VideoBlock = () => {
               src="https://player.vimeo.com/video/1080274049?h=9c1e9eebde&autoplay=1&loop=1&byline=0&muted=0"
               // width="640"
               // height="360"
-              frameborder="0"
-              allowfullscreen
+              frameBorder="0"
+              allowFullScreen
               allow="autoplay; fullscreen"
             ></iframe>
             {/* <iframe

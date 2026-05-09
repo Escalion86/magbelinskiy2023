@@ -11,7 +11,6 @@ module.exports = {
     './layouts/**/*.{js,jsx}',
     './blocks/**/*.{js,jsx}',
     // './public/**/*.{svg}',
-    'node_modules/preline/dist/*.js',
   ],
   theme: {
     extend: {
@@ -289,5 +288,5 @@ module.exports = {
       // => @media (min-width: 1536px) { ... }
     },
   },
-  plugins: ['prettier-plugin-tailwindcss', require('preline/plugin')],
+  plugins: [],
 }

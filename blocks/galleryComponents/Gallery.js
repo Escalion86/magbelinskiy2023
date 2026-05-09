@@ -227,6 +227,8 @@ const Gallery = ({
                   boxShadow: '4px 4px 25px 0px rgba(255, 255, 255, 0.15) inset',
                 }}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               {signs[index % imagesCount] && (
                 <div

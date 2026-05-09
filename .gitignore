@@ -19,6 +19,7 @@ google_calendar_token.json
 # misc
 .DS_Store
 *.pem
+google_calendar_token.json
 
 # debug
 npm-debug.log*

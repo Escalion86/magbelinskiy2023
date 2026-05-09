@@ -2,6 +2,12 @@ import { DEFAULT_USERS_NOTIFICATIONS } from '@helpers/constants'
 import { Schema } from 'mongoose'
 
 const clientsSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    index: true,
+    default: null,
+  },
   firstName: {
     type: String,
     maxlength: [
@@ -49,7 +55,6 @@ const clientsSchema = {
   },
   phone: {
     type: Number,
-    required: [true, 'Введите Телефон'],
     default: null,
   },
   whatsapp: {
@@ -79,6 +84,10 @@ const clientsSchema = {
   role: {
     type: String,
     default: 'client',
+  },
+  clientType: {
+    type: String,
+    default: 'none',
   },
   lastActivityAt: {
     type: Date,

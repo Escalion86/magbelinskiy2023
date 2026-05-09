@@ -1,6 +1,11 @@
 import { Schema } from 'mongoose'
 
 const siteSettingsSchema = {
+  tenantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
+    default: null,
+  },
   email: {
     type: String,
     lowercase: true,
@@ -37,6 +42,18 @@ const siteSettingsSchema = {
   eventsTags: {
     type: [{ text: String, color: String }],
     default: [],
+  },
+  towns: {
+    type: [String],
+    default: [],
+  },
+  defaultTown: {
+    type: String,
+    default: '',
+  },
+  timeZone: {
+    type: String,
+    default: 'Asia/Krasnoyarsk',
   },
   custom: {
     type: Map,
