@@ -1,13 +1,50 @@
+import { randomUUID } from 'crypto'
 import { NextResponse } from 'next/server'
-import Requests from '@models/Requests'
-import Clients from '@models/Clients'
-import SiteSettings from '@models/SiteSettings'
-import Users from '@models/Users'
-import dbConnect from '@server/dbConnect'
+
 import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
 import telegramPost from '@server/telegramApi'
-import { getCalendarClient } from '@server/googleCalendarClient'
+
+export const runtime = 'nodejs'
+
+const DEFAULT_ADDRESS = {
+  town: '',
+  street: '',
+  house: '',
+  entrance: '',
+  floor: '',
+  flat: '',
+  comment: '',
+  link2Gis: '',
+  linkYandexNavigator: '',
+  link2GisShow: true,
+  linkYandexShow: true,
+}
+
+const parseBooleanEnv = (value, defaultValue = false) => {
+  if (typeof value !== 'string') return defaultValue
+  const normalized = value.trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true
+  if (['0', 'false', 'no', 'off'].includes(normalized)) return false
+  return defaultValue
+}
+
+const TELEGRAM_ENABLED = parseBooleanEnv(process.env.TELEGRAM_ENABLED, false)
+const ARTISTCRM_REQUEST_TIMEOUT_MS = Number(
+  process.env.ARTISTCRM_REQUEST_TIMEOUT_MS || 10000
+)
+
+const logLead = (requestId, step, details = {}) => {
+  console.log(`[lead:${requestId}] ${step}`, details)
+}
+
+const toLogError = (error) => ({
+  name: error?.name,
+  message: error?.message,
+  code: error?.code,
+  status: error?.status ?? error?.response?.status,
+  stack: error?.stack,
+})
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -25,20 +62,6 @@ const sanitizeContacts = (contacts) => {
       .map((item) => item.trim())
       .filter(Boolean)
   return []
-}
-
-const DEFAULT_ADDRESS = {
-  town: '',
-  street: '',
-  house: '',
-  entrance: '',
-  floor: '',
-  flat: '',
-  comment: '',
-  link2Gis: '',
-  linkYandexNavigator: '',
-  link2GisShow: true,
-  linkYandexShow: true,
 }
 
 const normalizeAddress = (rawAddress, legacyLocation) => {
@@ -62,6 +85,7 @@ const normalizeAddress = (rawAddress, legacyLocation) => {
 
 const parseBody = async (req) => {
   const contentType = (req.headers.get('content-type') || '').toLowerCase()
+
   if (contentType.includes('application/json')) {
     return { body: await req.json(), isFormSubmit: false }
   }
@@ -83,49 +107,6 @@ const parseBody = async (req) => {
     return { body: {}, isFormSubmit: false }
   }
 }
-
-const parseBooleanEnv = (value, defaultValue = false) => {
-  if (typeof value !== 'string') return defaultValue
-  const normalized = value.trim().toLowerCase()
-  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true
-  if (['0', 'false', 'no', 'off'].includes(normalized)) return false
-  return defaultValue
-}
-
-const TELEGRAM_ENABLED = parseBooleanEnv(process.env.TELEGRAM_ENABLED, false)
-const REQUESTS_DB_ENABLED = parseBooleanEnv(
-  process.env.REQUESTS_DB_ENABLED,
-  true
-)
-const GOOGLE_CALENDAR_ENABLED = parseBooleanEnv(
-  process.env.GOOGLE_CALENDAR_ENABLED,
-  true
-)
-
-const sendTelegramMassage = async (text, url) =>
-  await telegramPost(
-    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
-    {
-      chat_id: 261102161,
-      text,
-      parse_mode: 'html',
-      // reply_markup: url
-      //   ? JSON.stringify({
-      //       inline_keyboard: [
-      //         [
-      //           {
-      //             text: 'Позвонить клиенту',
-      //             url,
-      //           },
-      //         ],
-      //       ],
-      //     })
-      //   : undefined,
-    },
-    (data) => console.log('data', data),
-    (data) => console.log('error', data),
-    true
-  )
 
 const extractContactByType = (contacts, type) => {
   if (!Array.isArray(contacts)) return ''
@@ -152,7 +133,39 @@ const extractContactByType = (contacts, type) => {
   return ''
 }
 
+const sendTelegramMessage = async ({ requestId, text, normalizedPhone }) => {
+  if (!TELEGRAM_ENABLED) {
+    logLead(requestId, 'telegram skipped: disabled')
+    return false
+  }
+
+  if (!process.env.TELEGRAM_TOKEN) {
+    logLead(requestId, 'telegram skipped: missing TELEGRAM_TOKEN')
+    return false
+  }
+
+  logLead(requestId, 'telegram request start')
+
+  const result = await telegramPost(
+    `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    {
+      chat_id: 261102161,
+      text,
+      parse_mode: 'html',
+    },
+    null,
+    (error) =>
+      logLead(requestId, 'telegram response error', { error: toLogError(error) }),
+    true
+  )
+
+  const delivered = Boolean(result)
+  logLead(requestId, delivered ? 'telegram response ok' : 'telegram failed')
+  return delivered
+}
+
 const sendPublicLeadToArtistCRM = async ({
+  requestId,
   clientName,
   phone,
   comment,
@@ -164,7 +177,14 @@ const sendPublicLeadToArtistCRM = async ({
 }) => {
   const baseUrl = process.env.PUBLIC_LEADS_API_BASE_URL
   const apiKey = process.env.PUBLIC_LEADS_API_KEY
-  if (!baseUrl || !apiKey) return false
+
+  if (!baseUrl || !apiKey) {
+    logLead(requestId, 'artistcrm skipped: missing config', {
+      hasBaseUrl: Boolean(baseUrl),
+      hasApiKey: Boolean(apiKey),
+    })
+    return false
+  }
 
   const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/public/lead`
   const payload = {
@@ -180,6 +200,21 @@ const sendPublicLeadToArtistCRM = async ({
     whatsapp: extractContactByType(contacts, 'whatsapp') || undefined,
   }
 
+  const controller = new AbortController()
+  const timeout = setTimeout(
+    () => controller.abort(),
+    ARTISTCRM_REQUEST_TIMEOUT_MS
+  )
+
+  logLead(requestId, 'artistcrm request start', {
+    endpoint,
+    timeoutMs: ARTISTCRM_REQUEST_TIMEOUT_MS,
+    payload: {
+      ...payload,
+      phone: payload.phone ? '[provided]' : undefined,
+    },
+  })
+
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -188,231 +223,65 @@ const sendPublicLeadToArtistCRM = async ({
         'X-Public-Api-Key': apiKey,
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     })
 
+    const responseText = await response.text().catch(() => '')
+
     if (!response.ok) {
-      let details = ''
-      try {
-        details = await response.text()
-      } catch (error) {}
-      console.log('Public Leads API error', {
+      logLead(requestId, 'artistcrm response error', {
         status: response.status,
+        statusText: response.statusText,
         endpoint,
-        details,
+        details: responseText.slice(0, 2000),
       })
       return false
     }
 
+    logLead(requestId, 'artistcrm response ok', {
+      status: response.status,
+      endpoint,
+      details: responseText.slice(0, 1000),
+    })
     return true
   } catch (error) {
-    console.log('Public Leads API request failed', {
-      message: error?.message,
+    logLead(requestId, 'artistcrm request failed', {
+      error: toLogError(error),
       endpoint,
     })
     return false
-  }
-}
-
-const WRITE_SCOPE = ['https://www.googleapis.com/auth/calendar']
-const { GOOGLE_CALENDAR_ID } = process.env
-const DEFAULT_TIME_ZONE = 'Asia/Krasnoyarsk'
-
-const getSiteTimeZone = async (tenantId) => {
-  if (!tenantId) return DEFAULT_TIME_ZONE
-  const settings = await SiteSettings.findOne({ tenantId })
-    .select('timeZone')
-    .lean()
-  return settings?.timeZone || DEFAULT_TIME_ZONE
-}
-
-const isValidObjectId = (value) =>
-  typeof value === 'string' && /^[a-f0-9]{24}$/i.test(value)
-
-const getDefaultTenantId = async () => {
-  if (process.env.PUBLIC_TENANT_ID) {
-    if (isValidObjectId(process.env.PUBLIC_TENANT_ID)) {
-      return process.env.PUBLIC_TENANT_ID
-    }
-    console.log('PUBLIC_TENANT_ID is invalid ObjectId, fallback to first admin')
-  }
-
-  const adminOrDev = await Users.findOne({
-    role: { $in: ['admin', 'dev'] },
-  })
-    .sort({ createdAt: 1 })
-    .select('_id')
-    .lean()
-
-  if (adminOrDev?._id) return adminOrDev._id
-
-  const anyUser = await Users.findOne({})
-    .sort({ createdAt: 1 })
-    .select('_id role')
-    .lean()
-
-  if (anyUser?._id) {
-    console.log('Fallback tenantId selected from first available user', {
-      tenantId: String(anyUser._id),
-      role: anyUser.role || null,
-    })
-    return anyUser._id
-  }
-
-  const siteSettings = await SiteSettings.findOne({})
-    .sort({ createdAt: 1 })
-    .select('tenantId')
-    .lean()
-  if (siteSettings?.tenantId) {
-    console.log('Fallback tenantId selected from site settings', {
-      tenantId: String(siteSettings.tenantId),
-    })
-    return siteSettings.tenantId
-  }
-
-  const requestTenant = await Requests.findOne({})
-    .sort({ createdAt: 1 })
-    .select('tenantId')
-    .lean()
-  if (requestTenant?.tenantId) {
-    console.log('Fallback tenantId selected from existing requests', {
-      tenantId: String(requestTenant.tenantId),
-    })
-    return requestTenant.tenantId
-  }
-
-  const clientTenant = await Clients.findOne({})
-    .sort({ createdAt: 1 })
-    .select('tenantId')
-    .lean()
-  if (clientTenant?.tenantId) {
-    console.log('Fallback tenantId selected from existing clients', {
-      tenantId: String(clientTenant.tenantId),
-    })
-    return clientTenant.tenantId
-  }
-
-  console.log(
-    'Could not resolve tenantId from PUBLIC_TENANT_ID, users, site settings, requests or clients'
-  )
-
-  return null
-}
-
-const formatDateInTimeZone = (date, timeZone) => {
-  try {
-    return new Intl.DateTimeFormat('en-CA', {
-      timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(date)
-  } catch (error) {
-    return date.toISOString().slice(0, 10)
-  }
-}
-
-const base64Url = (value) =>
-  Buffer.from(value)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '')
-
-const buildCalendarLink = (googleEventId) => {
-  if (!googleEventId || !GOOGLE_CALENDAR_ID) return null
-  const payload = `${googleEventId} ${GOOGLE_CALENDAR_ID}`
-  return `https://www.google.com/calendar/event?eid=${base64Url(payload)}`
-}
-
-const buildRequestCalendarPayload = (request, timeZone = DEFAULT_TIME_ZONE) => {
-  const hasEventDate = Boolean(request.eventDate)
-  const fallbackDate = request.createdAt ? new Date(request.createdAt) : new Date()
-  const startDate = hasEventDate ? new Date(request.eventDate) : fallbackDate
-  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
-  const location = formatAddress(request.address, null)
-  const addressTitle = formatAddress(
-    request.address,
-    request.location ?? 'Адрес не указан'
-  )
-  const phone = request.clientPhone ? `+${request.clientPhone}` : ''
-  const contacts =
-    request.contactChannels?.length > 0
-      ? request.contactChannels.join(', ')
-      : ''
-  const descriptionParts = [
-    request.clientName ? `Клиент: ${request.clientName}` : null,
-    phone ? `Телефон: ${phone}` : null,
-    contacts ? `Контакты: ${contacts}` : null,
-    request.contractSum
-      ? `Сумма: ${Number(request.contractSum).toLocaleString('ru-RU')}`
-      : null,
-    request.comment ? `Комментарий: ${request.comment}` : null,
-  ].filter(Boolean)
-
-  const payload = {
-    summary: `(Заявка) ${addressTitle}`,
-    description: descriptionParts.join('\n'),
-    location,
-    reminders: {
-      useDefault: false,
-      overrides: [
-        { method: 'email', minutes: 24 * 60 },
-        { method: 'popup', minutes: 10 },
-      ],
-    },
-  }
-
-  if (hasEventDate) {
-    payload.start = {
-      dateTime: startDate.toISOString(),
-      timeZone,
-    }
-    payload.end = {
-      dateTime: endDate.toISOString(),
-      timeZone,
-    }
-  } else {
-    const allDayDate = formatDateInTimeZone(startDate, timeZone)
-    payload.start = { date: allDayDate }
-    const nextDay = new Date(startDate)
-    nextDay.setDate(nextDay.getDate() + 1)
-    payload.end = { date: formatDateInTimeZone(nextDay, timeZone) }
-  }
-
-  return payload
-}
-
-const createRequestCalendarEvent = async (request, timeZone) => {
-  const calendarId = GOOGLE_CALENDAR_ID
-  if (!calendarId) return null
-  const calendar = await getCalendarClient(WRITE_SCOPE)
-  if (!calendar) return null
-
-  const resource = buildRequestCalendarPayload(request, timeZone)
-  try {
-    const response = await calendar.events.insert({
-      calendarId,
-      resource,
-    })
-    console.log('Google Calendar request create response', {
-      status: response?.status,
-      id: response?.data?.id,
-      htmlLink: response?.data?.htmlLink,
-    })
-    return response?.data?.id ?? null
-  } catch (error) {
-    console.log('Google Calendar request create failed', {
-      message: error?.message,
-      status: error?.code ?? error?.response?.status,
-      errors: error?.errors ?? error?.response?.data?.error?.errors,
-      calendarId,
-    })
-    throw error
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
 export const POST = async (req) => {
-  const { body, isFormSubmit } = await parseBody(req)
+  const requestId = randomUUID()
+
+  logLead(requestId, 'request received', {
+    url: req.url,
+    contentType: req.headers.get('content-type'),
+    userAgent: req.headers.get('user-agent'),
+    referer: req.headers.get('referer'),
+  })
+
+  let body = {}
+  let isFormSubmit = false
+
+  try {
+    ;({ body, isFormSubmit } = await parseBody(req))
+    logLead(requestId, 'body parsed', {
+      isFormSubmit,
+      keys: Object.keys(body),
+    })
+  } catch (error) {
+    logLead(requestId, 'body parse failed', { error: toLogError(error) })
+    return NextResponse.json(
+      { success: false, error: 'Не удалось прочитать заявку', requestId },
+      { status: 400 }
+    )
+  }
+
   const getRedirectUrl = (status) =>
     new URL(`/?request=${status}#zakaz`, req.url)
   const formSuccessResponse = () =>
@@ -428,15 +297,19 @@ export const POST = async (req) => {
   const errorResponse = (message, status = 400) =>
     isFormSubmit
       ? formErrorResponse(message)
-      : NextResponse.json({ success: false, error: message }, { status })
+      : NextResponse.json(
+          { success: false, error: message, requestId },
+          { status }
+        )
   const successResponse = (data) =>
     isFormSubmit
       ? formSuccessResponse()
-      : NextResponse.json({ success: true, data }, { status: 201 })
+      : NextResponse.json({ success: true, data, requestId }, { status: 201 })
 
   try {
     const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
     const rawPhone = body.clientPhone ?? body.phone ?? ''
+    const normalizedPhone = normalizePhone(rawPhone)
     const contactChannels =
       body.contactChannels ?? body.contact ?? body.priorityContact ?? ''
     const eventDate = body.eventDate ?? body.date ?? null
@@ -447,41 +320,10 @@ export const POST = async (req) => {
         .join(', ')
     const address = normalizeAddress(body.address, legacyLocation)
     const contractSum = body.contractSum ?? body.price ?? 0
+    const numericContractSum = Number(contractSum) || 0
     const comment = body.comment ?? ''
     const yandexAim = body.yandexAim ?? ''
-    const servicesIds = Array.isArray(body.servicesIds) ? body.servicesIds : []
-
-    const shouldPersistRequest = REQUESTS_DB_ENABLED
-    let tenantId = null
-
-    if (shouldPersistRequest) {
-      await dbConnect()
-      tenantId = await getDefaultTenantId()
-    }
-
-    if (shouldPersistRequest && !tenantId) {
-      console.log('POST /api/requests validation error', {
-        error: 'Не удалось определить владельца заявки',
-        shouldPersistRequest,
-      })
-      return errorResponse('Не удалось определить владельца заявки')
-    }
-
-    if (!rawPhone) {
-      console.log('POST /api/requests validation error', {
-        error: 'Укажите телефон клиента',
-        tenantId: String(tenantId),
-        rawPhone,
-      })
-      return errorResponse('Укажите телефон клиента')
-    }
-
-    const timeZone = shouldPersistRequest
-      ? await getSiteTimeZone(tenantId)
-      : DEFAULT_TIME_ZONE
-    const normalizedPhone = normalizePhone(rawPhone)
     const contacts = sanitizeContacts(contactChannels)
-    const numericContractSum = Number(contractSum) || 0
     const formattedAddress = formatAddress(address, null)
     const displayPhone =
       typeof rawPhone === 'string' && rawPhone.trim().length > 0
@@ -490,54 +332,30 @@ export const POST = async (req) => {
         ? `+${normalizedPhone}`
         : ''
 
-    const phoneAsNumber = normalizedPhone ? Number(normalizedPhone) : null
-    let client = null
-    let request = null
+    logLead(requestId, 'payload normalized', {
+      clientName,
+      hasPhone: Boolean(rawPhone),
+      normalizedPhoneLength: normalizedPhone.length,
+      hasEventDate: Boolean(eventDate),
+      hasComment: Boolean(comment),
+      contactChannelsType: Array.isArray(contactChannels)
+        ? 'array'
+        : typeof contactChannels,
+      yandexAim,
+      telegramEnabled: TELEGRAM_ENABLED,
+      artistcrmConfigured: Boolean(
+        process.env.PUBLIC_LEADS_API_BASE_URL &&
+          process.env.PUBLIC_LEADS_API_KEY
+      ),
+    })
 
-    if (shouldPersistRequest) {
-      client =
-        phoneAsNumber !== null
-          ? await Clients.findOne({ phone: phoneAsNumber, tenantId })
-          : null
-
-      if (!client) {
-        client = await Clients.create({
-          tenantId,
-          firstName: clientName,
-          phone: phoneAsNumber,
-          priorityContact: contacts[0] ?? null,
-        })
-      } else {
-        const updates = {}
-        if (!client.firstName && clientName) updates.firstName = clientName
-        if (!client.priorityContact && contacts[0])
-          updates.priorityContact = contacts[0]
-        if (Object.keys(updates).length > 0) {
-          client = await Clients.findByIdAndUpdate(client._id, updates, {
-            new: true,
-          })
-        }
-      }
-
-      request = await Requests.create({
-        tenantId,
-        clientId: client?._id ?? null,
-        clientName,
-        clientPhone: normalizedPhone,
-        contactChannels: contacts,
-        eventDate: eventDate ? new Date(eventDate) : null,
-        address,
-        contractSum: numericContractSum,
-        comment: comment ?? '',
-        yandexAim,
-        servicesIds,
+    if (!rawPhone || !normalizedPhone) {
+      logLead(requestId, 'validation failed', {
+        error: 'Укажите телефон клиента',
+        rawPhone,
       })
-    } else {
-      console.log('Requests DB persistence is disabled via REQUESTS_DB_ENABLED')
+      return errorResponse('Укажите телефон клиента')
     }
-
-    let telegramDelivered = false
-    let publicLeadDelivered = false
 
     const messageParts = [
       `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
@@ -560,87 +378,55 @@ export const POST = async (req) => {
       yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
     ].filter(Boolean)
 
-    const telegramDeliveryPromise = TELEGRAM_ENABLED
-      ? sendTelegramMassage(
-          messageParts.join('\n'),
-          normalizedPhone ? `tel:+${normalizedPhone}` : undefined
-        )
-          .then((telegramResult) => Boolean(telegramResult))
-          .catch((error) => {
-            console.log('Telegram send error', error?.message || error)
-            return false
-          })
-      : Promise.resolve(false)
-
-    if (!TELEGRAM_ENABLED) {
-      console.log('Telegram notifications are temporarily disabled')
-    }
-
-    const publicLeadDeliveryPromise = sendPublicLeadToArtistCRM({
-      clientName,
-      phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
-      comment,
-      eventDate,
-      contractSum: numericContractSum,
-      address,
-      source: body.source || yandexAim || 'site_form',
-      contacts,
-    }).catch((error) => {
-      console.log('Public lead send unexpected error', error?.message || error)
-      return false
-    })
-
-    if (shouldPersistRequest && request && GOOGLE_CALENDAR_ENABLED) {
-      let googleCalendarId = null
-      let calendarLink = null
-      try {
-        googleCalendarId = await createRequestCalendarEvent(request, timeZone)
-        calendarLink = buildCalendarLink(googleCalendarId)
-      } catch (error) {
-        console.log('Google Calendar request create error', error)
-      }
-
-      if (googleCalendarId) {
-        await Requests.findByIdAndUpdate(request._id, { googleCalendarId })
-        request.googleCalendarId = googleCalendarId
-      }
-      request.calendarLink = calendarLink
-    } else if (shouldPersistRequest && request) {
-      console.log(
-        'Google Calendar sync is disabled via GOOGLE_CALENDAR_ENABLED'
-      )
-    }
-
-    ;[telegramDelivered, publicLeadDelivered] = await Promise.all([
-      telegramDeliveryPromise,
-      publicLeadDeliveryPromise,
+    const [telegramDelivered, artistcrmDelivered] = await Promise.all([
+      sendTelegramMessage({
+        requestId,
+        text: messageParts.join('\n'),
+        normalizedPhone,
+      }).catch((error) => {
+        logLead(requestId, 'telegram unexpected error', {
+          error: toLogError(error),
+        })
+        return false
+      }),
+      sendPublicLeadToArtistCRM({
+        requestId,
+        clientName,
+        phone: displayPhone || `+${normalizedPhone}`,
+        comment,
+        eventDate,
+        contractSum: numericContractSum,
+        address,
+        source: body.source || yandexAim || 'site_form',
+        contacts,
+      }).catch((error) => {
+        logLead(requestId, 'artistcrm unexpected error', {
+          error: toLogError(error),
+        })
+        return false
+      }),
     ])
 
-    if (!telegramDelivered && !publicLeadDelivered) {
-      console.log('Lead delivery warning: both channels failed', {
-        requestId: request?._id ? String(request._id) : null,
-        tenantId: tenantId ? String(tenantId) : null,
-      })
+    logLead(requestId, 'delivery finished', {
+      telegramDelivered,
+      artistcrmDelivered,
+    })
+
+    if (!telegramDelivered && !artistcrmDelivered) {
+      logLead(requestId, 'delivery warning: all channels failed')
     }
 
+    logLead(requestId, 'response success')
+
     return successResponse({
-      request,
-      client,
       delivery: {
         telegram: telegramDelivered,
-        externalApi: publicLeadDelivered,
-        atLeastOneDelivered: telegramDelivered || publicLeadDelivered,
-      },
-      persistence: {
-        dbEnabled: shouldPersistRequest,
+        artistcrm: artistcrmDelivered,
+        atLeastOneDelivered: telegramDelivered || artistcrmDelivered,
       },
     })
   } catch (error) {
-    console.log('POST /api/requests fatal error', {
-      message: error?.message,
-      name: error?.name,
-      stack: error?.stack,
-    })
-    return errorResponse('Не удалось сохранить заявку', 500)
+    logLead(requestId, 'fatal error', { error: toLogError(error) })
+    return errorResponse('Не удалось отправить заявку', 500)
   }
 }
