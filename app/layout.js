@@ -5,7 +5,6 @@ import '../fonts/Buyan.css'
 import '../fonts/Montserrat.css'
 import '../fonts/FuturaPT.css'
 
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import { Suspense } from 'react'
 import Metrika from './components/metrika'
 import Script from 'next/script'
@@ -33,11 +32,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth">
       <body>
-        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          {isProduction && (
-            <>
-              <Script id="yandex-metrika" strategy="afterInteractive">
-                {`
+        {isProduction && (
+          <>
+            <Script id="yandex-metrika" strategy="afterInteractive">
+              {`
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();
         for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
@@ -51,14 +49,13 @@ export default function RootLayout({ children }) {
           accurateTrackBounce:true
         });    
       `}
-              </Script>
-              <Suspense fallback={<></>}>
-                <Metrika />
-              </Suspense>
-            </>
-          )}
-          {children}
-        </AppRouterCacheProvider>
+            </Script>
+            <Suspense fallback={<></>}>
+              <Metrika />
+            </Suspense>
+          </>
+        )}
+        {children}
       </body>
     </html>
   )

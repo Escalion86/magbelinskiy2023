@@ -1,7 +1,4 @@
-import {
-  DEFAULT_USERS_NOTIFICATIONS,
-  DEFAULT_USERS_SECURITY,
-} from '@helpers/constants'
+import { DEFAULT_USERS_NOTIFICATIONS } from '@helpers/constants'
 import { Schema } from 'mongoose'
 
 const usersSchema = {

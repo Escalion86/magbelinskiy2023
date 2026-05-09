@@ -5,8 +5,7 @@
 @source "../helpers/**/*.{js,jsx}";
 @source "../layouts/**/*.{js,jsx}";
 @source "../blocks/**/*.{js,jsx}";
-@source "../node_modules/preline/dist/*.js";
-@layer theme, base, mui, components, utilities;
+@layer theme, base, components, utilities;
 @import 'tailwindcss';
 
 /* @layer components {

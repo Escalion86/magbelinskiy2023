@@ -8,7 +8,6 @@ import formatDate from '@helpers/formatDate'
 import formatAddress from '@helpers/formatAddress'
 import telegramPost from '@server/telegramApi'
 import { getCalendarClient } from '@server/googleCalendarClient'
-import getTenantContext from '@server/getTenantContext'
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -412,26 +411,6 @@ const createRequestCalendarEvent = async (request, timeZone) => {
   }
 }
 
-export const GET = async () => {
-  const { tenantId } = await getTenantContext()
-  if (!tenantId) {
-    return NextResponse.json(
-      { success: false, error: 'Не авторизован' },
-      { status: 401 }
-    )
-  }
-  await dbConnect()
-  const requests = await Requests.find({ tenantId })
-    .sort({ createdAt: -1 })
-    .lean()
-  const prepared = requests.map((request) => ({
-    ...request,
-    calendarLink: buildCalendarLink(request.googleCalendarId),
-  }))
-
-  return NextResponse.json({ success: true, data: prepared }, { status: 200 })
-}
-
 export const POST = async (req) => {
   const { body, isFormSubmit } = await parseBody(req)
   const getRedirectUrl = (status) =>
@@ -456,7 +435,6 @@ export const POST = async (req) => {
       : NextResponse.json({ success: true, data }, { status: 201 })
 
   try {
-    const { tenantId: sessionTenantId } = await getTenantContext()
     const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
     const rawPhone = body.clientPhone ?? body.phone ?? ''
     const contactChannels =
@@ -473,25 +451,18 @@ export const POST = async (req) => {
     const yandexAim = body.yandexAim ?? ''
     const servicesIds = Array.isArray(body.servicesIds) ? body.servicesIds : []
 
-    const referer = req.headers.get('referer') ?? ''
-    const isCabinetRequest = referer.includes('/cabinet')
-    const shouldPersistRequest = REQUESTS_DB_ENABLED || isCabinetRequest
+    const shouldPersistRequest = REQUESTS_DB_ENABLED
     let tenantId = null
 
     if (shouldPersistRequest) {
       await dbConnect()
-      tenantId = isCabinetRequest
-        ? sessionTenantId
-        : await getDefaultTenantId()
+      tenantId = await getDefaultTenantId()
     }
 
     if (shouldPersistRequest && !tenantId) {
       console.log('POST /api/requests validation error', {
         error: 'Не удалось определить владельца заявки',
-        isCabinetRequest,
         shouldPersistRequest,
-        hasSessionTenantId: Boolean(sessionTenantId),
-        referer,
       })
       return errorResponse('Не удалось определить владельца заявки')
     }
@@ -499,35 +470,10 @@ export const POST = async (req) => {
     if (!rawPhone) {
       console.log('POST /api/requests validation error', {
         error: 'Укажите телефон клиента',
-        isCabinetRequest,
         tenantId: String(tenantId),
         rawPhone,
       })
       return errorResponse('Укажите телефон клиента')
-    }
-    if (isCabinetRequest && !body.clientId) {
-      console.log('POST /api/requests validation error', {
-        error: 'Укажите клиента',
-        isCabinetRequest,
-        tenantId: String(tenantId),
-      })
-      return errorResponse('Укажите клиента')
-    }
-    if (isCabinetRequest && !eventDate) {
-      console.log('POST /api/requests validation error', {
-        error: 'Укажите дату мероприятия',
-        isCabinetRequest,
-        tenantId: String(tenantId),
-      })
-      return errorResponse('Укажите дату мероприятия')
-    }
-    if (isCabinetRequest && servicesIds.length === 0) {
-      console.log('POST /api/requests validation error', {
-        error: 'Укажите услугу',
-        isCabinetRequest,
-        tenantId: String(tenantId),
-      })
-      return errorResponse('Укажите услугу')
     }
 
     const timeZone = shouldPersistRequest
@@ -593,40 +539,56 @@ export const POST = async (req) => {
     let telegramDelivered = false
     let publicLeadDelivered = false
 
-    if (!isCabinetRequest && TELEGRAM_ENABLED) {
-      const messageParts = [
-        `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
-        '',
-        clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
-        displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
-        contacts.length > 0
-          ? `<b>Способы связи:</b> ${contacts.join(', ')}`
-          : null,
-        eventDate
-          ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
-          : null,
-        formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
-        numericContractSum
-          ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
-              'ru-RU'
-            )} ₽`
-          : null,
-        comment ? `<b>Комментарий:</b> ${comment}` : null,
-        yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
-      ].filter(Boolean)
+    const messageParts = [
+      `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
+      '',
+      clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
+      displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+      contacts.length > 0
+        ? `<b>Способы связи:</b> ${contacts.join(', ')}`
+        : null,
+      eventDate
+        ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
+        : null,
+      formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
+      numericContractSum
+        ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
+            'ru-RU'
+          )} ₽`
+        : null,
+      comment ? `<b>Комментарий:</b> ${comment}` : null,
+      yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+    ].filter(Boolean)
 
-      try {
-        const telegramResult = await sendTelegramMassage(
+    const telegramDeliveryPromise = TELEGRAM_ENABLED
+      ? sendTelegramMassage(
           messageParts.join('\n'),
           normalizedPhone ? `tel:+${normalizedPhone}` : undefined
         )
-        telegramDelivered = Boolean(telegramResult)
-      } catch (error) {
-        console.log('Telegram send error', error?.message || error)
-      }
-    } else if (!isCabinetRequest) {
+          .then((telegramResult) => Boolean(telegramResult))
+          .catch((error) => {
+            console.log('Telegram send error', error?.message || error)
+            return false
+          })
+      : Promise.resolve(false)
+
+    if (!TELEGRAM_ENABLED) {
       console.log('Telegram notifications are temporarily disabled')
     }
+
+    const publicLeadDeliveryPromise = sendPublicLeadToArtistCRM({
+      clientName,
+      phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
+      comment,
+      eventDate,
+      contractSum: numericContractSum,
+      address,
+      source: body.source || yandexAim || 'site_form',
+      contacts,
+    }).catch((error) => {
+      console.log('Public lead send unexpected error', error?.message || error)
+      return false
+    })
 
     if (shouldPersistRequest && request && GOOGLE_CALENDAR_ENABLED) {
       let googleCalendarId = null
@@ -649,28 +611,16 @@ export const POST = async (req) => {
       )
     }
 
-    if (!isCabinetRequest) {
-      try {
-        publicLeadDelivered = await sendPublicLeadToArtistCRM({
-          clientName,
-          phone: displayPhone || (normalizedPhone ? `+${normalizedPhone}` : ''),
-          comment,
-          eventDate,
-          contractSum: numericContractSum,
-          address,
-          source: body.source || yandexAim || 'site_form',
-          contacts,
-        })
-      } catch (error) {
-        console.log('Public lead send unexpected error', error?.message || error)
-      }
+    ;[telegramDelivered, publicLeadDelivered] = await Promise.all([
+      telegramDeliveryPromise,
+      publicLeadDeliveryPromise,
+    ])
 
-      if (!telegramDelivered && !publicLeadDelivered) {
-        console.log('Lead delivery warning: both channels failed', {
-          requestId: request?._id ? String(request._id) : null,
-          tenantId: tenantId ? String(tenantId) : null,
-        })
-      }
+    if (!telegramDelivered && !publicLeadDelivered) {
+      console.log('Lead delivery warning: both channels failed', {
+        requestId: request?._id ? String(request._id) : null,
+        tenantId: tenantId ? String(tenantId) : null,
+      })
     }
 
     return successResponse({
@@ -679,8 +629,7 @@ export const POST = async (req) => {
       delivery: {
         telegram: telegramDelivered,
         externalApi: publicLeadDelivered,
-        atLeastOneDelivered:
-          isCabinetRequest || telegramDelivered || publicLeadDelivered,
+        atLeastOneDelivered: telegramDelivered || publicLeadDelivered,
       },
       persistence: {
         dbEnabled: shouldPersistRequest,
