@@ -98,7 +98,7 @@ const OnUnsuccess = ({ visible }) => (
         одному из контактов ниже
       </DivText>
       <div className="tablet:gap-y-[20px] mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px]">
-        <Social text="+7-913-837-0020" href="tel:+79138370020" />
+        <Social text="+7 (391) 989-76-89" href="tel:+73919897689" />
         <Social
           text="Whatsapp"
           href="https://api.whatsapp.com/send?phone=79138370020"
@@ -206,13 +206,13 @@ const ModalFocusResult = () => {
         <br />
         <span className="font-bold">прямо сейчас</span>!{' '}
         <Link
-          href="tel:+79138370020"
+          href="tel:+73919897689"
           className="cursor-pointer font-bold underline duration-300 hover:text-[#FFCA45]"
           onClick={() => reachGoal('after_focus_click_number')}
           target="_blank"
           prefetch={false}
         >
-          8 (913) 837-00-20
+          8 (391) 989-76-89
         </Link>
         <br />
         Расскажете о предстоящем событии

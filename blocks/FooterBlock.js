@@ -94,13 +94,13 @@ const FooterBlock = () => {
             </div>
             <div className="mt-[10px] flex items-center gap-x-[36px] gap-y-[15px] md:mt-[20px] md:flex-col md:items-start">
               <Link
-                href="tel:+79138370020"
+                href="tel:+73919897689"
                 className="cursor-pointer text-[15px] leading-[135%] font-bold text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
                 target="_blank"
                 onClick={() => reachGoal('klick_nomber')}
                 prefetch={false}
               >
-                +7-913-837-00-20
+                +7 (391) 989-76-89
               </Link>
               <button
                 className="border-opacity-20 h-[40px] cursor-pointer rounded-[10px] border border-white px-[20px] text-[15px] font-medium text-white duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[46px] md:text-[19px]"

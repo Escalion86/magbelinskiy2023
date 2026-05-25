@@ -287,13 +287,13 @@ const Header = () => {
             </div>
             <div className="flex flex-col justify-center text-right text-[15px] whitespace-nowrap sm:text-[22px]">
               <Link
-                href="tel:+79138370020"
+                href="tel:+73919897689"
                 className="cursor-pointer leading-[125%] font-medium text-white duration-300 hover:text-[#FFCA45]"
                 onClick={() => reachGoal('klick_nomber')}
                 target="_blank"
                 prefetch={false}
               >
-                8(913)837-00-20
+                8 (391) 989-76-89
               </Link>
               <button
                 className="w-fit cursor-pointer border-b border-dashed border-[#A8A8CA] border-[#a8a8cae6] text-[12px] leading-[125%] font-normal text-[#A8A8CA] duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"

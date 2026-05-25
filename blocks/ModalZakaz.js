@@ -16,7 +16,7 @@ import { reachGoal } from 'app/components/metrika'
 const Title = ({ className }) => (
   <div
     className={cn(
-      'w-[250px] text-center font-buyan text-[29px] font-bold leading-[100%] text-black phoneH:w-[280px] phoneH:text-[32px] sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px] tablet:w-[560px] tablet:text-[64px]',
+      'font-buyan phoneH:w-[280px] phoneH:text-[32px] tablet:w-[560px] tablet:text-[64px] w-[250px] text-center text-[29px] leading-[100%] font-bold text-black sm:w-[320px] sm:text-[36px] md:w-[360px] md:text-[42px]',
       className
     )}
   >
@@ -29,7 +29,7 @@ const Title = ({ className }) => (
 const OnSuccess = ({ visible }) => (
   <div
     className={cn(
-      'absolute bottom-0 left-0 right-0 top-0 bg-white duration-500',
+      'absolute top-0 right-0 bottom-0 left-0 bg-white duration-500',
       visible ? 'z-20 opacity-100' : '-z-10 opacity-0'
     )}
     style={
@@ -38,12 +38,12 @@ const OnSuccess = ({ visible }) => (
       }
     }
   >
-    <div className="flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] font-bold leading-[100%] phoneH:text-[32px] sm:text-[36px] md:items-start md:px-[65px] md:text-[42px] tablet:items-center tablet:text-[64px]">
+    <div className="phoneH:text-[32px] tablet:items-center tablet:text-[64px] flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] leading-[100%] font-bold sm:text-[36px] md:items-start md:px-[65px] md:text-[42px]">
       <SpanGradientTitle className="font-buyan">
         Спасибо за заявку!
       </SpanGradientTitle>
       <DivText
-        className="mt-[25px] w-full max-w-[270px] text-center md:max-w-[220px] md:text-left tablet:max-w-[460px] tablet:text-center"
+        className="tablet:max-w-[460px] tablet:text-center mt-[25px] w-full max-w-[270px] text-center md:max-w-[220px] md:text-left"
         leadingClass="leading-[135%]"
         textColorClass="text-[#8888AB]"
         textFontClass="font-medium"
@@ -54,7 +54,7 @@ const OnSuccess = ({ visible }) => (
     </div>
     <img
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
-      className="absolute bottom-0 right-0 min-w-[107%] object-contain md:min-w-0"
+      className="absolute right-0 bottom-0 min-w-[107%] object-contain md:min-w-0"
       alt="magican"
       src="/img/success.png"
       // style={{
@@ -70,7 +70,7 @@ const OnSuccess = ({ visible }) => (
 
 const Social = ({ text, href }) => (
   <a
-    className="flex h-[40px] items-center justify-center rounded-full border border-[#0e0e1ce6] border-opacity-20 px-[40px] text-[15px] font-medium leading-[135%] text-[#0e0e1ce6] underline duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[50px] md:text-[21px] "
+    className="border-opacity-20 flex h-[40px] items-center justify-center rounded-full border border-[#0e0e1ce6] px-[40px] text-[15px] leading-[135%] font-medium text-[#0e0e1ce6] underline duration-300 hover:border-[#FFCA45] hover:text-[#FFCA45] md:h-[50px] md:text-[21px]"
     href={href}
     target="_blank"
   >
@@ -81,7 +81,7 @@ const Social = ({ text, href }) => (
 const OnUnsuccess = ({ visible }) => (
   <div
     className={cn(
-      'absolute bottom-0 left-0 right-0 top-0 bg-white duration-500',
+      'absolute top-0 right-0 bottom-0 left-0 bg-white duration-500',
       visible ? 'z-20 opacity-100' : '-z-10 opacity-0'
     )}
     style={
@@ -90,7 +90,7 @@ const OnUnsuccess = ({ visible }) => (
       }
     }
   >
-    <div className="flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] font-bold leading-[100%] phoneH:text-[32px] sm:text-[36px] md:px-[65px] md:text-[42px] tablet:text-[64px]">
+    <div className="phoneH:text-[32px] tablet:text-[64px] flex w-full flex-col items-center px-[18px] py-[60px] text-center text-[29px] leading-[100%] font-bold sm:text-[36px] md:px-[65px] md:text-[42px]">
       <span
         className="font-buyan"
         style={{
@@ -102,15 +102,15 @@ const OnUnsuccess = ({ visible }) => (
         Что-то пошло не так!
       </span>
       <DivText
-        className="mt-[25px] w-full max-w-[190px] text-center leading-[135%] md:max-w-[250px] tablet:max-w-[330px]"
+        className="tablet:max-w-[330px] mt-[25px] w-full max-w-[190px] text-center leading-[135%] md:max-w-[250px]"
         textColorClass="text-[#8888AB]"
         textFontClass="font-medium"
       >
         Пожалуйста <span className="font-bold">свяжитесь со мной</span> по
         одному из контактов ниже
       </DivText>
-      <div className="mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px] tablet:gap-y-[20px]">
-        <Social text="+7-913-837-0020" href="tel:+79138370020" />
+      <div className="tablet:gap-y-[20px] mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px]">
+        <Social text="+7 (391) 989-76-89" href="tel:+73919897689" />
         <Social
           text="Whatsapp"
           href="https://api.whatsapp.com/send?phone=79138370020"
@@ -192,7 +192,7 @@ const ModalZakaz = () => {
       />
       <Title />
       <DivText
-        className="mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px] tablet:max-w-full"
+        className="tablet:max-w-full mt-[25px] w-full max-w-[290px] text-center leading-[135%] md:max-w-[380px]"
         textColorClass="text-[#8888AB]"
         textFontClass="font-medium"
       >
@@ -226,7 +226,7 @@ const ModalZakaz = () => {
             placeholder="+7 ("
           /> */}
         <MaskedInput
-          className="w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px] tablet:text-[22px]"
+          className="tablet:text-[22px] w-full bg-transparent px-[15px] py-[20px] text-[18px] text-[#0e0e1ce6] outline-none md:px-[35px] md:py-[25px] md:text-[20px]"
           showMask={phone == '7'}
           placeholder="Номер телефона"
           onKeyDown={handleEnterKeyDown}
