@@ -30,7 +30,7 @@ const FooterBlock = () => {
 
   return (
     <div
-      className="bg-opacity-70 z-10 flex w-full justify-center pt-[10px] pb-[15px] md:pt-[60px] md:pb-[60px]"
+      className="bg-opacity-70 z-10 flex w-full min-w-screen justify-center pt-[10px] pb-[15px] md:pt-[60px] md:pb-[60px]"
       style={{
         background:
           'linear-gradient(343deg, rgba(96, 139, 246, 0.10) 0%, rgba(96, 139, 246, 0.00) 83.72%), #191929',
