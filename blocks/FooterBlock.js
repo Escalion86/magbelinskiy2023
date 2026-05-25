@@ -115,10 +115,15 @@ const FooterBlock = () => {
             <div className="mt-[20px] text-[16px] leading-[135%] font-medium text-[#A8A8CA] md:mt-[30px]">
               Социальные сети:
             </div>
-            <div className="mt-[5px] flex flex-wrap gap-x-[20px] gap-y-[10px] md:mt-[10px] md:gap-x-[30px]">
-              <Social
+            <div className="mt-[5px] grid grid-cols-2 gap-x-[20px] gap-y-[10px] md:mt-[10px] md:gap-x-[30px]">
+              {/* <Social
                 text="Instagram"
                 href="https://instagram.com/magbelinskiy"
+              /> */}
+              <Social
+                text="MAX"
+                href="https://max.ru/u/f9LHodD0cOIpR54J815HiQSRUGQ2bw5yna_h_MGsMS4G50iYuK_ZPsHI87o"
+                yandexAim="klick_MAX"
               />
               <Social
                 text="Telegram"
@@ -126,7 +131,7 @@ const FooterBlock = () => {
                 yandexAim="klick_TG"
               />
               <Social
-                text="VKontakte"
+                text="ВКонтакте"
                 href="https://vk.com/escalion"
                 yandexAim="klick_VK"
               />

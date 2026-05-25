@@ -112,12 +112,26 @@ const OnUnsuccess = ({ visible }) => (
       <div className="tablet:gap-y-[20px] mt-[25px] flex flex-col gap-y-[10px] md:mt-[40px]">
         <Social text="+7 (391) 989-76-89" href="tel:+73919897689" />
         <Social
+          text="MAX"
+          href="https://max.ru/u/f9LHodD0cOIpR54J815HiQSRUGQ2bw5yna_h_MGsMS4G50iYuK_ZPsHI87o"
+          yandexAim="klick_MAX"
+        />
+        <Social
           text="Whatsapp"
           href="https://api.whatsapp.com/send?phone=79138370020"
+          yandexAim="klick_WA"
         />
-        <Social text="Telegram" href="https://t.me/escalion" />
-        <Social text="Instagram" href="https://instagram.com/magbelinskiy" />
-        <Social text="VKontakte" href="https://vk.com/escalion" />
+        <Social
+          text="Telegram"
+          href="https://t.me/escalion"
+          yandexAim="klick_TG"
+        />
+        {/* <Social text="Instagram" href="https://instagram.com/magbelinskiy" /> */}
+        <Social
+          text="ВКонтакте"
+          href="https://vk.com/escalion"
+          yandexAim="klick_VK"
+        />
       </div>
     </div>
     {/* <img
