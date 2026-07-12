@@ -62,12 +62,49 @@ const Section = memo(({ id }) => (
 ))
 Section.displayName = 'Section'
 
-const DeferredSection = memo(({ id, children, placeholderHeight = 320 }) => (
+const SeoPreview = memo(({ title, text, placeholderHeight }) => (
+  <article
+    className="mx-auto flex w-full max-w-[1360px] flex-col justify-center px-[18px] py-[70px] text-white md:px-[52px]"
+    style={{ minHeight: `${placeholderHeight}px` }}
+  >
+    <h2 className="font-buyan text-[36px] font-bold leading-[105%] md:text-[58px]">
+      {title}
+    </h2>
+    <p className="mt-5 max-w-[850px] text-[16px] leading-[150%] text-[#A8A8CA] md:text-[21px]">
+      {text}
+    </p>
+  </article>
+))
+SeoPreview.displayName = 'SeoPreview'
+
+const DeferredSection = memo(
+  ({ id, children, placeholderHeight = 320, title, text }) => (
   <>
     <Section id={id} />
-    <LazySection placeholderHeight={placeholderHeight}>{children}</LazySection>
+    <LazySection
+      className="w-full"
+      placeholderHeight={placeholderHeight}
+      fallback={
+        <SeoPreview
+          title={title}
+          text={text}
+          placeholderHeight={placeholderHeight}
+        />
+      }
+    >
+      <div
+        className="w-full"
+        style={{
+          contentVisibility: 'auto',
+          containIntrinsicSize: `auto ${placeholderHeight}px`,
+        }}
+      >
+        {children}
+      </div>
+    </LazySection>
   </>
-))
+  )
+)
 DeferredSection.displayName = 'DeferredSection'
 
 export default function Home() {
@@ -84,31 +121,64 @@ export default function Home() {
 
           <Section id="about" />
           <AboutBlock />
-          <DeferredSection id="video" placeholderHeight={640}>
+          <DeferredSection
+            id="video"
+            placeholderHeight={640}
+            title="Иллюзионное шоу телевизионного уровня"
+            text="Левитация, чтение мыслей, исчезновения и превращения — посмотрите видео-презентацию выступления Алексея Белинского."
+          >
             <VideoBlock />
           </DeferredSection>
-          <DeferredSection id="why" placeholderHeight={900}>
+          <DeferredSection
+            id="why"
+            placeholderHeight={900}
+            title="Иллюзионист на корпоратив, свадьбу и взрослый праздник"
+            text="Программа адаптируется под аудиторию, площадку и тематику события. В шоу можно встроить фотографию, логотип компании или участие героев вечера."
+          >
             <GalleryBlock />
           </DeferredSection>
-          <DeferredSection id="quiz" placeholderHeight={700}>
+          <DeferredSection
+            id="quiz"
+            placeholderHeight={700}
+            title="Подберите формат шоу за 30 секунд"
+            text="Ответьте на три коротких вопроса о мероприятии, возрасте и количестве гостей — это поможет предложить подходящий формат программы."
+          >
             <QuizBlock />
           </DeferredSection>
-          <DeferredSection id="focus" placeholderHeight={800}>
+          <DeferredSection
+            id="focus"
+            placeholderHeight={800}
+            title="Попробуйте интерактивный фокус"
+            text="Выберите одну из пяти карт, запомните её и проверьте, сможет ли Алексей угадать ваш выбор."
+          >
             <FocusBlock />
           </DeferredSection>
-          <DeferredSection id="fotos" placeholderHeight={700}>
+          <DeferredSection
+            id="fotos"
+            placeholderHeight={700}
+            title="Фотографии с выступлений"
+            text="Корпоративы, свадьбы, юбилеи, презентации и большие сцены — примеры живых выступлений в Красноярске и других городах."
+          >
             <GalleryBlock2 />
           </DeferredSection>
-          <DeferredSection id="reviews" placeholderHeight={700}>
+          <DeferredSection
+            id="reviews"
+            placeholderHeight={700}
+            title="Отзывы зрителей и участников шоу"
+            text="Выступления Алексея высоко оценили заказчики, гости мероприятий и участники телевизионного шоу «Всё, кроме обычного»."
+          >
             <ReviewsBlock />
           </DeferredSection>
-          <DeferredSection id="zakaz" placeholderHeight={680}>
+          <DeferredSection
+            id="zakaz"
+            placeholderHeight={680}
+            title="Заказать шоу Алексея Белинского"
+            text="Оставьте номер телефона, чтобы обсудить программу, дату, площадку и персональный номер для вашего мероприятия."
+          >
             <AnketaBlock />
           </DeferredSection>
-          <LazySection placeholderHeight={260}>
-            <FooterBlock />
-            <SubfooterBlock />
-          </LazySection>
+          <FooterBlock />
+          <SubfooterBlock />
         </main>
 
         {/* Фон */}

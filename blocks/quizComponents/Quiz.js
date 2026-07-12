@@ -194,7 +194,8 @@ const Quiz = () => {
         // comment,
         yandexAim: 'form_test',
       },
-      (data) => {
+      () => {
+        reachGoal('form_test')
         setIsQuizSended(true)
         setShowModalZakaz('success')
       },
@@ -221,11 +222,10 @@ const Quiz = () => {
       //   console.log(data)
       // }
     )
-    return reachGoal('form_test')
   }
 
   const handleEnterKeyDown = (event, phone, contact) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && isQuizSended !== 'inProcess') {
       onSubmit(phone, contact)
     }
   }
@@ -307,14 +307,14 @@ const Quiz = () => {
             // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
             className="absolute -right-[80px] bottom-[150px] hidden max-h-[57%] object-contain tablet:bottom-0 tablet:right-[calc(10%-117px)] tablet:block tablet:max-h-[90%] xl:right-0 2xl:max-h-[95%]"
             alt="magican"
-            src="/img/quiz/final.png"
+            src="/img/quiz/final.webp"
             draggable={false}
           />
           <img
             // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
             className="mask-bottom absolute right-[calc(34%-200px)] top-[135px] max-h-[57%] object-contain sm:-right-0 sm:top-[70px] sm:max-h-[70%] md:right-[calc(40%-360px)] md:top-[200px] md:max-h-[60%] tablet:hidden"
             alt="magican"
-            src="/img/quiz/final.png"
+            src="/img/quiz/final.webp"
             draggable={false}
           />
           <img

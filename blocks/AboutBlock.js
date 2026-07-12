@@ -342,7 +342,7 @@ const ImgPhone = ({
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
       className={cn('relative object-cover', imgClassName, imgSizeClassName)}
       alt="gif"
-      src="/img/cardsSpring.gif"
+      src="/img/cardsSpring.webp"
       style={{
         background:
           'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',

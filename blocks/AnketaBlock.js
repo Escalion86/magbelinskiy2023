@@ -54,19 +54,24 @@ const AnketaBlock = () => {
   const [phone, setPhone] = useState()
   const [name, setName] = useState()
   const [isHydrated, setIsHydrated] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     setIsHydrated(true)
   }, [])
 
   const submitRequest = async () => {
-    if (phone == 79874565544) return
+    if (phone == 79874565544 || isSubmitting) return
+    setIsSubmitting(true)
     setYandexAim(null)
     await postData(
       `/api/requests`,
       { phone, name },
-      (data) => setShowModalZakaz('success'),
-      (error) => setShowModalZakaz('unsuccess')
+      () => {
+        reachGoal('poluchit_zvonok')
+        setShowModalZakaz('success')
+      },
+      () => setShowModalZakaz('unsuccess')
       // (data) => {
       //   snackbar.success(messages[itemName]?.add?.success)
       //   if (props['set' + capitalizeFirstLetter(itemName)])
@@ -86,10 +91,11 @@ const AnketaBlock = () => {
       //   console.log(data)
       // }
     )
-    return reachGoal('poluchit_zvonok')
+    setIsSubmitting(false)
   }
 
-  const isButtonDisabled = !phone || phone?.toString().length < 11
+  const isButtonDisabled =
+    isSubmitting || !phone || phone?.toString().length < 11
 
   const handleEnterKeyDown = (event) => {
     if (!isButtonDisabled && event.key === 'Enter') {

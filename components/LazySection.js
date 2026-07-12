@@ -8,6 +8,7 @@ const LazySection = ({
   className = '',
   placeholderHeight = 320,
   rootMargin = '500px 0px',
+  fallback = null,
 }) => {
   const containerRef = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -33,6 +34,8 @@ const LazySection = ({
     <div ref={containerRef} className={className}>
       {isVisible ? (
         children
+      ) : fallback ? (
+        fallback
       ) : (
         <div
           className="w-full animate-pulse rounded-3xl bg-zinc-900/40"
@@ -49,6 +52,7 @@ LazySection.propTypes = {
   className: PropTypes.string,
   placeholderHeight: PropTypes.number,
   rootMargin: PropTypes.string,
+  fallback: PropTypes.node,
 }
 
 export default LazySection

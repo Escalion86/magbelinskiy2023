@@ -11,9 +11,10 @@ import Script from 'next/script'
 // import Head from 'next/head'
 
 export const metadata = {
+  metadataBase: new URL('https://cigam.ru'),
   title: 'Фокусник-иллюзионист Алексей Белинский — заказать шоу в Красноярске',
   description:
-    'Закажите шоу иллюзиониста в Красноярске. Обладатель Кубка Мерлина, 22 года опыта, 3000+ выступлений. Корпоративы, свадьбы, дни рождения. Выезд в Абакан, Новосибирск. Тел: 8(913)837-00-20',
+    'Закажите шоу иллюзиониста в Красноярске. Обладатель Кубка Мерлина, 22 года опыта, 3000+ выступлений. Корпоративы, свадьбы, дни рождения. Тел: 8 (391) 989-76-89',
   keywords:
     'фокусник Красноярск, иллюзионист Красноярск, заказать фокусника, шоу иллюзиониста, корпоратив фокусник, фокусник на свадьбу, детский фокусник Красноярск',
   openGraph: {
@@ -24,14 +25,41 @@ export const metadata = {
     siteName: 'cigam.ru',
     locale: 'ru_RU',
     type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Иллюзионист Алексей Белинский',
+      },
+    ],
   },
+  alternates: { canonical: '/' },
 }
 
 export default function RootLayout({ children }) {
   const isProduction = process.env.NODE_ENV !== 'development'
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'PerformingGroup',
+    name: 'Иллюзионист Алексей Белинский',
+    url: 'https://cigam.ru',
+    image: 'https://cigam.ru/logo.png',
+    telephone: '+7-391-989-76-89',
+    areaServed: 'Красноярск',
+    sameAs: [
+      'https://vk.com/magbelinskiy',
+      'https://instagram.com/magbelinskiy',
+    ],
+  }
+
   return (
     <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         {isProduction && (
           <>
             <Script id="yandex-metrika" strategy="afterInteractive">

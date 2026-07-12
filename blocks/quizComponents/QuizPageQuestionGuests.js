@@ -56,7 +56,7 @@ const QuizPageQuestionGuests = ({ show, onChoose }) => {
         <img
           className="h-[195px] w-full rounded-[30px] object-cover object-center md:h-[442px]"
           alt="guests"
-          src="/img/quiz/guests.png"
+          src="/img/quiz/guests.webp"
           draggable={false}
         />
       </div>

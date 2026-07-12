@@ -68,7 +68,7 @@ className="w-full h-full"
 style={{
 opacity: 0.30000001192092896,
 background:
-'url("/img/white_noise.png"), lightgray 0% 0% / 100px 100px repeat',
+'url("/img/white_noise.webp"), lightgray 0% 0% / 100px 100px repeat',
 mixBlendMode: 'soft-light',
 }}
 ></div> */}

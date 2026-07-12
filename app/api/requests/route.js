@@ -29,10 +29,16 @@ const parseBooleanEnv = (value, defaultValue = false) => {
   return defaultValue
 }
 
-const TELEGRAM_ENABLED = parseBooleanEnv(process.env.TELEGRAM_ENABLED, false)
+// Telegram remains available as a fallback integration, but lead delivery is
+// intentionally disabled. ArtistCRM is the source of truth for new leads.
+const TELEGRAM_ENABLED = false
 const ARTISTCRM_REQUEST_TIMEOUT_MS = Number(
   process.env.ARTISTCRM_REQUEST_TIMEOUT_MS || 10000
 )
+const MAX_REQUEST_BODY_BYTES = 20_000
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
+const RATE_LIMIT_MAX_REQUESTS = 5
+const requestLog = new Map()
 
 const logLead = (requestId, step, details = {}) => {
   console.log(`[lead:${requestId}] ${step}`, details)
@@ -45,6 +51,21 @@ const toLogError = (error) => ({
   status: error?.status ?? error?.response?.status,
   stack: error?.stack,
 })
+
+const isRateLimited = (req) => {
+  const forwardedFor = req.headers.get('x-forwarded-for') || ''
+  const clientId = forwardedFor.split(',')[0].trim() || 'unknown'
+  const now = Date.now()
+  const recentRequests = (requestLog.get(clientId) || []).filter(
+    (timestamp) => now - timestamp < RATE_LIMIT_WINDOW_MS
+  )
+
+  if (recentRequests.length >= RATE_LIMIT_MAX_REQUESTS) return true
+
+  recentRequests.push(now)
+  requestLog.set(clientId, recentRequests)
+  return false
+}
 
 const normalizePhone = (phone) =>
   typeof phone === 'string'
@@ -63,6 +84,26 @@ const sanitizeContacts = (contacts) => {
       .filter(Boolean)
   return []
 }
+
+const sanitizeText = (value, maxLength = 1000) =>
+  typeof value === 'string' ? value.trim().slice(0, maxLength) : ''
+
+const escapeTelegramHtml = (value) =>
+  String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+
+const buildQuizComment = ({ type, audience, spectators }) =>
+  [
+    sanitizeText(type, 200) ? `Тип мероприятия: ${sanitizeText(type, 200)}` : '',
+    sanitizeText(audience, 200) ? `Возраст гостей: ${sanitizeText(audience, 200)}` : '',
+    sanitizeText(spectators, 200)
+      ? `Количество зрителей: ${sanitizeText(spectators, 200)}`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
 
 const normalizeAddress = (rawAddress, legacyLocation) => {
   const normalized = {
@@ -258,6 +299,25 @@ const sendPublicLeadToArtistCRM = async ({
 export const POST = async (req) => {
   const requestId = randomUUID()
 
+  const contentLength = Number(req.headers.get('content-length') || 0)
+  if (contentLength > MAX_REQUEST_BODY_BYTES) {
+    return NextResponse.json(
+      { success: false, error: 'Слишком большой запрос', requestId },
+      { status: 413 }
+    )
+  }
+
+  if (isRateLimited(req)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Слишком много попыток. Попробуйте ещё раз через несколько минут.',
+        requestId,
+      },
+      { status: 429 }
+    )
+  }
+
   logLead(requestId, 'request received', {
     url: req.url,
     contentType: req.headers.get('content-type'),
@@ -307,7 +367,8 @@ export const POST = async (req) => {
       : NextResponse.json({ success: true, data, requestId }, { status: 201 })
 
   try {
-    const clientName = (body.clientName ?? body.name ?? '').trim() || 'Не указан'
+    const clientName =
+      sanitizeText(body.clientName ?? body.name, 200) || 'Не указан'
     const rawPhone = body.clientPhone ?? body.phone ?? ''
     const normalizedPhone = normalizePhone(rawPhone)
     const contactChannels =
@@ -321,8 +382,11 @@ export const POST = async (req) => {
     const address = normalizeAddress(body.address, legacyLocation)
     const contractSum = body.contractSum ?? body.price ?? 0
     const numericContractSum = Number(contractSum) || 0
-    const comment = body.comment ?? ''
-    const yandexAim = body.yandexAim ?? ''
+    const quizComment = buildQuizComment(body)
+    const comment = [sanitizeText(body.comment, 2000), quizComment]
+      .filter(Boolean)
+      .join('\n')
+    const yandexAim = sanitizeText(body.yandexAim, 100)
     const contacts = sanitizeContacts(contactChannels)
     const formattedAddress = formatAddress(address, null)
     const displayPhone =
@@ -360,22 +424,30 @@ export const POST = async (req) => {
     const messageParts = [
       `Новая заявка${process.env.DOMAIN ? ` с ${process.env.DOMAIN}` : ''}`,
       '',
-      clientName ? `<b>Имя клиента:</b> ${clientName}` : null,
-      displayPhone ? `<b>Телефон:</b> ${displayPhone}` : null,
+      clientName
+        ? `<b>Имя клиента:</b> ${escapeTelegramHtml(clientName)}`
+        : null,
+      displayPhone
+        ? `<b>Телефон:</b> ${escapeTelegramHtml(displayPhone)}`
+        : null,
       contacts.length > 0
-        ? `<b>Способы связи:</b> ${contacts.join(', ')}`
+        ? `<b>Способы связи:</b> ${escapeTelegramHtml(contacts.join(', '))}`
         : null,
       eventDate
         ? `<b>Дата мероприятия:</b> ${formatDate(eventDate, false, true)}`
         : null,
-      formattedAddress ? `<b>Локация:</b> ${formattedAddress}` : null,
+      formattedAddress
+        ? `<b>Локация:</b> ${escapeTelegramHtml(formattedAddress)}`
+        : null,
       numericContractSum
         ? `<b>Договорная сумма:</b> ${numericContractSum.toLocaleString(
             'ru-RU'
           )} ₽`
         : null,
-      comment ? `<b>Комментарий:</b> ${comment}` : null,
-      yandexAim ? `<b>Яндекс цель:</b> ${yandexAim}` : null,
+      comment ? `<b>Комментарий:</b> ${escapeTelegramHtml(comment)}` : null,
+      yandexAim
+        ? `<b>Яндекс цель:</b> ${escapeTelegramHtml(yandexAim)}`
+        : null,
     ].filter(Boolean)
 
     const [telegramDelivered, artistcrmDelivered] = await Promise.all([
@@ -412,8 +484,12 @@ export const POST = async (req) => {
       artistcrmDelivered,
     })
 
-    if (!telegramDelivered && !artistcrmDelivered) {
-      logLead(requestId, 'delivery warning: all channels failed')
+    if (!artistcrmDelivered) {
+      logLead(requestId, 'delivery failed: artistcrm did not accept lead')
+      return errorResponse(
+        'Не удалось сохранить заявку. Пожалуйста, попробуйте ещё раз или свяжитесь по телефону.',
+        503
+      )
     }
 
     logLead(requestId, 'response success')

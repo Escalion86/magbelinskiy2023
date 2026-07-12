@@ -163,7 +163,8 @@ const ModalZakaz = () => {
     await postData(
       `/api/requests`,
       { phone, yandexAim },
-      (data) => {
+      () => {
+        if (typeof yandexAim === 'string') reachGoal(yandexAim)
         setSuccess(true)
       },
       (error) => setSuccess(false),
@@ -187,7 +188,6 @@ const ModalZakaz = () => {
       //   console.log(data)
       // }
     )
-    if (typeof yandexAim === 'string') return reachGoal(yandexAim)
   }
 
   const isButtonDisabled =

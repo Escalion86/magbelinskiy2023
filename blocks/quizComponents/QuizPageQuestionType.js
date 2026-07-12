@@ -165,62 +165,62 @@ const QuizPageQuestionType = ({ show, onChoose }) => {
   return (
     <div
       className={cn(
-        'grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] transition-all duration-500 sm:grid-cols-3 md:grid-cols-2 md:gap-x-[30px] md:gap-y-[20px] tablet:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-[40px] 2xl:gap-y-[30px]',
+        'tablet:grid-cols-3 grid w-full grid-cols-2 justify-items-center gap-x-[20px] gap-y-[10px] transition-all duration-500 sm:grid-cols-3 md:grid-cols-2 md:gap-x-[30px] md:gap-y-[20px] 2xl:grid-cols-4 2xl:gap-x-[40px] 2xl:gap-y-[30px]',
         show
           ? 'relative z-10 opacity-100'
-          : 'absolute left-0 right-0 top-0 opacity-0'
+          : 'absolute top-0 right-0 left-0 opacity-0'
       )}
     >
       {/* <div className="inline-flex flex-wrap justify-evenly gap-x-[20px] gap-y-[10px] md:gap-x-[30px] md:gap-y-[20px] 2xl:gap-x-[40px] 2xl:gap-y-[30px]"> */}
       <QuizCard
         title="День рождения"
-        imageName="birthday"
+        imageName="birthday.webp"
         infoOpen={() => setModalInfo(infos.birthday)}
         onChoose={() => onChoose('birthday')}
       />
       <QuizCard
         title="Свадьба"
-        imageName="wedding"
+        imageName="wedding.webp"
         infoOpen={() => setModalInfo(infos.wedding)}
         onChoose={() => onChoose('wedding')}
       />
       <QuizCard
         title="Корпоратив"
-        imageName="corporate"
+        imageName="corporate.webp"
         infoOpen={() => setModalInfo(infos.corporate)}
         onChoose={() => onChoose('corporate')}
       />
       <QuizCard
         title="Открытие заведения"
-        imageName="opening"
+        imageName="opening.webp"
         infoOpen={() => setModalInfo(infos.opening)}
         onChoose={() => onChoose('opening')}
       />
       <QuizCard
         title="Клуб"
-        imageName="club"
+        imageName="club.webp"
         infoOpen={() => setModalInfo(infos.club)}
         onChoose={() => onChoose('club')}
       />
       <QuizCard
         title="Презентация"
-        imageName="presentation"
+        imageName="presentation.webp"
         infoOpen={() => setModalInfo(infos.presentation)}
         onChoose={() => onChoose('presentation')}
       />
       <QuizCard
         title="Детский праздник"
-        imageName="kids"
+        imageName="kids.webp"
         infoOpen={() => setModalInfo(infos.kids)}
         onChoose={() => onChoose('kids')}
       />
       <QuizCard
         title="Другое"
-        imageName="other"
+        imageName="other.webp"
         infoOpen={() => setModalInfo(infos.other)}
         onChoose={() => onChoose('other')}
       />
-      <div className="hidden h-auto w-full flex-col justify-end text-center md:col-span-2 md:flex tablet:col-auto tablet:h-[330px] tablet:w-[260px] tablet:text-left 2xl:hidden">
+      <div className="tablet:col-auto tablet:h-[330px] tablet:w-[260px] tablet:text-left hidden h-auto w-full flex-col justify-end text-center md:col-span-2 md:flex 2xl:hidden">
         <QuizInfo />
       </div>
     </div>

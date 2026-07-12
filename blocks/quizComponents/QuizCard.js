@@ -3,7 +3,7 @@ import cn from 'classnames'
 
 const I = ({ onClick }) => (
   <div
-    className="absolute right-[10px] top-[10px] hidden h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-[#4272D1] to-[#83ACFF] bg-size-200 bg-pos-0 text-[20px] text-white transition-all hover:via-[#83ACFF] hover:to-[#4272D1] hover:bg-pos-100 md:flex"
+    className="bg-size-200 bg-pos-0 hover:bg-pos-100 absolute top-[10px] right-[10px] hidden h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-[#4272D1] to-[#83ACFF] text-[20px] text-white transition-all hover:via-[#83ACFF] hover:to-[#4272D1] md:flex"
     style={{
       fontFamily: 'Montserrat',
       boxShadow:
@@ -18,9 +18,9 @@ const I = ({ onClick }) => (
 const QuizCard = ({ title, imageName, infoOpen, onChoose, big }) => (
   <div
     className={cn(
-      'flex flex-col items-center rounded-[8px] px-[10px] pb-[10px] pt-[10px] md:rounded-[8px] md:px-[20px] md:pb-[25px] md:pt-[20px]',
+      'flex flex-col items-center rounded-[8px] px-[10px] pt-[10px] pb-[10px] md:rounded-[8px] md:px-[20px] md:pt-[20px] md:pb-[25px]',
       big
-        ? 'h-[164px] w-[140px] md:h-[330px] md:w-[260px] tablet:w-[405px]'
+        ? 'tablet:w-[405px] h-[164px] w-[140px] md:h-[330px] md:w-[260px]'
         : 'h-[164px] w-[140px] md:h-[330px] md:w-[260px]'
     )}
     style={{
@@ -34,13 +34,13 @@ const QuizCard = ({ title, imageName, infoOpen, onChoose, big }) => (
       <img
         className="h-[75px] w-full rounded-[5px] object-cover md:h-[167px] md:rounded-[10px]"
         alt={imageName}
-        src={'/img/quiz/' + imageName + '.png'}
+        src={'/img/quiz/' + imageName}
         draggable={false}
       />
       {infoOpen && <I onClick={infoOpen} />}
     </div>
     <div
-      className="-mx-[16px] mb-[11px] mt-[11px] text-center text-[12px] font-medium text-[#0E0E1C] md:mb-[25px] md:mt-[20px] md:text-[19px]"
+      className="-mx-[16px] mt-[11px] mb-[11px] text-center text-[12px] font-medium text-[#0E0E1C] md:mt-[20px] md:mb-[25px] md:text-[19px]"
       // style={{
       //   fontFamily: 'Montserrat',
       // }}
@@ -49,9 +49,9 @@ const QuizCard = ({ title, imageName, infoOpen, onChoose, big }) => (
     </div>
     <button
       onClick={onChoose}
-      className="group flex h-[30px] w-full cursor-pointer select-none items-center justify-between gap-x-[12px] rounded-[7px] bg-gradient-to-r from-white to-white bg-size-200 bg-pos-0 px-[15px] transition-all duration-300 hover:from-[#692DC1] hover:to-[#AC80EC] hover:bg-pos-100 md:h-[45px] md:justify-center"
+      className="group bg-size-200 bg-pos-0 hover:bg-pos-100 flex h-[30px] w-full cursor-pointer items-center justify-between gap-x-[12px] rounded-[7px] bg-gradient-to-r from-white to-white px-[15px] transition-all duration-300 select-none hover:from-[#692DC1] hover:to-[#AC80EC] md:h-[45px] md:justify-center"
     >
-      <span className="text-[11px] font-semibold text-[#0E0E1C] text-opacity-90 group-hover:text-white md:text-[17px]">
+      <span className="text-opacity-90 text-[11px] font-semibold text-[#0E0E1C] group-hover:text-white md:text-[17px]">
         Выбрать
       </span>
       <svg
