@@ -92,15 +92,7 @@ const DeferredSection = memo(
         />
       }
     >
-      <div
-        className="w-full"
-        style={{
-          contentVisibility: 'auto',
-          containIntrinsicSize: `auto ${placeholderHeight}px`,
-        }}
-      >
-        {children}
-      </div>
+      <div className="w-full">{children}</div>
     </LazySection>
   </>
   )
