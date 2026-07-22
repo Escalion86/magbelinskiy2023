@@ -16,6 +16,7 @@ const MagicanImage = () => {
             src="/img/magican_with_card_back.png"
             // draggable={false}
             fill
+            loading="eager"
           />
           <div
             onClick={() => setIsCardRevial(true)}

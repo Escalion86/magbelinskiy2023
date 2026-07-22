@@ -18,6 +18,9 @@ const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
 const GalleryBlock = dynamic(() => import('@blocks/GalleryBlock'), {
   loading: () => null,
 })
+const EventLinksBlock = dynamic(() => import('@blocks/EventLinksBlock'), {
+  loading: () => null,
+})
 const QuizBlock = dynamic(() => import('@blocks/QuizBlock'), {
   loading: () => null,
 })
@@ -67,7 +70,7 @@ const SeoPreview = memo(({ title, text, placeholderHeight }) => (
     className="mx-auto flex w-full max-w-[1360px] flex-col justify-center px-[18px] py-[70px] text-white md:px-[52px]"
     style={{ minHeight: `${placeholderHeight}px` }}
   >
-    <h2 className="font-buyan text-[36px] font-bold leading-[105%] md:text-[58px]">
+    <h2 className="font-buyan text-[36px] leading-[105%] font-bold md:text-[58px]">
       {title}
     </h2>
     <p className="mt-5 max-w-[850px] text-[16px] leading-[150%] text-[#A8A8CA] md:text-[21px]">
@@ -79,22 +82,22 @@ SeoPreview.displayName = 'SeoPreview'
 
 const DeferredSection = memo(
   ({ id, children, placeholderHeight = 320, title, text }) => (
-  <>
-    <Section id={id} />
-    <LazySection
-      className="w-full"
-      placeholderHeight={placeholderHeight}
-      fallback={
-        <SeoPreview
-          title={title}
-          text={text}
-          placeholderHeight={placeholderHeight}
-        />
-      }
-    >
-      <div className="w-full">{children}</div>
-    </LazySection>
-  </>
+    <>
+      <Section id={id} />
+      <LazySection
+        className="w-full"
+        placeholderHeight={placeholderHeight}
+        fallback={
+          <SeoPreview
+            title={title}
+            text={text}
+            placeholderHeight={placeholderHeight}
+          />
+        }
+      >
+        <div className="w-full">{children}</div>
+      </LazySection>
+    </>
   )
 )
 DeferredSection.displayName = 'DeferredSection'
@@ -128,6 +131,14 @@ export default function Home() {
             text="Программа адаптируется под аудиторию, площадку и тематику события. В шоу можно встроить фотографию, логотип компании или участие героев вечера."
           >
             <GalleryBlock />
+          </DeferredSection>
+          <DeferredSection
+            id="events"
+            placeholderHeight={900}
+            title="Шоу для вашего события"
+            text="Выберите программу для корпоратива, свадьбы, юбилея или детского праздника — каждое направление учитывает формат события, гостей и площадку."
+          >
+            <EventLinksBlock />
           </DeferredSection>
           <DeferredSection
             id="quiz"
