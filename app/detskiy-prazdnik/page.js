@@ -24,6 +24,13 @@ export const metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Фокусник на детский праздник в Красноярске — Алексей Белинский',
+    description:
+      'Интерактивное шоу, в котором именинник и гости становятся участниками чудес.',
+    images: ['/img/quiz/kids.webp'],
+  },
 }
 
 export default function DetskiyPrazdnikPage() {

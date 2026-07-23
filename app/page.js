@@ -5,6 +5,7 @@ import { memo, useEffect } from 'react'
 
 import Header from '@blocks/titleComponents/Header'
 import TitleBlock from '@blocks/TitleBlock'
+import EventLinksBlock from '@blocks/EventLinksBlock'
 import LazySection from '@components/LazySection'
 import { Provider } from 'jotai'
 import store from '@state/store'
@@ -16,9 +17,6 @@ const VideoBlock = dynamic(() => import('@blocks/VideoBlock'), {
   loading: () => null,
 })
 const GalleryBlock = dynamic(() => import('@blocks/GalleryBlock'), {
-  loading: () => null,
-})
-const EventLinksBlock = dynamic(() => import('@blocks/EventLinksBlock'), {
   loading: () => null,
 })
 const QuizBlock = dynamic(() => import('@blocks/QuizBlock'), {
@@ -132,14 +130,8 @@ export default function Home() {
           >
             <GalleryBlock />
           </DeferredSection>
-          <DeferredSection
-            id="events"
-            placeholderHeight={900}
-            title="Шоу для вашего события"
-            text="Выберите программу для корпоратива, свадьбы, юбилея или детского праздника — каждое направление учитывает формат события, гостей и площадку."
-          >
-            <EventLinksBlock />
-          </DeferredSection>
+          <Section id="events" />
+          <EventLinksBlock />
           <DeferredSection
             id="quiz"
             placeholderHeight={700}

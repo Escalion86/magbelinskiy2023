@@ -34,6 +34,13 @@ export const metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
+    description:
+      'Кубок Мерлина · 22 года опыта · 3000+ выступлений. Шоу для корпоративов, свадеб и праздников.',
+    images: ['/logo.png'],
+  },
   alternates: { canonical: '/' },
 }
 
@@ -41,15 +48,22 @@ export default function RootLayout({ children }) {
   const isProduction = process.env.NODE_ENV !== 'development'
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'PerformingGroup',
+    '@type': 'Person',
     name: 'Иллюзионист Алексей Белинский',
+    jobTitle: 'Иллюзионист',
     url: 'https://cigam.ru',
-    image: 'https://cigam.ru/logo.png',
+    image: 'https://cigam.ru/img/promo2.png',
     telephone: '+7-391-989-76-89',
-    areaServed: 'Красноярск',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Красноярск',
+      addressCountry: 'RU',
+    },
     sameAs: [
-      'https://vk.com/magbelinskiy',
+      'https://vk.com/escalion',
+      'https://t.me/escalion',
       'https://instagram.com/magbelinskiy',
+      'https://max.ru/u/f9LHodD0cOIpR54J815HiQSRUGQ2bw5yna_h_MGsMS4G50iYuK_ZPsHI87o',
     ],
   }
 

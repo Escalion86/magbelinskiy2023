@@ -24,6 +24,13 @@ export const metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
+    description:
+      'Интерактивное шоу телевизионного уровня и персональный номер для молодожёнов.',
+    images: ['/img/quiz/wedding.webp'],
+  },
 }
 
 export default function SvadbaPage() {

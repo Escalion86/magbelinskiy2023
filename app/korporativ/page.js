@@ -24,6 +24,13 @@ export const metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
+    description:
+      'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
+    images: ['/img/promo2.png'],
+  },
 }
 
 export default function KorporativPage() {

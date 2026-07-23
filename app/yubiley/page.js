@@ -24,6 +24,13 @@ export const metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
+    description:
+      'Интерактивное шоу телевизионного уровня и персональный номер для юбиляра.',
+    images: ['/img/quiz/birthday.webp'],
+  },
 }
 
 export default function YubileyPage() {
