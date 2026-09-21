@@ -30,10 +30,12 @@ const parseBooleanEnv = (value, defaultValue = false) => {
 }
 
 // Telegram remains available as a fallback integration, but lead delivery is
-// intentionally disabled. ArtistCRM is the source of truth for new leads.
+// intentionally disabled. Vedelo is the source of truth for new leads.
 const TELEGRAM_ENABLED = false
-const ARTISTCRM_REQUEST_TIMEOUT_MS = Number(
-  process.env.ARTISTCRM_REQUEST_TIMEOUT_MS || 10000
+const VEDELO_REQUEST_TIMEOUT_MS = Number(
+  process.env.VEDELO_REQUEST_TIMEOUT_MS ||
+    process.env.ARTISTCRM_REQUEST_TIMEOUT_MS ||
+    10000
 )
 const MAX_REQUEST_BODY_BYTES = 20_000
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
@@ -51,6 +53,21 @@ const toLogError = (error) => ({
   status: error?.status ?? error?.response?.status,
   stack: error?.stack,
 })
+
+const getVedeloPublicLeadsBaseUrl = () => {
+  const baseUrl = process.env.PUBLIC_LEADS_API_BASE_URL?.trim()
+  if (!baseUrl) return ''
+
+  try {
+    const url = new URL(baseUrl)
+    if (['artistcrm.ru', 'www.artistcrm.ru'].includes(url.hostname)) {
+      url.hostname = 'vedelo.ru'
+    }
+    return url.toString().replace(/\/+$/, '')
+  } catch {
+    return baseUrl.replace(/\/+$/, '')
+  }
+}
 
 const isRateLimited = (req) => {
   const forwardedFor = req.headers.get('x-forwarded-for') || ''
@@ -205,7 +222,7 @@ const sendTelegramMessage = async ({ requestId, text, normalizedPhone }) => {
   return delivered
 }
 
-const sendPublicLeadToArtistCRM = async ({
+const sendPublicLeadToVedelo = async ({
   requestId,
   clientName,
   phone,
@@ -216,11 +233,11 @@ const sendPublicLeadToArtistCRM = async ({
   source,
   contacts,
 }) => {
-  const baseUrl = process.env.PUBLIC_LEADS_API_BASE_URL
+  const baseUrl = getVedeloPublicLeadsBaseUrl()
   const apiKey = process.env.PUBLIC_LEADS_API_KEY
 
   if (!baseUrl || !apiKey) {
-    logLead(requestId, 'artistcrm skipped: missing config', {
+    logLead(requestId, 'vedelo skipped: missing config', {
       hasBaseUrl: Boolean(baseUrl),
       hasApiKey: Boolean(apiKey),
     })
@@ -244,12 +261,12 @@ const sendPublicLeadToArtistCRM = async ({
   const controller = new AbortController()
   const timeout = setTimeout(
     () => controller.abort(),
-    ARTISTCRM_REQUEST_TIMEOUT_MS
+    VEDELO_REQUEST_TIMEOUT_MS
   )
 
-  logLead(requestId, 'artistcrm request start', {
+  logLead(requestId, 'vedelo request start', {
     endpoint,
-    timeoutMs: ARTISTCRM_REQUEST_TIMEOUT_MS,
+    timeoutMs: VEDELO_REQUEST_TIMEOUT_MS,
     payload: {
       ...payload,
       phone: payload.phone ? '[provided]' : undefined,
@@ -270,7 +287,7 @@ const sendPublicLeadToArtistCRM = async ({
     const responseText = await response.text().catch(() => '')
 
     if (!response.ok) {
-      logLead(requestId, 'artistcrm response error', {
+      logLead(requestId, 'vedelo response error', {
         status: response.status,
         statusText: response.statusText,
         endpoint,
@@ -279,14 +296,14 @@ const sendPublicLeadToArtistCRM = async ({
       return false
     }
 
-    logLead(requestId, 'artistcrm response ok', {
+    logLead(requestId, 'vedelo response ok', {
       status: response.status,
       endpoint,
       details: responseText.slice(0, 1000),
     })
     return true
   } catch (error) {
-    logLead(requestId, 'artistcrm request failed', {
+    logLead(requestId, 'vedelo request failed', {
       error: toLogError(error),
       endpoint,
     })
@@ -407,7 +424,7 @@ export const POST = async (req) => {
         : typeof contactChannels,
       yandexAim,
       telegramEnabled: TELEGRAM_ENABLED,
-      artistcrmConfigured: Boolean(
+      vedeloConfigured: Boolean(
         process.env.PUBLIC_LEADS_API_BASE_URL &&
           process.env.PUBLIC_LEADS_API_KEY
       ),
@@ -450,7 +467,7 @@ export const POST = async (req) => {
         : null,
     ].filter(Boolean)
 
-    const [telegramDelivered, artistcrmDelivered] = await Promise.all([
+    const [telegramDelivered, vedeloDelivered] = await Promise.all([
       sendTelegramMessage({
         requestId,
         text: messageParts.join('\n'),
@@ -461,7 +478,7 @@ export const POST = async (req) => {
         })
         return false
       }),
-      sendPublicLeadToArtistCRM({
+      sendPublicLeadToVedelo({
         requestId,
         clientName,
         phone: displayPhone || `+${normalizedPhone}`,
@@ -472,7 +489,7 @@ export const POST = async (req) => {
         source: body.source || yandexAim || 'site_form',
         contacts,
       }).catch((error) => {
-        logLead(requestId, 'artistcrm unexpected error', {
+        logLead(requestId, 'vedelo unexpected error', {
           error: toLogError(error),
         })
         return false
@@ -481,11 +498,11 @@ export const POST = async (req) => {
 
     logLead(requestId, 'delivery finished', {
       telegramDelivered,
-      artistcrmDelivered,
+      vedeloDelivered,
     })
 
-    if (!artistcrmDelivered) {
-      logLead(requestId, 'delivery failed: artistcrm did not accept lead')
+    if (!vedeloDelivered) {
+      logLead(requestId, 'delivery failed: vedelo did not accept lead')
       return errorResponse(
         'Не удалось сохранить заявку. Пожалуйста, попробуйте ещё раз или свяжитесь по телефону.',
         503
@@ -497,8 +514,8 @@ export const POST = async (req) => {
     return successResponse({
       delivery: {
         telegram: telegramDelivered,
-        artistcrm: artistcrmDelivered,
-        atLeastOneDelivered: telegramDelivered || artistcrmDelivered,
+        vedelo: vedeloDelivered,
+        atLeastOneDelivered: telegramDelivered || vedeloDelivered,
       },
     })
   } catch (error) {
