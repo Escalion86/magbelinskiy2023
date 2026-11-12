@@ -69,7 +69,56 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth">
+      {isProduction && (
+        <head>
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+                var _apxl = window._apxl || (window._apxl = []);
+                _apxl.push({
+                    id: 4012067,
+                    start: (new Date()).getTime()
+                });
+                _apxl.q = _apxl.q || [];
+                _apxl.sendEvent = _apxl.sendEvent || function (args) {
+                    _apxl.q.push([args, location.href, (new Date()).getTime()]);
+                };
+                (function (d, w, id) {
+                    if (d.getElementById(id)) return;
+                    var ts = d.createElement("script");
+                    ts.type = "text/javascript";
+                    ts.async = true;
+                    ts.id = id;
+                    ts.src = "https://ac.avito.ru/tag.js";
+                    var f = function () {
+                        var s = d.getElementsByTagName("script")[0];
+                        s.parentNode.insertBefore(ts, s);
+                    };
+                    if (w.opera == "[object Opera]") {
+                        d.addEventListener("DOMContentLoaded", f, false);
+                    } else {
+                        f();
+                    }
+                })(document, window, "apxl-code");
+              `,
+            }}
+          />
+        </head>
+      )}
       <body>
+        {isProduction && (
+          <noscript>
+            <div>
+              {/* eslint-disable-next-line @next/next/no-img-element -- Avito's fallback uses the original image URL. */}
+              <img
+                src="https://www.avito.st/static/ims/235e1f90-308c-4bf5-91a3-07239fde0f2f_ai_icon_common_12x16.png"
+                style={{ position: 'absolute', left: -9999 }}
+                alt="Avito Pixel"
+              />
+            </div>
+          </noscript>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
