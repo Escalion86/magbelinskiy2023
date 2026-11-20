@@ -43,7 +43,7 @@ export default function KorporativPage() {
     provider: {
       '@type': 'Person',
       name: 'Алексей Белинский',
-      telephone: '+7-391-989-76-89',
+      telephone: '+7-913-837-00-20',
       url: 'https://cigam.ru',
     },
     areaServed: {
