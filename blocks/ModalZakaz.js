@@ -56,7 +56,7 @@ const OnSuccess = ({ visible }) => (
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
       className="absolute right-0 bottom-0 min-w-[107%] object-contain md:min-w-0"
       alt="magican"
-      src="/img/success.png"
+      src="/img/success.webp"
       // style={{
       //   filter: 'blur(0.8469998836517334px)',
       //   // background:
@@ -138,7 +138,7 @@ const OnUnsuccess = ({ visible }) => (
       // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
       className="absolute bottom-0 right-0 min-w-[107%] object-contain md:min-w-0"
       alt="magican"
-      src="/img/success.png"
+      src="/img/success.webp"
       // style={{
       //   filter: 'blur(0.8469998836517334px)',
       //   // background:
@@ -152,7 +152,12 @@ const OnUnsuccess = ({ visible }) => (
 
 const ModalZakaz = () => {
   const [showModalZakaz, setShowModalZakaz] = useAtom(showModalZakazAtom)
-  const yandexAim = useAtomValue(yandexAimAtom)
+  const yandexAimContext = useAtomValue(yandexAimAtom)
+  const yandexAim =
+    typeof yandexAimContext === 'string' || yandexAimContext == null
+      ? yandexAimContext
+      : yandexAimContext.goal
+  const yandexAimParams = yandexAimContext?.params
   const [phone, setPhone] = useState()
   const [success, setSuccess] = useState()
   // const { reachGoal } = useMetrica()
@@ -164,7 +169,8 @@ const ModalZakaz = () => {
       `/api/requests`,
       { phone, yandexAim },
       () => {
-        if (typeof yandexAim === 'string') reachGoal(yandexAim)
+        if (typeof yandexAim === 'string')
+          reachGoal(yandexAim, yandexAimParams)
         setSuccess(true)
       },
       (error) => setSuccess(false),

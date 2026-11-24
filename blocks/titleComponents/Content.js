@@ -348,7 +348,10 @@ const Content = () => {
             <Button
               className="-mt-[9px]"
               onClick={() => {
-                setYandexAim('zakaz_show')
+                setYandexAim({
+                  goal: 'zakaz_show',
+                  params: { page: 'home', cta: 'hero' },
+                })
                 setShowModalZakaz(true)
               }}
               small={widthTailwind === 'phoneV'}

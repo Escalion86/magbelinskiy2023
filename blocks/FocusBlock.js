@@ -46,7 +46,7 @@ const FocusBlock = () => {
         <Image
           // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
           alt="glass"
-          src="/img/broken_glass_left.png"
+          src="/img/broken_glass_left.webp"
           draggable={false}
           fill
           sizes="300px"
@@ -57,7 +57,7 @@ const FocusBlock = () => {
         <Image
           // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
           alt="glass"
-          src="/img/broken_glass_right.png"
+          src="/img/broken_glass_right.webp"
           draggable={false}
           fill
           sizes="300px"

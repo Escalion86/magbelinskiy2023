@@ -38,7 +38,7 @@ const Background = () => (
       style={{
         opacity: 0.3,
         background:
-          'url("/img/noise.png"), lightgray 0% 0% / 100px 100px repeat',
+          'url("/img/noise.webp"), lightgray 0% 0% / 100px 100px repeat',
         mixBlendMode: 'soft-light',
       }}
     /> */}

@@ -17,7 +17,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: '/img/promo2.png',
+        url: '/img/promo2.webp',
         width: 996,
         height: 1330,
         alt: 'Иллюзионист Алексей Белинский на корпоративе',
@@ -29,7 +29,7 @@ export const metadata = {
     title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
     description:
       'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
-    images: ['/img/promo2.png'],
+    images: ['/img/promo2.webp'],
   },
 }
 

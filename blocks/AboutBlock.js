@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
 import DivContent from './components/DivContent'
@@ -180,7 +180,41 @@ const ImgPhone = ({
   imgSizeClassName,
   width,
   height,
-}) => (
+}) => {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || typeof IntersectionObserver === 'undefined') return
+
+    let visible = false
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio >= 0.01
+        if (visible) {
+          // Keep the media URL out of src until this instance is visible.
+          if (!video.getAttribute('src')) video.src = video.dataset.src
+          video.play().then(() => {
+            if (!visible) video.pause()
+          }).catch(() => {
+            // Autoplay may be blocked; keep the poster visible.
+          })
+        } else {
+          video.pause()
+        }
+      },
+      { rootMargin: '0px', threshold: 0.01 }
+    )
+    observer.observe(video)
+
+    return () => {
+      visible = false
+      observer.disconnect()
+      video.pause()
+    }
+  }, [])
+
+  return (
   <div className={cn('relative', imgSizeClassName, className)}>
     {/* <img
     className="absolute"
@@ -288,7 +322,9 @@ const ImgPhone = ({
       )}
     >
       <video
-        src="/img/promo2.mp4"
+        ref={videoRef}
+        data-src="/img/promo2.mp4"
+        poster="/img/promo2.webp"
         style={{
           background:
             'linear-gradient(320deg, rgba(96, 139, 246, 0.60) 0%, rgba(96, 139, 246, 0.00) 32.66%, rgba(134, 123, 255, 0.00) 78.17%, rgba(134, 123, 255, 0.60) 100%), rgba(0, 0, 0, 0.06)',
@@ -301,10 +337,9 @@ const ImgPhone = ({
           imgSizeClassName
         )}
         loop
-        autoPlay
         muted
         playsInline
-        preload="metadata"
+        preload="none"
         controlsList="nodownload"
         width={width}
         height={height}
@@ -318,7 +353,7 @@ const ImgPhone = ({
         // className="absolute -left-[6px] -top-[22px] z-50 object-fill sm:-left-[8px] sm:-top-[36px]"
         // style={{ width: width - 8, minWidth: width - 8, height: height + 68 }}
         alt="promo2_pic"
-        src="/img/promo2.png"
+        src="/img/promo2.webp"
         draggable={false}
         loading="lazy"
         decoding="async"
@@ -353,7 +388,8 @@ const ImgPhone = ({
       height={height}
     /> */}
   </div>
-)
+  )
+}
 
 const AboutBlock = () => {
   return (
@@ -362,7 +398,7 @@ const AboutBlock = () => {
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
         className="absolute top-0 left-0 w-[25%] object-cover opacity-20 md:-top-[290px] md:left-[min(calc(3%-60px),0px)] md:w-[320px] md:opacity-50"
         alt="glass"
-        src="/img/broken_glass_left.png"
+        src="/img/broken_glass_left.webp"
         draggable={false}
         loading="lazy"
         decoding="async"
@@ -371,7 +407,7 @@ const AboutBlock = () => {
         // className="object-cover min-w-[270px] md:min-w-[360px] inline aspect-[9/7]"
         className="absolute right-0 bottom-[350px] w-[25%] object-cover opacity-20 sm:bottom-[650px] md:right-[min(calc(3%-60px),0px)] md:bottom-[240px] md:w-[300px] md:opacity-50 xl:-bottom-[240px]"
         alt="glass"
-        src="/img/broken_glass_right.png"
+        src="/img/broken_glass_right.webp"
         draggable={false}
         loading="lazy"
         decoding="async"

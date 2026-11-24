@@ -122,7 +122,7 @@ const AnketaBlock = () => {
           'xl:-top-[160px]'
         )}
         style={{
-          background: 'url("/img/smoke.png")',
+          background: 'url("/img/smoke.webp")',
           mixBlendMode: 'color-dodge',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
@@ -136,7 +136,7 @@ const AnketaBlock = () => {
           'xl:right-[120px] xl:top-[200px]'
         )}
         style={{
-          background: 'url("/img/smoke.png")',
+          background: 'url("/img/smoke.webp")',
           mixBlendMode: 'color-dodge',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
@@ -282,7 +282,7 @@ const AnketaBlock = () => {
         <div
           className="mt-[30px] aspect-[1584/1021] w-[80%] opacity-100 xl:-mr-[200px] xl:mt-0 xl:w-[700px]"
           style={{
-            background: 'url("/img/hands_with_cards.png")',
+            background: 'url("/img/hands_with_cards.webp")',
             mixBlendMode: 'screen',
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',

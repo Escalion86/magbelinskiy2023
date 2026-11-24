@@ -35,7 +35,7 @@ const VideoBlock = () => {
       <div
         className="tablet:top-[140px] tablet:h-[690px] tablet:w-[1230px] absolute top-0 left-0 aspect-[1230/690] h-[345px] w-[615px] -translate-x-[55%] rotate-[105deg]"
         style={{
-          background: 'url("/img/smoke.png")',
+          background: 'url("/img/smoke.webp")',
           mixBlendMode: 'color-dodge',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
@@ -44,7 +44,7 @@ const VideoBlock = () => {
       <div
         className="tablet:top-[396px] tablet:h-[690px] tablet:w-[1230px] absolute top-[200px] right-0 aspect-[1230/690] h-[345px] w-[615px] translate-x-1/2 rotate-[105deg]"
         style={{
-          background: 'url("/img/smoke.png")',
+          background: 'url("/img/smoke.webp")',
           mixBlendMode: 'color-dodge',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',

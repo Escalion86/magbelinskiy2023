@@ -96,8 +96,7 @@ const FooterBlock = () => {
               <Link
                 href="tel:+79138370020"
                 className="cursor-pointer text-[15px] leading-[135%] font-bold text-white duration-300 hover:text-[#FFCA45] sm:text-[17px] md:text-[21px]"
-                target="_blank"
-                onClick={() => reachGoal('klick_nomber')}
+                onClick={() => reachGoal('klick_nomber', { place: 'footer' })}
                 prefetch={false}
               >
                 +7 (913) 837-00-20

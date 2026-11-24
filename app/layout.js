@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
     name: 'Иллюзионист Алексей Белинский',
     jobTitle: 'Иллюзионист',
     url: 'https://cigam.ru',
-    image: 'https://cigam.ru/img/promo2.png',
+    image: 'https://cigam.ru/img/promo2.webp',
     telephone: '+7-913-837-00-20',
     address: {
       '@type': 'PostalAddress',

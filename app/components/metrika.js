@@ -4,9 +4,9 @@
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export const reachGoal = (goal) => {
+export const reachGoal = (goal, params) => {
   if (typeof window !== 'undefined' && typeof window.ym === 'function') {
-    window.ym(38403125, 'reachGoal', goal)
+    window.ym(38403125, 'reachGoal', goal, params)
   }
   return true
 }

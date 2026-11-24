@@ -122,7 +122,10 @@ const Hero = ({ config }) => {
           <div className="mt-[35px] flex flex-col items-start gap-[20px] sm:flex-row sm:items-center">
             <Button
               onClick={() => {
-                setYandexAim(`${goalPrefix}_zakaz_show`)
+                setYandexAim({
+                  goal: 'zakaz_show',
+                  params: { page: goalPrefix, cta: 'hero' },
+                })
                 setShowModalZakaz(true)
               }}
             >
@@ -267,7 +270,10 @@ const ProcessSection = ({ config }) => {
         <div className="mt-[42px] flex justify-center">
           <Button
             onClick={() => {
-              setYandexAim(`${goalPrefix}_process_zakaz`)
+              setYandexAim({
+                goal: 'zakaz_show',
+                params: { page: goalPrefix, cta: 'process' },
+              })
               setShowModalZakaz(true)
             }}
           >
@@ -314,7 +320,7 @@ export default function EventLandingClient({ config }) {
           <div
             className="absolute inset-0 opacity-30"
             style={{
-              background: 'url("/img/noise.png") 0% 0% / 100px 100px repeat',
+              background: 'url("/img/noise.webp") 0% 0% / 100px 100px repeat',
               mixBlendMode: 'soft-light',
             }}
           />
