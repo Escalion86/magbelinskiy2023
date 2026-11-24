@@ -85,7 +85,7 @@ SectionTitle.propTypes = {
 
 const Hero = ({ config }) => {
   const { priceLabel } = eventSeo[config.seoKey]
-  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений', `Стоимость — ${priceLabel}`]
+  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений']
   const setShowModalZakaz = useSetAtom(showModalZakazAtom)
   const setYandexAim = useSetAtom(yandexAimAtom)
   const { hero, goalPrefix } = config
