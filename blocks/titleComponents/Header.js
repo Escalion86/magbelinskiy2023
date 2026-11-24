@@ -259,7 +259,7 @@ const Header = () => {
       </nav>
       <div
         className={cn(
-          'header absolute top-0 right-0 left-1/2 mt-[13px] flex h-[108px] w-full -translate-x-1/2 justify-center px-[17px] py-[10px] duration-500 md:h-[122px] md:px-[52px] md:py-[17px]',
+          'header absolute top-0 right-0 left-1/2 mt-[13px] flex h-[80px] w-full -translate-x-1/2 justify-center px-[17px] py-[10px] duration-500 md:h-[94px] md:px-[52px] md:py-[17px]',
           isScrolled ? 'bg-[#131323]/90 hover:bg-[#131323]' : 'bg-[#131323]/0',
           isPastTitle ? 'xl:bg-[#131323]/90' : 'xl:bg-[#131323]/0'
         )}
@@ -310,14 +310,14 @@ const Header = () => {
             <div className="flex flex-col justify-center text-right text-[14px] whitespace-nowrap sm:text-[22px]">
               <Link
                 href="tel:+79138370020"
-                className="flex min-h-[44px] shrink-0 cursor-pointer items-center justify-end leading-[125%] font-medium text-white duration-300 hover:text-[#FFCA45]"
+                className="relative shrink-0 cursor-pointer leading-[125%] font-medium text-white duration-300 after:absolute after:inset-x-0 after:-top-[13px] after:bottom-0 after:content-[''] hover:text-[#FFCA45]"
                 onClick={() => reachGoal('klick_nomber', { place: 'header' })}
                 prefetch={false}
               >
                 8 (913) 837-00-20
               </Link>
               <button
-                className="group flex min-h-[44px] w-fit shrink-0 cursor-pointer items-center text-[12px] leading-[125%] font-normal text-[#A8A8CA] duration-300 hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
+                className="group relative flex w-fit shrink-0 cursor-pointer items-center text-[12px] leading-[125%] font-normal text-[#A8A8CA] duration-300 after:absolute after:inset-x-0 after:top-0 after:-bottom-[13px] after:content-[''] hover:text-[#FFCA45] sm:text-[15px] md:text-[16px]"
                 style={{
                   WebkitBackgroundClip: 'padding-box',
                   backgroundClip: 'padding-box',
