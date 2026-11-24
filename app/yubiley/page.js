@@ -1,36 +1,40 @@
+import { experienceLabel } from '@helpers/experience'
 import YubileyClient from './YubileyClient'
 
-export const metadata = {
-  title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
-  description:
-    'Закажите шоу иллюзиониста Алексея Белинского на юбилей в Красноярске. Кубок Мерлина, 22 года опыта, 3000+ выступлений. Персональный номер для юбиляра.',
-  keywords:
-    'иллюзионист на юбилей Красноярск, фокусник на юбилей Красноярск, шоу фокусов на день рождения, заказать фокусника на юбилей',
-  alternates: { canonical: '/yubiley' },
-  openGraph: {
+export function generateMetadata() {
+  const label = experienceLabel()
+  return {
     title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
     description:
-      'Интерактивное шоу телевизионного уровня и персональный номер для юбиляра.',
-    url: 'https://cigam.ru/yubiley',
-    siteName: 'cigam.ru',
-    locale: 'ru_RU',
-    type: 'website',
-    images: [
-      {
-        url: '/img/quiz/birthday.webp',
-        width: 900,
-        height: 600,
-        alt: 'Иллюзионист Алексей Белинский на юбилее',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
-    description:
-      'Интерактивное шоу телевизионного уровня и персональный номер для юбиляра.',
-    images: ['/img/quiz/birthday.webp'],
-  },
+      `Закажите шоу иллюзиониста Алексея Белинского на юбилей в Красноярске. Кубок Мерлина, ${label} опыта, 3000+ выступлений. Персональный номер для юбиляра.`,
+    keywords:
+      'иллюзионист на юбилей Красноярск, фокусник на юбилей Красноярск, шоу фокусов на день рождения, заказать фокусника на юбилей',
+    alternates: { canonical: '/yubiley' },
+    openGraph: {
+      title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня и персональный номер для юбиляра.',
+      url: 'https://cigam.ru/yubiley',
+      siteName: 'cigam.ru',
+      locale: 'ru_RU',
+      type: 'website',
+      images: [
+        {
+          url: '/img/quiz/birthday.webp',
+          width: 900,
+          height: 600,
+          alt: 'Иллюзионист Алексей Белинский на юбилее',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Иллюзионист на юбилей в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня и персональный номер для юбиляра.',
+      images: ['/img/quiz/birthday.webp'],
+    },
+  }
 }
 
 export default function YubileyPage() {

@@ -1,3 +1,4 @@
+import { experienceLabel } from '@helpers/experience'
 import './globals.css'
 import './burger.css'
 import '../fonts/InterTight.css'
@@ -10,38 +11,44 @@ import Metrika from './components/metrika'
 import Script from 'next/script'
 // import Head from 'next/head'
 
-export const metadata = {
-  metadataBase: new URL('https://cigam.ru'),
-  title: 'Фокусник-иллюзионист Алексей Белинский — заказать шоу в Красноярске',
-  description:
-    'Закажите шоу иллюзиониста в Красноярске. Обладатель Кубка Мерлина, 22 года опыта, 3000+ выступлений. Корпоративы, свадьбы, дни рождения. Тел: 8 (913) 837-00-20',
-  keywords:
-    'фокусник Красноярск, иллюзионист Красноярск, заказать фокусника, шоу иллюзиониста, корпоратив фокусник, фокусник на свадьбу, детский фокусник Красноярск',
-  openGraph: {
-    title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
+// Опыт вычисляется при рендере; ISR обновляет HTML без деплоя с интервалом в час.
+export const revalidate = 3600
+
+export function generateMetadata() {
+  const label = experienceLabel()
+  return {
+    metadataBase: new URL('https://cigam.ru'),
+    title: 'Фокусник-иллюзионист Алексей Белинский — заказать шоу в Красноярске',
     description:
-      'Кубок Мерлина · 22 года опыта · 3000+ выступлений. Корпоративы, свадьбы, детские праздники. Красноярск.',
-    url: 'https://cigam.ru',
-    siteName: 'cigam.ru',
-    locale: 'ru_RU',
-    type: 'website',
-    images: [
-      {
-        url: '/logo.png',
-        width: 512,
-        height: 512,
-        alt: 'Иллюзионист Алексей Белинский',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
-    description:
-      'Кубок Мерлина · 22 года опыта · 3000+ выступлений. Шоу для корпоративов, свадеб и праздников.',
-    images: ['/logo.png'],
-  },
-  alternates: { canonical: '/' },
+      `Закажите шоу иллюзиониста в Красноярске. Обладатель Кубка Мерлина, ${label} опыта, 3000+ выступлений. Корпоративы, свадьбы, дни рождения. Тел: 8 (913) 837-00-20`,
+    keywords:
+      'фокусник Красноярск, иллюзионист Красноярск, заказать фокусника, шоу иллюзиониста, корпоратив фокусник, фокусник на свадьбу, детский фокусник Красноярск',
+    openGraph: {
+      title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
+      description:
+        `Кубок Мерлина · ${label} опыта · 3000+ выступлений. Корпоративы, свадьбы, детские праздники. Красноярск.`,
+      url: 'https://cigam.ru',
+      siteName: 'cigam.ru',
+      locale: 'ru_RU',
+      type: 'website',
+      images: [
+        {
+          url: '/logo.png',
+          width: 512,
+          height: 512,
+          alt: 'Иллюзионист Алексей Белинский',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
+      description:
+        `Кубок Мерлина · ${label} опыта · 3000+ выступлений. Шоу для корпоративов, свадеб и праздников.`,
+      images: ['/logo.png'],
+    },
+    alternates: { canonical: '/' },
+  }
 }
 
 export default function RootLayout({ children }) {

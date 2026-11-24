@@ -1,36 +1,40 @@
+import { experienceLabel } from '@helpers/experience'
 import SvadbaClient from './SvadbaClient'
 
-export const metadata = {
-  title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
-  description:
-    'Закажите шоу иллюзиониста Алексея Белинского на свадьбу в Красноярске. Кубок Мерлина, 22 года опыта, 3000+ выступлений. Индивидуальный номер для молодожёнов.',
-  keywords:
-    'иллюзионист на свадьбу Красноярск, фокусник на свадьбу Красноярск, шоу фокусов на свадьбу, заказать фокусника на свадьбу',
-  alternates: { canonical: '/svadba' },
-  openGraph: {
+export function generateMetadata() {
+  const label = experienceLabel()
+  return {
     title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
     description:
-      'Интерактивное шоу телевизионного уровня и персональный номер для молодожёнов.',
-    url: 'https://cigam.ru/svadba',
-    siteName: 'cigam.ru',
-    locale: 'ru_RU',
-    type: 'website',
-    images: [
-      {
-        url: '/img/quiz/wedding.webp',
-        width: 900,
-        height: 600,
-        alt: 'Иллюзионист Алексей Белинский на свадьбе',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
-    description:
-      'Интерактивное шоу телевизионного уровня и персональный номер для молодожёнов.',
-    images: ['/img/quiz/wedding.webp'],
-  },
+      `Закажите шоу иллюзиониста Алексея Белинского на свадьбу в Красноярске. Кубок Мерлина, ${label} опыта, 3000+ выступлений. Индивидуальный номер для молодожёнов.`,
+    keywords:
+      'иллюзионист на свадьбу Красноярск, фокусник на свадьбу Красноярск, шоу фокусов на свадьбу, заказать фокусника на свадьбу',
+    alternates: { canonical: '/svadba' },
+    openGraph: {
+      title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня и персональный номер для молодожёнов.',
+      url: 'https://cigam.ru/svadba',
+      siteName: 'cigam.ru',
+      locale: 'ru_RU',
+      type: 'website',
+      images: [
+        {
+          url: '/img/quiz/wedding.webp',
+          width: 900,
+          height: 600,
+          alt: 'Иллюзионист Алексей Белинский на свадьбе',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Иллюзионист на свадьбу в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня и персональный номер для молодожёнов.',
+      images: ['/img/quiz/wedding.webp'],
+    },
+  }
 }
 
 export default function SvadbaPage() {

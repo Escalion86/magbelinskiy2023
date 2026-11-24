@@ -1,5 +1,6 @@
 'use client'
 
+import { experienceLabel } from '@helpers/experience'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useEffect } from 'react'
@@ -25,8 +26,6 @@ const ModalZakaz = dynamic(() => import('@blocks/ModalZakaz'), { ssr: false })
 const StateLoader = dynamic(() => import('@blocks/components/StateLoader'), {
   ssr: false,
 })
-
-const proofPoints = ['Кубок Мерлина', '22 года опыта', '3000+ выступлений']
 
 const itemPropType = PropTypes.shape({
   title: PropTypes.string.isRequired,
@@ -81,6 +80,7 @@ SectionTitle.propTypes = {
 }
 
 const Hero = ({ config }) => {
+  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений']
   const setShowModalZakaz = useSetAtom(showModalZakazAtom)
   const setYandexAim = useSetAtom(yandexAimAtom)
   const { hero, goalPrefix } = config

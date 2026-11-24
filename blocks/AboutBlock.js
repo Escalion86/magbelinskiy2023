@@ -1,5 +1,6 @@
 'use client'
 
+import { experienceYears } from '@helpers/experience'
 import React, { useEffect, useRef } from 'react'
 import cn from 'classnames'
 import SpanGradientTitle from './components/SpanGradientTitle'
@@ -15,10 +16,10 @@ const Title = ({ className }) => (
     )}
   >
     <span className="hidden whitespace-nowrap lg:block">
-      <SpanGradientTitle>более 22 лет дарит эмоции</SpanGradientTitle> людям
+      <SpanGradientTitle>более {experienceYears()} лет дарит эмоции</SpanGradientTitle> людям
     </span>
     <SpanGradientTitle className="lg:hidden">
-      более 22 лет
+      более {experienceYears()} лет
       <br />
     </SpanGradientTitle>
     <span className="whitespace-nowrap lg:hidden">
@@ -152,7 +153,7 @@ const List = ({ className }) => (
       иллюзионного искусства — кубка Мерлина.
     </ListItem>
     <ListItem>
-      <SpanGold>Более 22 лет работы</SpanGold> и{' '}
+      <SpanGold>Более {experienceYears()} лет работы</SpanGold> и{' '}
       <SpanGold>3000+ выступлений</SpanGold> разного масштаба: от семейного
       формата до больших шоу-программ.
     </ListItem>

@@ -1,36 +1,40 @@
+import { experienceLabel } from '@helpers/experience'
 import KorporativClient from './KorporativClient'
 
-export const metadata = {
-  title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
-  description:
-    'Шоу иллюзиониста Алексея Белинского на корпоратив в Красноярске. Кубок Мерлина, 22 года опыта, 3000+ выступлений. Персональный номер с логотипом компании.',
-  keywords:
-    'иллюзионист на корпоратив Красноярск, фокусник на корпоратив Красноярск, шоу фокусов на корпоратив, заказать фокусника на корпоратив',
-  alternates: { canonical: '/korporativ' },
-  openGraph: {
+export function generateMetadata() {
+  const label = experienceLabel()
+  return {
     title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
     description:
-      'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
-    url: 'https://cigam.ru/korporativ',
-    siteName: 'cigam.ru',
-    locale: 'ru_RU',
-    type: 'website',
-    images: [
-      {
-        url: '/img/promo2.webp',
-        width: 996,
-        height: 1330,
-        alt: 'Иллюзионист Алексей Белинский на корпоративе',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
-    description:
-      'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
-    images: ['/img/promo2.webp'],
-  },
+      `Шоу иллюзиониста Алексея Белинского на корпоратив в Красноярске. Кубок Мерлина, ${label} опыта, 3000+ выступлений. Персональный номер с логотипом компании.`,
+    keywords:
+      'иллюзионист на корпоратив Красноярск, фокусник на корпоратив Красноярск, шоу фокусов на корпоратив, заказать фокусника на корпоратив',
+    alternates: { canonical: '/korporativ' },
+    openGraph: {
+      title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
+      url: 'https://cigam.ru/korporativ',
+      siteName: 'cigam.ru',
+      locale: 'ru_RU',
+      type: 'website',
+      images: [
+        {
+          url: '/img/promo2.webp',
+          width: 996,
+          height: 1330,
+          alt: 'Иллюзионист Алексей Белинский на корпоративе',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Иллюзионист на корпоратив в Красноярске — Алексей Белинский',
+      description:
+        'Интерактивное шоу телевизионного уровня с персональным номером для вашей компании.',
+      images: ['/img/promo2.webp'],
+    },
+  }
 }
 
 export default function KorporativPage() {

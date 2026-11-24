@@ -1,3 +1,4 @@
+import { experienceYears, yearsWord } from '@helpers/experience'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -5,6 +6,7 @@ import React from 'react'
 import { useState } from 'react'
 
 const MagicanImage = () => {
+  const years = experienceYears()
   const [isCardReveal, setIsCardRevial] = useState(false)
   return (
     <div className="absolute bottom-0 left-[min(calc(40%),calc(12%+260px))] top-[70px] z-10 flex max-h-full w-[96%] justify-center phoneH:left-[37%] sm:bottom-auto sm:h-full sm:w-[max(300px,97%)] tablet:left-[calc(12%+260px)] tablet:max-h-[1035px]">
@@ -149,7 +151,7 @@ const MagicanImage = () => {
               Алексей Белинский
             </div>
             <div className="text-[7px] font-normal leading-[125%] text-[#A8A8CA] sm:text-[12.8px] xl:text-[16px]">
-              Иллюзионист с опытом 22 года, снимается на телеканале ТНТ
+              {`Иллюзионист с опытом ${years} ${yearsWord(years)}, снимается на телеканале ТНТ`}
             </div>
           </div>
         </div>
