@@ -105,6 +105,39 @@ const sanitizeContacts = (contacts) => {
 const sanitizeText = (value, maxLength = 1000) =>
   typeof value === 'string' ? value.trim().slice(0, maxLength) : ''
 
+const normalizeAttribution = (body) => {
+  const nested =
+    body.attribution && typeof body.attribution === 'object'
+      ? body.attribution
+      : {}
+  const attribution = {}
+  for (const [field, alias, maxLength] of [
+    ['utmSource', 'utm_source', 200],
+    ['utmMedium', 'utm_medium', 200],
+    ['utmCampaign', 'utm_campaign', 200],
+    ['utmContent', 'utm_content', 200],
+    ['utmTerm', 'utm_term', 200],
+    ['yclid', 'yclid', 200],
+    ['page', 'page', 2000],
+    ['referrer', 'referrer', 300],
+  ]) {
+    attribution[field] = sanitizeText(
+      nested[field] ?? nested[alias] ?? body[field] ?? body[alias],
+      maxLength
+    )
+  }
+  return attribution
+}
+
+const buildLeadSource = ({ utmSource, utmMedium, utmCampaign }, aim) => {
+  const base = utmSource
+    ? `site_form:${utmSource}/${utmMedium || '-'}/${utmCampaign || '-'}`
+    : 'site_form'
+  // Раньше источником служила цель Метрики (yandexAim) — сохраняем её в конце строки.
+  const withAim = typeof aim === 'string' && aim ? `${base}:${aim}` : base
+  return withAim.slice(0, 120)
+}
+
 const escapeTelegramHtml = (value) =>
   String(value || '')
     .replaceAll('&', '&amp;')
@@ -404,6 +437,17 @@ export const POST = async (req) => {
       .filter(Boolean)
       .join('\n')
     const yandexAim = sanitizeText(body.yandexAim, 100)
+    const attribution = normalizeAttribution(body)
+    logLead(requestId, 'attribution', {
+      page: attribution.page,
+      referrer: attribution.referrer,
+      utm_source: attribution.utmSource,
+      utm_medium: attribution.utmMedium,
+      utm_campaign: attribution.utmCampaign,
+      utm_content: attribution.utmContent,
+      utm_term: attribution.utmTerm,
+      yclid: attribution.yclid,
+    })
     const contacts = sanitizeContacts(contactChannels)
     const formattedAddress = formatAddress(address, null)
     const displayPhone =
@@ -486,7 +530,7 @@ export const POST = async (req) => {
         eventDate,
         contractSum: numericContractSum,
         address,
-        source: body.source || yandexAim || 'site_form',
+        source: buildLeadSource(attribution, yandexAim),
         contacts,
       }).catch((error) => {
         logLead(requestId, 'vedelo unexpected error', {

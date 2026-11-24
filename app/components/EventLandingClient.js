@@ -85,13 +85,13 @@ SectionTitle.propTypes = {
 
 const Hero = ({ config }) => {
   const { priceLabel } = eventSeo[config.seoKey]
-  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений']
+  const proofPoints = ['Кубок Мерлина', 'Участник шоу «Всё, кроме обычного» на ТНТ', `${experienceLabel()} опыта`, '3000+ выступлений']
   const setShowModalZakaz = useSetAtom(showModalZakazAtom)
   const setYandexAim = useSetAtom(yandexAimAtom)
   const { hero, goalPrefix } = config
 
   return (
-    <section className="titleblock relative flex min-h-[780px] w-full min-w-[375px] items-center overflow-hidden md:max-h-[920px] md:min-h-screen">
+    <section className="titleblock relative flex min-h-[780px] w-full min-w-full items-center overflow-hidden md:max-h-[920px] md:min-h-screen">
       <Background />
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0E0E1C] via-[#0E0E1C]/80 to-transparent md:via-[#0E0E1C]/55" />
       <DivContent
@@ -114,11 +114,11 @@ const Hero = ({ config }) => {
           <p className="mt-[25px] max-w-[620px] text-[16px] leading-[145%] font-medium text-[#D7D7EA] md:text-[21px]">
             {hero.description}
           </p>
-          <div className="mt-[24px] grid max-w-[650px] grid-cols-1 gap-[10px] text-[13px] text-white sm:grid-cols-3 md:text-[16px]">
+          <div className="mt-[24px] grid max-w-[650px] grid-cols-1 gap-[10px] text-[13px] text-white sm:grid-cols-2 md:text-[16px] lg:grid-cols-4">
             {proofPoints.map((item) => (
               <div
                 key={item}
-                className="rounded-[7px] border border-white/10 bg-[#1A1A32]/55 px-[14px] py-[12px] backdrop-blur-sm"
+                className="rounded-[7px] border border-white/10 bg-[#1A1A32]/55 px-[14px] py-[12px] text-balance backdrop-blur-sm"
               >
                 {item}
               </div>

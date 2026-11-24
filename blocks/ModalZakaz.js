@@ -13,6 +13,29 @@ import Modal from './components/Modal'
 import yandexAimAtom from '@state/atoms/yandexAimAtom'
 import { reachGoal } from 'app/components/metrika'
 
+const collectAttribution = () => {
+  if (typeof window === 'undefined') return {}
+
+  const params = new URLSearchParams(window.location.search)
+  const attribution = {}
+  for (const [field, param] of [
+    ['utmSource', 'utm_source'],
+    ['utmMedium', 'utm_medium'],
+    ['utmCampaign', 'utm_campaign'],
+    ['utmContent', 'utm_content'],
+    ['utmTerm', 'utm_term'],
+    ['yclid', 'yclid'],
+  ]) {
+    // URLSearchParams already decodes percent-encoded query values.
+    const value = params.get(param)?.slice(0, 200)
+    if (value) attribution[field] = value
+  }
+  attribution.page = window.location.pathname
+  const referrer = document.referrer.slice(0, 300)
+  if (referrer) attribution.referrer = referrer
+  return attribution
+}
+
 const Title = ({ className }) => (
   <div
     className={cn(
@@ -57,6 +80,8 @@ const OnSuccess = ({ visible }) => (
       className="absolute right-0 bottom-0 min-w-[107%] object-contain md:min-w-0"
       alt="magican"
       src="/img/success.webp"
+      loading="lazy"
+      decoding="async"
       // style={{
       //   filter: 'blur(0.8469998836517334px)',
       //   // background:
@@ -139,6 +164,8 @@ const OnUnsuccess = ({ visible }) => (
       className="absolute bottom-0 right-0 min-w-[107%] object-contain md:min-w-0"
       alt="magican"
       src="/img/success.webp"
+      loading="lazy"
+      decoding="async"
       // style={{
       //   filter: 'blur(0.8469998836517334px)',
       //   // background:
@@ -165,9 +192,10 @@ const ModalZakaz = () => {
   const onSubmit = async () => {
     if (phone == 79874565544) return
     setSuccess(null)
+    const attribution = collectAttribution()
     await postData(
       `/api/requests`,
-      { phone, yandexAim },
+      { phone, yandexAim, attribution },
       () => {
         if (typeof yandexAim === 'string')
           reachGoal(yandexAim, yandexAimParams)
