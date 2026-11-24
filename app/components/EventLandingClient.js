@@ -1,6 +1,9 @@
 'use client'
 
 import { experienceLabel } from '@helpers/experience'
+import { eventSeo } from '@helpers/eventSeo'
+import FaqBlock from '@blocks/FaqBlock'
+import OtherFormatsBlock from '@blocks/OtherFormatsBlock'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useEffect } from 'react'
@@ -34,6 +37,7 @@ const itemPropType = PropTypes.shape({
 
 const configPropType = PropTypes.shape({
   goalPrefix: PropTypes.string.isRequired,
+  seoKey: PropTypes.string.isRequired,
   hero: PropTypes.shape({
     kicker: PropTypes.string.isRequired,
     titleBefore: PropTypes.string.isRequired,
@@ -80,7 +84,8 @@ SectionTitle.propTypes = {
 }
 
 const Hero = ({ config }) => {
-  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений']
+  const { priceLabel } = eventSeo[config.seoKey]
+  const proofPoints = ['Кубок Мерлина', `${experienceLabel()} опыта`, '3000+ выступлений', `Стоимость — ${priceLabel}`]
   const setShowModalZakaz = useSetAtom(showModalZakazAtom)
   const setYandexAim = useSetAtom(yandexAimAtom)
   const { hero, goalPrefix } = config
@@ -98,11 +103,11 @@ const Hero = ({ config }) => {
             {hero.kicker}
           </div>
           <h1 className="font-buyan phoneH:text-[50px] tablet:text-[88px] text-[45px] leading-[94%] font-bold text-white sm:text-[62px] md:text-[74px]">
-            {hero.titleBefore}
+            {hero.titleBefore}{' '}
             <br />
             <span className="bg-gradient-to-r from-[#C17C0E] via-[#FFCA45] to-[#FFE49A] bg-clip-text text-transparent">
               {hero.titleAccent}
-            </span>
+            </span>{' '}
             <br />
             {hero.titleAfter}
           </h1>
@@ -138,6 +143,9 @@ const Hero = ({ config }) => {
               Посмотреть форматы
             </a>
           </div>
+          <p className="mt-[15px] text-[15px] leading-[145%] text-[#D7D7EA] md:text-[18px]">
+            Стоимость — {priceLabel}
+          </p>
         </div>
       </DivContent>
     </section>
@@ -313,6 +321,8 @@ export default function EventLandingClient({ config }) {
           <section id="zakaz" className="w-full">
             <AnketaBlock />
           </section>
+          <FaqBlock items={eventSeo[config.seoKey].faq} />
+          <OtherFormatsBlock current={config.seoKey} />
           <FooterBlock />
           <SubfooterBlock />
         </main>

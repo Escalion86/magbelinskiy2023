@@ -6,6 +6,9 @@ import { memo, useEffect } from 'react'
 import Header from '@blocks/titleComponents/Header'
 import TitleBlock from '@blocks/TitleBlock'
 import EventLinksBlock from '@blocks/EventLinksBlock'
+import FaqBlock from '@blocks/FaqBlock'
+import OtherFormatsBlock from '@blocks/OtherFormatsBlock'
+import { eventSeo, faqStructuredData } from '@helpers/eventSeo'
 import LazySection from '@components/LazySection'
 import { Provider } from 'jotai'
 import store from '@state/store'
@@ -172,6 +175,8 @@ export default function Home() {
           >
             <AnketaBlock />
           </DeferredSection>
+          <FaqBlock items={eventSeo.home.faq} />
+          <OtherFormatsBlock current="home" />
           <FooterBlock />
           <SubfooterBlock />
         </main>
@@ -202,6 +207,10 @@ export default function Home() {
           />
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData(eventSeo.home.faq)) }}
+      />
       <ModalZakaz />
       <ModalFocusResult />
       <ModalInfo />

@@ -1,6 +1,7 @@
 import EventLandingClient from 'app/components/EventLandingClient'
 
 const config = {
+  seoKey: 'korporativ',
   goalPrefix: 'korporativ',
   hero: {
     kicker: 'Красноярск · шоу для компаний от 20 до 1000+ гостей',

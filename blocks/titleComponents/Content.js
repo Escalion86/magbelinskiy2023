@@ -32,7 +32,7 @@ const InfoCard = ({ className, children }) => (
 )
 
 const Title = ({ className }) => (
-  <div
+  <h1
     className={cn(
       'mt-[20px] flex flex-col text-[34px] phoneH:text-[36px] sm:text-[50px] md:mt-[46px] md:text-[60px] tablet:text-[84px]',
       className
@@ -47,8 +47,8 @@ const Title = ({ className }) => (
       lineHeight: '100%' /* 84px */,
     }}
   >
-    <span>Иллюзионист</span>
-    <div className="flex">
+    <span>Иллюзионист{' '}</span>
+    <span className="flex">
       <img
         className="-mb-[12px] -ml-[15px] -mr-[5px] -mt-[4px] w-[50px] object-contain sm:-mb-[15px] sm:-ml-[17px] sm:-mr-[6px] sm:-mt-[5px] sm:w-[60px] md:-mb-[15px] md:-ml-[22px] md:-mr-[8px] md:-mt-[5px] md:w-[80px] tablet:-mb-[17px] tablet:-ml-[30px] tablet:-mr-[6px] tablet:-mt-[6px] tablet:w-[107px]"
         alt="star"
@@ -66,11 +66,11 @@ const Title = ({ className }) => (
           // color: '#0B2349',
         }}
       >
-        Алексей Белинский
+        Алексей Белинский{' '}
       </span>
-    </div>
+    </span>
     <span>на Вашем мероприятии</span>
-  </div>
+  </h1>
 )
 
 const SvgParty = () => (
@@ -359,6 +359,9 @@ const Content = () => {
             <DiscountInfo className="laptop:flex hidden w-[320px]" />
           </div>
         </div>
+        <p className="mb-[20px] text-[14px] leading-[145%] text-[#D7D7EA] md:text-[18px]">
+          Стоимость — от 12 000 ₽; взрослые форматы — от 15 000 ₽.
+        </p>
         <DiscountInfo className="laptop:hidden flex w-[240px] tablet:w-[420px]" />
       </div>
     </DivContent>

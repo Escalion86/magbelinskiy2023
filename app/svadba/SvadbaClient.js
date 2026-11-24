@@ -1,6 +1,7 @@
 import EventLandingClient from 'app/components/EventLandingClient'
 
 const config = {
+  seoKey: 'svadba',
   goalPrefix: 'svadba',
   hero: {
     kicker: 'Красноярск · шоу для камерной и большой свадьбы',

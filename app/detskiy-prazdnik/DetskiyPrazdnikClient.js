@@ -1,6 +1,7 @@
 import EventLandingClient from 'app/components/EventLandingClient'
 
 const config = {
+  seoKey: 'detskiy-prazdnik',
   goalPrefix: 'detskiy_prazdnik',
   hero: {
     kicker: 'Красноярск · интерактивное шоу для детей и родителей',

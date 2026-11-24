@@ -1,6 +1,7 @@
 import EventLandingClient from 'app/components/EventLandingClient'
 
 const config = {
+  seoKey: 'yubiley',
   goalPrefix: 'yubiley',
   hero: {
     kicker: 'Красноярск · шоу для взрослого юбилея и дня рождения',

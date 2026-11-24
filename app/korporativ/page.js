@@ -1,4 +1,5 @@
 import { experienceLabel } from '@helpers/experience'
+import { eventSeo, faqStructuredData, serviceOffer } from '@helpers/eventSeo'
 import KorporativClient from './KorporativClient'
 
 export function generateMetadata() {
@@ -41,6 +42,7 @@ export default function KorporativPage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    offers: serviceOffer(eventSeo['korporativ'].price),
     name: 'Шоу иллюзиониста на корпоратив',
     description:
       'Интерактивное иллюзионное шоу Алексея Белинского для корпоративных мероприятий в Красноярске.',
@@ -62,6 +64,10 @@ export default function KorporativPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData(eventSeo['korporativ'].faq)) }}
       />
       <KorporativClient />
     </>

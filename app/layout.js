@@ -33,10 +33,10 @@ export function generateMetadata() {
       type: 'website',
       images: [
         {
-          url: '/logo.png',
-          width: 512,
-          height: 512,
-          alt: 'Иллюзионист Алексей Белинский',
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: 'Иллюзионист Алексей Белинский — шоу в Красноярске',
         },
       ],
     },
@@ -45,7 +45,7 @@ export function generateMetadata() {
       title: 'Фокусник-иллюзионист Алексей Белинский — шоу в Красноярске',
       description:
         `Кубок Мерлина · ${label} опыта · 3000+ выступлений. Шоу для корпоративов, свадеб и праздников.`,
-      images: ['/logo.png'],
+      images: ['/og-image.jpg'],
     },
     alternates: { canonical: '/' },
   }
@@ -72,6 +72,25 @@ export default function RootLayout({ children }) {
       'https://instagram.com/magbelinskiy',
       'https://max.ru/u/f9LHodD0cOIpR54J815HiQSRUGQ2bw5yna_h_MGsMS4G50iYuK_ZPsHI87o',
     ],
+  }
+  const businessStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: 'Иллюзионист Алексей Белинский',
+    image: 'https://cigam.ru/og-image.jpg',
+    url: 'https://cigam.ru',
+    telephone: '+7-913-837-00-20',
+    priceRange: 'от 12 000 ₽',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Красноярск',
+      addressCountry: 'RU',
+    },
+    areaServed: {
+      '@type': 'City',
+      name: 'Красноярск',
+    },
+    sameAs: structuredData.sameAs,
   }
 
   return (
@@ -129,6 +148,10 @@ export default function RootLayout({ children }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessStructuredData) }}
         />
         {isProduction && (
           <>

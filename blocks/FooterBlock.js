@@ -73,6 +73,28 @@ const FooterBlock = () => {
               гостей, и насладитесь захватывающими трюками. Эмоции гостей
               гарантированы!
             </div>
+            <nav aria-label="Форматы шоу" className="mt-[20px]">
+              <div className="text-[16px] leading-[135%] font-medium text-[#A8A8CA]">
+                Форматы шоу
+              </div>
+              <div className="mt-[10px] flex flex-wrap gap-x-[20px] gap-y-[10px] text-[12px] leading-[135%] font-medium text-[#A8A8CA] md:text-[19px]">
+                <Link href="/korporativ" className="underline duration-300 hover:text-[#FFCA45]">
+                  Корпоратив
+                </Link>
+                <Link href="/svadba" className="underline duration-300 hover:text-[#FFCA45]">
+                  Свадьба
+                </Link>
+                <Link href="/yubiley" className="underline duration-300 hover:text-[#FFCA45]">
+                  Юбилей и день рождения
+                </Link>
+                <Link href="/detskiy-prazdnik" className="underline duration-300 hover:text-[#FFCA45]">
+                  Детский праздник
+                </Link>
+                <Link href="/" className="underline duration-300 hover:text-[#FFCA45]">
+                  Все форматы
+                </Link>
+              </div>
+            </nav>
             <a
               href="/doc/privacy.doc"
               download
