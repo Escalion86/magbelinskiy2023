@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const lastModified = new Date()
+  const lastModified = new Date(process.env.BUILD_TIME || Date.now())
 
   return [
     {
